@@ -51,7 +51,7 @@
  *     MyObject(Object *parent);
  *
  *     IDEAL_SIGNAL(myFirstSignal);
- * }
+ * };
  * @endcode
  *
  * Now, some details that you should take into account:
@@ -105,7 +105,7 @@
  *     MyObject(Object *parent);
  *
  *     IDEAL_SIGNAL(myComplexSignal, bool, int, Object*, List<Object*>);
- * }
+ * };
  * @endcode
  *
  * As you may imagine, the initialization is not very different:
@@ -136,7 +136,7 @@
  *
  *     IDEAL_SIGNAL(myFirstSignal);
  *     IDEAL_SIGNAL(myComplexSignal, bool, int, Object*, List<Object*>);
- * }
+ * };
  * @endcode
  *
  * Being the initialization:
@@ -167,7 +167,7 @@
  *     void doSomethingComplex(bool a, int b, Object *c, const List<Object*> &d);
  *
  *     IDEAL_SIGNAL(myForwardedSignal);
- * }
+ * };
  * @endcode
  *
  * As you can see, we have defined two regular methods, as well as another signal. We are going to
@@ -235,7 +235,7 @@
  *
  *     IDEAL_SIGNAL(myFirstSignal);
  *     IDEAL_SIGNAL(myComplexSignal, bool, int, Object*, List<Object*>);
- * }
+ * };
  * @endcode
  *
  * Being the initialization:
@@ -308,7 +308,7 @@
  *     MediaButton(Object *parent);
  *
  *     IDEAL_SIGNAL(clicked);
- * }
+ * };
  *
  * MediaButton::MediaButton(Object *parent)
  *     : Object(parent)
@@ -332,7 +332,7 @@
  *     MediaButton *m_playPause;
  *     MediaButton *m_stop;
  *     MediaButton *m_quit;
- * }
+ * };
  *
  * MediaPlayer::MediaPlayer(Object *parent)
  *     : Object(parent)
@@ -514,6 +514,8 @@ public:
 
     /**
       * Connects @p signal to the method @p member on @p receiver.
+      *
+      * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
     static inline void connect(const Signal<Param...> &signal, Receiver *receiver, Member member)
@@ -524,7 +526,7 @@ public:
     /**
       * Connects @p signal to the multi method @p member on @p receiver.
       *
-      * @note The first parameter of the slot is the sender of the signal.
+      * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
     static inline void connectMulti(const Signal<Param...> &signal, Receiver *receiver, Member member)
@@ -535,7 +537,7 @@ public:
     /**
       * Forwards @p signal to another signal @p receiver.
       *
-      * @note @p signal and @p receiver should have the same signature.
+      * See @ref workingWithSignals
       */
     template <typename... Param>
     static inline void connect(const Signal<Param...> &signal, const Signal<Param...> &receiver)
@@ -545,6 +547,8 @@ public:
 
     /**
       * Connects @p signal to the static method or function @p member.
+      *
+      * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
     static inline void connectStatic(const Signal<Param...> &signal, Member member)
@@ -553,48 +557,9 @@ public:
     }
 
     /**
-      * Connects @p signal to the static multi method or function @p member. Example:
+      * Connects @p signal to the static multi method or function @p member.
       *
-      * @code
-      * #include <core/object.h>
-      * #include <core/application.h>
-      *
-      * using namespace IdealCore;
-      *
-      * static void myStaticMultiSlot(Object *sender)
-      * {
-      *     IDEAL_DEBUG("I was triggered by " << sender);
-      * }
-      *
-      * class Test
-      *     : public Object
-      * {
-      * public:
-      *     IDEAL_SIGNAL(test);
-      *
-      *     Test(Object *parent)
-      *         : Object(parent)
-      *         , IDEAL_SIGNAL_INIT(test)
-      *     {
-      *     }
-      *
-      *     void emitTest() {
-      *         emit(test);
-      *     }
-      * };
-      *
-      * int main(int argc, char **argv)
-      * {
-      *     Application app(argc, argv);
-      *     Test testObject(&app);
-      *     Object::connectStaticMulti(testObject.test, myStaticMultiSlot);
-      *     testObject.emitTest();
-      *
-      *     return 0;
-      * }
-      * @endcode
-      *
-      * @note The first parameter of the slot is the sender of the signal.
+      * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
     static inline void connectStaticMulti(const Signal<Param...> &signal, Member member)
@@ -608,6 +573,8 @@ public:
       * @note It is possible to connect the same signal to the same member and
       *       receiver more than one time. This will disconnect only the first
       *       match, not all of them.
+      *
+      * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
     static inline void disconnect(const Signal<Param...> &signal, Receiver *receiver, Member member)
@@ -621,6 +588,8 @@ public:
       * @note It is possible to connect the same signal to the same member and
       *       receiver more than one time. This will disconnect only the first
       *       match, not all of them.
+      *
+      * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
     static inline void disconnectMulti(const Signal<Param...> &signal, Receiver *receiver, Member member)
@@ -634,6 +603,8 @@ public:
       * @note It is possible to forward the same signal to the same signal
       *       more than one time. This will disconnect only the first match,
       *       not all of them.
+      *
+      * See @ref workingWithSignals
       */
     template <typename... Param>
     static inline void disconnect(const Signal<Param...> &signal, const Signal<Param...> &receiver)
@@ -647,6 +618,8 @@ public:
       * @note It is possible to connect the same signal to the same static
       *       method or function more than one time. This will disconnect
       *       only the first match, not all of them.
+      *
+      * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
     static inline void disconnectStatic(const Signal<Param...> &signal, Member member)
@@ -660,6 +633,8 @@ public:
       * @note It is possible to connect the same signal to the same static
       *       method or function more than one time. This will disconnect
       *       only the first match, not all of them.
+      *
+      * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
     static inline void disconnectStaticMulti(const Signal<Param...> &signal, Member member)
@@ -670,8 +645,7 @@ public:
     /**
       * Disconnects @p signal completely from @p receiver.
       *
-      * @note This will effectively disconnect absolutely all methods connected
-      *       to this signal on @p receiver.
+      * See @ref workingWithSignals
       */
     template <typename Receiver, typename... Param>
     static inline void disconnect(const Signal<Param...> &signal, Receiver *receiver)
@@ -683,6 +657,8 @@ public:
       * All signals in @p sender will become disconnected from their receivers.
       *
       * @note This cannot be undone. If you want to temporarily fake this effect, use setEmitBlocked.
+      *
+      * See @ref workingWithSignals
       */
     static void disconnectSender(Object *sender);
 
@@ -692,11 +668,15 @@ public:
       * @note If signals were connected to other receivers, those are still connected.
       *
       * @note This cannot be undone. If you want to temporarily fake this effect, use setBlockedSignals.
+      *
+      * See @ref workingWithSignals
       */
     static void disconnectReceiver(Object *receiver);
 
     /**
       * Equivalent to disconnectSender() and disconnectReceiver() on @p object.
+      *
+      * See @ref workingWithSignals
       */
     static void fullyDisconnect(Object *object);
 
