@@ -24,6 +24,11 @@
 #include <ideal_export.h>
 #include <core/application.h>
 
+/**
+  * The IdealGUI namespace.
+  *
+  * It provides a way of working with GUIs.
+  */
 namespace IdealGUI {
 
 class IDEAL_EXPORT Application
