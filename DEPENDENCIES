@@ -2,6 +2,10 @@
 
     - liburiparser - http://uriparser.sourceforge.net
 
+- Networking
+
+    - libcurl
+
 - GUI
 
     - libX11
@@ -10,3 +14,8 @@
 - Testing framework
 
     - The testing framework links against cppunit library.
+
+- Documentation
+
+    - dot (graphviz)
+
