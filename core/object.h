@@ -83,7 +83,7 @@
  * }
  * @endcode
  *
- * When we try to compile this, we will an error message similar to this one:
+ * When we try to compile this, we will get an error message similar to this one:
  *
  * @code
  * example.cpp: In constructor 'MyObject(IdealCore::Object*)':
