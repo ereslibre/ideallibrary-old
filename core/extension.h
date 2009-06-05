@@ -38,6 +38,8 @@
 namespace IdealCore {
 
 /**
+  * @class Extension extension.h core/extension.h
+  *
   * The base class for writing an extension that can be easily loaded using the Ideal Library.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>

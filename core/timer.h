@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class Timer timer.h core/timer.h
+  *
   * This class lets you set you an interval, that when is caught a timeout signal is emitted.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>

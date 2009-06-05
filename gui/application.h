@@ -31,6 +31,11 @@
   */
 namespace IdealGUI {
 
+/**
+  * @class Application application.h gui/application.h
+  *
+  * @author Rafael Fernández López <ereslibre@ereslibre.es>
+  */
 class IDEAL_EXPORT Application
     : public IdealCore::Application
 {

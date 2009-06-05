@@ -431,6 +431,8 @@ namespace IdealCore {
 class Application;
 
 /**
+  * @class Object object.h core/object.h
+  *
   * The base class for Ideal library usage. Inheriting this class will allow you to use signals
   * and connect them to methods in any class that inherits IdealCore::Object. It contains the basic
   * functionality offered by the Ideal Library.

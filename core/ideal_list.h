@@ -25,6 +25,11 @@
 
 namespace IdealCore {
 
+/**
+  * @class List ideal_list.h core/ideal_list.h
+  *
+  * @author Rafael Fernández López <ereslibre@ereslibre.es>
+  */
 template <typename T>
 class List
     : public std::list<T>

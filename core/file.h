@@ -31,6 +31,8 @@ namespace IdealCore {
 class Concurrent;
 
 /**
+  * @class File file.h core/file.h
+  *
   * This class represents a file in a local or remote filesystem. If the file is located on the
   * local file system, all the information will be retrieved through system calls. On the other hand
   * if the file is living on a remote filesystem, we will try to create a correct protocol handler,

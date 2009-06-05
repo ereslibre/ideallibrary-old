@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class GeniousPointer genious_pointer.h core/genious_pointer.h
+  *
   * A smart pointer in the sense that if the contents gets deleted, this
   * pointer will point to 0 automatically. This way, it is impossible to
   * have dangle pointers using GeniousPointer. Example:

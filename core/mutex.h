@@ -26,6 +26,8 @@
 namespace IdealCore {
 
 /**
+  * @class Mutex mutex.h core/mutex.h
+  *
   * Allows you to protect critical sections when executing several threads accessing/modifying a
   * critical section.
   *
@@ -57,6 +59,8 @@ private:
 
 
 /**
+  * @class ContextMutexLocker mutex.h core/mutex.h
+  *
   * This class will lock the mutex when created, and will unlock it when destroyed.
   * 
   * Examples of usage are:

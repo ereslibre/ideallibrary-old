@@ -31,6 +31,8 @@ namespace IdealCore {
 class Module;
 
 /**
+  * @class ExtensionLoader extension_loader.h core/extension_loader.h
+  *
   * The Ideal Library extension (and module) loader.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>

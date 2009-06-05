@@ -26,6 +26,8 @@
 namespace IdealCore {
 
 /**
+  * @class Event event.h core/event.h
+  *
   * Base class for all events.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>

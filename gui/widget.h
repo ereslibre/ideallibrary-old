@@ -30,6 +30,11 @@ namespace IdealCore {
 
 namespace IdealGUI {
 
+/**
+  * @class Widget widget.h gui/widget.h
+  *
+  * @author Rafael Fernández López <ereslibre@ereslibre.es>
+  */
 class IDEAL_EXPORT Widget
     : public IdealCore::Object
 {

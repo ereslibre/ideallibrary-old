@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class Uri uri.h core/uri.h
+  *
   * This class represents a URI as defined on RFC 3986.
   * http://www.ietf.org/rfc/rfc3986.txt
   *

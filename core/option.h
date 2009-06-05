@@ -26,6 +26,8 @@
 namespace IdealCore {
 
 /**
+  * @class Option option.h core/option.h
+  *
   * Class used to easily parse options and parameters passed to the application from the command
   * line.
   *

@@ -28,6 +28,11 @@ namespace IdealGUI {
 
 class Widget;
 
+/**
+  * @class Painter painter.h gui/painter.h
+  *
+  * @author Rafael Fernández López <ereslibre@ereslibre.es>
+  */
 class IDEAL_EXPORT Painter
 {
 public:

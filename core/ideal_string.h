@@ -28,6 +28,8 @@
 namespace IdealCore {
 
 /**
+  * @class String ideal_string.h core/ideal_string.h
+  *
   * This class represents a string. Its contents can be retrieved as
   * localized (depending on the current locale settings on the system) or not,
   * depending on the needs and convenience of the user.

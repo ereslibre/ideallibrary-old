@@ -29,6 +29,8 @@
 namespace IdealCore {
 
 /**
+  * @class Application application.h core/application.h
+  *
   * The application. All ideal library based applications need an instance of this class.
   * It allows you to parse options passed to the application when it was launched, as well as other
   * miscellaneous operations. Usually, all applications based on the Ideal Library will look like

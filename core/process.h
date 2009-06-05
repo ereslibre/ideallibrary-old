@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class Process process.h core/process.h
+  *
   * Allows you to execute code in a different process.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>

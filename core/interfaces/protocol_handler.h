@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class ProtocolHandler protocol_handler.h core/interfaces/protocol_handler.h
+  *
   * This interface is a generic way of doing certain operations over files by hiding the protocol
   * internal operations and implementation details.
   *

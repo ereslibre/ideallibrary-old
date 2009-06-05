@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class CondVar condvar.h core/condvar.h
+  *
   * Condition variable.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>

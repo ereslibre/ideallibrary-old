@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class Concurrent concurrent.h core/concurrent.h
+  *
   * Allows you to execute code in a different thread.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>

@@ -27,6 +27,8 @@
 namespace IdealCore {
 
 /**
+  * @class Module module.h core/module.h
+  *
   * A shared library can only contain one module. This module can contain several extensions that
   * are shown to the world by the method extensionInfoList. An example of a module with only one
   * extension would be:
