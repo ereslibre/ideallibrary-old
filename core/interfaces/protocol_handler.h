@@ -41,6 +41,8 @@ class IDEAL_EXPORT ProtocolHandler
 
 public:
     /**
+      * @struct AdditionalInfo protocol_handler.h core/interfaces/protocol_handler.h
+      *
       * This additional info can be set on the extension, so the component loading the extension
       * can decide whether to load it or not depending on this information
       */
