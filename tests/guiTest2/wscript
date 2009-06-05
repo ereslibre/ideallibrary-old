@@ -1,0 +1,16 @@
+#! /usr/bin/env python
+# Rafael Fernández López, 2009
+
+def configure(conf):
+    pass
+
+def build(bld):
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'main.cpp',
+        target       = 'guiTest2',
+        includes     = '../..',
+        uselib       = 'IDEAL',
+        uselib_local = 'idealcore idealgui',
+        install_path = None
+    )

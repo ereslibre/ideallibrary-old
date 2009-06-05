@@ -1,0 +1,45 @@
+Philosophy
+==========
+
+- KISS
+
+- POSIX
+
+- We do use C++ on steroids, that is, we compile using GCC with the option -std=c++0x.
+
+- Obviously, this library is free software (LGPLv3).
+
+
+Strong points
+=============
+
+- No "slot" concept, all methods are slots, since Ideal works through callbacks.
+
+- Signal/Slot type safe at compile time.
+
+- Ambit-safe signals and slots.
+
+- No string based naming. Everything is solved at compile time.
+
+- No external tool needed for compiling other than the compiler itself.
+
+- You know in which order slots will become called when a signal is emitted.
+
+- Slightly faster than Qt's signal/slot connection.
+
+- If the signature of a signal/slot changes, there is no need of check the code itself for
+  fixing connections.
+
+- Very easy to extend through Modules and Extensions. Your libraries and applications can also use
+  this framework to be very easily extensible.
+
+
+Weak points
+===========
+
+- Tiny tool. This will improve over time.
+
+- Because of no tool like 'moc' is used, there is no meta object information for-free.
+
+Any questions, suggestions or comments are welcome:
+Rafael Fernández López <ereslibre at ereslibre dot es>

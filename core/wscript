@@ -1,0 +1,70 @@
+#! /usr/bin/env python
+# Rafael Fernández López, 2009
+
+import Options
+
+def configure(conf):
+    if not Options.options.release:
+        conf.sub_config('tests')
+    conf.sub_config('modules')
+    conf.env['LIB_CORE'] = ['rt', 'dl', 'pthread']
+    conf.check_cfg(package = 'liburiparser', args = '--cflags --libs')
+    if not conf.env['HAVE_LIBURIPARSER'] == 1:
+        conf.fatal('Cannot continue without liburiparser. Please, install the development package and try again')
+    conf.check_tool('misc')
+
+def build(bld):
+    bld.new_task_gen(
+        features     = 'cxx cshlib',
+        source       = ['application.cpp',
+                        'concurrent.cpp',
+                        'condvar.cpp',
+                        'event.cpp',
+                        'extension.cpp',
+                        'file.cpp',
+                        'ideal_string.cpp',
+                        'module.cpp',
+                        'mutex.cpp',
+                        'object.cpp',
+                        'option.cpp',
+                        'process.cpp',
+                        'signal_resource.cpp',
+                        'timer.cpp',
+                        'uri.cpp',
+                        'interfaces/protocol_handler.cpp',
+                        # private generic stuff
+                        'private/application_p.cpp',
+                        'private/concurrent_p.cpp',
+                        'private/condvar_p.cpp',
+                        'private/module_p.cpp',
+                        'private/mutex_p.cpp',
+                        'private/process_p.cpp',
+                        'private/timer_p.cpp',
+                        # private posix systems stuff
+                        'private/posix/application_p.cpp',
+                        'private/posix/concurrent_p.cpp',
+                        'private/posix/condvar_p.cpp',
+                        'private/posix/extension_loader_p.cpp',
+                        'private/posix/mutex_p.cpp',
+                        'private/posix/process_p.cpp',
+                        'private/posix/timer_p.cpp'],
+        target       = 'idealcore',
+        includes     = '..',
+        uselib       = ['CORE',
+                        'LIBURIPARSER'],
+        vnum         = bld.env['LIBVERSION']
+    )
+    bld.new_task_gen('subst',
+        source = 'idealcore.pc.in',
+        target = 'idealcore.pc',
+        dict   = {'PREFIX' : bld.env['PREFIX'],
+                  'LIBS' : '-lidealcore',
+                  'VERSION' : bld.env['LIBVERSION']}
+    )
+    bld.add_subdirs('modules')
+    if not bld.env['RELEASE']:
+        bld.add_subdirs('tests')
+    bld.install_files('${PREFIX}/lib/pkgconfig', 'idealcore.pc')
+    bld.install_files('${PREFIX}/include/ideal/core', '*.h')
+    bld.install_files('${PREFIX}/include/ideal/core/interfaces', 'interfaces/*.h')
+

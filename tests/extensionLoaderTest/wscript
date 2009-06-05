@@ -1,0 +1,16 @@
+#! /usr/bin/env python
+# Rafael Fernández López, 2009
+
+def configure(conf):
+    pass
+
+def build(bld):
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'main.cpp',
+        target       = 'extensionLoaderTest',
+        includes     = '../..',
+        uselib       = 'IDEAL',
+        uselib_local = 'idealcore',
+        install_path = None
+    )

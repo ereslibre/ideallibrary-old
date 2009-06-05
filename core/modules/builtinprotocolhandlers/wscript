@@ -1,0 +1,21 @@
+#! /usr/bin/env python
+# Rafael Fernández López, 2009
+
+def configure(conf):
+    conf.check_cfg(package = 'libcurl', args = '--cflags --libs')
+    if not conf.env['HAVE_LIBCURL'] == 1:
+        conf.fatal('Cannot continue without libcurl. Please, install the development package and try again')
+
+def build(bld):
+    bld.new_task_gen(
+        features     = 'cxx cshlib',
+        source       = ['local.cpp',
+                        'main.cpp',
+                        'remote.cpp'],
+        target       = 'builtinprotocolhandlers',
+        includes     = '../../..',
+        uselib       = 'LIBCURL',
+        uselib_local = 'idealcore',
+        install_path = '${PREFIX}/lib/ideal'
+    )
+

@@ -1,0 +1,15 @@
+#! /usr/bin/env python
+# Rafael Fernández López, 2009
+
+def configure(conf):
+    pass
+
+def build(bld):
+    bld.new_task_gen(
+        features     = 'cxx cshlib',
+        source       = 'main.cpp',
+        target       = 'foo',
+        includes     = '../../..',
+        uselib_local = 'idealcore',
+        install_path = '${PREFIX}/lib/ideal'
+    )

@@ -1,0 +1,75 @@
+#! /usr/bin/env python
+# Rafael Fernández López, 2009
+
+def configure(conf):
+    conf.check_cfg(package = 'cppunit', args = '--cflags --libs')
+    if not conf.env['HAVE_CPPUNIT'] == 1:
+        conf.fatal('Cannot continue without cppunit. Please, install the development package and try again')
+
+def build(bld):
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'application_test.cpp',
+        target       = 'applicationTest',
+        includes     = '.. ../..',
+        uselib       = ['CPPUNIT',
+                        'IDEAL'],
+        uselib_local = 'idealcore',
+        install_path = None,
+        unit_test    = 1
+    )
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'connection_test.cpp',
+        target       = 'connectionTest',
+        includes     = '.. ../..',
+        uselib       = ['CPPUNIT',
+                        'IDEAL'],
+        uselib_local = 'idealcore',
+        install_path = None,
+        unit_test    = 1
+    )
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'file_test.cpp',
+        target       = 'fileTest',
+        includes     = '.. ../..',
+        uselib       = ['CPPUNIT',
+                        'IDEAL'],
+        uselib_local = 'idealcore',
+        install_path = None,
+        #unit_test    = 1
+    )
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'string_test.cpp',
+        target       = 'stringTest',
+        includes     = '.. ../..',
+        uselib       = ['CPPUNIT',
+                        'IDEAL'],
+        uselib_local = 'idealcore',
+        install_path = None,
+        unit_test    = 1
+    )
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'timer_test.cpp',
+        target       = 'timerTest',
+        includes     = '.. ../..',
+        uselib       = ['CPPUNIT',
+                        'IDEAL'],
+        uselib_local = 'idealcore',
+        install_path = None,
+        #unit_test    = 1
+    )
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
+        source       = 'uri_test.cpp',
+        target       = 'uriTest',
+        includes     = '.. ../..',
+        uselib       = ['CPPUNIT',
+                        'IDEAL'],
+        uselib_local = 'idealcore',
+        install_path = None,
+        unit_test    = 1
+    )

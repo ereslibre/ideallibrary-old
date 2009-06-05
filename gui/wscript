@@ -1,0 +1,30 @@
+#! /usr/bin/env python
+# Rafael Fernández López, 2009
+
+def configure(conf):
+    conf.check_cfg(package = 'x11', args = '--cflags --libs')
+    if not conf.env['HAVE_X11'] == 1:
+        conf.fatal('Cannot continue without x11. Please, install the development package and try again')
+    conf.check_cfg(package = 'xrender', args = '--cflags --libs')
+    if not conf.env['HAVE_XRENDER'] == 1:
+        conf.fatal('Cannot continue without xrender. Please, install the development package and try again')
+
+def build(bld):
+    bld.new_task_gen(
+        features     = 'cxx cshlib',
+        source       = ['application.cpp', 'painter.cpp', 'widget.cpp', 'xorg/application_p.cpp',
+                        'xorg/widget_p.cpp'],
+        target       = 'idealgui',
+        includes     = '.. ../core',
+        uselib       = ['X11',
+                        'XRENDER'],
+        uselib_local = 'idealcore',
+        vnum         = bld.env['LIBVERSION']
+    )
+    bld.new_task_gen('subst',
+        source = 'idealgui.pc.in',
+        target = 'idealgui.pc',
+        dict   = {'PREFIX' : bld.env['PREFIX'], 'LIBS' : '-lidealgui', 'VERSION' : bld.env['LIBVERSION']}
+    )
+    bld.install_files('${PREFIX}/lib/pkgconfig', 'idealgui.pc')
+    bld.install_files('${PREFIX}/include/ideal/gui', '*.h')

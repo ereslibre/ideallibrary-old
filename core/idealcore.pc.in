@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/ideal
+
+Name: idealcore
+Description: The idealcore library
+Version: @VERSION@
+Libs: -L${libdir} @LIBS@
+Cflags: -I${includedir}
+

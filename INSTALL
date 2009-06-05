@@ -1,0 +1,39 @@
+The Ideal Library is using the Waf building system. This makes specially easy for the library to
+be installed and uninstalled.
+
+INSTALLATION
+============
+
+* We start by configuring the project. We are going to install it into "/usr":
+
+    # ./waf configure --prefix=/usr
+
+    * If we wanted to install it into "/usr" but in release mode (with no debug information), we
+      would have done:
+
+        # ./waf configure --release --prefix=/usr
+
+* Now that we have configured it, and everything went fine, we can continue:
+
+    # ./waf build
+
+    * If we don't want building information, but a nice progress bar instead, we can do:
+
+        # ./waf build -p
+
+* And we can install it now:
+
+    # [sudo] ./waf install
+
+Note: Install should run unit tests at the end. They _should_ pass without errors. If unit tests are
+failing for you, please, fill a bug report.
+
+You are done. The library is installed :)
+
+UNINSTALLATION
+==============
+
+# ./waf uninstall
+
+You are done. The library is uninstalled :)
+

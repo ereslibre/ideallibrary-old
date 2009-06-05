@@ -1,0 +1,12 @@
+- Core
+
+    - liburiparser - http://uriparser.sourceforge.net
+
+- GUI
+
+    - libX11
+    - libXrender
+
+- Testing framework
+
+    - The testing framework links against cppunit library.
