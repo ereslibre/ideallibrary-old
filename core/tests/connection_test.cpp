@@ -122,6 +122,24 @@ void ConnectionTest::connectTest()
         emitter->emitSignal();
         CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());
     }
+    {
+        signalSpy->reset();
+        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->setEmitBlocked(true);
+        emitter->emitSignal();
+        emitter->setEmitBlocked(false);
+        Object::disconnect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());
+    }
+    {
+        signalSpy->reset();
+        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->setEmitBlocked(true);
+        Object::emit(emitter->signal);
+        emitter->setEmitBlocked(false);
+        Object::disconnect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());
+    }
     Emitter *secondEmitter = new Emitter(s_app);
     {
         signalSpy->reset();

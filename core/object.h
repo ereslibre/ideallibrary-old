@@ -686,6 +686,15 @@ public:
     static void fullyDisconnect(Object *object);
 
     /**
+      * Emits @p signal with parameters @p param.
+      */
+    template <typename... Param>
+    static void inline emit(const Signal<Param...> &signal, const Param&... param)
+    {
+        const_cast<Signal<Param...>*>(&signal)->emit(param...);
+    }
+
+    /**
       * Deletes this object right now.
       */
     void deleteNow();
@@ -702,15 +711,6 @@ public:
     virtual void *virtual_hook(int id, void *param);
 
 protected:
-    /**
-      * Emits @p signal with parameters @p param.
-      */
-    template <typename... Param>
-    void inline emit(const Signal<Param...> &signal, const Param&... param) const
-    {
-        const_cast<Signal<Param...>*>(&signal)->emit(param...);
-    }
-
     /**
       * @internal
       */
