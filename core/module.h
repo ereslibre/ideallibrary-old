@@ -123,7 +123,7 @@ public:
       *     // is of your interest in the opened module), the module will never become autodeleted
       *     // because loadExtension has never been called with it.
       * }
-      * // for this reason, we do something like this were appropriate
+      * // for this reason, we do something like this where appropriate
       * if (module->isUnused()) {
       *     delete module;
       * }

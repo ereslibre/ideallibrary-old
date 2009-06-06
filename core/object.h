@@ -200,9 +200,9 @@
  *     MyObject *myObject = new MyObject(&app);
  *     MyOtherObject *myOtherObject = new MyOtherObject(&app);
  *
- *     Object::connect(myObject->myFirstSignal, myOtherObject, &MyOtherObject::doSomethingEasy);
- *     Object::connect(myObject->myComplexSignal, myOtherObject, &MyOtherObject::doSomethingComplex);
- *     Object::connect(myObject->myFirstSignal, myOtherObject->myForwardedSignal);
+ *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject, &MyOtherObject::doSomethingEasy);
+ *     IdealCore::Object::connect(myObject->myComplexSignal, myOtherObject, &MyOtherObject::doSomethingComplex);
+ *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject->myForwardedSignal);
  *
  *     return 0;     
  * }
@@ -265,9 +265,9 @@
  *     MyObject *myObject = new MyObject(&app);
  *     MyOtherObject *myOtherObject = new MyOtherObject(&app);
  *
- *     Object::connect(myObject->myFirstSignal, myOtherObject, &MyOtherObject::doSomethingEasy);
- *     Object::connect(myObject->myComplexSignal, myOtherObject, &MyOtherObject::doSomethingComplex);
- *     Object::connect(myObject->myFirstSignal, myOtherObject->myForwardedSignal);
+ *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject, &MyOtherObject::doSomethingEasy);
+ *     IdealCore::Object::connect(myObject->myComplexSignal, myOtherObject, &MyOtherObject::doSomethingComplex);
+ *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject->myForwardedSignal);
  *
  *     myObject->modifyStateAndNotify();
  *
@@ -412,7 +412,7 @@
  * The connection would be exactly the same:
  *
  * @code
- * Object::connectMulti(object->myComplexSignal, whatever, &Whatever::aMultiSlotExample);
+ * IdealCore::Object::connectMulti(object->myComplexSignal, whatever, &Whatever::aMultiSlotExample);
  * @endcode
  */
 
