@@ -9,9 +9,9 @@ def configure(conf):
 def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
-        source       = ['local.cpp',
-                        'main.cpp',
-                        'remote.cpp'],
+        source       = ['main.cpp',
+                        'remote.cpp',
+                        'posix/local.cpp'],
         target       = 'builtinprotocolhandlers',
         includes     = '../..',
         uselib       = 'LIBCURL',

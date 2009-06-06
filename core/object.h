@@ -687,6 +687,8 @@ public:
 
     /**
       * Emits @p signal with parameters @p param.
+      *
+      * See @ref workingWithSignals
       */
     template <typename... Param>
     static void inline emit(const Signal<Param...> &signal, const Param&... param)

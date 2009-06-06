@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "local.h"
+#include "../local.h"
 
 #include <errno.h>
 #include <unistd.h>
