@@ -294,7 +294,7 @@
  *
  * @section multislots Multislots
  *
- * Multislots are handy when you have to decide something depending on who sent the signal that
+ * Multislots are handy when you have to decide something depending on who emitted the signal that
  * called to that method. Let's see an example of a MediaPlayer with MediaButtons:
  *
  * @code
