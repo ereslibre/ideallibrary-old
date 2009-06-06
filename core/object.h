@@ -362,17 +362,12 @@
  *
  * void MediaPlayer::executeAction(Object *sender)
  * {
- *     switch (sender) {
- *         case m_playPause:
- *             IDEAL_SDEBUG("Play or pause was clicked");
- *             break;
- *         case m_stop:
- *             IDEAL_SDEBUG("Stop was clicked");
- *             break;
- *         default:
- *             IDEAL_SDEBUG("Quit was clicked");
- *             application()->quit();
- *             break;
+ *     if (sender == m_playPause) {
+ *         IDEAL_SDEBUG("Play or pause was clicked");
+ *     } else if (sender == m_stop ) {
+ *         IDEAL_SDEBUG("Stop was clicked");
+ *     } else {
+ *         IDEAL_SDEBUG("Quit was clicked");
  *     }
  * }
  *
@@ -387,6 +382,14 @@
  *
  *     return 0;
  * }
+ * @endcode
+ *
+ * Getting the output on terminal:
+ *
+ * @code
+ * Play or pause was clicked
+ * Stop was clicked
+ * Quit was clicked
  * @endcode
  *
  * To sum up this example, you can see that clicked signal has no parameters. But we connected it
