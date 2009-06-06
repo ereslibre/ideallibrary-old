@@ -47,4 +47,9 @@ List<SignalBase*> SignalResource::signals() const
     return List<SignalBase*>();
 }
 
+bool SignalResource::isEmitBlocked() const
+{
+    return false;
+}
+
 }

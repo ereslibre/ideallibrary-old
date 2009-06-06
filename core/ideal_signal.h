@@ -481,6 +481,9 @@ private:
 
     void emit(const Param&... param)
     {
+        if (m_parent->isEmitBlocked() && !m_isDestroyedSignal) {
+            return;
+        }
         m_beingEmittedMutex.lock();
         m_beingEmitted = true;
         m_beingEmittedMutex.unlock();

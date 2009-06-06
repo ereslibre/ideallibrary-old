@@ -59,6 +59,11 @@ public:
       * Returns the list of signals that exist on this object.
       */
     virtual List<SignalBase*> signals() const;
+
+    /**
+      * Returns whether emit() is blocked for this object or not.
+      */
+    virtual bool isEmitBlocked() const;
 };
 
 }

@@ -294,8 +294,8 @@
  *
  * @section multislots Multislots
  *
- * Multislots are handy when you have to decide something depending on who emitted the signal that
- * called to that method. Let's see an example of a MediaPlayer with MediaButtons:
+ * Multislots are handy when you have to decide something depending on who is the parent of the
+ * signal that called to that method. Let's see an example of a MediaPlayer with MediaButtons:
  *
  * @code
  * #include <core/object.h>
@@ -347,17 +347,17 @@
  *
  * void MediaPlayer::simulatePlayPauseClick()
  * {
- *     m_playPause->emit(m_playPause->clicked);
+ *     emit(m_playPause->clicked);
  * }
  *
  * void MediaPlayer::simulateStopClick()
  * {
- *     m_stop->emit(m_stop->clicked);
+ *     emit(m_stop->clicked);
  * }
  *
  * void MediaPlayer::simulateQuitClick()
  * {
- *     m_quit->emit(m_quit->clicked);
+ *     emit(m_quit->clicked);
  * }
  *
  * void MediaPlayer::executeAction(Object *sender)
@@ -705,9 +705,7 @@ protected:
     template <typename... Param>
     void inline emit(const Signal<Param...> &signal, const Param&... param) const
     {
-        if (signal.parent() == this && (((void*) &signal) == ((void*) &destroyed) || !isEmitBlocked())) {
-            const_cast<Signal<Param...>*>(&signal)->emit(param...);
-        }
+        const_cast<Signal<Param...>*>(&signal)->emit(param...);
     }
 
     /**
