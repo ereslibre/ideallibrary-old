@@ -41,24 +41,24 @@ public:
       * Notifies the signal resource that @p signal has been created. This allows us to store
       * meta signal information.
       */
-    virtual void signalCreated(SignalBase *signal);
+    virtual void signalCreated(const SignalBase *signal);
 
     /**
       * Notifies the signal resource that @p signal has been connected. This allows us to be aware
       * of the signals connected to this signal resource.
       */
-    virtual void signalConnected(SignalBase *signal);
+    virtual void signalConnected(const SignalBase *signal);
 
     /**
       * Notifies the signal resource that @p signal has been disconnected. This allows us to be aware
       * of the signals connected to this signal resource.
       */
-    virtual void signalDisconnected(SignalBase *signal);
+    virtual void signalDisconnected(const SignalBase *signal);
 
     /**
       * Returns the list of signals that exist on this object.
       */
-    virtual List<SignalBase*> signals() const;
+    virtual List<const SignalBase*> signals() const;
 
     /**
       * Returns whether emit() is blocked for this object or not.

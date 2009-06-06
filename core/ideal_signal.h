@@ -256,9 +256,9 @@ public:
     }
 
 protected:
-    virtual void disconnect(SignalResource *receiver) = 0;
+    virtual void disconnect(SignalResource *receiver) const = 0;
 
-    void disconnect()
+    void disconnect() const
     {
         List<CallbackDummy*>::iterator it;
         m_connectionsMutex.lock();
@@ -269,26 +269,26 @@ protected:
         m_connectionsMutex.unlock();
     }
 
-    static void notifyReceiverConnection(SignalResource *signalResource, SignalBase *signalBase)
+    static void notifyReceiverConnection(SignalResource *signalResource, const SignalBase *signalBase)
     {
         if (!signalBase->m_isDestroyedSignal) {
             signalResource->signalConnected(signalBase);
         }
     }
 
-    static void notifyReceiverDisconnection(SignalResource *signalResource, SignalBase *signalBase)
+    static void notifyReceiverDisconnection(SignalResource *signalResource, const SignalBase *signalBase)
     {
         if (!signalBase->m_isDestroyedSignal) {
             signalResource->signalDisconnected(signalBase);
         }
     }
 
-    SignalResource * const m_parent;
-    const bool             m_isDestroyedSignal;
-    List<CallbackDummy*>   m_connections;
-    Mutex                  m_connectionsMutex;
-    bool                   m_beingEmitted;
-    Mutex                  m_beingEmittedMutex;
+    SignalResource       * const m_parent;
+    const bool                   m_isDestroyedSignal;
+    mutable List<CallbackDummy*> m_connections;
+    mutable Mutex                m_connectionsMutex;
+    mutable bool                 m_beingEmitted;
+    mutable Mutex                m_beingEmittedMutex;
 };
 
 /**
@@ -322,7 +322,7 @@ public:
     }
 
 protected:
-    virtual void disconnect(SignalResource *receiver)
+    virtual void disconnect(SignalResource *receiver) const
     {
         List<CallbackDummy*>::iterator it;
         m_connectionsMutex.lock();
@@ -341,7 +341,7 @@ protected:
 
 private:
     template <typename Receiver, typename Member>
-    void connect(Receiver *receiver, Member member)
+    void connect(Receiver *receiver, Member member) const
     {
         if (!receiver) {
             IDEAL_DEBUG_WARNING("connection failed. NULL receiver");
@@ -355,7 +355,7 @@ private:
     }
 
     template <typename Receiver, typename Member>
-    void connectMulti(Receiver *receiver, Member member)
+    void connectMulti(Receiver *receiver, Member member) const
     {
         if (!receiver) {
             IDEAL_DEBUG_WARNING("connection failed. NULL receiver");
@@ -368,7 +368,7 @@ private:
         m_connectionsMutex.unlock();
     }
 
-    void connect(const Signal<Param...> &signal)
+    void connect(const Signal<Param...> &signal) const
     {
         notifyReceiverConnection(signal.parent(), this);
         CallbackBase<Param...> *signalForward = CallbackBase<Param...>::makeForward(signal);
@@ -378,7 +378,7 @@ private:
     }
 
     template <typename Member>
-    void connectStatic(Member member)
+    void connectStatic(Member member) const
     {
         CallbackBase<Param...> *callback = CallbackBase<Param...>::makeStatic(member);
         m_connectionsMutex.lock();
@@ -387,7 +387,7 @@ private:
     }
 
     template <typename Member>
-    void connectStaticMulti(Member member)
+    void connectStaticMulti(Member member) const
     {
         CallbackBase<Param...> *callback = CallbackBase<Param...>::makeStaticMulti(m_parent, member);
         m_connectionsMutex.lock();
@@ -396,7 +396,7 @@ private:
     }
 
     template <typename Receiver, typename Member>
-    void disconnect(Receiver *receiver, Member member)
+    void disconnect(Receiver *receiver, Member member) const
     {
         if (!receiver) {
             IDEAL_DEBUG_WARNING("disconnection failed. NULL receiver");
@@ -419,7 +419,7 @@ private:
     }
 
     template <typename Receiver, typename Member>
-    void disconnectMulti(Receiver *receiver, Member member)
+    void disconnectMulti(Receiver *receiver, Member member) const
     {
         if (!receiver) {
             IDEAL_DEBUG_WARNING("disconnection failed. NULL receiver");
@@ -441,10 +441,10 @@ private:
         IDEAL_DEBUG("no multi slot disconnected. No previous connection found.");
     }
 
-    void disconnect(const Signal<Param...> &signal);
+    void disconnect(const Signal<Param...> &signal) const;
 
     template <typename Member>
-    void disconnectStatic(Member member)
+    void disconnectStatic(Member member) const
     {
         m_connectionsMutex.lock();
         List<CallbackDummy*>::iterator it;
@@ -462,7 +462,7 @@ private:
     }
 
     template <typename Member>
-    void disconnectStaticMulti(Member member)
+    void disconnectStaticMulti(Member member) const
     {
         m_connectionsMutex.lock();
         List<CallbackDummy*>::iterator it;
@@ -479,7 +479,7 @@ private:
         IDEAL_DEBUG("no static multi slot disconnected. No previous connection found.");
     }
 
-    void emit(const Param&... param)
+    void emit(const Param&... param) const
     {
         if (m_parent->isEmitBlocked() && !m_isDestroyedSignal) {
             return;
@@ -549,7 +549,7 @@ CallbackBase<Param...> *CallbackBase<Param...>::makeForward(const SignalBase &si
   * @internal
   */
 template <typename... Param>
-void Signal<Param...>::disconnect(const Signal<Param...> &signal)
+void Signal<Param...>::disconnect(const Signal<Param...> &signal) const
 {
     notifyReceiverDisconnection(signal.parent(), this);
     List<CallbackDummy*>::iterator it;

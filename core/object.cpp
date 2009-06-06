@@ -56,14 +56,14 @@ void Object::Private::allPredecessors(Object *object, List<Object*> &objectList)
 void Object::Private::cleanConnections()
 {
     List<GeniousPointer<Object>*>::iterator it = m_connectedObjects.begin();
-    List<SignalBase*> signalsToDisconnect;
+    List<const SignalBase*> signalsToDisconnect;
     while (it != m_connectedObjects.end()) {
         GeniousPointer<Object> *connectedObject = *it;
         if (!connectedObject->isContentDestroyed()) {
-            List<SignalBase*> connectedObjectSignals = connectedObject->content()->signals();
-            List<SignalBase*>::iterator sigIt = connectedObjectSignals.begin();
+            List<const SignalBase*> connectedObjectSignals = connectedObject->content()->signals();
+            List<const SignalBase*>::iterator sigIt = connectedObjectSignals.begin();
             while (sigIt != connectedObjectSignals.end()) {
-                SignalBase *signalBase = *sigIt;
+                const SignalBase *signalBase = *sigIt;
                 if (signalBase->m_parent != q) {
                     signalsToDisconnect.push_back(signalBase);
                 }
@@ -75,7 +75,7 @@ void Object::Private::cleanConnections()
             delete connectedObject;
         }
     }
-    List<SignalBase*>::iterator sigIt;
+    List<const SignalBase*>::iterator sigIt;
     for (sigIt = signalsToDisconnect.begin(); sigIt != signalsToDisconnect.end(); ++sigIt) {
         (*sigIt)->disconnect(q);
     }
@@ -179,7 +179,7 @@ Application *Object::application() const
 
 void Object::disconnectSender(Object *sender)
 {
-    List<SignalBase*>::iterator it;
+    List<const SignalBase*>::iterator it;
     for (it = sender->d->m_signals.begin(); it != sender->d->m_signals.end(); ++it) {
         (*it)->disconnect();
     }
@@ -187,19 +187,19 @@ void Object::disconnectSender(Object *sender)
 
 void Object::disconnectReceiver(Object *receiver)
 {
-    List<SignalBase*> signalsToDisconnect;
+    List<const SignalBase*> signalsToDisconnect;
     List<GeniousPointer<Object>*>::iterator it;
     for (it = receiver->d->m_connectedObjects.begin(); it != receiver->d->m_connectedObjects.end(); ++it) {
         GeniousPointer<Object> *const object = *it;
         if (!object->isContentDestroyed()) {
             Object *const obj = object->content();
-            List<SignalBase*>::iterator sigIt;
+            List<const SignalBase*>::iterator sigIt;
             for (sigIt = obj->d->m_signals.begin(); sigIt != obj->d->m_signals.end(); ++sigIt) {
                 signalsToDisconnect.push_back(*sigIt);
             }
         }
     }
-    List<SignalBase*>::iterator sigIt;
+    List<const SignalBase*>::iterator sigIt;
     for (sigIt = signalsToDisconnect.begin(); sigIt != signalsToDisconnect.end(); ++sigIt) {
         (*sigIt)->disconnect(receiver);
     }
@@ -232,17 +232,17 @@ void *Object::virtual_hook(int id, void *param)
     return 0;
 }
 
-void Object::signalCreated(SignalBase *signal)
+void Object::signalCreated(const SignalBase *signal)
 {
     d->m_signals.push_back(signal);
 }
 
-void Object::signalConnected(SignalBase *signal)
+void Object::signalConnected(const SignalBase *signal)
 {
     d->m_connectedObjects.push_back(new GeniousPointer<Object>(dynamic_cast<Object*>(signal->m_parent)));
 }
 
-void Object::signalDisconnected(SignalBase *signal)
+void Object::signalDisconnected(const SignalBase *signal)
 {
     List<GeniousPointer<Object>*>::iterator it;
     for (it = d->m_connectedObjects.begin(); it != d->m_connectedObjects.end(); ++it) {
@@ -255,7 +255,7 @@ void Object::signalDisconnected(SignalBase *signal)
     }
 }
 
-List<SignalBase*> Object::signals() const
+List<const SignalBase*> Object::signals() const
 {
     return d->m_signals;
 }

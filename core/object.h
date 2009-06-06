@@ -525,7 +525,7 @@ public:
     template <typename Receiver, typename Member, typename... Param>
     static inline void connect(const Signal<Param...> &signal, Receiver *receiver, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->connect(receiver, member);
+        signal.connect(receiver, member);
     }
 
     /**
@@ -536,7 +536,7 @@ public:
     template <typename Receiver, typename Member, typename... Param>
     static inline void connectMulti(const Signal<Param...> &signal, Receiver *receiver, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->connectMulti(receiver, member);
+        signal.connectMulti(receiver, member);
     }
 
     /**
@@ -547,7 +547,7 @@ public:
     template <typename... Param>
     static inline void connect(const Signal<Param...> &signal, const Signal<Param...> &receiver)
     {
-        const_cast<Signal<Param...>*>(&signal)->connect(receiver);
+        signal.connect(receiver);
     }
 
     /**
@@ -558,7 +558,7 @@ public:
     template <typename Member, typename... Param>
     static inline void connectStatic(const Signal<Param...> &signal, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->connectStatic(member);
+        signal.connectStatic(member);
     }
 
     /**
@@ -569,7 +569,7 @@ public:
     template <typename Member, typename... Param>
     static inline void connectStaticMulti(const Signal<Param...> &signal, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->connectStaticMulti(member);
+        signal.connectStaticMulti(member);
     }
 
     /**
@@ -584,7 +584,7 @@ public:
     template <typename Receiver, typename Member, typename... Param>
     static inline void disconnect(const Signal<Param...> &signal, Receiver *receiver, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->disconnect(receiver, member);
+        signal.disconnect(receiver, member);
     }
 
     /**
@@ -599,7 +599,7 @@ public:
     template <typename Receiver, typename Member, typename... Param>
     static inline void disconnectMulti(const Signal<Param...> &signal, Receiver *receiver, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->disconnectMulti(receiver, member);
+        signal.disconnectMulti(receiver, member);
     }
 
     /**
@@ -614,7 +614,7 @@ public:
     template <typename... Param>
     static inline void disconnect(const Signal<Param...> &signal, const Signal<Param...> &receiver)
     {
-        const_cast<Signal<Param...>*>(&signal)->disconnect(receiver);
+        signal.disconnect(receiver);
     }
 
     /**
@@ -629,7 +629,7 @@ public:
     template <typename Member, typename... Param>
     static inline void disconnectStatic(const Signal<Param...> &signal, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->disconnectStatic(member);
+        signal.disconnectStatic(member);
     }
 
     /**
@@ -644,7 +644,7 @@ public:
     template <typename Member, typename... Param>
     static inline void disconnectStaticMulti(const Signal<Param...> &signal, Member member)
     {
-        const_cast<Signal<Param...>*>(&signal)->disconnectStaticMulti(member);
+        signal.disconnectStaticMulti(member);
     }
 
     /**
@@ -655,7 +655,7 @@ public:
     template <typename Receiver, typename... Param>
     static inline void disconnect(const Signal<Param...> &signal, Receiver *receiver)
     {
-        const_cast<Signal<Param...>*>(&signal)->disconnect(receiver);
+        signal.disconnect(receiver);
     }
 
     /**
@@ -691,7 +691,7 @@ public:
     template <typename... Param>
     static void inline emit(const Signal<Param...> &signal, const Param&... param)
     {
-        const_cast<Signal<Param...>*>(&signal)->emit(param...);
+        signal.emit(param...);
     }
 
     /**
@@ -714,22 +714,22 @@ protected:
     /**
       * @internal
       */
-    virtual void signalCreated(SignalBase *signal);
+    virtual void signalCreated(const SignalBase *signal);
 
     /**
       * @internal
       */
-    virtual void signalConnected(SignalBase *signal);
+    virtual void signalConnected(const SignalBase *signal);
 
     /**
       * @internal
       */
-    virtual void signalDisconnected(SignalBase *signal);
+    virtual void signalDisconnected(const SignalBase *signal);
 
     /**
       * @internal
       */
-    virtual List<SignalBase*> signals() const;
+    virtual List<const SignalBase*> signals() const;
 
 private:
     /**

@@ -46,7 +46,7 @@ public:
     bool                          m_blockedSignals;
     bool                          m_emitBlocked;
     List<Object*>                 m_children;
-    List<SignalBase*>             m_signals;
+    List<const SignalBase*>       m_signals;
     List<GeniousPointer<Object>*> m_connectedObjects;
     Application                  *m_application;
     Object                       *q;

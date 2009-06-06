@@ -30,21 +30,21 @@ SignalResource::~SignalResource()
 {
 }
 
-void SignalResource::signalCreated(SignalBase *signal)
+void SignalResource::signalCreated(const SignalBase *signal)
 {
 }
 
-void SignalResource::signalConnected(SignalBase *signal)
+void SignalResource::signalConnected(const SignalBase *signal)
 {
 }
 
-void SignalResource::signalDisconnected(SignalBase *signal)
+void SignalResource::signalDisconnected(const SignalBase *signal)
 {
 }
 
-List<SignalBase*> SignalResource::signals() const
+List<const SignalBase*> SignalResource::signals() const
 {
-    return List<SignalBase*>();
+    return List<const SignalBase*>();
 }
 
 bool SignalResource::isEmitBlocked() const
