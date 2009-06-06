@@ -9,7 +9,7 @@ def build(bld):
         features     = 'cxx cshlib',
         source       = 'main.cpp',
         target       = 'foo',
-        includes     = '../../..',
+        includes     = '../..',
         uselib_local = 'idealcore',
         install_path = '${PREFIX}/lib/ideal'
     )

@@ -9,8 +9,8 @@ APPNAME    = 'ideallibrary'
 srcdir     = '.'
 blddir     = 'build'
 
-subdirs_d  = 'core gui tests'
-subdirs_r  = 'core gui'
+subdirs_d  = 'core gui modules tests'
+subdirs_r  = 'core gui modules'
 
 checkCompilerFeatures = '''struct A {}; struct B {};
                            template <typename... Type>

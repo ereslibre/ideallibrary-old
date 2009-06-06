@@ -6,7 +6,6 @@ import Options
 def configure(conf):
     if not Options.options.release:
         conf.sub_config('tests')
-    conf.sub_config('modules')
     conf.env['LIB_CORE'] = ['rt', 'dl', 'pthread']
     conf.check_cfg(package = 'liburiparser', args = '--cflags --libs')
     if not conf.env['HAVE_LIBURIPARSER'] == 1:
@@ -61,7 +60,6 @@ def build(bld):
                   'LIBS' : '-lidealcore',
                   'VERSION' : bld.env['LIBVERSION']}
     )
-    bld.add_subdirs('modules')
     if not bld.env['RELEASE']:
         bld.add_subdirs('tests')
     bld.install_files('${PREFIX}/lib/pkgconfig', 'idealcore.pc')

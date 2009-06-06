@@ -13,7 +13,7 @@ def build(bld):
                         'main.cpp',
                         'remote.cpp'],
         target       = 'builtinprotocolhandlers',
-        includes     = '../../..',
+        includes     = '../..',
         uselib       = 'LIBCURL',
         uselib_local = 'idealcore',
         install_path = '${PREFIX}/lib/ideal'
