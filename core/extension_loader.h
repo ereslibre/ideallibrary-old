@@ -85,7 +85,7 @@ public:
       *       delete the parent object (and it did not have the isDeleteChildrenRecursively
       *       disabled), this object will also become deleted.
       */
-    template<typename T>
+    template <typename T>
     static T *loadExtension(Module *module, const String &entryPoint, Object *parent)
     {
         Extension *extension = Private::loadExtension(module, entryPoint);
