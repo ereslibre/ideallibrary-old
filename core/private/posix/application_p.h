@@ -32,8 +32,6 @@ class Application::PrivateImpl
 public:
     PrivateImpl(Application *q);
 
-    static bool timerSort(const Timer *left, const Timer *right);
-
     struct OptionItem
     {
         struct option opt;

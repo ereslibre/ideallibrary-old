@@ -70,7 +70,7 @@ void Application::Private::processDelayedDeletions()
     m_markedForDeletionMutex.unlock();
 }
 
-bool Application::PrivateImpl::timerSort(const Timer *left, const Timer *right)
+bool Application::Private::timerSort(const Timer *left, const Timer *right)
 {
     return left->d->m_remaining < right->d->m_remaining;
 }
