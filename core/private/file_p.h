@@ -33,6 +33,7 @@ public:
     Private(File *q);
 
     ProtocolHandler::ErrorCode m_errorCode;
+    bool                       m_stated;
     bool                       m_exists;
     File::Type                 m_type;
     String                     m_ownerUser;

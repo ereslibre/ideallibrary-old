@@ -107,12 +107,13 @@ bool File::Private::Job::LessThanProtocolHandler::operator()(ProtocolHandler *&l
 void File::Private::Job::run()
 {
     bool wasStated = true;
-    if (m_file->d->m_errorCode == ProtocolHandler::NoStatedYet) {
-        wasStated = false;
+    if (!m_file->d->m_stated) {
         fetchInfo();
         if (!m_protocolHandler) {
             return;
         }
+        wasStated = false;
+        m_file->d->m_stated = true;
     }
     if (m_file->d->m_errorCode != ProtocolHandler::NoError) {
         if (m_operation == FileExists && m_file->d->m_errorCode == ProtocolHandler::FileNotFound) {
@@ -156,7 +157,8 @@ void File::Private::Job::run()
 }
 
 File::Private::Private(File *q)
-    : m_errorCode(ProtocolHandler::NoStatedYet)
+    : m_errorCode(ProtocolHandler::Unknown)
+    , m_stated(false)
     , m_exists(false)
     , m_type(UnknownType)
     , m_permissions(UnknownPermissions)
