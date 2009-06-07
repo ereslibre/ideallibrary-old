@@ -285,10 +285,7 @@ void Application::Private::processEvents()
         }
         m_runningTimerListMutex.unlock();
     }
-    struct timespec tts;
-    tts.tv_sec = timeToSleep / 1000;
-    tts.tv_nsec = (timeToSleep % 1000) * 1000000;
-    nanosleep(&tts, 0);
+    Timer::wait(timeToSleep);
 }
 
 void Application::Private::processDelayedDeletions()
