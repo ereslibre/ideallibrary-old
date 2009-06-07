@@ -301,10 +301,12 @@ void Application::Private::unloadUnneededDynamicLibraries()
     List<IdealCore::Module*>::iterator it;
     for (it = m_markedForUnload.begin(); it != m_markedForUnload.end(); ++it) {
         IdealCore::Module *module = *it;
-        void *handle = module->d->m_handle;
-        module->d->m_unused = false;
-        delete module;
-        dlclose(handle);
+        if (module->d->m_unused) {
+            void *handle = module->d->m_handle;
+            module->d->m_unused = false;
+            delete module;
+            dlclose(handle);
+        }
     }
     m_markedForUnload.clear();
 }
