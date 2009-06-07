@@ -42,17 +42,17 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
 {
     Application::Private *const app_d = application()->d;
     List<ProtocolHandler*>::iterator it;
-    app_d->m_protocolHandlerCacheMutex.lock();
-    for (it = app_d->m_protocolHandlerCache.begin(); it != app_d->m_protocolHandlerCache.end(); ++it) {
-        ProtocolHandler *protocolHandler = *it;
-        if (protocolHandler->canBeReusedWith(m_file->d->m_uri)) {
-            app_d->m_protocolHandlerCache.erase(it);
-            app_d->m_protocolHandlerCacheMutex.unlock();
-            ++protocolHandler->weight;
-            return protocolHandler;
+    {
+        ContextMutexLocker cml(app_d->m_protocolHandlerCacheMutex);
+        for (it = app_d->m_protocolHandlerCache.begin(); it != app_d->m_protocolHandlerCache.end(); ++it) {
+            ProtocolHandler *protocolHandler = *it;
+            if (protocolHandler->canBeReusedWith(m_file->d->m_uri)) {
+                app_d->m_protocolHandlerCache.erase(it);
+                ++protocolHandler->weight;
+                return protocolHandler;
+            }
         }
     }
-    app_d->m_protocolHandlerCacheMutex.unlock();
     ProtocolHandler *res = 0;
     Module *module = ExtensionLoader::loadModule(IDEALLIBRARY_PREFIX "/lib/ideal/libbuiltinprotocolhandlers.so", this);
     List<Module::ExtensionInfo> extensionList = module->extensionInfoList();
