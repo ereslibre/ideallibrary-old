@@ -52,7 +52,7 @@ public:
 
     enum ErrorCode {
         NoError = 0,             ///< The operation finished successfully.
-        NoStatedYet,             ///< This file has not been stated yet.
+        NoStatedYet,             ///< @internal This file has not been stated yet.
         FileNotFound,            ///< The stat of the file failed because the file does not exist.
         InsufficientPermissions, ///< Not enough permissions to stat the file.
         CouldNotResolveHost,     ///< Host could not be resolved.
