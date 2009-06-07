@@ -37,27 +37,28 @@
 
 namespace IdealCore {
 
-static pthread_mutex_t outputMutex IDEAL_GLOBAL_UNUSED = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t outputMutex        IDEAL_GLOBAL_UNUSED = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t warningOutputMutex IDEAL_GLOBAL_UNUSED = PTHREAD_MUTEX_INITIALIZER;
 
 }
 
-#define IDEAL_DEBUG_WARNING(message) {                                                                                                             \
-                                         pthread_mutex_lock(&IdealCore::outputMutex);                                                              \
+#define IDEAL_DEBUG_WARNING(message) do {                                                                                                          \
+                                         pthread_mutex_lock(&IdealCore::warningOutputMutex);                                                       \
                                          std::cerr << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": WARNING: " << message << std::endl; \
-                                         pthread_mutex_unlock(&IdealCore::outputMutex);                                                            \
-                                     }
+                                         pthread_mutex_unlock(&IdealCore::warningOutputMutex);                                                     \
+                                     } while(0)
 
 #ifndef NDEBUG
-#define IDEAL_DEBUG(message) {                                                                                                    \
+#define IDEAL_DEBUG(message) do {                                                                                                 \
                                  pthread_mutex_lock(&IdealCore::outputMutex);                                                     \
                                  std::cout << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": " << message << std::endl; \
                                  pthread_mutex_unlock(&IdealCore::outputMutex);                                                   \
-                             }
-#define IDEAL_SDEBUG(message) {                                                  \
+                             } while(0)
+#define IDEAL_SDEBUG(message) do {                                               \
                                   pthread_mutex_lock(&IdealCore::outputMutex);   \
                                   std::cout << message << std::endl;             \
                                   pthread_mutex_unlock(&IdealCore::outputMutex); \
-                              }
+                              } while(0)
 #else
 #define IDEAL_DEBUG(message)
 #define IDEAL_SDEBUG(message)
