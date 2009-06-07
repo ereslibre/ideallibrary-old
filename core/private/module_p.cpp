@@ -45,6 +45,12 @@ Module::Private::~Private()
 
 void Module::Private::deref()
 {
+    List<Module*>::iterator it;
+    for (it = m_application->d->m_markedForUnload.begin(); it != m_application->d->m_markedForUnload.end(); ++it) {
+        if (*it == q) {
+            return;
+        }
+    }
     if (!--m_refs) {
         m_application->d->m_markedForUnload.push_back(q);
     }

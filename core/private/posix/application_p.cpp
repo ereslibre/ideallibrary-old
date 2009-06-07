@@ -301,7 +301,7 @@ void Application::Private::unloadUnneededDynamicLibraries()
     List<IdealCore::Module*>::iterator it;
     for (it = m_markedForUnload.begin(); it != m_markedForUnload.end(); ++it) {
         IdealCore::Module *module = *it;
-        if (module->d->m_unused) {
+        if (module->d->m_unused || !module->d->m_refs) {
             void *handle = module->d->m_handle;
             module->d->m_unused = false;
             delete module;
