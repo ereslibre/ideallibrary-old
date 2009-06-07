@@ -27,18 +27,22 @@
 #define IDEAL_SIGNAL(name, ...) const IdealCore::Signal<__VA_ARGS__> name
 #define IDEAL_SIGNAL_INIT(name, ...) name(IdealCore::Signal<__VA_ARGS__>(this, #name, #__VA_ARGS__))
 
+#ifndef __GNUC__
+#define __attribute__(x)
+#endif
+
 #define IDEAL_NO_EXPORT __attribute__ ((visibility("hidden")))
 #define IDEAL_EXPORT __attribute__ ((visibility("default")))
 #define IDEAL_EXPORT_DEPRECATED IDEAL_EXPORT __attribute__ ((deprecated))
 #define IDEAL_UNUSED(expr) do { (void)(expr); } while (0)
-#define IDEAL_GLOBAL_UNUSED __attribute__ ((unused))
+#define IDEAL_POSSIBLY_UNUSED __attribute__ ((unused))
 
 //### WARNING: system-dependant code in public header
 
 namespace IdealCore {
 
-static pthread_mutex_t outputMutex        IDEAL_GLOBAL_UNUSED = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t warningOutputMutex IDEAL_GLOBAL_UNUSED = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t outputMutex        IDEAL_POSSIBLY_UNUSED = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t warningOutputMutex IDEAL_POSSIBLY_UNUSED = PTHREAD_MUTEX_INITIALIZER;
 
 }
 
@@ -64,14 +68,6 @@ static pthread_mutex_t warningOutputMutex IDEAL_GLOBAL_UNUSED = PTHREAD_MUTEX_IN
 #define IDEAL_SDEBUG(message)
 #endif
 
-/**
-  * From now on, private stuff
-  */
-
 #define D_I static_cast<PrivateImpl*>(this)
-
-#ifndef __GNUC__
-#define __attribute__(x)
-#endif
 
 #endif //IDEAL_EXPORT_H
