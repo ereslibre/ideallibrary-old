@@ -290,15 +290,18 @@ void Application::Private::processEvents()
 void Application::Private::processDelayedDeletions()
 {
     List<Object*>::iterator it;
+    m_markedForDeletionMutex.lock();
     for (it = m_markedForDeletion.begin(); it != m_markedForDeletion.end(); ++it) {
         delete *it;
     }
     m_markedForDeletion.clear();
+    m_markedForDeletionMutex.unlock();
 }
 
 void Application::Private::unloadUnneededDynamicLibraries()
 {
     List<IdealCore::Module*>::iterator it;
+    m_markedForUnloadMutex.lock();
     for (it = m_markedForUnload.begin(); it != m_markedForUnload.end(); ++it) {
         IdealCore::Module *module = *it;
         if (module->d->m_unused || !module->d->m_refs) {
@@ -309,6 +312,7 @@ void Application::Private::unloadUnneededDynamicLibraries()
         }
     }
     m_markedForUnload.clear();
+    m_markedForUnloadMutex.unlock();
 }
 
 bool Application::PrivateImpl::timerSort(const Timer *left, const Timer *right)

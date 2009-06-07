@@ -50,10 +50,6 @@ public:
 
     void quit();
 
-    /**
-      * Checks whether there exist timers that have expired. In this case
-      * a timeout signal is emitted.
-      */
     void checkTimers();
 
     int                      m_argc;
@@ -61,7 +57,9 @@ public:
     int                      m_sleepTime;                   // Initialized in base class
     const int                m_defaultSleepTime;            // Initialized in base class
     List<Object*>            m_markedForDeletion;
+    Mutex                    m_markedForDeletionMutex;
     List<IdealCore::Module*> m_markedForUnload;
+    Mutex                    m_markedForUnloadMutex;
     std::vector<Timer*>      m_runningTimerList;
     int                      m_nextTimeout;                 // Initialized in base class
     List<ProtocolHandler*>   m_protocolHandlerCache;
