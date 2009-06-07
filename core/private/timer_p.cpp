@@ -50,18 +50,16 @@ void Timer::Private::start(TimeoutType timeoutType)
     Application::Private *const app_d = q->application()->d;
     if (!listContains()) {
         std::vector<Timer*>::iterator it;
-        app_d->m_runningTimerListMutex.lock();
+        ContextMutexLocker cml(app_d->m_runningTimerListMutex);
         for (it = app_d->m_runningTimerList.begin(); it != app_d->m_runningTimerList.end(); ++it) {
             Timer *currTimer = *it;
             if (currTimer->d->m_remaining < m_interval) {
                 continue;
             }
             app_d->m_runningTimerList.insert(it, q);
-            app_d->m_runningTimerListMutex.unlock();
             return;
         }
         app_d->m_runningTimerList.push_back(q);
-        app_d->m_runningTimerListMutex.unlock();
     }
 }
 
@@ -92,20 +90,17 @@ int Timer::Private::interval() const
 bool Timer::Private::listContains() const
 {
     Application::Private *const app_d = q->application()->d;
-    app_d->m_runningTimerListMutex.lock();
+    ContextMutexLocker cml(app_d->m_runningTimerListMutex);
     if (app_d->m_runningTimerList.empty()) {
-        app_d->m_runningTimerListMutex.unlock();
         return false;
     }
     std::vector<Timer*>::const_iterator it = app_d->m_runningTimerList.begin();
     while (it != app_d->m_runningTimerList.end()) {
         if (*it == q) {
-            app_d->m_runningTimerListMutex.unlock();
             return true;
         }
         ++it;
     }
-    app_d->m_runningTimerListMutex.unlock();
     return false;
 }
 

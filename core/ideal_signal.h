@@ -241,13 +241,11 @@ public:
 
     virtual ~SignalBase()
     {
-        m_beingEmittedMutex.lock();
+        ContextMutexLocker cml(m_beingEmittedMutex);
         if (m_beingEmitted) {
-            deletedSignalsOnEmitMutex.lock();
+            ContextMutexLocker cml(deletedSignalsOnEmitMutex);
             deletedSignalsOnEmit.push_back(this);
-            deletedSignalsOnEmitMutex.unlock();
         }
-        m_beingEmittedMutex.unlock();
     }
 
     SignalResource *parent() const
@@ -261,12 +259,11 @@ protected:
     void disconnect() const
     {
         List<CallbackDummy*>::iterator it;
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             delete *it;
         }
         m_connections.clear();
-        m_connectionsMutex.unlock();
     }
 
     static void notifyReceiverConnection(SignalResource *signalResource, const SignalBase *signalBase)
@@ -313,19 +310,18 @@ public:
     ~Signal()
     {
         List<CallbackDummy*>::iterator it;
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             delete *it;
         }
         m_connections.clear();
-        m_connectionsMutex.unlock();
     }
 
 protected:
     virtual void disconnect(SignalResource *receiver) const
     {
         List<CallbackDummy*>::iterator it;
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end();) {
             const CallbackDummy *const curr = *it;
             if (curr->m_receiver == static_cast<void*>(receiver)) {
@@ -336,7 +332,6 @@ protected:
             }
             ++it;
         }
-        m_connectionsMutex.unlock();
     }
 
 private:
@@ -349,9 +344,8 @@ private:
         }
         notifyReceiverConnection(receiver, this);
         CallbackBase<Param...> *callback = CallbackBase<Param...>::make(receiver, member);
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         m_connections.push_back(callback);
-        m_connectionsMutex.unlock();
     }
 
     template <typename Receiver, typename Member>
@@ -363,36 +357,32 @@ private:
         }
         notifyReceiverConnection(receiver, this);
         CallbackBase<Param...> *callback = CallbackBase<Param...>::makeMulti(m_parent, receiver, member);
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         m_connections.push_back(callback);
-        m_connectionsMutex.unlock();
     }
 
     void connect(const Signal<Param...> &signal) const
     {
         notifyReceiverConnection(signal.parent(), this);
         CallbackBase<Param...> *signalForward = CallbackBase<Param...>::makeForward(signal);
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         m_connections.push_back(signalForward);
-        m_connectionsMutex.unlock();
     }
 
     template <typename Member>
     void connectStatic(Member member) const
     {
         CallbackBase<Param...> *callback = CallbackBase<Param...>::makeStatic(member);
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         m_connections.push_back(callback);
-        m_connectionsMutex.unlock();
     }
 
     template <typename Member>
     void connectStaticMulti(Member member) const
     {
         CallbackBase<Param...> *callback = CallbackBase<Param...>::makeStaticMulti(m_parent, member);
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         m_connections.push_back(callback);
-        m_connectionsMutex.unlock();
     }
 
     template <typename Receiver, typename Member>
@@ -404,17 +394,15 @@ private:
         }
         notifyReceiverDisconnection(receiver, this);
         List<CallbackDummy*>::iterator it;
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             Callback<Receiver, Member, Param...> *const curr = dynamic_cast<Callback<Receiver, Member, Param...>*>(*it);
             if (curr && curr->m_receiver == static_cast<void*>(receiver) && curr->m_member == member) {
                 m_connections.erase(it);
                 delete curr;
-                m_connectionsMutex.unlock();
                 return;
             }
         }
-        m_connectionsMutex.unlock();
         IDEAL_DEBUG("no slot disconnected. No previous connection found.");
     }
 
@@ -427,17 +415,15 @@ private:
         }
         notifyReceiverDisconnection(receiver, this);
         List<CallbackDummy*>::iterator it;
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             CallbackMulti<Receiver, Member, Param...> *const curr = dynamic_cast<CallbackMulti<Receiver, Member, Param...>*>(*it);
             if (curr && curr->m_receiver == static_cast<void*>(receiver) && curr->m_member == member) {
                 m_connections.erase(it);
                 delete curr;
-                m_connectionsMutex.unlock();
                 return;
             }
         }
-        m_connectionsMutex.unlock();
         IDEAL_DEBUG("no multi slot disconnected. No previous connection found.");
     }
 
@@ -446,36 +432,32 @@ private:
     template <typename Member>
     void disconnectStatic(Member member) const
     {
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         List<CallbackDummy*>::iterator it;
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             const CallbackStatic<Member, Param...> *const curr = dynamic_cast<CallbackStatic<Member, Param...>*>(*it);
             if (curr && curr->m_member == member) {
                 m_connections.erase(it);
                 delete curr;
-                m_connectionsMutex.unlock();
                 return;
             }
         }
-        m_connectionsMutex.unlock();
         IDEAL_DEBUG("no static slot disconnected. No previous connection found.");
     }
 
     template <typename Member>
     void disconnectStaticMulti(Member member) const
     {
-        m_connectionsMutex.lock();
+        ContextMutexLocker cml(m_connectionsMutex);
         List<CallbackDummy*>::iterator it;
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             const CallbackStaticMulti<Member, Param...> *const curr = dynamic_cast<CallbackStaticMulti<Member, Param...>*>(*it);
             if (curr && curr->m_member == member) {
                 m_connections.erase(it);
                 delete curr;
-                m_connectionsMutex.unlock();
                 return;
             }
         }
-        m_connectionsMutex.unlock();
         IDEAL_DEBUG("no static multi slot disconnected. No previous connection found.");
     }
 
@@ -494,18 +476,14 @@ private:
         for (it = connections.begin(); it != connections.end(); ++it) {
             CallbackBase<Param...> *callbackBase = static_cast<CallbackBase<Param...>*>(*it);
             (*callbackBase)(param...);
-            deletedSignalsOnEmitMutex.lock();
-            {
-                List<SignalBase*>::iterator it;
-                for (it = deletedSignalsOnEmit.begin(); it != deletedSignalsOnEmit.end(); ++it) {
-                    if (*it == this) {
-                        deletedSignalsOnEmit.erase(it);
-                        deletedSignalsOnEmitMutex.unlock();
-                        return;
-                    }
+            ContextMutexLocker cml(deletedSignalsOnEmitMutex);
+            List<SignalBase*>::iterator it;
+            for (it = deletedSignalsOnEmit.begin(); it != deletedSignalsOnEmit.end(); ++it) {
+                if (*it == this) {
+                    deletedSignalsOnEmit.erase(it);
+                    return;
                 }
             }
-            deletedSignalsOnEmitMutex.unlock();
         }
         m_beingEmittedMutex.lock();
         m_beingEmitted = false;
@@ -553,17 +531,15 @@ void Signal<Param...>::disconnect(const Signal<Param...> &signal) const
 {
     notifyReceiverDisconnection(signal.parent(), this);
     List<CallbackDummy*>::iterator it;
-    m_connectionsMutex.lock();
+    ContextMutexLocker cml(m_connectionsMutex);
     for (it = m_connections.begin(); it != m_connections.end(); ++it) {
         SignalCallback<Param...> *const curr = dynamic_cast<SignalCallback<Param...>*>(*it);
         if (curr && curr->m_signal == &signal) {
             m_connections.erase(it);
             delete curr;
-            m_connectionsMutex.unlock();
             return;
         }
     }
-    m_connectionsMutex.unlock();
     IDEAL_DEBUG("no signal forward disconnected. No previous forward found.");
 }
 

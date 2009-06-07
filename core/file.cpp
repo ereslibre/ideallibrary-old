@@ -73,7 +73,7 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
 void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
 {
     Application::Private *const app_d = application()->d;
-    app_d->m_protocolHandlerCacheMutex.lock();
+    ContextMutexLocker cml(app_d->m_protocolHandlerCacheMutex);
     if (app_d->m_protocolHandlerCache.size() < PH_CACHE_SIZE) {
         app_d->m_protocolHandlerCache.push_back(protocolHandler);
     } else {
@@ -84,7 +84,6 @@ void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
         ++protocolHandler->weight;
         app_d->m_protocolHandlerCache.push_front(protocolHandler);
     }
-    app_d->m_protocolHandlerCacheMutex.unlock();
 }
 
 void File::Private::Job::fetchInfo()

@@ -47,14 +47,13 @@ void Application::Private::processEvents()
         checkTimers();
         timeToSleep = m_sleepTime;
     } else {
-        m_runningTimerListMutex.lock();
+        ContextMutexLocker cml(m_runningTimerListMutex);
         if (!m_runningTimerList.empty()) {
             m_sleepTime = m_runningTimerList.front()->d->m_interval;
             timeToSleep = m_sleepTime;
         } else {
             timeToSleep = m_defaultSleepTime;
         }
-        m_runningTimerListMutex.unlock();
     }
     Timer::wait(timeToSleep);
 }
@@ -62,12 +61,11 @@ void Application::Private::processEvents()
 void Application::Private::processDelayedDeletions()
 {
     List<Object*>::iterator it;
-    m_markedForDeletionMutex.lock();
+    ContextMutexLocker cml(m_markedForDeletionMutex);
     for (it = m_markedForDeletion.begin(); it != m_markedForDeletion.end(); ++it) {
         delete *it;
     }
     m_markedForDeletion.clear();
-    m_markedForDeletionMutex.unlock();
 }
 
 bool Application::Private::timerSort(const Timer *left, const Timer *right)
@@ -77,12 +75,12 @@ bool Application::Private::timerSort(const Timer *left, const Timer *right)
 
 void Application::Private::checkTimers()
 {
-    m_runningTimerListMutex.lock();
-    if (m_runningTimerList.empty()) {
-        return;
-    }
     List<Timer*> expiredTimerList;
     {
+        ContextMutexLocker cml(m_runningTimerListMutex);
+        if (m_runningTimerList.empty()) {
+            return;
+        }
         Timer *const firstExpiredTimer = m_runningTimerList.front();
         {
             // We control here the case in which the timer that was going to expire
@@ -96,7 +94,6 @@ void Application::Private::checkTimers()
                     currTimer->d->m_remaining -= m_sleepTime;
                 }
                 m_sleepTime = std::min(msDelta, m_defaultSleepTime);
-                m_runningTimerListMutex.unlock();
                 return;
             }
         }
@@ -123,16 +120,13 @@ void Application::Private::checkTimers()
                 currTimer->d->m_remaining -= m_nextTimeout;
                 ++it;
             }
+            std::sort(m_runningTimerList.begin(), m_runningTimerList.end(), PrivateImpl::timerSort);
+            Timer *const nextTimer = m_runningTimerList.front();
+            m_sleepTime = nextTimer->d->m_remaining;
+        } else {
+            m_sleepTime = -1;
         }
     }
-    if (!m_runningTimerList.empty()) {
-        std::sort(m_runningTimerList.begin(), m_runningTimerList.end(), PrivateImpl::timerSort);
-        Timer *const nextTimer = m_runningTimerList.front();
-        m_sleepTime = nextTimer->d->m_remaining;
-    } else {
-        m_sleepTime = -1;
-    }
-    m_runningTimerListMutex.unlock();
     List<Timer*>::iterator it;
     for (it = expiredTimerList.begin(); it != expiredTimerList.end(); ++it) {
         Timer *const currTimer = *it;

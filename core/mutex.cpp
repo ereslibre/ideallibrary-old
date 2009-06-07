@@ -43,15 +43,15 @@ void Mutex::unlock()
     d->unlock();
 }
 
-ContextMutexLocker::ContextMutexLocker(Mutex *mutex)
+ContextMutexLocker::ContextMutexLocker(Mutex &mutex)
     : mutex(mutex)
 {
-    mutex->lock();
+    mutex.lock();
 }
 
 ContextMutexLocker::~ContextMutexLocker()
 {
-    mutex->unlock();
+    mutex.unlock();
 }
 
 }

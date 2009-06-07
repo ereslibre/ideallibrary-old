@@ -268,7 +268,7 @@ String Application::Private::getPath(Path path) const
 void Application::Private::unloadUnneededDynamicLibraries()
 {
     List<IdealCore::Module*>::iterator it;
-    m_markedForUnloadMutex.lock();
+    ContextMutexLocker cml(m_markedForUnloadMutex);
     for (it = m_markedForUnload.begin(); it != m_markedForUnload.end(); ++it) {
         IdealCore::Module *module = *it;
         if (module->d->m_unused || !module->d->m_refs) {
@@ -279,7 +279,6 @@ void Application::Private::unloadUnneededDynamicLibraries()
         }
     }
     m_markedForUnload.clear();
-    m_markedForUnloadMutex.unlock();
 }
 
 void Application::Private::quit()

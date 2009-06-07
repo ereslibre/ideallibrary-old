@@ -219,15 +219,13 @@ void Object::deleteNow()
 void Object::deleteLater()
 {
     List<Object*>::iterator it;
-    d->m_application->d->m_markedForDeletionMutex.lock();
+    ContextMutexLocker cml(d->m_application->d->m_markedForDeletionMutex);
     for (it = d->m_application->d->m_markedForDeletion.begin(); it != d->m_application->d->m_markedForDeletion.end(); ++it) {
         if (*it == this) {
-            d->m_application->d->m_markedForDeletionMutex.unlock();
             return;
         }
     }
     d->m_application->d->m_markedForDeletion.push_back(this);
-    d->m_application->d->m_markedForDeletionMutex.unlock();
 }
 
 void *Object::virtual_hook(int id, void *param)

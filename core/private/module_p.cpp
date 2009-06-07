@@ -39,26 +39,23 @@ Module::Private::~Private()
     if (m_unused) {
         FakeModule *fakeModule = new FakeModule;
         fakeModule->d->m_handle = m_handle;
-        m_application->d->m_markedForUnloadMutex.lock();
+        ContextMutexLocker cml(m_application->d->m_markedForUnloadMutex);
         m_application->d->m_markedForUnload.push_back(fakeModule);
-        m_application->d->m_markedForUnloadMutex.unlock();
     }
 }
 
 void Module::Private::deref()
 {
     List<Module*>::iterator it;
-    m_application->d->m_markedForUnloadMutex.lock();
+    ContextMutexLocker cml(m_application->d->m_markedForUnloadMutex);
     for (it = m_application->d->m_markedForUnload.begin(); it != m_application->d->m_markedForUnload.end(); ++it) {
         if (*it == q) {
-            m_application->d->m_markedForUnloadMutex.unlock();
             return;
         }
     }
     if (!--m_refs) {
         m_application->d->m_markedForUnload.push_back(q);
     }
-    m_application->d->m_markedForUnloadMutex.unlock();
 }
 
 }

@@ -119,11 +119,11 @@ private:
 class IDEAL_EXPORT ContextMutexLocker
 {
 public:
-    ContextMutexLocker(Mutex *mutex);
+    ContextMutexLocker(Mutex &mutex);
     ~ContextMutexLocker();
 
 private:
-    Mutex *mutex;
+    Mutex &mutex;
 };
 
 }
