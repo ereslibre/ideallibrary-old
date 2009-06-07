@@ -18,15 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <signal.h>
-#include <semaphore.h>
 #include <sys/time.h>
 
 #include <core/timer.h>
 #include "timer_p.h"
-
-#include <core/application.h>
-#include "application_p.h"
 
 namespace IdealCore {
 
