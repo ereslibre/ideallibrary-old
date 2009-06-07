@@ -22,7 +22,7 @@ def build(bld):
     bld.new_task_gen(
         features     = 'cxx cprogram',
         source       = 'main.cpp',
-        target       = 'test',
+        target       = 'fileExternTest',
         uselib       = 'IDEALCORE',
         rpath        = bld.env['LIBPATH_IDEALCORE']
     )
