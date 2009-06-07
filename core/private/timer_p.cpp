@@ -37,6 +37,46 @@ Timer::Private::Private(Timer *q)
 
 Timer::Private::~Private()
 {
+    if (m_state == Running) {
+        stop();
+    }
+}
+
+void Timer::Private::start(TimeoutType timeoutType)
+{
+    m_timeoutType = timeoutType;
+    m_remaining = m_interval;
+    m_state = Running;
+    Application::Private *const app_d = q->application()->d;
+    if (!listContains()) {
+        std::vector<Timer*>::iterator it;
+        app_d->m_runningTimerListMutex.lock();
+        for (it = app_d->m_runningTimerList.begin(); it != app_d->m_runningTimerList.end(); ++it) {
+            Timer *currTimer = *it;
+            if (currTimer->d->m_remaining < m_interval) {
+                continue;
+            }
+            app_d->m_runningTimerList.insert(it, q);
+            app_d->m_runningTimerListMutex.unlock();
+            return;
+        }
+        app_d->m_runningTimerList.push_back(q);
+        app_d->m_runningTimerListMutex.unlock();
+    }
+}
+
+void Timer::Private::stop()
+{
+    m_state = Stopped;
+    Application::Private *const app_d = q->application()->d;
+    std::vector<Timer*>::iterator it = app_d->m_runningTimerList.begin();
+    while (it != app_d->m_runningTimerList.end()) {
+        if (*it == q) {
+            app_d->m_runningTimerList.erase(it);
+            break;
+        }
+        ++it;
+    }
 }
 
 void Timer::Private::setInterval(int msec)
