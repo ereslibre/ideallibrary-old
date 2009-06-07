@@ -52,16 +52,20 @@ int Timer::Private::interval() const
 bool Timer::Private::listContains() const
 {
     Application::Private *const app_d = q->application()->d;
+    app_d->m_runningTimerListMutex.lock();
     if (app_d->m_runningTimerList.empty()) {
+        app_d->m_runningTimerListMutex.unlock();
         return false;
     }
     std::vector<Timer*>::const_iterator it = app_d->m_runningTimerList.begin();
     while (it != app_d->m_runningTimerList.end()) {
         if (*it == q) {
+            app_d->m_runningTimerListMutex.unlock();
             return true;
         }
         ++it;
     }
+    app_d->m_runningTimerListMutex.unlock();
     return false;
 }
 

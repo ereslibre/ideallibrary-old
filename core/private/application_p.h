@@ -61,6 +61,7 @@ public:
     List<IdealCore::Module*> m_markedForUnload;
     Mutex                    m_markedForUnloadMutex;
     std::vector<Timer*>      m_runningTimerList;
+    Mutex                    m_runningTimerListMutex;
     int                      m_nextTimeout;                 // Initialized in base class
     List<ProtocolHandler*>   m_protocolHandlerCache;
     Mutex                    m_protocolHandlerCacheMutex;

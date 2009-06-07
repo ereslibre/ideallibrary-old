@@ -51,14 +51,14 @@ void Module::Private::deref()
     m_application->d->m_markedForUnloadMutex.lock();
     for (it = m_application->d->m_markedForUnload.begin(); it != m_application->d->m_markedForUnload.end(); ++it) {
         if (*it == q) {
-            m_application->d->m_markedForUnload.unlock();
+            m_application->d->m_markedForUnloadMutex.unlock();
             return;
         }
     }
     if (!--m_refs) {
         m_application->d->m_markedForUnload.push_back(q);
     }
-    m_application->d->m_markedForUnload.unlock();
+    m_application->d->m_markedForUnloadMutex.unlock();
 }
 
 }

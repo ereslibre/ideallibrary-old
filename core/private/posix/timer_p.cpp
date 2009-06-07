@@ -50,15 +50,18 @@ void Timer::Private::start(TimeoutType timeoutType)
     Application::Private *const app_d = q->application()->d;
     if (!listContains()) {
         std::vector<Timer*>::iterator it;
+        app_d->m_runningTimerListMutex.lock();
         for (it = app_d->m_runningTimerList.begin(); it != app_d->m_runningTimerList.end(); ++it) {
             Timer *currTimer = *it;
             if (currTimer->d->m_remaining < m_interval) {
                 continue;
             }
             app_d->m_runningTimerList.insert(it, q);
+            app_d->m_runningTimerListMutex.unlock();
             return;
         }
         app_d->m_runningTimerList.push_back(q);
+        app_d->m_runningTimerListMutex.unlock();
     }
 }
 

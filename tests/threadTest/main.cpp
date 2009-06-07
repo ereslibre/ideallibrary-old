@@ -20,10 +20,13 @@
 
 #include <core/application.h>
 #include <core/concurrent.h>
+#include <core/mutex.h>
+#include <core/condvar.h>
+#include <core/timer.h>
 
 using namespace IdealCore;
 
-pthread_mutex_t output = PTHREAD_MUTEX_INITIALIZER;
+Mutex output;
 
 class AnObject
     : public Object
@@ -50,23 +53,24 @@ AnObject::AnObject(Object *parent)
 void AnObject::emitIt()
 {
     emit(aSignal);
+    Timer::callAfter(1000, this, &AnObject::emitIt);
 }
 
 void AnObject::slot()
 {
-    pthread_mutex_lock(&output);
+    output.lock();
     IDEAL_SDEBUG("*** Slot being called (" << i << ")");
-    pthread_mutex_unlock(&output);
+    output.unlock();
 
     if (++i == 5) {
         application()->quit();
     }
 }
 
-pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
+Mutex mutex1;
+Mutex mutex2;
+CondVar cond1 = CondVar(&mutex1);
+CondVar cond2 = CondVar(&mutex2);
 
 class OneClass
     : public Concurrent
@@ -88,25 +92,19 @@ OneClass::OneClass(Object *parent)
 
 void OneClass::run()
 {
-    pthread_mutex_lock(&output);
+    output.lock();
     IDEAL_SDEBUG("*** New thread with ID " << pthread_self());
-    pthread_mutex_unlock(&output);
+    output.unlock();
 
-    pthread_mutex_lock(&mutex1);
-    pthread_cond_signal(&cond1);
-    pthread_mutex_unlock(&mutex1);
+    mutex1.lock();
+    cond1.signal();
+    mutex1.unlock();
 
-    pthread_mutex_lock(&output);
+    output.lock();
     IDEAL_SDEBUG("*** Starting the party at thread " << pthread_self());
-    pthread_mutex_unlock(&output);
+    output.unlock();
 
-    while (true) {
-        object.emitIt();
-        struct timespec ts;
-        ts.tv_sec = 1;
-        ts.tv_nsec = 0;
-        nanosleep(&ts, 0);
-    }
+    Timer::callAfter(1000, &object, &AnObject::emitIt);
 }
 
 class OtherClass
@@ -129,17 +127,17 @@ OtherClass::OtherClass(Object *parent)
 
 void OtherClass::run()
 {
-    pthread_mutex_lock(&output);
+    output.lock();
     IDEAL_SDEBUG("*** New thread with ID " << pthread_self());
-    pthread_mutex_unlock(&output);
+    output.unlock();
 
-    pthread_mutex_lock(&mutex2);
-    pthread_cond_signal(&cond2);
-    pthread_mutex_unlock(&mutex2);
+    mutex2.lock();
+    cond2.signal();
+    mutex2.unlock();
 
-    pthread_mutex_lock(&output);
+    output.lock();
     IDEAL_SDEBUG("*** Starting the party at thread " << pthread_self());
-    pthread_mutex_unlock(&output);
+    output.unlock();
 
     while (true) {
         struct timespec ts;
@@ -153,26 +151,26 @@ int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    pthread_mutex_lock(&output);
+    output.lock();
     IDEAL_SDEBUG("*** Two threads will be launched. The app will be stopped when the slot has been called 5 times");
-    pthread_mutex_unlock(&output);
+    output.unlock();
 
     OneClass oneClass(&app);
     OtherClass otherClass(&app);
 
-    pthread_mutex_lock(&mutex1);
+    mutex1.lock();
     oneClass.exec();
-    pthread_cond_wait(&cond1, &mutex1);
-    pthread_mutex_unlock(&mutex1);
+    cond1.wait();
+    mutex1.unlock();
 
-    pthread_mutex_lock(&mutex2);
+    mutex2.lock();
     otherClass.exec();
-    pthread_cond_wait(&cond2, &mutex2);
-    pthread_mutex_unlock(&mutex2);
+    cond2.wait();
+    mutex2.unlock();
 
-    pthread_mutex_lock(&output);
+    output.lock();
     IDEAL_SDEBUG("*** Going to carefully connect two parties going on (BTW, I am " << pthread_self() << ")");
-    pthread_mutex_unlock(&output);
+    output.unlock();
 
     Object::connect(oneClass.object.aSignal, &otherClass.object, &AnObject::slot);
 

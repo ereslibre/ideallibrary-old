@@ -275,11 +275,15 @@ void Application::Private::processEvents()
     if (m_sleepTime != -1) {
         checkTimers();
         timeToSleep = m_sleepTime;
-    } else if (!m_runningTimerList.empty()) {
-        m_sleepTime = m_runningTimerList.front()->d->m_interval;
-        timeToSleep = m_sleepTime;
     } else {
-        timeToSleep = m_defaultSleepTime;
+        m_runningTimerListMutex.lock();
+        if (!m_runningTimerList.empty()) {
+            m_sleepTime = m_runningTimerList.front()->d->m_interval;
+            timeToSleep = m_sleepTime;
+        } else {
+            timeToSleep = m_defaultSleepTime;
+        }
+        m_runningTimerListMutex.unlock();
     }
     struct timespec tts;
     tts.tv_sec = timeToSleep / 1000;
@@ -327,6 +331,7 @@ void Application::Private::quit()
 
 void Application::Private::checkTimers()
 {
+    m_runningTimerListMutex.lock();
     if (m_runningTimerList.empty()) {
         return;
     }
@@ -345,6 +350,7 @@ void Application::Private::checkTimers()
                     currTimer->d->m_remaining -= m_sleepTime;
                 }
                 m_sleepTime = std::min(msDelta, m_defaultSleepTime);
+                m_runningTimerListMutex.unlock();
                 return;
             }
         }
@@ -380,6 +386,7 @@ void Application::Private::checkTimers()
     } else {
         m_sleepTime = -1;
     }
+    m_runningTimerListMutex.unlock();
     List<Timer*>::iterator it;
     for (it = expiredTimerList.begin(); it != expiredTimerList.end(); ++it) {
         Timer *const currTimer = *it;
