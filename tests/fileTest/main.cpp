@@ -49,14 +49,18 @@ public:
     {
         IDEAL_SDEBUG("*** File:\t" << static_cast<File*>(file)->uri().uri());
         ::fileSize(size);
+        numReceivedMutex.lock();
         ++numReceived;
         if (numReceived == 3) {
+            numReceivedMutex.unlock();
             quit();
         }
+        numReceivedMutex.unlock();
     }
 
 private:
     int numReceived;
+    Mutex numReceivedMutex;
 };
 
 int main(int argc, char **argv)
