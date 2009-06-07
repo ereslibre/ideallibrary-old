@@ -38,11 +38,12 @@ Application::Application(int argc, char **argv)
 Application::~Application()
 {
     List<ProtocolHandler*>::iterator it;
-    ContextMutexLocker cml(d->m_protocolHandlerCacheMutex);
+    d->m_protocolHandlerCacheMutex.lock();
     for (it = d->m_protocolHandlerCache.begin(); it != d->m_protocolHandlerCache.end(); ++it) {
         delete *it;
     }
     d->m_protocolHandlerCache.clear();
+    d->m_protocolHandlerCacheMutex.unlock();
     delete d;
 }
 
