@@ -79,5 +79,13 @@ void Timer::Private::stop()
     }
 }
 
+void Timer::Private::timedWait(int ms) const
+{
+    struct timespec tw;
+    tw.tv_sec = ms / 1000;
+    tw.tv_nsec = (ms % 1000) * 1000000;
+    nanosleep(&tw, 0);
+}
+
 }
 

@@ -140,10 +140,7 @@ void OtherClass::run()
     output.unlock();
 
     while (true) {
-        struct timespec ts;
-        ts.tv_sec = 0;
-        ts.tv_nsec = 500000000;
-        nanosleep(&ts, 0);
+        Timer::wait(500);
     }
 }
 

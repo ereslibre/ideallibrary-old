@@ -33,6 +33,7 @@ public:
     void stop();
     void setInterval(int msec);
     int interval() const;
+    void timedWait(int ms) const;
 
     bool listContains() const;
 

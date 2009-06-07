@@ -60,10 +60,21 @@ int Timer::interval() const
     return d->interval();
 }
 
+void Timer::wait(int ms)
+{
+    Timer t;
+    t.timedWait(ms);
+}
+
 Timer::Timer()
     : IDEAL_SIGNAL_INIT(timeout)
     , d(new PrivateImpl(this))
 {
+}
+
+void Timer::timedWait(int ms) const
+{
+    return d->timedWait(ms);
 }
 
 }

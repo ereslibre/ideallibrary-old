@@ -83,6 +83,11 @@ public:
     int interval() const;
 
     /**
+      * Will pause the current thread for @p ms milliseconds
+      */
+    static void wait(int ms);
+
+    /**
       * Calls @p member in @p receiver after @p ms milliseconds
       */
     template <typename Receiver, typename Member>
@@ -102,6 +107,7 @@ public:
 
 private:
     Timer();
+    void timedWait(int ms) const;
 
     class Private;
     class PrivateImpl;
