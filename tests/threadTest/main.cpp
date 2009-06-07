@@ -26,8 +26,6 @@
 
 using namespace IdealCore;
 
-Mutex output;
-
 class AnObject
     : public Object
 {
@@ -58,9 +56,7 @@ void AnObject::emitIt()
 
 void AnObject::slot()
 {
-    output.lock();
     IDEAL_SDEBUG("*** Slot being called (" << i << ")");
-    output.unlock();
 
     if (++i == 5) {
         application()->quit();
@@ -92,17 +88,13 @@ OneClass::OneClass(Object *parent)
 
 void OneClass::run()
 {
-    output.lock();
     IDEAL_SDEBUG("*** New thread with ID " << pthread_self());
-    output.unlock();
 
     mutex1.lock();
     cond1.signal();
     mutex1.unlock();
 
-    output.lock();
     IDEAL_SDEBUG("*** Starting the party at thread " << pthread_self());
-    output.unlock();
 
     Timer::callAfter(1000, &object, &AnObject::emitIt);
 }
@@ -127,17 +119,13 @@ OtherClass::OtherClass(Object *parent)
 
 void OtherClass::run()
 {
-    output.lock();
     IDEAL_SDEBUG("*** New thread with ID " << pthread_self());
-    output.unlock();
 
     mutex2.lock();
     cond2.signal();
     mutex2.unlock();
 
-    output.lock();
     IDEAL_SDEBUG("*** Starting the party at thread " << pthread_self());
-    output.unlock();
 
     while (true) {
         Timer::wait(500);
@@ -148,9 +136,7 @@ int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    output.lock();
     IDEAL_SDEBUG("*** Two threads will be launched. The app will be stopped when the slot has been called 5 times");
-    output.unlock();
 
     OneClass oneClass(&app);
     OtherClass otherClass(&app);
@@ -165,9 +151,7 @@ int main(int argc, char **argv)
     cond2.wait();
     mutex2.unlock();
 
-    output.lock();
     IDEAL_SDEBUG("*** Going to carefully connect two parties going on (BTW, I am " << pthread_self() << ")");
-    output.unlock();
 
     Object::connect(oneClass.object.aSignal, &otherClass.object, &AnObject::slot);
 
