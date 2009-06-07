@@ -27,11 +27,37 @@
 #define IDEAL_SIGNAL(name, ...) const IdealCore::Signal<__VA_ARGS__> name
 #define IDEAL_SIGNAL_INIT(name, ...) name(IdealCore::Signal<__VA_ARGS__>(this, #name, #__VA_ARGS__))
 
-#define IDEAL_DEBUG_WARNING(message) std::cerr << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": WARNING: " << message << std::endl
+#define IDEAL_NO_EXPORT __attribute__ ((visibility("hidden")))
+#define IDEAL_EXPORT __attribute__ ((visibility("default")))
+#define IDEAL_EXPORT_DEPRECATED IDEAL_EXPORT __attribute__ ((deprecated))
+#define IDEAL_UNUSED(expr) do { (void)(expr); } while (0)
+#define IDEAL_GLOBAL_UNUSED __attribute__ ((unused))
+
+//### WARNING: system-dependant code in public header
+
+namespace IdealCore {
+
+static pthread_mutex_t outputMutex IDEAL_GLOBAL_UNUSED = PTHREAD_MUTEX_INITIALIZER;
+
+}
+
+#define IDEAL_DEBUG_WARNING(message) {                                                                                                             \
+                                         pthread_mutex_lock(&IdealCore::outputMutex);                                                              \
+                                         std::cerr << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": WARNING: " << message << std::endl; \
+                                         pthread_mutex_unlock(&IdealCore::outputMutex);                                                            \
+                                     }
 
 #ifndef NDEBUG
-#define IDEAL_DEBUG(message) std::cout << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": " << message << std::endl
-#define IDEAL_SDEBUG(message) std::cout << message << std::endl
+#define IDEAL_DEBUG(message) {                                                                                                    \
+                                 pthread_mutex_lock(&IdealCore::outputMutex);                                                     \
+                                 std::cout << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": " << message << std::endl; \
+                                 pthread_mutex_unlock(&IdealCore::outputMutex);                                                   \
+                             }
+#define IDEAL_SDEBUG(message) {                                                  \
+                                  pthread_mutex_lock(&IdealCore::outputMutex);   \
+                                  std::cout << message << std::endl;             \
+                                  pthread_mutex_unlock(&IdealCore::outputMutex); \
+                              }
 #else
 #define IDEAL_DEBUG(message)
 #define IDEAL_SDEBUG(message)
@@ -46,10 +72,5 @@
 #ifndef __GNUC__
 #define __attribute__(x)
 #endif
-
-#define IDEAL_NO_EXPORT __attribute__ ((visibility("hidden")))
-#define IDEAL_EXPORT __attribute__ ((visibility("default")))
-#define IDEAL_EXPORT_DEPRECATED IDEAL_EXPORT __attribute__ ((deprecated))
-#define IDEAL_UNUSED __attribute__ ((unused))
 
 #endif //IDEAL_EXPORT_H
