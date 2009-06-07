@@ -68,7 +68,7 @@ private:
   * @code
   * void Class::methodWithCriticalSection()
   * {
-  *     ContextMutexLocker cml(&theLock);
+  *     ContextMutexLocker cml(theLock);
   *     // critical section here
   * }
   * @endcode
@@ -92,7 +92,7 @@ private:
   * {
   *     // non critical section here
   *     {
-  *         ContextMutexLocker cml(&theLock);
+  *         ContextMutexLocker cml(theLock);
   *         // critical section here
   *     }
   *     // non critical section here
