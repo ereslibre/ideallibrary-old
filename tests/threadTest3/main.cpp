@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     oneClass.exec();
     otherClass.exec();
 
-    Timer::callAfter(1000, &app, &Application::quit);
+    Timer::callAfter(500, &app, &Application::quit);
 
     return app.exec();
 }
