@@ -23,8 +23,8 @@
 
 namespace IdealCore {
 
-Mutex::Mutex()
-    : d(new PrivateImpl(this))
+Mutex::Mutex(RecursionType recursionType)
+    : d(new PrivateImpl(this, recursionType))
 {
 }
 

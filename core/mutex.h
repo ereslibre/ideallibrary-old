@@ -38,7 +38,12 @@ class IDEAL_EXPORT Mutex
     friend class CondVar;
 
 public:
-    Mutex();
+    enum RecursionType {
+        NoRecursive = 0,
+        Recursive
+    };
+
+    Mutex(RecursionType recursionType = NoRecursive);
     virtual ~Mutex();
 
     /**
