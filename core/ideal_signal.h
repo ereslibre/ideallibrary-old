@@ -469,7 +469,7 @@ private:
         m_beingEmittedMutex.lock();
         m_beingEmitted = true;
         m_beingEmittedMutex.unlock();
-        ContextMutexLocker cml(m_connectionsMutex);
+        ContextMutexLocker cml(m_connectionsMutex); //### WARNING: make m_connectionsMutex a recursive mutex
         List<CallbackDummy*>::const_iterator it;
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             CallbackBase<Param...> *callbackBase = static_cast<CallbackBase<Param...>*>(*it);
