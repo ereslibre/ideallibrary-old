@@ -12,13 +12,16 @@ blddir     = 'build'
 subdirs_d  = 'core gui modules tests'
 subdirs_r  = 'core gui modules'
 
-checkCompilerFeatures = '''struct A {}; struct B {};
+checkCompilerFeatures = '''#include <mutex>
+                           struct A {}; struct B {};
                            template <typename... Type>
                            struct C : public Type... {
                                C(const Type&... obj) : Type(obj)... {}
                            };
                            int main(int argc, char **argv)
                            {
+                               std::mutex myMutex;
+                               std::lock_guard<std::mutex> lk(myMutex);
                                A a; B b;
                                C<A, B> *c = new C<A, B>(a, b);
                                delete c;

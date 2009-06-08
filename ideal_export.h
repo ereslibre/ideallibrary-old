@@ -23,6 +23,7 @@
 
 #include <ideal_conf.h>
 #include <iostream>
+#include <mutex>
 
 #define IDEAL_SIGNAL(name, ...) const IdealCore::Signal<__VA_ARGS__> name
 #define IDEAL_SIGNAL_INIT(name, ...) name(IdealCore::Signal<__VA_ARGS__>(this, #name, #__VA_ARGS__))
@@ -37,31 +38,26 @@
 #define IDEAL_UNUSED(expr) do { (void)(expr); } while (0)
 #define IDEAL_POSSIBLY_UNUSED __attribute__ ((unused))
 
-//### WARNING: system-dependant code in public header
-
 namespace IdealCore {
 
-static pthread_mutex_t outputMutex        IDEAL_POSSIBLY_UNUSED = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t warningOutputMutex IDEAL_POSSIBLY_UNUSED = PTHREAD_MUTEX_INITIALIZER;
+static std::mutex outputMutex        IDEAL_POSSIBLY_UNUSED;
+static std::mutex warningOutputMutex IDEAL_POSSIBLY_UNUSED;
 
 }
 
 #define IDEAL_DEBUG_WARNING(message) do {                                                                                                          \
-                                         pthread_mutex_lock(&IdealCore::warningOutputMutex);                                                       \
+                                         std::lock_guard<std::mutex> lk(IdealCore::warningOutputMutex);                                            \
                                          std::cerr << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": WARNING: " << message << std::endl; \
-                                         pthread_mutex_unlock(&IdealCore::warningOutputMutex);                                                     \
                                      } while(0)
 
 #ifndef NDEBUG
 #define IDEAL_DEBUG(message) do {                                                                                                 \
-                                 pthread_mutex_lock(&IdealCore::outputMutex);                                                     \
+                                 std::lock_guard<std::mutex> lk(IdealCore::outputMutex);                                          \
                                  std::cout << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": " << message << std::endl; \
-                                 pthread_mutex_unlock(&IdealCore::outputMutex);                                                   \
                              } while(0)
-#define IDEAL_SDEBUG(message) do {                                               \
-                                  pthread_mutex_lock(&IdealCore::outputMutex);   \
-                                  std::cout << message << std::endl;             \
-                                  pthread_mutex_unlock(&IdealCore::outputMutex); \
+#define IDEAL_SDEBUG(message) do {                                                        \
+                                  std::lock_guard<std::mutex> lk(IdealCore::outputMutex); \
+                                  std::cout << message << std::endl;                      \
                               } while(0)
 #else
 #define IDEAL_DEBUG(message)

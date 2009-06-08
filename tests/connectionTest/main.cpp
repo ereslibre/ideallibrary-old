@@ -21,8 +21,6 @@
 #include <core/application.h>
 #include <core/object.h>
 
-using namespace std;
-
 void function()
 {
     IDEAL_SDEBUG("A signal was received on a static function");
