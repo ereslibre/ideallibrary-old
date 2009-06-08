@@ -50,6 +50,15 @@ public:
       * Locks this mutex. If the mutex was already locked we wait until the mutex becomes available.
       */
     void lock();
+
+    /**
+      * Tries to lock this mutex.
+      *
+      * @return Whether this mutex could be locked or not.
+      *
+      * @note If this mutex is already locked, this method will not block calling thread.
+      */
+    bool tryLock();
     
     /**
       * Unlocks this mutex.

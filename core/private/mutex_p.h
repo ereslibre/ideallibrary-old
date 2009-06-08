@@ -32,6 +32,7 @@ public:
     virtual ~Private();
 
     void lock();
+    bool tryLock();
     void unlock();
 
     Mutex *q;   // Initialized in base class

@@ -38,6 +38,11 @@ void Mutex::lock()
     d->lock();
 }
 
+bool Mutex::tryLock()
+{
+    return d->tryLock();
+}
+
 void Mutex::unlock()
 {
     d->unlock();

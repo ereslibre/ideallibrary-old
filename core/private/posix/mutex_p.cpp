@@ -43,6 +43,11 @@ void Mutex::Private::lock()
     pthread_mutex_lock(&D_I->m_mutex);
 }
 
+bool Mutex::Private::tryLock()
+{
+    return !pthread_mutex_trylock(&D_I->m_mutex);
+}
+
 void Mutex::Private::unlock()
 {
     pthread_mutex_unlock(&D_I->m_mutex);

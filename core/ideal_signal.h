@@ -434,8 +434,8 @@ private:
     template <typename Member>
     void disconnectStatic(Member member) const
     {
-        ContextMutexLocker cml(m_connectionsMutex);
         List<CallbackDummy*>::iterator it;
+        ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             const CallbackStatic<Member, Param...> *const curr = dynamic_cast<CallbackStatic<Member, Param...>*>(*it);
             if (curr && curr->m_member == member) {
@@ -450,8 +450,8 @@ private:
     template <typename Member>
     void disconnectStaticMulti(Member member) const
     {
-        ContextMutexLocker cml(m_connectionsMutex);
         List<CallbackDummy*>::iterator it;
+        ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             const CallbackStaticMulti<Member, Param...> *const curr = dynamic_cast<CallbackStaticMulti<Member, Param...>*>(*it);
             if (curr && curr->m_member == member) {
@@ -470,8 +470,8 @@ private:
         }
         ContextMutexLocker cml(m_beingEmittedMutex);
         m_beingEmitted = true;
-        ContextMutexLocker cml2(m_connectionsMutex);
         List<CallbackDummy*>::const_iterator it;
+        ContextMutexLocker cml2(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             CallbackBase<Param...> *callbackBase = static_cast<CallbackBase<Param...>*>(*it);
             (*callbackBase)(param...);
