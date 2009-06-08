@@ -100,7 +100,13 @@ int main(int argc, char **argv)
     oneClass.exec();
     otherClass.exec();
 
+#if 0
+    Timer::callAfter(500, &app, &Application::quit);
+
+    return app.exec();
+#else
     Timer::wait(500);
 
     return 0;
+#endif
 }

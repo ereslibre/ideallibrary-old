@@ -475,8 +475,8 @@ private:
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             CallbackBase<Param...> *callbackBase = static_cast<CallbackBase<Param...>*>(*it);
             (*callbackBase)(param...);
-            ContextMutexLocker cml(deletedSignalsOnEmitMutex);
             List<SignalBase*>::iterator it;
+            ContextMutexLocker cml(deletedSignalsOnEmitMutex);
             for (it = deletedSignalsOnEmit.begin(); it != deletedSignalsOnEmit.end(); ++it) {
                 if (*it == this) {
                     deletedSignalsOnEmit.erase(it);
