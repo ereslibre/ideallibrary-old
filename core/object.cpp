@@ -105,8 +105,11 @@ Object::~Object()
 {
     emit(destroyed);
     d->cleanConnections();
-    if (d->m_parent) {
-        d->m_parent->d->removeChild(this);
+    {
+        ContextMutexLocker cml(d->m_parentMutex);
+        if (d->m_parent) {
+            d->m_parent->d->removeChild(this);
+        }
     }
     d->m_deleteChildrenRecursivelyMutex.lock();
     if (d->m_deleteChildrenRecursively) {
@@ -166,11 +169,13 @@ List<Object*> Object::children() const
 
 Object *Object::parent() const
 {
+    ContextMutexLocker cml(d->m_parentMutex);
     return d->m_parent;
 }
 
 void Object::reparent(Object *parent)
 {
+    ContextMutexLocker cml(d->m_parentMutex);
     if (d->m_parent == parent) {
         return;
     }

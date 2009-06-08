@@ -42,6 +42,7 @@ public:
     void cleanConnections();
 
     Object                       *m_parent;
+    Mutex                         m_parentMutex;
     bool                          m_deleteChildrenRecursively;
     Mutex                         m_deleteChildrenRecursivelyMutex;
     bool                          m_blockedSignals;
