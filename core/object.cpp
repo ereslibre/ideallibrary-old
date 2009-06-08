@@ -55,24 +55,27 @@ void Object::Private::allPredecessors(Object *object, List<Object*> &objectList)
 
 void Object::Private::cleanConnections()
 {
-    List<GeniousPointer<Object>*>::iterator it = m_connectedObjects.begin();
     List<const SignalBase*> signalsToDisconnect;
-    while (it != m_connectedObjects.end()) {
-        GeniousPointer<Object> *connectedObject = *it;
-        if (!connectedObject->isContentDestroyed()) {
-            List<const SignalBase*> connectedObjectSignals = connectedObject->content()->signals();
-            List<const SignalBase*>::iterator sigIt = connectedObjectSignals.begin();
-            while (sigIt != connectedObjectSignals.end()) {
-                const SignalBase *signalBase = *sigIt;
-                if (signalBase->m_parent != q) {
-                    signalsToDisconnect.push_back(signalBase);
+    {
+        ContextMutexLocker cml(m_connectedObjectsMutex);
+        List<GeniousPointer<Object>*>::iterator it = m_connectedObjects.begin();
+        while (it != m_connectedObjects.end()) {
+            GeniousPointer<Object> *connectedObject = *it;
+            if (!connectedObject->isContentDestroyed()) {
+                List<const SignalBase*> connectedObjectSignals = connectedObject->content()->signals();
+                List<const SignalBase*>::iterator sigIt = connectedObjectSignals.begin();
+                while (sigIt != connectedObjectSignals.end()) {
+                    const SignalBase *signalBase = *sigIt;
+                    if (signalBase->m_parent != q) {
+                        signalsToDisconnect.push_back(signalBase);
+                    }
+                    ++sigIt;
                 }
-                ++sigIt;
+                ++it;
+            } else {
+                it = m_connectedObjects.erase(it);
+                delete connectedObject;
             }
-            ++it;
-        } else {
-            it = m_connectedObjects.erase(it);
-            delete connectedObject;
         }
     }
     List<const SignalBase*>::iterator sigIt;
@@ -189,13 +192,16 @@ void Object::disconnectReceiver(Object *receiver)
 {
     List<const SignalBase*> signalsToDisconnect;
     List<GeniousPointer<Object>*>::iterator it;
-    for (it = receiver->d->m_connectedObjects.begin(); it != receiver->d->m_connectedObjects.end(); ++it) {
-        GeniousPointer<Object> *const object = *it;
-        if (!object->isContentDestroyed()) {
-            Object *const obj = object->content();
-            List<const SignalBase*>::iterator sigIt;
-            for (sigIt = obj->d->m_signals.begin(); sigIt != obj->d->m_signals.end(); ++sigIt) {
-                signalsToDisconnect.push_back(*sigIt);
+    {
+        ContextMutexLocker cml(receiver->d->m_connectedObjectsMutex);
+        for (it = receiver->d->m_connectedObjects.begin(); it != receiver->d->m_connectedObjects.end(); ++it) {
+            GeniousPointer<Object> *const object = *it;
+            if (!object->isContentDestroyed()) {
+                Object *const obj = object->content();
+                List<const SignalBase*>::iterator sigIt;
+                for (sigIt = obj->d->m_signals.begin(); sigIt != obj->d->m_signals.end(); ++sigIt) {
+                    signalsToDisconnect.push_back(*sigIt);
+                }
             }
         }
     }
@@ -240,12 +246,14 @@ void Object::signalCreated(const SignalBase *signal)
 
 void Object::signalConnected(const SignalBase *signal)
 {
+    ContextMutexLocker cml(d->m_connectedObjectsMutex);
     d->m_connectedObjects.push_back(new GeniousPointer<Object>(dynamic_cast<Object*>(signal->m_parent)));
 }
 
 void Object::signalDisconnected(const SignalBase *signal)
 {
     List<GeniousPointer<Object>*>::iterator it;
+    ContextMutexLocker cml(d->m_connectedObjectsMutex);
     for (it = d->m_connectedObjects.begin(); it != d->m_connectedObjects.end(); ++it) {
         GeniousPointer<Object> *connectedObject = *it;
         if (connectedObject->content() == signal->parent()) {

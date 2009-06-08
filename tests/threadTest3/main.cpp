@@ -20,8 +20,6 @@
 
 #include <core/application.h>
 #include <core/concurrent.h>
-#include <core/mutex.h>
-#include <core/condvar.h>
 #include <core/timer.h>
 
 using namespace IdealCore;
@@ -87,6 +85,7 @@ void OneClass::run()
     object->emitIt();
     object->emitIt();
     object->emitIt();
+    disconnect(object->aSignal, object, &AnObject::slot);
 }
 
 int main(int argc, char **argv)

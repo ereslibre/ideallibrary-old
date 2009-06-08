@@ -48,6 +48,7 @@ public:
     List<Object*>                 m_children;
     List<const SignalBase*>       m_signals;
     List<GeniousPointer<Object>*> m_connectedObjects;
+    Mutex                         m_connectedObjectsMutex;
     Application                  *m_application;
     Object                       *q;
 };
