@@ -26,11 +26,11 @@ namespace IdealCore {
 Mutex::PrivateImpl::PrivateImpl(Mutex *q, RecursionType recursionType)
     : Private(q)
 {
-    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_init(&m_attr);
     if (recursionType == Recursive) {
-        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutexattr_settype(&m_attr, PTHREAD_MUTEX_RECURSIVE);
     }
-    pthread_mutex_init(&D_I->m_mutex, &attr);
+    pthread_mutex_init(&D_I->m_mutex, &m_attr);
 }
 
 Mutex::PrivateImpl::~PrivateImpl()

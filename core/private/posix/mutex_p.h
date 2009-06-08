@@ -33,8 +33,8 @@ public:
     PrivateImpl(Mutex *q, RecursionType recursionType);
     ~PrivateImpl();
 
-    pthread_mutex_t m_mutex;
-    pthread_mutexattr_t attr;
+    pthread_mutex_t     m_mutex;
+    pthread_mutexattr_t m_attr;
 };
 
 }
