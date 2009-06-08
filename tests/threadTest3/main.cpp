@@ -71,7 +71,6 @@ OneClass::OneClass(Object *parent)
 
 void OneClass::run()
 {
-#if 0
     connect(object->aSignal, object, &AnObject::slot);
     connect(object->aSignal, object, &AnObject::slot);
     connect(object->aSignal, object, &AnObject::slot);
@@ -87,7 +86,6 @@ void OneClass::run()
     object->emitIt();
     object->emitIt();
     disconnect(object->aSignal, object, &AnObject::slot);
-#endif
 }
 
 int main(int argc, char **argv)
@@ -99,8 +97,9 @@ int main(int argc, char **argv)
     oneClass->object = anObject;
     OneClass *otherClass = new OneClass(&app);
     otherClass->object = anObject;
+
     oneClass->exec();
-    //otherClass.exec();
+    otherClass->exec();
 
 #if 0
     Timer::callAfter(500, &app, &Application::quit);
