@@ -40,8 +40,8 @@
 
 namespace IdealCore {
 
-static std::mutex outputMutex        IDEAL_POSSIBLY_UNUSED;
-static std::mutex warningOutputMutex IDEAL_POSSIBLY_UNUSED;
+static std::mutex outputMutex;
+static std::mutex warningOutputMutex;
 
 }
 
