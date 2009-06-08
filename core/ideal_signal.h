@@ -469,11 +469,9 @@ private:
         m_beingEmittedMutex.lock();
         m_beingEmitted = true;
         m_beingEmittedMutex.unlock();
-        m_connectionsMutex.lock();
-        List<CallbackDummy*> connections = m_connections;
-        m_connectionsMutex.unlock();
+        ContextMutexLocker cml(m_connectionsMutex);
         List<CallbackDummy*>::const_iterator it;
-        for (it = connections.begin(); it != connections.end(); ++it) {
+        for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             CallbackBase<Param...> *callbackBase = static_cast<CallbackBase<Param...>*>(*it);
             (*callbackBase)(param...);
             ContextMutexLocker cml(deletedSignalsOnEmitMutex);
