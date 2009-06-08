@@ -48,17 +48,17 @@ static std::mutex warningOutputMutex;
 #define IDEAL_DEBUG_WARNING(message) do {                                                                                                          \
                                          std::lock_guard<std::mutex> lk(IdealCore::warningOutputMutex);                                            \
                                          std::cerr << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": WARNING: " << message << std::endl; \
-                                     } while(0)
+                                     } while (0)
 
 #ifndef NDEBUG
 #define IDEAL_DEBUG(message) do {                                                                                                 \
                                  std::lock_guard<std::mutex> lk(IdealCore::outputMutex);                                          \
                                  std::cout << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": " << message << std::endl; \
-                             } while(0)
+                             } while (0)
 #define IDEAL_SDEBUG(message) do {                                                        \
                                   std::lock_guard<std::mutex> lk(IdealCore::outputMutex); \
                                   std::cout << message << std::endl;                      \
-                              } while(0)
+                              } while (0)
 #else
 #define IDEAL_DEBUG(message)
 #define IDEAL_SDEBUG(message)
