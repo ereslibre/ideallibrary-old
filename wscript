@@ -3,8 +3,8 @@
 
 import UnitTest, Utils, Options
 
-VERSION    = 'v0.0.2'
-LIBVERSION = '0.0.2'
+VERSION    = 'v0.0.3'
+LIBVERSION = '0.0.3'
 APPNAME    = 'ideallibrary'
 srcdir     = '.'
 blddir     = 'build'
