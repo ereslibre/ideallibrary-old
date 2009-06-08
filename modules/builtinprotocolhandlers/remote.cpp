@@ -54,18 +54,7 @@ public:
             curl_easy_setopt(m_curl, CURLOPT_NOSIGNAL, 1L);
             curl_easy_setopt(m_curl, CURLOPT_VERBOSE, 0L);
             curl_easy_setopt(m_curl, CURLOPT_NOBODY, 1L);
-            {
-                //### WORKAROUND. NOT REALLY.
-                //    As described in http://curl.haxx.se/mail/lib-2008-09/0296.html, when a file
-                //    does not exist in FTP and CURLOPT_NOBODY flag is set, CURLE_OK is returned by
-                //    curl_easy_perform() instead of CURLE_FTP_COULDNT_RETR_FILE. When
-                //    CURLOPT_FILETIME flag is set, CURLE_FTP_COULDNT_RETR_FILE is returned in this
-                //    case, what is the expected result.
-                //
-                //    Since we are stating, we actually want this flag to be set, but still, we
-                //    should keep an eye on this, for libcurl correctness.
-                curl_easy_setopt(m_curl, CURLOPT_FILETIME, 1L);
-            }
+            curl_easy_setopt(m_curl, CURLOPT_FILETIME, 1L);
             curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, discardOutput);
         }
         curl_easy_setopt(m_curl, CURLOPT_URL, uri.uri().data());
