@@ -36,17 +36,20 @@ Object::Private::Private(Object *q)
 
 void Object::Private::addChild(Object *child)
 {
+    ContextMutexLocker cml(m_childrenMutex);
     m_children.push_back(child);
 }
 
 void Object::Private::removeChild(Object *child)
 {
+    ContextMutexLocker cml(m_childrenMutex);
     m_children.remove(child);
 }
 
 void Object::Private::allPredecessors(Object *object, List<Object*> &objectList)
 {
     List<Object*>::iterator it;
+    ContextMutexLocker cml(object->d->m_childrenMutex);
     for (it = object->d->m_children.begin(); it != object->d->m_children.end(); ++it) {
         allPredecessors(*it, objectList);
     }
@@ -105,6 +108,7 @@ Object::~Object()
     if (d->m_parent) {
         d->m_parent->d->removeChild(this);
     }
+    ContextMutexLocker cml(d->m_deleteChildrenRecursivelyMutex);
     if (d->m_deleteChildrenRecursively) {
         List<Object*> objectsToDelete;
         d->allPredecessors(this, objectsToDelete);
@@ -119,36 +123,43 @@ Object::~Object()
 
 void Object::setDeleteChildrenRecursively(bool deleteChildrenRecursively)
 {
+    ContextMutexLocker cml(d->m_deleteChildrenRecursivelyMutex);
     d->m_deleteChildrenRecursively = deleteChildrenRecursively;
 }
 
 bool Object::isDeleteChildrenRecursively() const
 {
+    ContextMutexLocker cml(d->m_deleteChildrenRecursivelyMutex);
     return d->m_deleteChildrenRecursively;
 }
 
 void Object::setBlockedSignals(bool blockedSignals)
 {
+    ContextMutexLocker cml(d->m_blockedSignalsMutex);
     d->m_blockedSignals = blockedSignals;
 }
 
 bool Object::areSignalsBlocked() const
 {
+    ContextMutexLocker cml(d->m_blockedSignalsMutex);
     return d->m_blockedSignals;
 }
 
 void Object::setEmitBlocked(bool emitBlocked)
 {
+    ContextMutexLocker cml(d->m_emitBlockedMutex);
     d->m_emitBlocked = emitBlocked;
 }
 
 bool Object::isEmitBlocked() const
 {
+    ContextMutexLocker cml(d->m_emitBlockedMutex);
     return d->m_emitBlocked;
 }
 
 List<Object*> Object::children() const
 {
+    ContextMutexLocker cml(d->m_childrenMutex);
     return d->m_children;
 }
 
@@ -183,6 +194,7 @@ Application *Object::application() const
 void Object::disconnectSender(Object *sender)
 {
     List<const SignalBase*>::iterator it;
+    ContextMutexLocker cml(sender->d->m_signalsMutex);
     for (it = sender->d->m_signals.begin(); it != sender->d->m_signals.end(); ++it) {
         (*it)->disconnect();
     }
@@ -199,6 +211,7 @@ void Object::disconnectReceiver(Object *receiver)
             if (!object->isContentDestroyed()) {
                 Object *const obj = object->content();
                 List<const SignalBase*>::iterator sigIt;
+                ContextMutexLocker cml(obj->d->m_signalsMutex);
                 for (sigIt = obj->d->m_signals.begin(); sigIt != obj->d->m_signals.end(); ++sigIt) {
                     signalsToDisconnect.push_back(*sigIt);
                 }
@@ -241,6 +254,7 @@ void *Object::virtual_hook(int id, void *param)
 
 void Object::signalCreated(const SignalBase *signal)
 {
+    ContextMutexLocker cml(d->m_signalsMutex);
     d->m_signals.push_back(signal);
 }
 
@@ -266,6 +280,7 @@ void Object::signalDisconnected(const SignalBase *signal)
 
 List<const SignalBase*> Object::signals() const
 {
+    ContextMutexLocker cml(d->m_signalsMutex);
     return d->m_signals;
 }
 

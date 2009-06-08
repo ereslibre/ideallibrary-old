@@ -43,10 +43,15 @@ public:
 
     Object                       *m_parent;
     bool                          m_deleteChildrenRecursively;
+    Mutex                         m_deleteChildrenRecursivelyMutex;
     bool                          m_blockedSignals;
+    Mutex                         m_blockedSignalsMutex;
     bool                          m_emitBlocked;
+    Mutex                         m_emitBlockedMutex;
     List<Object*>                 m_children;
+    Mutex                         m_childrenMutex;
     List<const SignalBase*>       m_signals;
+    Mutex                         m_signalsMutex;
     List<GeniousPointer<Object>*> m_connectedObjects;
     Mutex                         m_connectedObjectsMutex;
     Application                  *m_application;
