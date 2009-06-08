@@ -227,7 +227,9 @@ public:
     SignalBase()
         : m_parent(0)
         , m_isDestroyedSignal(false)
+        , m_connectionsMutex(Mutex(Mutex::Recursive))
         , m_beingEmitted(false)
+        , m_beingEmittedMutex(Mutex(Mutex::Recursive))
     {
     }
 
@@ -466,10 +468,9 @@ private:
         if (m_parent->isEmitBlocked() && !m_isDestroyedSignal) {
             return;
         }
-        m_beingEmittedMutex.lock();
+        ContextMutexLocker cml(m_beingEmittedMutex);
         m_beingEmitted = true;
-        m_beingEmittedMutex.unlock();
-        ContextMutexLocker cml(m_connectionsMutex); //### WARNING: make m_connectionsMutex a recursive mutex
+        ContextMutexLocker cml2(m_connectionsMutex);
         List<CallbackDummy*>::const_iterator it;
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             CallbackBase<Param...> *callbackBase = static_cast<CallbackBase<Param...>*>(*it);
@@ -483,9 +484,7 @@ private:
                 }
             }
         }
-        m_beingEmittedMutex.lock();
         m_beingEmitted = false;
-        m_beingEmittedMutex.unlock();
     }
 };
 

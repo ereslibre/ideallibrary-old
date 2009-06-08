@@ -39,8 +39,8 @@ class IDEAL_EXPORT Mutex
 
 public:
     enum RecursionType {
-        NoRecursive = 0,
-        Recursive
+        NoRecursive = 0,    ///< This mutex is non recursive. Two lock() calls from the same thread will result in a deadlock.
+        Recursive           ///< This mutex is recursive. Two or more lock() calls from the same thread will not deadlock.
     };
 
     Mutex(RecursionType recursionType = NoRecursive);
