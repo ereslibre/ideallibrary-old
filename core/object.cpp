@@ -108,7 +108,7 @@ Object::~Object()
     if (d->m_parent) {
         d->m_parent->d->removeChild(this);
     }
-    ContextMutexLocker cml(d->m_deleteChildrenRecursivelyMutex);
+    d->m_deleteChildrenRecursivelyMutex.lock();
     if (d->m_deleteChildrenRecursively) {
         List<Object*> objectsToDelete;
         d->allPredecessors(this, objectsToDelete);
@@ -118,6 +118,7 @@ Object::~Object()
             delete *it;
         }
     }
+    d->m_deleteChildrenRecursivelyMutex.unlock();
     delete d;
 }
 
