@@ -71,6 +71,7 @@ OneClass::OneClass(Object *parent)
 
 void OneClass::run()
 {
+    return; //### REMOVE ME
     connect(object->aSignal, object, &AnObject::slot);
     connect(object->aSignal, object, &AnObject::slot);
     connect(object->aSignal, object, &AnObject::slot);
