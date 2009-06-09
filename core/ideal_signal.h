@@ -268,17 +268,17 @@ protected:
         m_connections.clear();
     }
 
-    static void notifyReceiverConnection(SignalResource *signalResource, const SignalBase *signalBase)
+    static void notifyReceiverConnection(SignalResource *receiver, const SignalBase *signalBase)
     {
         if (!signalBase->m_isDestroyedSignal) {
-            signalResource->signalConnected(signalBase);
+            receiver->signalConnected(signalBase);
         }
     }
 
-    static void notifyReceiverDisconnection(SignalResource *signalResource, const SignalBase *signalBase)
+    static void notifyReceiverDisconnection(SignalResource *receiver, const SignalBase *signalBase)
     {
         if (!signalBase->m_isDestroyedSignal) {
-            signalResource->signalDisconnected(signalBase);
+            receiver->signalDisconnected(signalBase);
         }
     }
 
