@@ -25,7 +25,6 @@ namespace IdealCore {
 
 Concurrent::Concurrent(Object *parent, Type type)
     : Object(parent)
-    , IDEAL_SIGNAL_INIT(finished)
     , d(new PrivateImpl(this, type))
 {
 }

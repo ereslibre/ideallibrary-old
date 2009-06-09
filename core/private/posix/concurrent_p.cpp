@@ -42,7 +42,6 @@ void *Concurrent::PrivateImpl::entryPoint(void *param)
     concurrent->d->m_state = Running;
     concurrent->run();
     concurrent->d->m_state = Finished;
-    concurrent->emit(concurrent->finished);
     return 0;
 }
 

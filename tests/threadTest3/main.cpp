@@ -101,8 +101,13 @@ int main(int argc, char **argv)
     oneClass->exec();
     otherClass->exec();
 
-    oneClass->join();
-    otherClass->join();
+#if 1
+    Timer::wait(500);
 
     return 0;
+#else
+    Timer::callAfter(500, &app, &Application::quit);
+
+    return app.exec();
+#endif
 }

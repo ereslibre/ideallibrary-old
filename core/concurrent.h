@@ -66,9 +66,6 @@ public:
       */
     State state() const;
 
-public:
-    IDEAL_SIGNAL(finished);
-
 protected:
     /**
      * When calling to exec() the code inside this method will be executed in a new thread.
