@@ -177,9 +177,23 @@ public:
     virtual int exec();
 
     /**
-      * Prevents the main event loop of looping again, hence, stopping the application.
+      * Quits the running application.
+      *
+      * @return nothing useful. The return code is just meant to use it like this:
+      *
+      * @code
+      * int main(int argc, char **argv)
+      * {
+      *     Application app(argc, argv);
+      *     // Here your code
+      *     return app.quit();
+      * }
+      * @endcode
+      *
+      * This is only recommended for extremely simple applications that don't require event
+      * processing, since no event loop will be run here.
       */
-    void quit();
+    int quit();
 
 public:
     /**

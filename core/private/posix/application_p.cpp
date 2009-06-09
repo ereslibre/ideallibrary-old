@@ -281,9 +281,10 @@ void Application::Private::unloadUnneededDynamicLibraries()
     m_markedForUnload.clear();
 }
 
-void Application::Private::quit()
+int Application::Private::quit()
 {
     exit(EXIT_SUCCESS);
+    return EXIT_SUCCESS; // make compilers happy
 }
 
 }

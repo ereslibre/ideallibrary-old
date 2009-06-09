@@ -82,9 +82,9 @@ int Application::exec()
     return 0;
 }
 
-void Application::quit()
+int Application::quit()
 {
-    d->quit();
+    return d->quit();
 }
 
 }

@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 #if 1
     Timer::wait(500);
 
-    return 0;
+    return app.quit();
 #else
     Timer::callAfter(500, &app, &Application::quit);
 
