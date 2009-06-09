@@ -90,12 +90,12 @@ void OneClass::run()
 
 int main(int argc, char **argv)
 {
-    Application app(argc, argv);
+    Application *app = new Application(argc, argv);
 
-    AnObject *anObject = new AnObject(&app);
-    OneClass *oneClass = new OneClass(&app);
+    AnObject *anObject = new AnObject(app);
+    OneClass *oneClass = new OneClass(app);
     oneClass->object = anObject;
-    OneClass *otherClass = new OneClass(&app);
+    OneClass *otherClass = new OneClass(app);
     otherClass->object = anObject;
 
     oneClass->exec();
@@ -104,7 +104,9 @@ int main(int argc, char **argv)
 #if 1
     Timer::wait(500);
 
-    return app.quit();
+    delete app;
+
+    return 0;
 #else
     Timer::callAfter(500, &app, &Application::quit);
 
