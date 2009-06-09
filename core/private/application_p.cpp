@@ -60,9 +60,13 @@ void Application::Private::processEvents()
 
 void Application::Private::processDelayedDeletions()
 {
+    List<Object*> markedForDeletion;
+    {
+        ContextMutexLocker cml(m_markedForDeletionMutex);
+        markedForDeletion = m_markedForDeletion;
+    }
     List<Object*>::iterator it;
-    ContextMutexLocker cml(m_markedForDeletionMutex);
-    for (it = m_markedForDeletion.begin(); it != m_markedForDeletion.end(); ++it) {
+    for (it = markedForDeletion.begin(); it != markedForDeletion.end(); ++it) {
         delete *it;
     }
     m_markedForDeletion.clear();
