@@ -38,6 +38,6 @@ int main(int argc, char **argv)
     condvar.timedWait(1552);
     mutex.unlock();
 
-    return 0;
+    return app.quit();
 }
 

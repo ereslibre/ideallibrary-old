@@ -103,5 +103,5 @@ int main(int argc, char **argv)
     mediaPlayer.stop->emitPressed(6, 4, 2);
     mediaPlayer.exit->emitPressed(9, 3, 1);
     
-    return 0;
+    return app.quit();
 }

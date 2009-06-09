@@ -43,7 +43,7 @@ namespace IdealCore {
   * {
   *     Application app(argc, argv);
   *     // code
-  *     return 0;
+  *     return app.quit();
   * }
   * @endcode
   *

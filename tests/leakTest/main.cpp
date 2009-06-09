@@ -104,6 +104,6 @@ int main(int argc, char **argv)
     delete otherObject;
 #endif
 
-    return 0;
+    return app.quit();
 }
 

@@ -33,5 +33,5 @@ int main(int argc, char **argv)
     delete object2;
     delete object1;
 
-    return 0;
+    return app.quit();
 }

@@ -124,6 +124,6 @@ int main(int argc, char **argv)
 
     delete otherObject;
 
-    return 0;
+    return app.quit();
 }
 

@@ -49,5 +49,5 @@ int main(int argc, char **argv)
     Object::connect(a->signal, a, &A::deleteNow);
     a->emitMySignal();
     
-    return 0;
+    return app.quit();
 }

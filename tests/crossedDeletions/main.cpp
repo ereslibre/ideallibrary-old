@@ -52,5 +52,5 @@ int main(int argc, char **argv)
     Object::connect(b->destroyed, a, &Object::deleteNow);
     a->emitMySignal();
 
-    return 0;
+    return app.quit();
 }

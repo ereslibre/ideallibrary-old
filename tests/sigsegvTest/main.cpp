@@ -43,5 +43,5 @@ int main(int argc, char **argv)
 
     recursiveFunction(0);
 
-    return 0;
+    return app.quit();
 }

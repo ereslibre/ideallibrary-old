@@ -31,5 +31,5 @@ int main(int argc, char **argv)
     close(pipefd[0]);
     if (write(pipefd[1], "a", 1)) {}
 
-    return 0;
+    return app.quit();
 }

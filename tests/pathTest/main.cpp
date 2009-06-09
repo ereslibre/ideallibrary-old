@@ -34,5 +34,5 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("*** Home path is:\t" << app.getPath(Application::Home));
     IDEAL_SDEBUG("*** Module path is:\t" << app.getPath(Application::Module));
 
-    return 0;
+    return app.quit();
 }

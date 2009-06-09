@@ -204,7 +204,7 @@
  *     IdealCore::Object::connect(myObject->myComplexSignal, myOtherObject, &MyOtherObject::doSomethingComplex);
  *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject->myForwardedSignal);
  *
- *     return 0;     
+ *     return app.quit();     
  * }
  * @endcode
  *
@@ -271,7 +271,7 @@
  *
  *     myObject->modifyStateAndNotify();
  *
- *     return 0;     
+ *     return app.quit();     
  * }
  * @endcode
  *
@@ -380,7 +380,7 @@
  *     mediaPlayer->simulateStopClick();
  *     mediaPlayer->simulateQuitClick();
  *
- *     return 0;
+ *     return app.quit();
  * }
  * @endcode
  *
