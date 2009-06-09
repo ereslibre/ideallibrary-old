@@ -33,10 +33,5 @@ Concurrent::Private::~Private()
 {
 }
 
-Concurrent::State Concurrent::Private::state() const
-{
-    return m_state;
-}
-
 }
 

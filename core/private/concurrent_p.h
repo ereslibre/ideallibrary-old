@@ -33,7 +33,6 @@ public:
 
     void exec();
     void join();
-    State state() const;
 
     State        m_state;   // Initialized in base class
     Type         m_type;    // Initialized in base class

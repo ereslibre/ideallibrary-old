@@ -46,7 +46,7 @@ void Concurrent::join()
 
 Concurrent::State Concurrent::state() const
 {
-    return d->state();
+    return d->m_state;
 }
 
 }
