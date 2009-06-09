@@ -64,12 +64,12 @@ void Application::Private::processDelayedDeletions()
     {
         ContextMutexLocker cml(m_markedForDeletionMutex);
         markedForDeletion = m_markedForDeletion;
+        m_markedForDeletion.clear();
     }
     List<Object*>::iterator it;
     for (it = markedForDeletion.begin(); it != markedForDeletion.end(); ++it) {
         delete *it;
     }
-    m_markedForDeletion.clear();
 }
 
 bool Application::Private::timerSort(const Timer *left, const Timer *right)
