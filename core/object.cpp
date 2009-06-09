@@ -118,7 +118,7 @@ Object::~Object()
         objectsToDelete.pop_back(); // 'this' is the last element, and we are already deleting it =)
         List<Object*>::iterator it;
         for (it = objectsToDelete.begin(); it != objectsToDelete.end(); ++it) {
-            delete *it;
+            //delete *it; //### WARNING: problematic
         }
     }
     d->m_deleteChildrenRecursivelyMutex.unlock();
@@ -276,7 +276,7 @@ void Object::signalDisconnected(const SignalBase *signal)
     ContextMutexLocker cml(d->m_connectedObjectsMutex);
     for (it = d->m_connectedObjects.begin(); it != d->m_connectedObjects.end(); ++it) {
         GeniousPointer<Object> *connectedObject = *it;
-        if (connectedObject->content() == signal->parent()) {
+        if (connectedObject->content() == signal->m_parent) {
             d->m_connectedObjects.erase(it);
             delete connectedObject;
             return;
