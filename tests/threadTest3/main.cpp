@@ -101,13 +101,7 @@ int main(int argc, char **argv)
     oneClass->exec();
     otherClass->exec();
 
-#if 1
     Timer::wait(500);
 
     return app.quit();
-#else
-    Timer::callAfter(500, &app, &Application::quit);
-
-    return app.exec();
-#endif
 }
