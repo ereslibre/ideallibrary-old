@@ -118,7 +118,7 @@ Object::~Object()
         objectsToDelete.pop_back(); // 'this' is the last element, and we are already deleting it =)
         List<Object*>::iterator it;
         for (it = objectsToDelete.begin(); it != objectsToDelete.end(); ++it) {
-            //delete *it; //### WARNING: problematic
+            delete *it;
         }
     }
     d->m_deleteChildrenRecursivelyMutex.unlock();
