@@ -37,7 +37,12 @@ class IDEAL_EXPORT Concurrent
     : public Object
 {
 public:
-    Concurrent(Object *parent);
+    enum Type {
+        Joinable = 0,       ///< this thread should be called to join() in order to free resources
+        Detached            ///< when this thread finishes, the operating system will automatically free its resources
+    };
+
+    Concurrent(Object *parent, Type type = Joinable);
     ~Concurrent();
 
     enum State {
