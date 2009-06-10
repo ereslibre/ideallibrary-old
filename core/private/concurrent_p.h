@@ -28,14 +28,13 @@ namespace IdealCore {
 class Concurrent::Private
 {
 public:
-    Private(Concurrent *q, Type type);
+    Private(Concurrent *q);
     virtual ~Private();
 
     void exec();
     void join();
 
     State        m_state;   // Initialized in base class
-    Type         m_type;    // Initialized in base class
     Concurrent  *q;         // Initialized in base class
 };
 

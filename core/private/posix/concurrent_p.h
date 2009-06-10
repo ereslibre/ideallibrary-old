@@ -30,13 +30,12 @@ class Concurrent::PrivateImpl
     : public Concurrent::Private
 {
 public:
-    PrivateImpl(Concurrent *q, Type type);
+    PrivateImpl(Concurrent *q);
     ~PrivateImpl();
 
     static void *entryPoint(void *param);
 
-    pthread_t      m_thread;
-    pthread_attr_t m_attr;
+    pthread_t m_thread;
 };
 
 }

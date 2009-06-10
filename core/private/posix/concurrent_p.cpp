@@ -25,15 +25,13 @@
 
 namespace IdealCore {
 
-Concurrent::PrivateImpl::PrivateImpl(Concurrent *q, Type type)
-    : Private(q, type)
+Concurrent::PrivateImpl::PrivateImpl(Concurrent *q)
+    : Private(q)
 {
-    pthread_attr_init(&m_attr);
 }
 
 Concurrent::PrivateImpl::~PrivateImpl()
 {
-    pthread_attr_destroy(&m_attr);
 }
 
 void *Concurrent::PrivateImpl::entryPoint(void *param)
@@ -42,22 +40,18 @@ void *Concurrent::PrivateImpl::entryPoint(void *param)
     concurrent->d->m_state = Running;
     concurrent->run();
     concurrent->d->m_state = Finished;
+    concurrent->emit(concurrent->finished);
     return 0;
 }
 
 void Concurrent::Private::exec()
 {
-    if (m_type == Detached) {
-        pthread_attr_setdetachstate(&D_I->m_attr, PTHREAD_CREATE_DETACHED);
-    }
-    pthread_create(&D_I->m_thread, &D_I->m_attr, PrivateImpl::entryPoint, q);
+    pthread_create(&D_I->m_thread, 0, PrivateImpl::entryPoint, q);
 }
 
 void Concurrent::Private::join()
 {
-    if (m_type == Joinable) {
-        pthread_join(D_I->m_thread, NULL);
-    }
+    pthread_join(D_I->m_thread, NULL);
 }
 
 }
