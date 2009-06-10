@@ -36,11 +36,11 @@ class IDEAL_EXPORT Concurrent
 {
 public:
     enum Type {
-        NonJoinable = 0, ///< A non joinable thread will be automatically deleted when its execution finishes.
-        Joinable         ///< A joinable thread will expect join() to be called on it. This object and its resources will not be freed until this happens.
+        NoJoinable = 0, ///< A non joinable thread will be automatically deleted when its execution finishes.
+        Joinable        ///< A joinable thread will expect join() to be called on it. This object and its resources will not be freed until this happens.
     };
 
-    Concurrent(Type type = NonJoinable);
+    Concurrent(Type type = NoJoinable);
     virtual ~Concurrent();
 
     /**

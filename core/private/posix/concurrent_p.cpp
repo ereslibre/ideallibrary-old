@@ -29,7 +29,7 @@ Concurrent::PrivateImpl::PrivateImpl(Concurrent *q, Type type)
     : Private(q, type)
 {
     pthread_attr_init(&m_attr);
-    if (type == NonJoinable) {
+    if (type == NoJoinable) {
         pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_DETACHED);
     }
 }
@@ -43,7 +43,7 @@ void *Concurrent::PrivateImpl::entryPoint(void *param)
 {
     Concurrent *concurrent = static_cast<Concurrent*>(param);
     concurrent->run();
-    if (concurrent->d->m_type == NonJoinable) {
+    if (concurrent->d->m_type == NoJoinable) {
         delete concurrent;
     }
     return 0;
@@ -60,7 +60,7 @@ void Concurrent::Private::join()
         pthread_join(D_I->m_thread, NULL);
         delete q;
     } else {
-        IDEAL_DEBUG_WARNING("join() has been called in a Concurrent object with attribute NonJoinable");
+        IDEAL_DEBUG_WARNING("join() has been called in a Concurrent object with attribute NoJoinable");
     }
 }
 

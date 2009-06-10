@@ -125,43 +125,43 @@ public:
       *      exists->join();
       * @endcode
       */
-    Concurrent *exists(Concurrent::Type type = Concurrent::NonJoinable) const;
+    Concurrent *exists(Concurrent::Type type = Concurrent::NoJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         typeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *type(Concurrent::Type type = Concurrent::NonJoinable) const;
+    Concurrent *type(Concurrent::Type type = Concurrent::NoJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         ownerUserResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *ownerUser(Concurrent::Type type = Concurrent::NonJoinable) const;
+    Concurrent *ownerUser(Concurrent::Type type = Concurrent::NoJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         ownerGroupResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *ownerGroup(Concurrent::Type type = Concurrent::NonJoinable) const;
+    Concurrent *ownerGroup(Concurrent::Type type = Concurrent::NoJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         permissionsResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *permissions(Concurrent::Type type = Concurrent::NonJoinable) const;
+    Concurrent *permissions(Concurrent::Type type = Concurrent::NoJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         sizeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *size(Concurrent::Type type = Concurrent::NonJoinable) const;
+    Concurrent *size(Concurrent::Type type = Concurrent::NoJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         contentTypeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *contentType(Concurrent::Type type = Concurrent::NonJoinable) const;
+    Concurrent *contentType(Concurrent::Type type = Concurrent::NoJoinable) const;
 
     /**
       * @return The URI of the file object.
