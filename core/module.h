@@ -131,6 +131,15 @@ public:
       */
     bool isUnused() const;
 
+    /**
+      * @struct ExtensionInfo module.h core/module.h
+      *
+      * Since a module contains a set of extensions, this struct is the way to get information about
+      * the extensions that are contained within a module. You can decide whether you want to load
+      * this extension or not based on the attributes of this struct.
+      *
+      * @see ExtensionLoader
+      */
     struct ExtensionInfo
     {
         /**
