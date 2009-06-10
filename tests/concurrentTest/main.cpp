@@ -19,8 +19,8 @@
  */
 
 //### WARNING:
-//    This test only exists because of an strange warning got by helgrind. Since I think the code
-//    was just OK, I have filled a bug with a small test case of the problem on the valgrind bug
+//    This test only exists because of a strange warning got by helgrind. Since I think the code
+//    was just OK, I have filled in a bug with a small test case of the problem on the valgrind bug
 //    tracker. So this is hopefully a helgrind bug.
 //
 //    Bug report: https://bugs.kde.org/show_bug.cgi?id=195845
