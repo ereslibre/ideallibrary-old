@@ -1,7 +1,0 @@
-#!/bin/bash
-./waf distclean &> /dev/null
-rm -rf doc &> /dev/null
-nano .doxygen-config
-nano wscript
-./waf dist &> /dev/null
-
