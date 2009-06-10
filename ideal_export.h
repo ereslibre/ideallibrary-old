@@ -45,7 +45,7 @@ static std::mutex outputMutex;
 }
 
 #define IDEAL_DEBUG_WARNING(message) do {                                                                                                          \
-                                         std::lock_guard<std::mutex> lk(IdealCore::outputMutex);                                            \
+                                         std::lock_guard<std::mutex> lk(IdealCore::outputMutex);                                                   \
                                          std::cerr << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": WARNING: " << message << std::endl; \
                                      } while (0)
 
