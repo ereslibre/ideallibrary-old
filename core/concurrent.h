@@ -41,7 +41,7 @@ public:
     };
 
     Concurrent(Type type = NonJoinable);
-    ~Concurrent();
+    virtual ~Concurrent();
 
     /**
       * Creates the new thread and executes run method in a new thread.
