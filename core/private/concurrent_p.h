@@ -34,8 +34,9 @@ public:
     void exec();
     void join();
 
-    State        m_state;   // Initialized in base class
-    Concurrent  *q;         // Initialized in base class
+    State        m_state;      // Initialized in base class
+    bool         m_wasStarted; // Initialized in base class
+    Concurrent  *q;            // Initialized in base class
 };
 
 }

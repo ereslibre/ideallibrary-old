@@ -122,7 +122,7 @@ Object::~Object()
         for (it = objectsToDelete.begin(); it != objectsToDelete.end(); ++it) {
             Object *const currObj = *it;
             Concurrent *const currConcurrent = dynamic_cast<Concurrent*>(currObj);
-            if (currConcurrent) {
+            if (currConcurrent && currConcurrent->wasStarted()) {
                 currConcurrent->join();
             }
             delete currObj;

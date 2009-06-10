@@ -37,6 +37,7 @@ Concurrent::~Concurrent()
 
 void Concurrent::exec()
 {
+    d->m_wasStarted = true;
     d->exec();
 }
 
@@ -48,6 +49,11 @@ void Concurrent::join()
 Concurrent::State Concurrent::state() const
 {
     return d->m_state;
+}
+
+bool Concurrent::wasStarted() const
+{
+    return d->m_wasStarted;
 }
 
 }

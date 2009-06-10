@@ -61,6 +61,11 @@ public:
       */
     State state() const;
 
+    /**
+      * @return Whether this thread was started or not.
+      */
+    bool wasStarted() const;
+
 public:
     IDEAL_SIGNAL(finished);
 
