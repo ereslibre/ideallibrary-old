@@ -43,13 +43,13 @@ public:
     virtual ~Timer();
 
     enum State {
-        Stopped = 0,    ///< this timer is stopped
-        Running         ///< this timer is running
+        Stopped = 0,    ///< This timer is stopped
+        Running         ///< This timer is running
     };
 
     enum TimeoutType {
-        SingleShot = 0, ///< this timer will not restart after a timeout
-        NoSingleShot    ///< this timer will restart after a timeout until manually stopped
+        SingleShot = 0, ///< This timer will not restart after a timeout
+        NoSingleShot    ///< This timer will restart after a timeout until manually stopped
     };
 
     /**

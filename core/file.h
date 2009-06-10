@@ -71,32 +71,32 @@ public:
     virtual ~File();
 
     enum Permissions {
-        NoPermissions      = 0,   ///< no permissions of any kind
-        OwnerCanRead       = 1,   ///< the owner of this file can read it
-        OwnerCanWrite      = 2,   ///< the owner of this file can write on it
-        OwnerCanExecute    = 4,   ///< the owner of this file can execute it
-        OwnerMask          = 7,   ///< masks the Permissions flags on the owner only
-        GroupCanRead       = 8,   ///< the group of this file can read it
-        GroupCanWrite      = 16,  ///< the group of this file can write on it
-        GroupCanExecute    = 32,  ///< the group of this file can execute it
-        GroupMask          = 56,  ///< masks the Permissions flags on the group only
-        OthersCanRead      = 64,  ///< others can read this file
-        OthersCanWrite     = 128, ///< others can write on this file
-        OthersCanExecute   = 256, ///< others can execute this file
-        OthersMask         = 448, ///< masks the Permissions flags on others only
-        UnknownPermissions = 512  ///< unknown permissions
+        NoPermissions      = 0,   ///< No permissions of any kind
+        OwnerCanRead       = 1,   ///< The owner of this file can read it
+        OwnerCanWrite      = 2,   ///< The owner of this file can write on it
+        OwnerCanExecute    = 4,   ///< The owner of this file can execute it
+        OwnerMask          = 7,   ///< Masks the Permissions flags on the owner only
+        GroupCanRead       = 8,   ///< The group of this file can read it
+        GroupCanWrite      = 16,  ///< The group of this file can write on it
+        GroupCanExecute    = 32,  ///< The group of this file can execute it
+        GroupMask          = 56,  ///< Masks the Permissions flags on the group only
+        OthersCanRead      = 64,  ///< Others can read this file
+        OthersCanWrite     = 128, ///< Others can write on this file
+        OthersCanExecute   = 256, ///< Others can execute this file
+        OthersMask         = 448, ///< Masks the Permissions flags on others only
+        UnknownPermissions = 512  ///< Unknown permissions
     };
 
     enum Type {
-        UnknownType     = 0,  ///< this is an unknown type of file
-        RegularFile     = 1,  ///< this is a regular file
-        Directory       = 2,  ///< this is a directory
-        CharacterDevice = 4,  ///< this is a character device
-        BlockDevice     = 8,  ///< this is a block device
-        Device          = 12, ///< this is a device, character or block one
-        SymbolicLink    = 16, ///< this is a symbolic link
-        Socket          = 32, ///< this is a socket
-        Pipe            = 64  ///< this is a pipe
+        UnknownType     = 0,  ///< This is an unknown type of file
+        RegularFile     = 1,  ///< This is a regular file
+        Directory       = 2,  ///< This is a directory
+        CharacterDevice = 4,  ///< This is a character device
+        BlockDevice     = 8,  ///< This is a block device
+        Device          = 12, ///< This is a device, character or block one
+        SymbolicLink    = 16, ///< This is a symbolic link
+        Socket          = 32, ///< This is a socket
+        Pipe            = 64  ///< This is a pipe
     };
 
     /**
