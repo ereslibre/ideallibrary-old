@@ -24,6 +24,8 @@
 #include <core/application.h>
 #include "private/application_p.h"
 
+#include <core/concurrent.h>
+
 namespace IdealCore {
 
 Object::Private::Private(Object *q)
@@ -118,7 +120,12 @@ Object::~Object()
         objectsToDelete.pop_back(); // 'this' is the last element, and we are already deleting it =)
         List<Object*>::iterator it;
         for (it = objectsToDelete.begin(); it != objectsToDelete.end(); ++it) {
-            delete *it;
+            Object *const currObj = *it;
+            Concurrent *const currConcurrent = dynamic_cast<Concurrent*>(currObj);
+            if (currConcurrent) {
+                currConcurrent->join();
+            }
+            delete currObj;
         }
     }
     d->m_deleteChildrenRecursivelyMutex.unlock();
