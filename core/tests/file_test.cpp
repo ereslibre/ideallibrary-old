@@ -268,8 +268,8 @@ void FileTest::testConstructor()
 
 int main(int argc, char **argv)
 {
-    Application *app = new Application(argc, argv);
-    s_application = app;
+    Application app(argc, argv);
+    s_application = &app;
 
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
