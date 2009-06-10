@@ -69,7 +69,8 @@ CondVar cond1 = CondVar(&mutex1);
 CondVar cond2 = CondVar(&mutex2);
 
 class OneClass
-    : public Concurrent
+    : public Object
+    , public Concurrent
 {
 public:
     OneClass(Object *parent);
@@ -81,7 +82,7 @@ protected:
 };
 
 OneClass::OneClass(Object *parent)
-    : Concurrent(parent)
+    : Object(parent)
     , object(this)
 {
 }
@@ -100,7 +101,8 @@ void OneClass::run()
 }
 
 class OtherClass
-    : public Concurrent
+    : public Object
+    , public Concurrent
 {
 public:
     OtherClass(Object *parent);
@@ -112,7 +114,7 @@ protected:
 };
 
 OtherClass::OtherClass(Object *parent)
-    : Concurrent(parent)
+    : Object(parent)
     , object(this)
 {
 }

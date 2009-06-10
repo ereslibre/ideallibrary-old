@@ -32,7 +32,7 @@
 namespace IdealCore {
 
 File::Private::Job::Job(File *file)
-    : Concurrent(file)
+    : Object(file)
     , m_file(file)
     , m_protocolHandler(0)
 {

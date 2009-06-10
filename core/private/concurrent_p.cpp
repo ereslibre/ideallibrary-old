@@ -23,9 +23,7 @@
 namespace IdealCore {
 
 Concurrent::Private::Private(Concurrent *q)
-    : m_state(NotStarted)
-    , m_wasStarted(false)
-    , q(q)
+    : q(q)
 {
 }
 

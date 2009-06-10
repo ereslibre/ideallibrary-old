@@ -56,36 +56,29 @@ class OneClass
     : public Concurrent
 {
 public:
-    OneClass(Object *parent);
-
     AnObject *object;
 
 protected:
     void run();
 };
 
-OneClass::OneClass(Object *parent)
-    : Concurrent(parent)
-{
-}
-
 void OneClass::run()
 {
-    connect(object->aSignal, object, &AnObject::slot);
-    connect(object->aSignal, object, &AnObject::slot);
-    connect(object->aSignal, object, &AnObject::slot);
-    connect(object->aSignal, object, &AnObject::slot);
-    connect(object->aSignal, object, &AnObject::slot);
-    disconnect(object->aSignal, object, &AnObject::slot);
-    disconnect(object->aSignal, object, &AnObject::slot);
-    disconnect(object->aSignal, object, &AnObject::slot);
-    disconnect(object->aSignal, object, &AnObject::slot);
+    Object::connect(object->aSignal, object, &AnObject::slot);
+    Object::connect(object->aSignal, object, &AnObject::slot);
+    Object::connect(object->aSignal, object, &AnObject::slot);
+    Object::connect(object->aSignal, object, &AnObject::slot);
+    Object::connect(object->aSignal, object, &AnObject::slot);
+    Object::disconnect(object->aSignal, object, &AnObject::slot);
+    Object::disconnect(object->aSignal, object, &AnObject::slot);
+    Object::disconnect(object->aSignal, object, &AnObject::slot);
+    Object::disconnect(object->aSignal, object, &AnObject::slot);
     object->emitIt();
     object->emitIt();
     object->emitIt();
     object->emitIt();
     object->emitIt();
-    disconnect(object->aSignal, object, &AnObject::slot);
+    Object::disconnect(object->aSignal, object, &AnObject::slot);
 }
 
 int main(int argc, char **argv)
@@ -93,9 +86,9 @@ int main(int argc, char **argv)
     Application app(argc, argv);
 
     AnObject *anObject = new AnObject(&app);
-    OneClass *oneClass = new OneClass(&app);
+    OneClass *oneClass = new OneClass;
     oneClass->object = anObject;
-    OneClass *otherClass = new OneClass(&app);
+    OneClass *otherClass = new OneClass;
     otherClass->object = anObject;
 
     oneClass->exec();

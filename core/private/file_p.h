@@ -48,7 +48,8 @@ public:
 };
 
 class File::Private::Job
-    : public Concurrent
+    : public Object
+    , public Concurrent
 {
 public:
     enum Operation {

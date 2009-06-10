@@ -27,17 +27,9 @@ using namespace IdealCore;
 class OneClass
     : public Concurrent
 {
-public:
-    OneClass(Object *parent);
-
 protected:
     void run();
 };
-
-OneClass::OneClass(Object *parent)
-    : Concurrent(parent)
-{
-}
 
 void OneClass::run()
 {
@@ -49,7 +41,7 @@ int main(int argc, char **argv)
 
     Application *app = new Application(argc, argv);
 
-    OneClass *oneClass = new OneClass(app);
+    OneClass *oneClass = new OneClass;
     oneClass->exec();
 
     Timer::wait(500);

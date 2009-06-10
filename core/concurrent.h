@@ -22,7 +22,6 @@
 #define CONCURRENT_H
 
 #include <ideal_export.h>
-#include <core/object.h>
 
 namespace IdealCore {
 
@@ -34,17 +33,10 @@ namespace IdealCore {
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */
 class IDEAL_EXPORT Concurrent
-    : public Object
 {
 public:
-    Concurrent(Object *parent);
+    Concurrent();
     ~Concurrent();
-
-    enum State {
-        NotStarted = 0,     ///< this thread has not started yet (not called to exec() yet)
-        Running,            ///< this thread is running
-        Finished            ///< this thread has finished its execution
-    };
 
     /**
       * Creates the new thread and executes run method in a new thread.
@@ -55,19 +47,6 @@ public:
       * Waits for this thread to finish.
       */
     void join();
-
-    /**
-      * @return The current state of this thread.
-      */
-    State state() const;
-
-    /**
-      * @return Whether this thread was started or not.
-      */
-    bool wasStarted() const;
-
-public:
-    IDEAL_SIGNAL(finished);
 
 protected:
     /**

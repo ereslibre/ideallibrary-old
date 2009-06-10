@@ -23,10 +23,8 @@
 
 namespace IdealCore {
 
-Concurrent::Concurrent(Object *parent)
-    : Object(parent)
-    , IDEAL_SIGNAL_INIT(finished)
-    , d(new PrivateImpl(this))
+Concurrent::Concurrent()
+    : d(new PrivateImpl(this))
 {
 }
 
@@ -37,23 +35,12 @@ Concurrent::~Concurrent()
 
 void Concurrent::exec()
 {
-    d->m_wasStarted = true;
     d->exec();
 }
 
 void Concurrent::join()
 {
     d->join();
-}
-
-Concurrent::State Concurrent::state() const
-{
-    return d->m_state;
-}
-
-bool Concurrent::wasStarted() const
-{
-    return d->m_wasStarted;
 }
 
 }

@@ -24,8 +24,7 @@
 namespace IdealGUI {
 
 Application::Private::GUIEventHandler::GUIEventHandler(Application::Private *priv)
-    : IdealCore::Concurrent(priv->q)
-    , priv(priv)
+    : priv(priv)
 {
 }
 
