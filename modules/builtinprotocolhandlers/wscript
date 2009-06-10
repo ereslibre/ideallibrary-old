@@ -16,7 +16,6 @@ def build(bld):
         includes     = '../..',
         uselib       = 'LIBCURL',
         uselib_local = 'idealcore',
-        install_path = '${PREFIX}/lib/ideal',
-        vnum         = bld.env['LIBVERSION']
+        install_path = '${PREFIX}/lib/ideal'
     )
 
