@@ -18,6 +18,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
+//### WARNING:
+//    This test only exists because of an strange warning got by helgrind. Since I think the code
+//    was just OK, I have filled a bug with a small test case of the problem on the valgrind bug
+//    tracker. So this is hopefully a helgrind bug.
+//
+//    Bug report: https://bugs.kde.org/show_bug.cgi?id=195845
+//    Test case:  https://bugs.kde.org/attachment.cgi?id=34397
+
 #include <core/application.h>
 #include <core/concurrent.h>
 #include <core/timer.h>
