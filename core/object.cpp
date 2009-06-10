@@ -24,8 +24,6 @@
 #include <core/application.h>
 #include "private/application_p.h"
 
-#include <core/concurrent.h>
-
 namespace IdealCore {
 
 Object::Private::Private(Object *q)
