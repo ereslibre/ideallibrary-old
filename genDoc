@@ -1,2 +1,3 @@
 #!/bin/bash
+./waf distclean &> /dev/null
 doxygen .doxygen-config &> /dev/null
