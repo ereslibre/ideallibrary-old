@@ -120,48 +120,48 @@ public:
       *      File f("ftp://ftp.myserver.com/path/to/my/file.txt", parent);
       *      connectMulti(f.existsResult, myObject, &MyObject::existsResult);
       *      connectMulti(f.error, myObject, &MyObject::error);
-      *      Concurrent *exists = f.exists();
+      *      Concurrent *exists = f.exists(Concurrent::Joinable);
       *      exists->exec();
       *      exists->join();
       * @endcode
       */
-    Concurrent *exists(Concurrent::Type type = Concurrent::Joinable) const;
+    Concurrent *exists(Concurrent::Type type = Concurrent::NonJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         typeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *type(Concurrent::Type type = Concurrent::Joinable) const;
+    Concurrent *type(Concurrent::Type type = Concurrent::NonJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         ownerUserResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *ownerUser(Concurrent::Type type = Concurrent::Joinable) const;
+    Concurrent *ownerUser(Concurrent::Type type = Concurrent::NonJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         ownerGroupResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *ownerGroup(Concurrent::Type type = Concurrent::Joinable) const;
+    Concurrent *ownerGroup(Concurrent::Type type = Concurrent::NonJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         permissionsResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *permissions(Concurrent::Type type = Concurrent::Joinable) const;
+    Concurrent *permissions(Concurrent::Type type = Concurrent::NonJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         sizeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *size(Concurrent::Type type = Concurrent::Joinable) const;
+    Concurrent *size(Concurrent::Type type = Concurrent::NonJoinable) const;
 
     /**
       * @return A constructed concurrent object that will be able to run asynchronously, signaling
       *         contentTypeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *contentType(Concurrent::Type type = Concurrent::Joinable) const;
+    Concurrent *contentType(Concurrent::Type type = Concurrent::NonJoinable) const;
 
     /**
       * @return The URI of the file object.
