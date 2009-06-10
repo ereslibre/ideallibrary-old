@@ -36,9 +36,6 @@ void OneClass::run()
     IDEAL_SDEBUG("Try output concurrently");
     IDEAL_DEBUG("Try output concurrently");
     IDEAL_DEBUG_WARNING("Try output concurrently");
-    IDEAL_SDEBUG("Try output concurrently");
-    IDEAL_DEBUG("Try output concurrently");
-    IDEAL_DEBUG_WARNING("Try output concurrently");
 }
 
 int main(int argc, char **argv)
