@@ -112,7 +112,7 @@ public:
     };
 
     Application(int argc, char **argv);
-    virtual ~Application();
+    ~Application();
 
     /**
       * An option without argument will be added to the list of possible options being passed
