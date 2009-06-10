@@ -22,8 +22,9 @@
 
 namespace IdealCore {
 
-Concurrent::Private::Private(Concurrent *q)
-    : q(q)
+Concurrent::Private::Private(Concurrent *q, Type type)
+    : m_type(type)
+    , q(q)
 {
 }
 

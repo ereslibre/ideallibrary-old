@@ -31,8 +31,8 @@
 
 namespace IdealCore {
 
-File::Private::Job::Job(File *file)
-    : Object(file)
+File::Private::Job::Job(File *file, Type type)
+    : Concurrent(type)
     , m_file(file)
     , m_protocolHandler(0)
 {
@@ -40,7 +40,7 @@ File::Private::Job::Job(File *file)
 
 ProtocolHandler *File::Private::Job::findProtocolHandler()
 {
-    Application::Private *const app_d = application()->d;
+    Application::Private *const app_d = m_file->application()->d;
     List<ProtocolHandler*>::iterator it;
     {
         ContextMutexLocker cml(app_d->m_protocolHandlerCacheMutex);
@@ -54,7 +54,7 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
         }
     }
     ProtocolHandler *res = 0;
-    Module *module = ExtensionLoader::loadModule(IDEALLIBRARY_PREFIX "/lib/ideal/libbuiltinprotocolhandlers.so", this);
+    Module *module = ExtensionLoader::loadModule(IDEALLIBRARY_PREFIX "/lib/ideal/libbuiltinprotocolhandlers.so", m_file);
     List<Module::ExtensionInfo> extensionList = module->extensionInfoList();
     List<Module::ExtensionInfo>::iterator extIt;
     for (extIt = extensionList.begin(); extIt != extensionList.end(); ++extIt) {
@@ -62,7 +62,7 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
         if (!extensionInfo.componentOwner.compare("ideallibrary")) {
             ProtocolHandler::AdditionalInfo *additionalInfo = static_cast<ProtocolHandler::AdditionalInfo*>(extensionInfo.additionalInfo);
             if (additionalInfo->handlesProtocols.contains(m_file->d->m_uri.scheme())) {
-                res = ExtensionLoader::loadExtension<ProtocolHandler>(module, extensionInfo.entryPoint, this);
+                res = ExtensionLoader::loadExtension<ProtocolHandler>(module, extensionInfo.entryPoint, m_file);
                 break;
             }
         }
@@ -72,7 +72,7 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
 
 void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
 {
-    Application::Private *const app_d = application()->d;
+    Application::Private *const app_d = m_file->application()->d;
     ContextMutexLocker cml(app_d->m_protocolHandlerCacheMutex);
     if (app_d->m_protocolHandlerCache.size() < PH_CACHE_SIZE) {
         app_d->m_protocolHandlerCache.push_back(protocolHandler);
@@ -186,51 +186,51 @@ File::~File()
     delete d;
 }
 
-Concurrent *File::exists() const
+Concurrent *File::exists(Concurrent::Type type) const
 {
-    Private::Job *job = new Private::Job(const_cast<File*>(this));
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileExists;
     return job;
 }
 
-Concurrent *File::type() const
+Concurrent *File::type(Concurrent::Type type) const
 {
-    Private::Job *job = new Private::Job(const_cast<File*>(this));
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileType;
     return job;
 }
 
-Concurrent *File::ownerUser() const
+Concurrent *File::ownerUser(Concurrent::Type type) const
 {
-    Private::Job *job = new Private::Job(const_cast<File*>(this));
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileOwnerUser;
     return job;
 }
 
-Concurrent *File::ownerGroup() const
+Concurrent *File::ownerGroup(Concurrent::Type type) const
 {
-    Private::Job *job = new Private::Job(const_cast<File*>(this));
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileOwnerGroup;
     return job;
 }
 
-Concurrent *File::permissions() const
+Concurrent *File::permissions(Concurrent::Type type) const
 {
-    Private::Job *job = new Private::Job(const_cast<File*>(this));
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FilePermissions;
     return job;
 }
 
-Concurrent *File::size() const
+Concurrent *File::size(Concurrent::Type type) const
 {
-    Private::Job *job = new Private::Job(const_cast<File*>(this));
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileSize;
     return job;
 }
 
-Concurrent *File::contentType() const
+Concurrent *File::contentType(Concurrent::Type type) const
 {
-    Private::Job *job = new Private::Job(const_cast<File*>(this));
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileContentType;
     return job;
 }

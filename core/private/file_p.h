@@ -48,8 +48,7 @@ public:
 };
 
 class File::Private::Job
-    : public Object
-    , public Concurrent
+    : public Concurrent
 {
 public:
     enum Operation {
@@ -62,7 +61,7 @@ public:
         FileContentType
     };
 
-    Job(File *file);
+    Job(File *file, Type type);
 
     ProtocolHandler *findProtocolHandler();
     void cacheOrDiscard(ProtocolHandler *protocolHandler);

@@ -25,30 +25,43 @@
 
 namespace IdealCore {
 
-Concurrent::PrivateImpl::PrivateImpl(Concurrent *q)
-    : Private(q)
+Concurrent::PrivateImpl::PrivateImpl(Concurrent *q, Type type)
+    : Private(q, type)
 {
+    pthread_attr_init(&m_attr);
+    if (type == NonJoinable) {
+        pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_DETACHED);
+    }
 }
 
 Concurrent::PrivateImpl::~PrivateImpl()
 {
+    pthread_attr_destroy(&m_attr);
 }
 
 void *Concurrent::PrivateImpl::entryPoint(void *param)
 {
     Concurrent *concurrent = static_cast<Concurrent*>(param);
     concurrent->run();
+    if (concurrent->d->m_type == NonJoinable) {
+        delete concurrent;
+    }
     return 0;
 }
 
 void Concurrent::Private::exec()
 {
-    pthread_create(&D_I->m_thread, 0, PrivateImpl::entryPoint, q);
+    pthread_create(&D_I->m_thread, &D_I->m_attr, PrivateImpl::entryPoint, q);
 }
 
 void Concurrent::Private::join()
 {
-    pthread_join(D_I->m_thread, NULL);
+    if (m_type == Joinable) {
+        pthread_join(D_I->m_thread, NULL);
+        delete q;
+    } else {
+        IDEAL_DEBUG_WARNING("join() has been called in a Concurrent object with attribute NonJoinable");
+    }
 }
 
 }

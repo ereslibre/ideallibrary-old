@@ -23,8 +23,8 @@
 
 namespace IdealCore {
 
-Concurrent::Concurrent()
-    : d(new PrivateImpl(this))
+Concurrent::Concurrent(Type type)
+    : d(new PrivateImpl(this, type))
 {
 }
 

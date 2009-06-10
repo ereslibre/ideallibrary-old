@@ -35,7 +35,12 @@ namespace IdealCore {
 class IDEAL_EXPORT Concurrent
 {
 public:
-    Concurrent();
+    enum Type {
+        NonJoinable = 0, ///< A non joinable thread will be automatically deleted when its execution finishes.
+        Joinable,        ///< A joinable thread will expect join() to be called on it. Its resources will not be freed until this happens.
+    };
+
+    Concurrent(Type type = NonJoinable);
     ~Concurrent();
 
     /**
