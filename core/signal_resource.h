@@ -34,6 +34,9 @@ class SignalBase;
   */
 class IDEAL_EXPORT SignalResource
 {
+    friend class Object;
+    friend class SignalBase;
+
 public:
     SignalResource();
     virtual ~SignalResource();
@@ -66,7 +69,7 @@ public:
       */
     virtual bool isEmitBlocked() const;
 
-public:
+private:
     Mutex m_mutex;
 };
 
