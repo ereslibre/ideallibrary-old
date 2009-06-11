@@ -37,17 +37,12 @@ void OneClass::run()
 
 int main(int argc, char **argv)
 {
-    // Note this code is for testing purposes. It is preferred to do something like:
-    // Application app(argc, argv);
-
-    Application *app = new Application(argc, argv);
+    Application app(argc, argv);
 
     OneClass *oneClass = new OneClass;
     oneClass->exec();
 
     Timer::wait(500);
-
-    delete app;
 
     return 0;
 }
