@@ -53,6 +53,16 @@ public:
       */
     void join();
 
+    /**
+      * @return The type of this thread.
+      */
+    Type type() const;
+
+    /**
+      * @return Whether exec() was called on this thread or not.
+      */
+    bool wasStarted() const;
+
 protected:
     /**
      * When calling to exec() the code inside this method will be executed in a new thread.

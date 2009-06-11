@@ -24,6 +24,7 @@ namespace IdealCore {
 
 Concurrent::Private::Private(Concurrent *q, Type type)
     : m_type(type)
+    , m_wasStarted(false)
     , q(q)
 {
 }

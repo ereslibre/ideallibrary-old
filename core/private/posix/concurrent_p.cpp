@@ -51,6 +51,7 @@ void *Concurrent::PrivateImpl::entryPoint(void *param)
 
 void Concurrent::Private::exec()
 {
+    m_wasStarted = true;
     pthread_create(&D_I->m_thread, &D_I->m_attr, PrivateImpl::entryPoint, q);
 }
 
