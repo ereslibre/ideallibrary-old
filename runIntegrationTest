@@ -18,8 +18,28 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
+testsToSkip=( guiTest guiTest2 idleTest timerTest )
+numTestsToSkip=${#testsToSkip[@]}
+skipTest=false
+
 for test in $( ls tests ); do
-    echo -e "(*) $test"
+    if [ $test == "wscript" ]; then
+        continue
+    fi
+    for (( i = 0; i < $numTestsToSkip; i++ ))
+    do
+        if [ ${testsToSkip[$i]} == $test ]; then
+            skipTest=true
+            break
+        fi
+    done
+    if [ $skipTest == true ]; then
+        echo "(*) $test (skipping)"
+        echo
+        skipTest=false
+        continue
+    fi
+    echo "(*) $test"
     echo -e "\t1.- Memcheck results:"
     valgrind build/default/tests/$test/$test 2>&1 | egrep 'ERROR|malloc\/free' | cut -d' ' -f2- | sed "s/^/\t\t/"
     echo -e "\t2.- Helgrind results:"
