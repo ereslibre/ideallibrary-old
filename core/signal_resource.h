@@ -36,8 +36,6 @@ class IDEAL_EXPORT SignalResource
 {
     friend class Object;
     friend class SignalBase;
-    template <typename Receiver, typename Member, typename... Param>
-    friend class Callback;
 
 public:
     SignalResource();

@@ -23,7 +23,6 @@
 namespace IdealCore {
 
 SignalResource::SignalResource()
-    : m_mutex(Mutex::Recursive)
 {
 }
 

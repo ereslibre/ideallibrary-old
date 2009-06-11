@@ -94,7 +94,6 @@ public:
 
     virtual void operator()(const Param&... param)
     {
-        ContextMutexLocker cml(this->m_receiver->m_mutex);
         if (static_cast<Receiver*>(this->m_receiver)->areSignalsBlocked()) {
             return;
         }
@@ -471,17 +470,11 @@ private:
         if (m_parent->isEmitBlocked() && !m_isDestroyedSignal) {
             return;
         }
-        {
-            ContextMutexLocker cml(m_beingEmittedMutex);
-            m_beingEmitted = true;
-        }
-        List<CallbackDummy*> connections;
-        {
-            ContextMutexLocker cml(m_connectionsMutex);
-            connections = m_connections;
-        }
+        ContextMutexLocker cml(m_beingEmittedMutex);
+        m_beingEmitted = true;
         List<CallbackDummy*>::const_iterator it;
-        for (it = connections.begin(); it != connections.end(); ++it) {
+        ContextMutexLocker cml2(m_connectionsMutex);
+        for (it = m_connections.begin(); it != m_connections.end(); ++it) {
             CallbackBase<Param...> *callbackBase = static_cast<CallbackBase<Param...>*>(*it);
             (*callbackBase)(param...);
             List<SignalBase*>::iterator it;
@@ -493,10 +486,7 @@ private:
                 }
             }
         }
-        {
-            ContextMutexLocker cml(m_beingEmittedMutex);
-            m_beingEmitted = false;
-        }
+        m_beingEmitted = false;
     }
 };
 
