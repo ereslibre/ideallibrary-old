@@ -50,5 +50,5 @@ int main(int argc, char **argv)
 
     Timer::wait(500);
 
-    return app.quit();
+    return 0;
 }

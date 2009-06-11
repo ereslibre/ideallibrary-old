@@ -161,5 +161,5 @@ int main(int argc, char **argv)
     delete myObject;
     delete otherObject;
 
-    return app.quit();
+    return 0;
 }

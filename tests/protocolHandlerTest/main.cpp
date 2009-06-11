@@ -68,5 +68,5 @@ int main(int argc, char **argv)
 
     delete protocolHandler;
 
-    return app.quit();
+    return 0;
 }

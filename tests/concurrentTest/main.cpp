@@ -37,7 +37,8 @@ void OneClass::run()
 
 int main(int argc, char **argv)
 {
-    // Please note that you should _never_ write your code like this:
+    // Note this code is for testing purposes. It is preferred to do something like:
+    // Application app(argc, argv);
 
     Application *app = new Application(argc, argv);
 
@@ -49,16 +50,4 @@ int main(int argc, char **argv)
     delete app;
 
     return 0;
-
-    // This should have written like _this_ instead:
-#if 0
-    Application app(argc, argv);
-
-    OneClass *oneClass = new OneClass(&app);
-    oneClass->exec();
-
-    Timer::wait(500);
-
-    return app.quit();
-#endif
 }

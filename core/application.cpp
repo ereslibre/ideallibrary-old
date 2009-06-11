@@ -75,9 +75,9 @@ int Application::exec()
     return 0;
 }
 
-int Application::quit()
+void Application::quit()
 {
-    return d->quit();
+    d->quit();
 }
 
 }

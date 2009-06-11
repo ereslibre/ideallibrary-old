@@ -29,5 +29,5 @@ int main(int argc, char **argv)
 
     Process::execCommand("df");
 
-    return app.quit();
+    return 0;
 }

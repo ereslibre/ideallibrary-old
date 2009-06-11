@@ -43,7 +43,7 @@ namespace IdealCore {
   * {
   *     Application app(argc, argv);
   *     // code
-  *     return app.quit();
+  *     return 0;
   * }
   * @endcode
   *
@@ -186,14 +186,14 @@ public:
       * {
       *     Application app(argc, argv);
       *     // Here your code
-      *     return app.quit();
+      *     return 0;
       * }
       * @endcode
       *
       * This is only recommended for extremely simple applications that don't require event
       * processing, since no event loop will be run here.
       */
-    int quit();
+    void quit();
 
 public:
     /**

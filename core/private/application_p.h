@@ -48,7 +48,7 @@ public:
     void processDelayedDeletions();
     void unloadUnneededDynamicLibraries();
 
-    int quit();
+    void quit();
 
     static bool timerSort(const Timer *left, const Timer *right);
     void checkTimers();
