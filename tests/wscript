@@ -9,6 +9,7 @@ def build(bld):
                      'callAfterTest',
                      'concurrentTest',
                      'concurrentTest2',
+                     'concurrentTest3',
                      'connectionTest',
                      'crossedDeletions',
                      'deleteAfterSignal',

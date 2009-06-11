@@ -36,9 +36,29 @@ class IDEAL_EXPORT Concurrent
 {
 public:
     enum Type {
-        Joinable = 0, ///< A joinable thread will expect join() to be called on it. Additionally,
-                      ///< you are the responsible of deleting this Concurrent object.
+        Joinable = 0, ///< A joinable thread will expect join() to be called on it. join() can be called
+                      ///< after the thread has finished its execution. Additionally, you are the
+                      ///< responsible of deleting this object. You can reuse this object if you wish.
+                      ///< For example:
+                      /// @code
+                      /// MyJoinableConcurrent *myConcurrent = new MyJoinableConcurrent;
+                      /// myConcurrent->exec();
+                      /// myConcurrent->join();
+                      /// myConcurrent->exec();
+                      /// myConcurrent->join();
+                      /// delete myConcurrent;
+                      /// @endcode
         NoJoinable,   ///< A non joinable thread will be automatically freed when its execution finishes.
+                      ///< This means that you are not the responsiblel of deleting it. It is very important
+                      ///< to understand that NoJoinable Concurrent objects cannot be synchronized in any way.
+                      ///< They start they life, and they dissappear. The interesting advantage is that they
+                      ///< obviously can emit signals. So, when using them, you have to think as a naturally
+                      ///< asynchronous relationship. For example:
+                      /// @code
+                      /// MyNoJoinableConcurrent *myConcurrent = new MyNoJoinableConcurrent;
+                      /// connect(myConcurrent->resultOfHeavyMath, myResult, &MyResult::printResult);
+                      /// myConcurrent->exec();
+                      /// @endcode
     };
 
     Concurrent(Type type = Joinable);
