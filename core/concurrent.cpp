@@ -48,9 +48,4 @@ Concurrent::Type Concurrent::type() const
     return d->m_type;
 }
 
-bool Concurrent::wasStarted() const
-{
-    return d->m_wasStarted;
-}
-
 }
