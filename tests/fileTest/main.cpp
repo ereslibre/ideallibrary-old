@@ -54,8 +54,9 @@ public:
         if (numReceived == 3) {
             numReceivedMutex.unlock();
             quit();
+        } else {
+            numReceivedMutex.unlock();
         }
-        numReceivedMutex.unlock();
     }
 
 private:
