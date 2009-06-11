@@ -83,7 +83,6 @@ protected:
 
 OneClass::OneClass(Object *parent)
     : Object(parent)
-    , Concurrent(Joinable)
     , object(new AnObject(this))
 {
 }
@@ -116,7 +115,6 @@ protected:
 
 OtherClass::OtherClass(Object *parent)
     : Object(parent)
-    , Concurrent(Joinable)
     , object(new AnObject(this))
 {
 }
