@@ -80,15 +80,6 @@ Application::PrivateImpl::PrivateImpl(Application *q)
     : Private(q)
 {
     setlocale(LC_ALL, "");
-#if 0
-    {
-        struct sigaction sa;
-        sigemptyset(&sa.sa_mask);
-        sa.sa_flags = 0;
-        sa.sa_handler = SIG_IGN;
-        sigaction(SIGINT, &sa, NULL);
-    }
-#endif
     {
         struct sigaction sa;
         sigemptyset(&sa.sa_mask);
@@ -96,14 +87,6 @@ Application::PrivateImpl::PrivateImpl(Application *q)
         sa.sa_sigaction = signal_recv;
         sa.sa_flags = SA_SIGINFO;
         sigaction(SIGILL, &sa, NULL);
-    }
-    {
-        struct sigaction sa;
-        sigemptyset(&sa.sa_mask);
-        sa.sa_flags = 0;
-        sa.sa_sigaction = signal_recv;
-        sa.sa_flags = SA_SIGINFO;
-        sigaction(SIGABRT, &sa, NULL);
     }
     {
         struct sigaction sa;
@@ -283,7 +266,8 @@ void Application::Private::unloadUnneededDynamicLibraries()
 
 void Application::Private::quit()
 {
-    exit(EXIT_SUCCESS);
+    ContextMutexLocker cml(m_continueExecutionMutex);
+    m_continueExecution = false;
 }
 
 }
