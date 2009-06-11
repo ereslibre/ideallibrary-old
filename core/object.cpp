@@ -103,6 +103,8 @@ Object::Object(Object *parent)
 
 Object::~Object()
 {
+    m_mutex.tryLock();
+    m_mutex.unlock();
     emit(destroyed);
     d->cleanConnections();
     {
@@ -118,7 +120,9 @@ Object::~Object()
         objectsToDelete.pop_back(); // 'this' is the last element, and we are already deleting it =)
         List<Object*>::iterator it;
         for (it = objectsToDelete.begin(); it != objectsToDelete.end(); ++it) {
-            delete *it;
+            Object *const currObject = *it;
+            currObject->m_mutex.lock();
+            delete currObject;
         }
     }
     d->m_deleteChildrenRecursivelyMutex.unlock();

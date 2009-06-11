@@ -23,6 +23,7 @@
 
 #include <ideal_export.h>
 #include <core/ideal_list.h>
+#include <core/mutex.h>
 
 namespace IdealCore {
 
@@ -64,6 +65,9 @@ public:
       * Returns whether emit() is blocked for this object or not.
       */
     virtual bool isEmitBlocked() const;
+
+public:
+    Mutex m_mutex;
 };
 
 }
