@@ -19,7 +19,7 @@
  */
 
 #include <core/application.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <core/mutex.h>
 #include <core/condvar.h>
 #include <core/timer.h>
@@ -70,7 +70,7 @@ CondVar cond2 = CondVar(&mutex2);
 
 class OneClass
     : public Object
-    , public Concurrent
+    , public Thread
 {
 public:
     OneClass(Object *parent);
@@ -102,7 +102,7 @@ void OneClass::run()
 
 class OtherClass
     : public Object
-    , public Concurrent
+    , public Thread
 {
 public:
     OtherClass(Object *parent);

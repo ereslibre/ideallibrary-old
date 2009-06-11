@@ -18,21 +18,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef CONCURRENT_H
-#define CONCURRENT_H
+#ifndef THREAD_H
+#define THREAD_H
 
 #include <ideal_export.h>
 
 namespace IdealCore {
 
 /**
-  * @class Concurrent concurrent.h core/concurrent.h
+  * @class Thread thread.h core/thread.h
   *
   * Allows you to execute code in a different thread.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */
-class IDEAL_EXPORT Concurrent
+class IDEAL_EXPORT Thread
 {
 public:
     enum Type {
@@ -41,28 +41,28 @@ public:
                       ///< responsible of deleting this object. You can reuse this object if you wish.
                       ///< For example:
                       /// @code
-                      /// MyJoinableConcurrent *myConcurrent = new MyJoinableConcurrent;
-                      /// myConcurrent->exec();
-                      /// myConcurrent->join();
-                      /// myConcurrent->exec();
-                      /// myConcurrent->join();
-                      /// delete myConcurrent;
+                      /// MyJoinableThread *myThread = new MyJoinableThread;
+                      /// myThread->exec();
+                      /// myThread->join();
+                      /// myThread->exec();
+                      /// myThread->join();
+                      /// delete myThread;
                       /// @endcode
         NoJoinable,   ///< A non joinable thread will be automatically freed when its execution finishes.
                       ///< This means that you are not the responsiblel of deleting it. It is very important
-                      ///< to understand that NoJoinable Concurrent objects cannot be synchronized in any way.
+                      ///< to understand that NoJoinable Thread objects cannot be synchronized in any way.
                       ///< They start they life, and they dissappear. The interesting advantage is that they
                       ///< obviously can emit signals. So, when using them, you have to think as a naturally
                       ///< asynchronous relationship. For example:
                       /// @code
-                      /// MyNoJoinableConcurrent *myConcurrent = new MyNoJoinableConcurrent;
-                      /// connect(myConcurrent->resultOfHeavyMath, myResult, &MyResult::printResult);
-                      /// myConcurrent->exec();
+                      /// MyNoJoinableThread *myThread = new MyNoJoinableThread;
+                      /// connect(myThread->resultOfHeavyMath, myResult, &MyResult::printResult);
+                      /// myThread->exec();
                       /// @endcode
     };
 
-    Concurrent(Type type = Joinable);
-    virtual ~Concurrent();
+    Thread(Type type = Joinable);
+    virtual ~Thread();
 
     /**
       * Creates the new thread and executes run method in a new thread.
@@ -93,4 +93,4 @@ private:
 
 }
 
-#endif //CONCURRENT_H
+#endif //THREAD_H

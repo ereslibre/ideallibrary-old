@@ -32,7 +32,7 @@
 namespace IdealCore {
 
 File::Private::Job::Job(File *file, Type type)
-    : Concurrent(type)
+    : Thread(type)
     , m_file(file)
     , m_protocolHandler(0)
 {
@@ -186,49 +186,49 @@ File::~File()
     delete d;
 }
 
-Concurrent *File::exists(Concurrent::Type type) const
+Thread *File::exists(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileExists;
     return job;
 }
 
-Concurrent *File::type(Concurrent::Type type) const
+Thread *File::type(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileType;
     return job;
 }
 
-Concurrent *File::ownerUser(Concurrent::Type type) const
+Thread *File::ownerUser(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileOwnerUser;
     return job;
 }
 
-Concurrent *File::ownerGroup(Concurrent::Type type) const
+Thread *File::ownerGroup(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileOwnerGroup;
     return job;
 }
 
-Concurrent *File::permissions(Concurrent::Type type) const
+Thread *File::permissions(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FilePermissions;
     return job;
 }
 
-Concurrent *File::size(Concurrent::Type type) const
+Thread *File::size(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileSize;
     return job;
 }
 
-Concurrent *File::contentType(Concurrent::Type type) const
+Thread *File::contentType(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileContentType;

@@ -18,34 +18,29 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "concurrent.h"
-#include "private/concurrent_p.h"
+#ifndef THREAD_P_H
+#define THREAD_P_H
+
+#include <core/thread.h>
 
 namespace IdealCore {
 
-Concurrent::Concurrent(Type type)
-    : d(new PrivateImpl(this, type))
+class Thread::Private
 {
-}
+public:
+    Private(Thread *q, Type type);
+    virtual ~Private();
 
-Concurrent::~Concurrent()
-{
-    delete d;
-}
+    void exec();
+    void join();
 
-void Concurrent::exec()
-{
-    d->exec();
-}
-
-void Concurrent::join()
-{
-    d->join();
-}
-
-Concurrent::Type Concurrent::type() const
-{
-    return d->m_type;
-}
+    Type         m_type; // Initialized in base class
+    Thread  *q;      // Initialized in base class
+};
 
 }
+
+#include <core/private/posix/thread_p.h>
+
+#endif //THREAD_P_H
+

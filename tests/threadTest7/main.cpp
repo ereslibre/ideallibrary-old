@@ -18,19 +18,52 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "concurrent_p.h"
+#include <core/application.h>
+#include <core/thread.h>
+#include <core/timer.h>
 
-namespace IdealCore {
+using namespace IdealCore;
 
-Concurrent::Private::Private(Concurrent *q, Type type)
-    : m_type(type)
-    , q(q)
+static void printResult(int result)
+{
+    IDEAL_SDEBUG("The result of the heavy math is " << result);
+}
+
+class OneClass
+    : public Object
+    , public Thread
+{
+public:
+    OneClass(Object *parent);
+
+    IDEAL_SIGNAL(resultOfHeavyMath, int);
+
+protected:
+    void run();
+};
+
+OneClass::OneClass(Object *parent)
+    : Object(parent)
+    , Thread(NoJoinable)
+    , IDEAL_SIGNAL_INIT(resultOfHeavyMath, int)
 {
 }
 
-Concurrent::Private::~Private()
+void OneClass::run()
 {
+    // Do expensive math here
+    emit(resultOfHeavyMath, 1234);
 }
 
-}
+int main(int argc, char **argv)
+{
+    Application app(argc, argv);
 
+    OneClass *oneClass = new OneClass(&app);
+    Object::connectStatic(oneClass->resultOfHeavyMath, printResult);
+    oneClass->exec();
+
+    Timer::wait(500);
+
+    return 0;
+}

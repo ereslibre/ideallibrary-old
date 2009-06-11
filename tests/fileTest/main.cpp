@@ -19,7 +19,7 @@
  */
 
 #include <core/application.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <core/file.h>
 #include <core/uri.h>
 
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", &app);
         Object::connectStatic(f.sizeResult, fileSize);
-        Concurrent *sizeJob = f.size(Concurrent::Joinable);
+        Thread *sizeJob = f.size(Thread::Joinable);
         sizeJob->exec();
         sizeJob->join();
     }
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.0.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.0.tar.gz", &app);
         Object::connectStatic(f.sizeResult, fileSize);
-        Concurrent *sizeJob = f.size(Concurrent::Joinable);
+        Thread *sizeJob = f.size(Thread::Joinable);
         sizeJob->exec();
         sizeJob->join();
     }
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.8.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.8.tar.gz", &app);
         Object::connectStatic(f.sizeResult, fileSize);
-        Concurrent *sizeJob = f.size(Concurrent::Joinable);
+        Thread *sizeJob = f.size(Thread::Joinable);
         sizeJob->exec();
         sizeJob->join();
     }
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.gz", &app);
         Object::connectStatic(f.sizeResult, fileSize);
-        Concurrent *sizeJob = f.size(Concurrent::Joinable);
+        Thread *sizeJob = f.size(Thread::Joinable);
         sizeJob->exec();
         sizeJob->join();
     }
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.1.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.1.tar.gz", &app);
         Object::connectStatic(f.sizeResult, fileSize);
-        Concurrent *sizeJob = f.size(Concurrent::Joinable);
+        Thread *sizeJob = f.size(Thread::Joinable);
         sizeJob->exec();
         sizeJob->join();
     }
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** File:\tfooishbar://foo");
         File f("fooishbar://foo", &app);
         Object::connectStatic(f.sizeResult, fileSize);
-        Concurrent *sizeJob = f.size(Concurrent::Joinable);
+        Thread *sizeJob = f.size(Thread::Joinable);
         sizeJob->exec();
         sizeJob->join();
     }
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
         File f("ftp://ftp.ereslibre.es", &app);
         Object::connectStatic(f.sizeResult, fileSize);
         Object::connectStaticMulti(f.error, error);
-        Concurrent *sizeJob = f.size(Concurrent::Joinable);
+        Thread *sizeJob = f.size(Thread::Joinable);
         sizeJob->exec();
         sizeJob->join();
     }
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
     Object::connectMulti(f2.sizeResult, &app, &MyApplication::fileSize);
     File f3("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.1.tar.gz", &app);
     Object::connectMulti(f3.sizeResult, &app, &MyApplication::fileSize);
-    Concurrent *sizeJob = f1.size();
+    Thread *sizeJob = f1.size();
     sizeJob->exec();
     sizeJob = f2.size();
     sizeJob->exec();

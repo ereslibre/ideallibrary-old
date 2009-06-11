@@ -18,29 +18,50 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef CONCURRENT_P_H
-#define CONCURRENT_P_H
+#include <pthread.h>
 
-#include <core/concurrent.h>
+#include <core/thread.h>
+#include "thread_p.h"
 
 namespace IdealCore {
 
-class Concurrent::Private
+Thread::PrivateImpl::PrivateImpl(Thread *q, Type type)
+    : Private(q, type)
 {
-public:
-    Private(Concurrent *q, Type type);
-    virtual ~Private();
-
-    void exec();
-    void join();
-
-    Type         m_type; // Initialized in base class
-    Concurrent  *q;      // Initialized in base class
-};
-
+    pthread_attr_init(&m_attr);
+    if (type == NoJoinable) {
+        pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_DETACHED);
+    }
 }
 
-#include <core/private/posix/concurrent_p.h>
+Thread::PrivateImpl::~PrivateImpl()
+{
+    pthread_attr_destroy(&m_attr);
+}
 
-#endif //CONCURRENT_P_H
+void *Thread::PrivateImpl::entryPoint(void *param)
+{
+    Thread *thread = static_cast<Thread*>(param);
+    thread->run();
+    if (thread->d->m_type == NoJoinable) {
+        delete thread;
+    }
+    return 0;
+}
+
+void Thread::Private::exec()
+{
+    pthread_create(&D_I->m_thread, &D_I->m_attr, PrivateImpl::entryPoint, q);
+}
+
+void Thread::Private::join()
+{
+    if (m_type == Joinable) {
+        pthread_join(D_I->m_thread, NULL);
+    } else {
+        IDEAL_DEBUG_WARNING("join() has been called in a Thread object with attribute NoJoinable");
+    }
+}
+
+}
 

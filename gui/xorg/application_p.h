@@ -22,7 +22,7 @@
 #include <iostream>
 #include <X11/Xlib.h>
 #include <gui/application.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 
 namespace IdealGUI {
 
@@ -45,7 +45,7 @@ public:
 };
 
 class Application::Private::GUIEventHandler
-    : public IdealCore::Concurrent
+    : public IdealCore::Thread
 {
 public:
     GUIEventHandler(Application::Private *priv);

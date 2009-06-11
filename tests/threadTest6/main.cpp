@@ -18,28 +18,35 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef CONCURRENT_P_H_POSIX
-#define CONCURRENT_P_H_POSIX
+#include <core/application.h>
+#include <core/thread.h>
+#include <core/timer.h>
 
-#include <pthread.h>
-#include <core/private/concurrent_p.h>
+using namespace IdealCore;
 
-namespace IdealCore {
-
-class Concurrent::PrivateImpl
-    : public Concurrent::Private
+class OneClass
+    : public Thread
 {
-public:
-    PrivateImpl(Concurrent *q, Type type);
-    ~PrivateImpl();
-
-    static void *entryPoint(void *param);
-
-    pthread_t      m_thread;
-    pthread_attr_t m_attr;
+protected:
+    void run();
 };
 
+void OneClass::run()
+{
+    IDEAL_SDEBUG("Hello world");
 }
 
-#endif //CONCURRENT_P_H_POSIX
+int main(int argc, char **argv)
+{
+    Application app(argc, argv);
 
+    OneClass *oneClass = new OneClass;
+    oneClass->exec();
+    oneClass->join();
+    oneClass->exec();
+    oneClass->join();
+
+    delete oneClass;
+
+    return 0;
+}

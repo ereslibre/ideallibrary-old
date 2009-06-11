@@ -18,45 +18,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/application.h>
-#include <core/thread.h>
-#include <core/timer.h>
+#ifndef THREAD_P_H_POSIX
+#define THREAD_P_H_POSIX
 
-using namespace IdealCore;
+#include <pthread.h>
+#include <core/private/thread_p.h>
 
-class OneClass
-    : public Thread
+namespace IdealCore {
+
+class Thread::PrivateImpl
+    : public Thread::Private
 {
 public:
-    OneClass();
+    PrivateImpl(Thread *q, Type type);
+    ~PrivateImpl();
 
-protected:
-    void run();
+    static void *entryPoint(void *param);
+
+    pthread_t      m_thread;
+    pthread_attr_t m_attr;
 };
 
-OneClass::OneClass()
-    : Thread(NoJoinable)
-{
-};
-
-void OneClass::run()
-{
-    IDEAL_SDEBUG("Try output threadly");
-    IDEAL_DEBUG("Try output threadly");
-    IDEAL_DEBUG_WARNING("Try output threadly");
 }
 
-int main(int argc, char **argv)
-{
-    Application app(argc, argv);
+#endif //THREAD_P_H_POSIX
 
-    OneClass *oneClass = new OneClass;
-    OneClass *otherClass = new OneClass;
-
-    oneClass->exec();
-    otherClass->exec();
-
-    Timer::wait(500);
-
-    return 0;
-}

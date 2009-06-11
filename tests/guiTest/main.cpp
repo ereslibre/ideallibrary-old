@@ -20,7 +20,7 @@
 
 #include <core/event.h>
 #include <core/file.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <gui/widget.h>
 #include <gui/painter.h>
 #include <gui/application.h>
@@ -55,7 +55,7 @@ bool MyWidget::event(IdealCore::Event *event)
         p.drawRectangle(10, 10, 200, 200);
     } else if (event->type() == IdealCore::Event::KeyPress) {
        IDEAL_SDEBUG("*** Retrieving size of file...");
-       IdealCore::Concurrent *size = myFile->size();
+       IdealCore::Thread *size = myFile->size();
        size->exec();
     }
     return false;

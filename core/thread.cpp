@@ -18,39 +18,34 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/application.h>
-#include <core/concurrent.h>
-#include <core/timer.h>
+#include "thread.h"
+#include "private/thread_p.h"
 
-using namespace IdealCore;
+namespace IdealCore {
 
-class OneClass
-    : public Concurrent
-{
-public:
-    OneClass();
-
-protected:
-    void run();
-};
-
-OneClass::OneClass()
-    : Concurrent(NoJoinable)
+Thread::Thread(Type type)
+    : d(new PrivateImpl(this, type))
 {
 }
 
-void OneClass::run()
+Thread::~Thread()
 {
+    delete d;
 }
 
-int main(int argc, char **argv)
+void Thread::exec()
 {
-    Application app(argc, argv);
+    d->exec();
+}
 
-    OneClass *oneClass = new OneClass;
-    oneClass->exec();
+void Thread::join()
+{
+    d->join();
+}
 
-    Timer::wait(500);
+Thread::Type Thread::type() const
+{
+    return d->m_type;
+}
 
-    return 0;
 }

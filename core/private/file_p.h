@@ -22,7 +22,7 @@
 #define FILE_P_H
 
 #include <core/file.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <core/interfaces/protocol_handler.h>
 
 namespace IdealCore {
@@ -48,7 +48,7 @@ public:
 };
 
 class File::Private::Job
-    : public Concurrent
+    : public Thread
 {
 public:
     enum Operation {

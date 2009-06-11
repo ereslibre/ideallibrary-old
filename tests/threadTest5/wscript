@@ -8,7 +8,7 @@ def build(bld):
     bld.new_task_gen(
         features     = 'cxx cprogram',
         source       = 'main.cpp',
-        target       = 'concurrentTest2',
+        target       = 'threadTest5',
         includes     = '../..',
         uselib       = 'IDEAL',
         uselib_local = 'idealcore',

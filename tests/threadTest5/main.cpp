@@ -19,48 +19,35 @@
  */
 
 #include <core/application.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <core/timer.h>
 
 using namespace IdealCore;
 
-static void printResult(int result)
-{
-    IDEAL_SDEBUG("The result of the heavy math is " << result);
-}
-
 class OneClass
-    : public Object
-    , public Concurrent
+    : public Thread
 {
 public:
-    OneClass(Object *parent);
-
-    IDEAL_SIGNAL(resultOfHeavyMath, int);
+    OneClass();
 
 protected:
     void run();
 };
 
-OneClass::OneClass(Object *parent)
-    : Object(parent)
-    , Concurrent(NoJoinable)
-    , IDEAL_SIGNAL_INIT(resultOfHeavyMath, int)
+OneClass::OneClass()
+    : Thread(NoJoinable)
 {
 }
 
 void OneClass::run()
 {
-    // Do expensive math here
-    emit(resultOfHeavyMath, 1234);
 }
 
 int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    OneClass *oneClass = new OneClass(&app);
-    Object::connectStatic(oneClass->resultOfHeavyMath, printResult);
+    OneClass *oneClass = new OneClass;
     oneClass->exec();
 
     Timer::wait(500);

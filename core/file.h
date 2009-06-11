@@ -24,12 +24,12 @@
 #include <ideal_export.h>
 #include <core/uri.h>
 #include <core/object.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <core/interfaces/protocol_handler.h>
 
 namespace IdealCore {
 
-class Concurrent;
+class Thread;
 
 /**
   * @class File file.h core/file.h
@@ -49,7 +49,7 @@ class Concurrent;
   * for (it = fileList.begin(); it != fileList.end(); ++it) {
   *     File *const file = *it;
   *     connectMulti(file->existsResult, this, &MyObject::existsResultSlot);
-  *     Concurrent *const size = file->size();
+  *     Thread *const size = file->size();
   *     size->exec();
   * }
   *
@@ -100,7 +100,7 @@ public:
     };
 
     /**
-      * @return A constructed concurrent object that will be able to run asynchronously, signaling
+      * @return A constructed thread object that will be able to run asynchronously, signaling
       *         existsResult, or error, depending if the operation could be executed successfully.
       *
       * Example:
@@ -109,7 +109,7 @@ public:
       *      File f("ftp://ftp.myserver.com/path/to/my/file.txt", parent);
       *      connectMulti(f.existsResult, myObject, &MyObject::existsResult);
       *      connectMulti(f.error, myObject, &MyObject::error);
-      *      Concurrent *exists = f.exists();
+      *      Thread *exists = f.exists();
       *      exists->exec();
       * @endcode
       *
@@ -120,48 +120,48 @@ public:
       *      File f("ftp://ftp.myserver.com/path/to/my/file.txt", parent);
       *      connectMulti(f.existsResult, myObject, &MyObject::existsResult);
       *      connectMulti(f.error, myObject, &MyObject::error);
-      *      Concurrent *exists = f.exists(Concurrent::Joinable);
+      *      Thread *exists = f.exists(Thread::Joinable);
       *      exists->exec();
       *      exists->join();
       * @endcode
       */
-    Concurrent *exists(Concurrent::Type type = Concurrent::NoJoinable) const;
+    Thread *exists(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @return A constructed concurrent object that will be able to run asynchronously, signaling
+      * @return A constructed thread object that will be able to run asynchronously, signaling
       *         typeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *type(Concurrent::Type type = Concurrent::NoJoinable) const;
+    Thread *type(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @return A constructed concurrent object that will be able to run asynchronously, signaling
+      * @return A constructed thread object that will be able to run asynchronously, signaling
       *         ownerUserResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *ownerUser(Concurrent::Type type = Concurrent::NoJoinable) const;
+    Thread *ownerUser(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @return A constructed concurrent object that will be able to run asynchronously, signaling
+      * @return A constructed thread object that will be able to run asynchronously, signaling
       *         ownerGroupResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *ownerGroup(Concurrent::Type type = Concurrent::NoJoinable) const;
+    Thread *ownerGroup(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @return A constructed concurrent object that will be able to run asynchronously, signaling
+      * @return A constructed thread object that will be able to run asynchronously, signaling
       *         permissionsResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *permissions(Concurrent::Type type = Concurrent::NoJoinable) const;
+    Thread *permissions(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @return A constructed concurrent object that will be able to run asynchronously, signaling
+      * @return A constructed thread object that will be able to run asynchronously, signaling
       *         sizeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *size(Concurrent::Type type = Concurrent::NoJoinable) const;
+    Thread *size(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @return A constructed concurrent object that will be able to run asynchronously, signaling
+      * @return A constructed thread object that will be able to run asynchronously, signaling
       *         contentTypeResult, or error, depending if the operation could be executed successfully.
       */
-    Concurrent *contentType(Concurrent::Type type = Concurrent::NoJoinable) const;
+    Thread *contentType(Thread::Type type = Thread::NoJoinable) const;
 
     /**
       * @return The URI of the file object.

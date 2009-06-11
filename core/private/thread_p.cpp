@@ -18,35 +18,19 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/application.h>
-#include <core/concurrent.h>
-#include <core/timer.h>
+#include "thread_p.h"
 
-using namespace IdealCore;
+namespace IdealCore {
 
-class OneClass
-    : public Concurrent
+Thread::Private::Private(Thread *q, Type type)
+    : m_type(type)
+    , q(q)
 {
-protected:
-    void run();
-};
-
-void OneClass::run()
-{
-    IDEAL_SDEBUG("Hello world");
 }
 
-int main(int argc, char **argv)
+Thread::Private::~Private()
 {
-    Application app(argc, argv);
-
-    OneClass *oneClass = new OneClass;
-    oneClass->exec();
-    oneClass->join();
-    oneClass->exec();
-    oneClass->join();
-
-    delete oneClass;
-
-    return 0;
 }
+
+}
+

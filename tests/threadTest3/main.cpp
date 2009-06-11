@@ -19,7 +19,7 @@
  */
 
 #include <core/application.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <core/timer.h>
 
 using namespace IdealCore;
@@ -53,7 +53,7 @@ void AnObject::slot()
 }
 
 class OneClass
-    : public Concurrent
+    : public Thread
 {
 public:
     OneClass();
@@ -65,7 +65,7 @@ protected:
 };
 
 OneClass::OneClass()
-    : Concurrent(NoJoinable)
+    : Thread(NoJoinable)
 {
 }
 

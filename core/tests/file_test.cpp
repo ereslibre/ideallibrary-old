@@ -25,7 +25,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include <core/file.h>
 #include <core/application.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 
 using namespace IdealCore;
 
@@ -120,7 +120,7 @@ static void disconnectedFromInternetOrFileNotFound(ProtocolHandler::ErrorCode er
     ++numCalls;
 }
 
-static void runSync(Concurrent *job)
+static void runSync(Thread *job)
 {
     job->exec();
     job->join();
@@ -138,51 +138,51 @@ void FileTest::testConstructor()
 {
     File nonExistantFile("/non/existant/path/nor/file.txt", s_application);
     Object::connectStatic(nonExistantFile.existsResult, assertFalse);
-    runSync(nonExistantFile.exists(Concurrent::Joinable));
+    runSync(nonExistantFile.exists(Thread::Joinable));
 
     File nonExistantFileWithScheme("file:///non/existant/path/nor/file.txt", s_application);
     Object::connectStatic(nonExistantFileWithScheme.existsResult, assertFalse);
-    runSync(nonExistantFileWithScheme.exists(Concurrent::Joinable));
+    runSync(nonExistantFileWithScheme.exists(Thread::Joinable));
 
     File existingRoot("/", s_application);
     Object::connectStatic(existingRoot.existsResult, assertTrue);
     Object::connectStatic(existingRoot.typeResult, assertIsDirectory);
     Object::connectStatic(existingRoot.ownerUserResult, assertIsRoot);
     Object::connectStatic(existingRoot.ownerGroupResult, assertIsRoot);
-    runSync(existingRoot.exists(Concurrent::Joinable));
-    runSync(existingRoot.type(Concurrent::Joinable));
-    runSync(existingRoot.ownerUser(Concurrent::Joinable));
-    runSync(existingRoot.ownerGroup(Concurrent::Joinable));
+    runSync(existingRoot.exists(Thread::Joinable));
+    runSync(existingRoot.type(Thread::Joinable));
+    runSync(existingRoot.ownerUser(Thread::Joinable));
+    runSync(existingRoot.ownerGroup(Thread::Joinable));
 
     File existingRootWithScheme("file:///", s_application);
     Object::connectStatic(existingRootWithScheme.existsResult, assertTrue);
     Object::connectStatic(existingRootWithScheme.typeResult, assertIsDirectory);
     Object::connectStatic(existingRootWithScheme.ownerUserResult, assertIsRoot);
     Object::connectStatic(existingRootWithScheme.ownerGroupResult, assertIsRoot);
-    runSync(existingRootWithScheme.exists(Concurrent::Joinable));
-    runSync(existingRootWithScheme.type(Concurrent::Joinable));
-    runSync(existingRootWithScheme.ownerUser(Concurrent::Joinable));
-    runSync(existingRootWithScheme.ownerGroup(Concurrent::Joinable));
+    runSync(existingRootWithScheme.exists(Thread::Joinable));
+    runSync(existingRootWithScheme.type(Thread::Joinable));
+    runSync(existingRootWithScheme.ownerUser(Thread::Joinable));
+    runSync(existingRootWithScheme.ownerGroup(Thread::Joinable));
 
     File existingDir("/home/", s_application);
     Object::connectStatic(existingDir.existsResult, assertTrue);
     Object::connectStatic(existingDir.typeResult, assertIsDirectory);
     Object::connectStatic(existingDir.ownerUserResult, assertIsRoot);
     Object::connectStatic(existingDir.ownerGroupResult, assertIsRoot);
-    runSync(existingDir.exists(Concurrent::Joinable));
-    runSync(existingDir.type(Concurrent::Joinable));
-    runSync(existingDir.ownerUser(Concurrent::Joinable));
-    runSync(existingDir.ownerGroup(Concurrent::Joinable));
+    runSync(existingDir.exists(Thread::Joinable));
+    runSync(existingDir.type(Thread::Joinable));
+    runSync(existingDir.ownerUser(Thread::Joinable));
+    runSync(existingDir.ownerGroup(Thread::Joinable));
 
     File existingDirWithScheme("file:///home/", s_application);
     Object::connectStatic(existingDirWithScheme.existsResult, assertTrue);
     Object::connectStatic(existingDirWithScheme.typeResult, assertIsDirectory);
     Object::connectStatic(existingDirWithScheme.ownerUserResult, assertIsRoot);
     Object::connectStatic(existingDirWithScheme.ownerGroupResult, assertIsRoot);
-    runSync(existingDirWithScheme.exists(Concurrent::Joinable));
-    runSync(existingDirWithScheme.type(Concurrent::Joinable));
-    runSync(existingDirWithScheme.ownerUser(Concurrent::Joinable));
-    runSync(existingDirWithScheme.ownerGroup(Concurrent::Joinable));
+    runSync(existingDirWithScheme.exists(Thread::Joinable));
+    runSync(existingDirWithScheme.type(Thread::Joinable));
+    runSync(existingDirWithScheme.ownerUser(Thread::Joinable));
+    runSync(existingDirWithScheme.ownerGroup(Thread::Joinable));
 
     File nullDevice("/dev/null", s_application);
     Object::connectStatic(nullDevice.existsResult, assertTrue);
@@ -191,11 +191,11 @@ void FileTest::testConstructor()
     Object::connectStatic(nullDevice.permissionsResult, assertOthersCanWrite);
     Object::connectStatic(nullDevice.ownerUserResult, assertIsRoot);
     Object::connectStatic(nullDevice.ownerGroupResult, assertIsRoot);
-    runSync(nullDevice.exists(Concurrent::Joinable));
-    runSync(nullDevice.type(Concurrent::Joinable));
-    runSync(nullDevice.permissions(Concurrent::Joinable));
-    runSync(nullDevice.ownerUser(Concurrent::Joinable));
-    runSync(nullDevice.ownerGroup(Concurrent::Joinable));
+    runSync(nullDevice.exists(Thread::Joinable));
+    runSync(nullDevice.type(Thread::Joinable));
+    runSync(nullDevice.permissions(Thread::Joinable));
+    runSync(nullDevice.ownerUser(Thread::Joinable));
+    runSync(nullDevice.ownerGroup(Thread::Joinable));
 
     File nullDeviceWithScheme("file:///dev/null", s_application);
     Object::connectStatic(nullDeviceWithScheme.existsResult, assertTrue);
@@ -204,64 +204,64 @@ void FileTest::testConstructor()
     Object::connectStatic(nullDeviceWithScheme.permissionsResult, assertOthersCanWrite);
     Object::connectStatic(nullDeviceWithScheme.ownerUserResult, assertIsRoot);
     Object::connectStatic(nullDeviceWithScheme.ownerGroupResult, assertIsRoot);
-    runSync(nullDeviceWithScheme.exists(Concurrent::Joinable));
-    runSync(nullDeviceWithScheme.type(Concurrent::Joinable));
-    runSync(nullDeviceWithScheme.permissions(Concurrent::Joinable));
-    runSync(nullDeviceWithScheme.ownerUser(Concurrent::Joinable));
-    runSync(nullDeviceWithScheme.ownerGroup(Concurrent::Joinable));
+    runSync(nullDeviceWithScheme.exists(Thread::Joinable));
+    runSync(nullDeviceWithScheme.type(Thread::Joinable));
+    runSync(nullDeviceWithScheme.permissions(Thread::Joinable));
+    runSync(nullDeviceWithScheme.ownerUser(Thread::Joinable));
+    runSync(nullDeviceWithScheme.ownerGroup(Thread::Joinable));
 
     File remotePlace("http://www.nic.com", s_application);
     Object::connectStatic(remotePlace.existsResult, assertTrue);
     Object::connectStatic(remotePlace.error, disconnectedFromInternet);
-    runSync(remotePlace.exists(Concurrent::Joinable));
+    runSync(remotePlace.exists(Thread::Joinable));
 
     File nonExistantRemotePlace("http://www.nic.com/nonexistantpage", s_application);
     Object::connectStatic(nonExistantRemotePlace.existsResult, assertFalse);
     Object::connectStatic(nonExistantRemotePlace.error, disconnectedFromInternet);
-    runSync(nonExistantRemotePlace.exists(Concurrent::Joinable));
+    runSync(nonExistantRemotePlace.exists(Thread::Joinable));
 
     File oldKernel("http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", s_application);
     Object::connectStatic(oldKernel.existsResult, assertTrue);
     Object::connectStatic(oldKernel.sizeResult, assertKernel22Size);
     Object::connectStatic(oldKernel.error, disconnectedFromInternet);
-    runSync(oldKernel.exists(Concurrent::Joinable));
-    runSync(oldKernel.size(Concurrent::Joinable));
+    runSync(oldKernel.exists(Thread::Joinable));
+    runSync(oldKernel.size(Thread::Joinable));
 
     File oldKernelFtp("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", s_application);
     Object::connectStatic(oldKernelFtp.existsResult, assertTrue);
     Object::connectStatic(oldKernelFtp.sizeResult, assertKernel22Size);
     Object::connectStatic(oldKernelFtp.error, disconnectedFromInternet);
-    runSync(oldKernelFtp.exists(Concurrent::Joinable));
-    runSync(oldKernelFtp.size(Concurrent::Joinable));
+    runSync(oldKernelFtp.exists(Thread::Joinable));
+    runSync(oldKernelFtp.size(Thread::Joinable));
 
     File checkError("/root/.nonexistantfile", s_application);
     Object::connectStatic(checkError.existsResult, assertFalse); // should never be called
     Object::connectStatic(checkError.error, failWithInsufficientPermissions);
-    runSync(checkError.exists(Concurrent::Joinable));
+    runSync(checkError.exists(Thread::Joinable));
 
     File checkErrorWithScheme("file:///root/.nonexistantfile", s_application);
     Object::connectStatic(checkErrorWithScheme.existsResult, assertFalse); // should never be called
     Object::connectStatic(checkErrorWithScheme.error, failWithInsufficientPermissions);
-    runSync(checkErrorWithScheme.exists(Concurrent::Joinable));
+    runSync(checkErrorWithScheme.exists(Thread::Joinable));
 
     File checkLocalFileNotFound(s_application->getPath(Application::Home) + "/.nonexistantfile", s_application);
     Object::connectStatic(checkLocalFileNotFound.existsResult, assertFalse);
     Object::connectStatic(checkLocalFileNotFound.error, failWithFileNotFound); // should never be called
-    runSync(checkLocalFileNotFound.exists(Concurrent::Joinable));
+    runSync(checkLocalFileNotFound.exists(Thread::Joinable));
 
     File checkLocalFileNotFoundError(s_application->getPath(Application::Home) + "/.nonexistantfile", s_application);
     Object::connectStatic(checkLocalFileNotFoundError.sizeResult, assertKernel22Size); // should never be called
     Object::connectStatic(checkLocalFileNotFoundError.error, failWithFileNotFound);
-    runSync(checkLocalFileNotFoundError.size(Concurrent::Joinable));
+    runSync(checkLocalFileNotFoundError.size(Thread::Joinable));
 
     File checkRemoteFileNotFound("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gzzzz", s_application);
     Object::connectStatic(checkRemoteFileNotFound.existsResult, assertFalse);
     Object::connectStatic(checkRemoteFileNotFound.error, disconnectedFromInternet);
-    runSync(checkRemoteFileNotFound.exists(Concurrent::Joinable));
+    runSync(checkRemoteFileNotFound.exists(Thread::Joinable));
 
     File checkRemoteFileNotFoundError("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gzzzz", s_application);
     Object::connectStatic(checkRemoteFileNotFoundError.error, disconnectedFromInternetOrFileNotFound);
-    runSync(checkRemoteFileNotFoundError.size(Concurrent::Joinable));
+    runSync(checkRemoteFileNotFoundError.size(Thread::Joinable));
 
     CPPUNIT_ASSERT_EQUAL(42, numCalls);
 }
