@@ -18,5 +18,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-./waf distclean &> /dev/null
-doxygen .doxygen-config &> /dev/null
+for test in $( ls tests ); do
+    echo -e "(*) $test"
+    echo -e "\t1.- Memcheck results:"
+    valgrind build/default/tests/$test/$test 2>&1 | egrep 'ERROR|malloc\/free' | cut -d' ' -f2- | sed "s/^/\t\t/"
+    echo -e "\t2.- Helgrind results:"
+    valgrind --tool=helgrind build/default/tests/$test/$test 2>&1 | egrep ERROR | cut -d' ' -f2- | sed "s/^/\t\t/"
+    echo
+done
+
