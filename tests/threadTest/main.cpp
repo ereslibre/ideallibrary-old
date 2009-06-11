@@ -75,7 +75,7 @@ class OneClass
 public:
     OneClass(Object *parent);
 
-    AnObject object;
+    AnObject *object;
 
 protected:
     void run();
@@ -83,7 +83,7 @@ protected:
 
 OneClass::OneClass(Object *parent)
     : Object(parent)
-    , object(this)
+    , object(new AnObject(this))
 {
 }
 
@@ -97,7 +97,7 @@ void OneClass::run()
 
     IDEAL_SDEBUG("*** Starting the party at thread " << pthread_self());
 
-    Timer::callAfter(1000, &object, &AnObject::emitIt);
+    Timer::callAfter(1000, object, &AnObject::emitIt);
 }
 
 class OtherClass
@@ -107,7 +107,7 @@ class OtherClass
 public:
     OtherClass(Object *parent);
 
-    AnObject object;
+    AnObject *object;
 
 protected:
     void run();
@@ -115,7 +115,7 @@ protected:
 
 OtherClass::OtherClass(Object *parent)
     : Object(parent)
-    , object(this)
+    , object(new AnObject(this))
 {
 }
 
@@ -140,22 +140,22 @@ int main(int argc, char **argv)
 
     IDEAL_SDEBUG("*** Two threads will be launched. The app will be stopped when the slot has been called 5 times");
 
-    OneClass oneClass(&app);
-    OtherClass otherClass(&app);
+    OneClass *oneClass = new OneClass(&app);
+    OtherClass *otherClass = new OtherClass(&app);
 
     mutex1.lock();
-    oneClass.exec();
+    oneClass->exec();
     cond1.wait();
     mutex1.unlock();
 
     mutex2.lock();
-    otherClass.exec();
+    otherClass->exec();
     cond2.wait();
     mutex2.unlock();
 
     IDEAL_SDEBUG("*** Going to carefully connect two parties going on (BTW, I am " << pthread_self() << ")");
 
-    Object::connect(oneClass.object.aSignal, &otherClass.object, &AnObject::slot);
+    Object::connect(oneClass->object->aSignal, otherClass->object, &AnObject::slot);
 
     return app.exec();
 }
