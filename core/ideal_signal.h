@@ -236,7 +236,9 @@ public:
     SignalBase(SignalResource *parent, const char *name, const char * /* signature */)
         : m_parent(parent)
         , m_isDestroyedSignal(!strcmp(name, "destroyed"))
+        , m_connectionsMutex(Mutex(Mutex::Recursive))
         , m_beingEmitted(false)
+        , m_beingEmittedMutex(Mutex(Mutex::Recursive))
     {
         parent->signalCreated(this);
     }
