@@ -156,6 +156,9 @@ public:
       */
     List<char*> parseOptions(ParsingStrictness parsingStrictness = Flexible, FailVerbosity failVerbosity = FailSilently);
 
+    /**
+      * @return The default path specified by @p path.
+      */
     String getPath(Path path) const;
 
     /**
@@ -178,20 +181,6 @@ public:
 
     /**
       * Quits the running application.
-      *
-      * @return nothing useful. The return code is just meant to use it like this:
-      *
-      * @code
-      * int main(int argc, char **argv)
-      * {
-      *     Application app(argc, argv);
-      *     // Here your code
-      *     return 0;
-      * }
-      * @endcode
-      *
-      * This is only recommended for extremely simple applications that don't require event
-      * processing, since no event loop will be run here.
       */
     void quit();
 

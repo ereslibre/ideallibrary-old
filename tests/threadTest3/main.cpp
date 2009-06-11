@@ -56,11 +56,18 @@ class OneClass
     : public Concurrent
 {
 public:
+    OneClass();
+
     AnObject *object;
 
 protected:
     void run();
 };
+
+OneClass::OneClass()
+    : Concurrent(NoJoinable)
+{
+}
 
 void OneClass::run()
 {

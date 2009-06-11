@@ -43,6 +43,9 @@ void *Concurrent::PrivateImpl::entryPoint(void *param)
 {
     Concurrent *concurrent = static_cast<Concurrent*>(param);
     concurrent->run();
+    if (concurrent->d->m_type == NoJoinable) {
+        delete concurrent;
+    }
     return 0;
 }
 

@@ -27,20 +27,13 @@ using namespace IdealCore;
 class OneClass
     : public Concurrent
 {
-public:
-    OneClass();
-
 protected:
     void run();
 };
 
-OneClass::OneClass()
-    : Concurrent(NoJoinable)
-{
-}
-
 void OneClass::run()
 {
+    IDEAL_SDEBUG("Hello world");
 }
 
 int main(int argc, char **argv)
@@ -49,8 +42,11 @@ int main(int argc, char **argv)
 
     OneClass *oneClass = new OneClass;
     oneClass->exec();
+    oneClass->join();
+    oneClass->exec();
+    oneClass->join();
 
-    Timer::wait(500);
+    delete oneClass;
 
     return 0;
 }

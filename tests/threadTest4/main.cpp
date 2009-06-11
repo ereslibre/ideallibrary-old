@@ -27,8 +27,16 @@ using namespace IdealCore;
 class OneClass
     : public Concurrent
 {
+public:
+    OneClass();
+
 protected:
     void run();
+};
+
+OneClass::OneClass()
+    : Concurrent(NoJoinable)
+{
 };
 
 void OneClass::run()

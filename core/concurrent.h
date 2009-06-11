@@ -36,8 +36,9 @@ class IDEAL_EXPORT Concurrent
 {
 public:
     enum Type {
-        Joinable = 0, ///< A joinable thread will expect join() to be called on it. This object and its resources will not be freed until this happens.
-        NoJoinable,   ///< A non joinable thread will be automatically deleted when its execution finishes.
+        Joinable = 0, ///< A joinable thread will expect join() to be called on it. Additionally,
+                      ///< you are the responsible of deleting this Concurrent object.
+        NoJoinable,   ///< A non joinable thread will be automatically freed when its execution finishes.
     };
 
     Concurrent(Type type = Joinable);
