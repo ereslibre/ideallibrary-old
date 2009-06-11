@@ -68,12 +68,6 @@ String Application::getPath(Path path) const
 int Application::exec()
 {
     while (true) {
-        {
-            ContextMutexLocker cml(d->m_continueExecutionMutex);
-            if (!d->m_continueExecution) {
-                break;
-            }
-        }
         d->processEvents();
         d->processDelayedDeletions();
         d->unloadUnneededDynamicLibraries();

@@ -266,8 +266,7 @@ void Application::Private::unloadUnneededDynamicLibraries()
 
 void Application::Private::quit()
 {
-    ContextMutexLocker cml(m_continueExecutionMutex);
-    m_continueExecution = false;
+    exit(EXIT_SUCCESS);
 }
 
 }
