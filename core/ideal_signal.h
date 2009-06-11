@@ -271,6 +271,7 @@ protected:
     static void notifyReceiverConnection(SignalResource *receiver, const SignalBase *signalBase)
     {
         if (!signalBase->m_isDestroyedSignal) {
+            ContextMutexLocker cml(receiver->m_mutex);
             receiver->signalConnected(signalBase);
         }
     }
@@ -278,6 +279,7 @@ protected:
     static void notifyReceiverDisconnection(SignalResource *receiver, const SignalBase *signalBase)
     {
         if (!signalBase->m_isDestroyedSignal) {
+            ContextMutexLocker cml(receiver->m_mutex);
             receiver->signalDisconnected(signalBase);
         }
     }
