@@ -21,7 +21,6 @@
 #ifndef IDEAL_SIGNAL_H
 #define IDEAL_SIGNAL_H
 
-#include <iostream>
 #include <string.h>
 #include <core/mutex.h>
 #include <core/signal_resource.h>
