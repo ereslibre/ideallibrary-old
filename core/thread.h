@@ -49,7 +49,7 @@ public:
                       /// delete myThread;
                       /// @endcode
         NoJoinable,   ///< A non joinable thread will be automatically freed when its execution finishes.
-                      ///< This means that you are not the responsiblel of deleting it. It is very important
+                      ///< This means that you are not the responsible of deleting it. It is very important
                       ///< to understand that NoJoinable Thread objects cannot be synchronized in any way.
                       ///< They start they life, and they dissappear. The interesting advantage is that they
                       ///< obviously can emit signals. So, when using them, you have to think as a naturally
