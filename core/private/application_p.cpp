@@ -32,7 +32,6 @@ Application::Private::Private(Application *q)
     : m_sleepTime(-1)
     , m_defaultSleepTime(500)
     , m_nextTimeout(-1)
-    , m_continueExecution(true)
     , q(q)
 {
 }

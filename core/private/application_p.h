@@ -66,8 +66,6 @@ public:
     int                      m_nextTimeout;                 // Initialized in base class
     List<ProtocolHandler*>   m_protocolHandlerCache;
     Mutex                    m_protocolHandlerCacheMutex;
-    bool                     m_continueExecution;           // Initialized in base class
-    Mutex                    m_continueExecutionMutex;
     Application             *q;                             // Initialized in base class
 };
 
