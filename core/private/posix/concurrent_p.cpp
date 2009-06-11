@@ -43,9 +43,6 @@ void *Concurrent::PrivateImpl::entryPoint(void *param)
 {
     Concurrent *concurrent = static_cast<Concurrent*>(param);
     concurrent->run();
-    if (concurrent->d->m_type == NoJoinable) {
-        delete concurrent;
-    }
     return 0;
 }
 
@@ -58,7 +55,6 @@ void Concurrent::Private::join()
 {
     if (m_type == Joinable) {
         pthread_join(D_I->m_thread, NULL);
-        delete q;
     } else {
         IDEAL_DEBUG_WARNING("join() has been called in a Concurrent object with attribute NoJoinable");
     }
