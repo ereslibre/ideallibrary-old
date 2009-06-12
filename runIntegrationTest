@@ -96,3 +96,4 @@ for test in $( ls tests ); do
     echo
 done
 
+exit 0
