@@ -19,7 +19,6 @@
 # Boston, MA 02110-1301, USA.
 
 testsToSkip="guiTest guiTest2 idleTest timerTest"
-numTestsToSkip=${#testsToSkip[@]}
 skipTest=false
 
 ls build &> /dev/null
