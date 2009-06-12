@@ -68,7 +68,7 @@ if [ $# -eq 1 ]; then
     done
     exit 0
 elif [ $# -gt 1 ]; then
-    echo "usage: ./runIntegrationTest [\"testFoo testBar testFooBar\"]"
+    echo "usage: ./runIntegrationTests [\"testFoo testBar testFooBar\"]"
     exit 1
 fi
 
