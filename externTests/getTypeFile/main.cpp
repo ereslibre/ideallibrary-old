@@ -19,7 +19,7 @@
  */
 
 #include <core/application.h>
-#include <core/concurrent.h>
+#include <core/thread.h>
 #include <core/file.h>
 
 using namespace IdealCore;
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     File f(app.getPath(Application::Home), &app);
     Object::connectStatic(f.typeResult, printResult);
     Object::connectStatic(f.error, printError);
-    Concurrent *type = f.type();
+    Thread *type = f.type(Thread::Joinable);
     type->exec();
     type->join();
 
