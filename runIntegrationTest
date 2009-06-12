@@ -18,9 +18,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-testsToSkip=(guiTest guiTest2 idleTest timerTest)
+testsToSkip="guiTest guiTest2 idleTest timerTest"
 numTestsToSkip=${#testsToSkip[@]}
 skipTest=false
+
+ls build &> /dev/null
+if [ $? -ne 0 ]; then
+    echo "Please, compile and install project first:"
+    echo -e "\t./waf configure --prefix=/some/dir"
+    echo -e "\t./waf build [-p]"
+    echo -e "\t[sudo] ./waf install"
+    exit 1
+fi
 
 which valgrind &> /dev/null
 if [ $? -ne 0 ]; then
@@ -38,9 +47,8 @@ if [ $# -eq 1 ]; then
             echo
             continue
         fi
-        for (( i = 0; i < $numTestsToSkip; i++ ))
-        do
-            if [ ${testsToSkip[$i]} == $test ]; then
+        for testToSkip in $testsToSkip; do
+            if [ $testToSkip == $test ]; then
                 skipTest=true
                 break
             fi
@@ -74,9 +82,8 @@ for test in $( ls tests ); do
         echo
         continue
     fi
-    for (( i = 0; i < $numTestsToSkip; i++ ))
-    do
-        if [ ${testsToSkip[$i]} == $test ]; then
+    for testToSkip in $testsToSkip; do
+        if [ $testToSkip == $test ]; then
             skipTest=true
             break
         fi
