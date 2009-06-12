@@ -5,7 +5,83 @@ The Ideal Library is a free, intuitive, easy-to-use and consistent library meant
 powerful applications and libraries.
 
 
-Further information
-===================
+Strong points
+=============
 
-For further information visit http://www.ereslibre.es/projects/ideal
+- Signal/slot mechanism.
+
+      Over Qt and Gtk:
+      Connections, as well as their correctness is checked in compile time. In Qt or Gtk you can
+      mispell a signal name that will compile just fine, but will not work.
+
+      Over Qt and Gtk:
+      Signals respect the ambit in which they are defined. In Qt or Gtk signals haven't got
+      an ambit assigned.
+
+      Over Qt and Gtk:
+      When writing code or refactoring, you do not need to check the whole sources for fixing
+      connections.
+
+      Over Qt:
+      All methods are slots. You can connect a signal to any method, static function or another
+      signal.
+
+      Over Qt:
+      No need of other tool than the compiler for compiling your library or application. For
+      instance, in Qt based code, you need to run `moc` in order to compile your code.
+
+- Extensible.
+
+      Due to a system of Modules and Extensions, the Ideal Library as well as the libraries and
+      applications are very easily extensible.
+
+      This system does not require special files like *.desktop files or such.
+
+- TDD.
+
+      We try to write rock solid software by following a heavy Test Driven Development.
+
+
+Weak points
+===========
+
+- Not as big/complete as Qt or Gtk.
+
+- Needs a C++0x compliant compiler.
+
+      GCC 4.4.0 can do it.
+
+- Not multiplatform yet.
+
+      It is being developed with this feature in mind. Right now, the only written/being written
+      backend is the POSIX one.
+
+
+Philosophy
+==========
+
+- Do not reinvent the wheel.
+
+      If a library can do its job successfully, use it and depend on it. We will benefit for free
+      from its improvements and fixes.
+
+      This rule has a notable exception: we cannot depend on libraries which depend on others fairly
+      bigger, like, say, GLib. If this is the case, we have a reason for reinventing the wheel.
+
+- KISS.
+
+- KICS.
+
+     "Keep It Correct, Stupid". Due to a hard test driven development, we try to write rock solid
+     software.
+
+- Focus on today. Focus on future.
+
+     Do not lose your time trying to get the Ideal Library compile with GCC 0.1-rc5. You can get
+     for free (as in free beer) a system that can build and run this software.
+
+     Focus on improving the code instead.
+
+
+If you have any questions, suggestions or ideas, drop me an email:
+Rafael Fernández López <ereslibre at ereslibre dot es>
