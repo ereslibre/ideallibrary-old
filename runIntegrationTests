@@ -38,13 +38,14 @@ fi
 
 if [ $# -eq 1 ]; then
     for expression in $1; do
+        ls tests/$expression &> /dev/null
+        if [ $? -ne 0 ]; then
+            printf "\033[1;37m%s\033[0m - \033[1;31m%s\033[0m\n" $expression "skipping (does not exist)"
+            echo
+            continue
+        fi
         for test in $( ls -d1 tests/$expression | cut -d/ -f2 ); do
             if [ $test == "wscript" ]; then
-                continue
-            fi
-            if [ ! -e "build/default/tests/$test/$test" ]; then
-                printf "\033[1;37m%s\033[0m - \033[1;31m%s\033[0m\n" $test "skipping (does not exist)"
-                echo
                 continue
             fi
             for testToSkip in $testsToSkip; do
