@@ -137,7 +137,7 @@ public:
     ~ContextMutexLocker();
 
 private:
-    Mutex &mutex;
+    Mutex &m_mutex;
 };
 
 }
