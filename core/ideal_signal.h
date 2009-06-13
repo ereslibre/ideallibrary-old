@@ -31,8 +31,8 @@ namespace IdealCore {
 class Object;
 class SignalBase;
 
-static List<SignalBase*> deletedSignalsOnEmit = List<SignalBase*>();
-static Mutex deletedSignalsOnEmitMutex = Mutex();
+static List<SignalBase*> deletedSignalsOnEmit;
+static Mutex deletedSignalsOnEmitMutex;
 
 /**
   * @internal
