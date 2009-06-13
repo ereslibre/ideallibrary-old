@@ -49,7 +49,7 @@ Weak points
 
 - Needs a C++0x compliant compiler.
 
-      GCC 4.4.0 can do it.
+      GCC 4.3.0 can do it.
 
 - Not multiplatform yet.
 

@@ -23,7 +23,6 @@
 
 #include <ideal_conf.h>
 #include <iostream>
-#include <mutex>
 
 #define IDEAL_SIGNAL(name, ...) const IdealCore::Signal<__VA_ARGS__> name
 #define IDEAL_SIGNAL_INIT(name, ...) name(IdealCore::Signal<__VA_ARGS__>(this, #name, #__VA_ARGS__))
@@ -38,25 +37,31 @@
 #define IDEAL_UNUSED(expr) do { (void)(expr); } while (0)
 #define IDEAL_POSSIBLY_UNUSED __attribute__ ((unused))
 
+#ifndef MUTEX_H
+
+#include <core/mutex.h>
+
 namespace IdealCore {
 
-static std::mutex outputMutex;
+static Mutex outputMutex;
 
 }
 
+#endif
+
 #define IDEAL_DEBUG_WARNING(message) do {                                                                                                          \
-                                         std::lock_guard<std::mutex> lk(IdealCore::outputMutex);                                                   \
+                                         IdealCore::ContextMutexLocker cml(IdealCore::outputMutex);                                                \
                                          std::cerr << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": WARNING: " << message << std::endl; \
                                      } while (0)
 
 #ifndef NDEBUG
 #define IDEAL_DEBUG(message) do {                                                                                                 \
-                                 std::lock_guard<std::mutex> lk(IdealCore::outputMutex);                                          \
+                                 IdealCore::ContextMutexLocker cml(IdealCore::outputMutex);                                       \
                                  std::cout << __FILE__ << ": " << __LINE__ << " at " << __func__ << ": " << message << std::endl; \
                              } while (0)
-#define IDEAL_SDEBUG(message) do {                                                        \
-                                  std::lock_guard<std::mutex> lk(IdealCore::outputMutex); \
-                                  std::cout << message << std::endl;                      \
+#define IDEAL_SDEBUG(message) do {                                                           \
+                                  IdealCore::ContextMutexLocker cml(IdealCore::outputMutex); \
+                                  std::cout << message << std::endl;                         \
                               } while (0)
 #else
 #define IDEAL_DEBUG(message)
