@@ -56,5 +56,4 @@ public:
     Application::Private *priv;
 };
 
-
 }
