@@ -68,13 +68,13 @@ public:
     template <typename Receiver, typename Member>
     static CallbackBase<Param...> *makeMulti(SignalResource *resource, Receiver *receiver, Member member);
 
-    static CallbackBase<Param...> *makeForward(const SignalBase &signal);
-
     template <typename Member>
     static CallbackBase<Param...> *makeStatic(Member member);
 
     template <typename Member>
     static CallbackBase<Param...> *makeStaticMulti(SignalResource *resource, Member member);
+
+    static CallbackBase<Param...> *makeForward(const SignalBase &signal);
 };
 
 /**
@@ -418,7 +418,7 @@ private:
                 return;
             }
         }
-        IDEAL_DEBUG("no slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no slot disconnected. No previous connection found.");
     }
 
     template <typename Receiver, typename Member>
@@ -439,7 +439,7 @@ private:
                 return;
             }
         }
-        IDEAL_DEBUG("no multi slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no multi slot disconnected. No previous connection found.");
     }
 
     void disconnect(const Signal<Param...> &signal) const;
@@ -457,7 +457,7 @@ private:
                 return;
             }
         }
-        IDEAL_DEBUG("no static slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no static slot disconnected. No previous connection found.");
     }
 
     template <typename Member>
@@ -473,7 +473,7 @@ private:
                 return;
             }
         }
-        IDEAL_DEBUG("no static multi slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no static multi slot disconnected. No previous connection found.");
     }
 
     void emit(const Param&... param) const
@@ -559,7 +559,7 @@ void Signal<Param...>::disconnect(const Signal<Param...> &signal) const
             return;
         }
     }
-    IDEAL_DEBUG("no signal forward disconnected. No previous forward found.");
+    IDEAL_SDEBUG("no signal forward disconnected. No previous forward found.");
 }
 
 }
