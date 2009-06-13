@@ -1,0 +1,8 @@
+[Buildset]
+Number of Builditems=0
+
+[Filters]
+Excludes=build,.*
+
+[Project]
+VersionControlSupport=kdevgit
