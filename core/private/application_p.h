@@ -48,10 +48,17 @@ public:
     void processDelayedDeletions();
     void unloadUnneededDynamicLibraries();
 
+    void postEvent(Object *object, Event *event);
+
     void quit();
 
     static bool timerSort(const Timer *left, const Timer *right);
     void checkTimers();
+
+    struct EventEntry {
+        Object *object;
+        Event  *event;
+    };
 
     int                      m_argc;
     char                   **m_argv;
@@ -66,6 +73,8 @@ public:
     int                      m_nextTimeout;                 // Initialized in base class
     List<ProtocolHandler*>   m_protocolHandlerCache;
     Mutex                    m_protocolHandlerCacheMutex;
+    List<EventEntry>         m_eventEntryList;
+    Mutex                    m_eventEntryListMutex;
     Application             *q;                             // Initialized in base class
 };
 

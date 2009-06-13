@@ -28,6 +28,8 @@
 
 namespace IdealCore {
 
+class Event;
+
 /**
   * @class Application application.h core/application.h
   *
@@ -195,6 +197,9 @@ public:
       * with addOptionWithMandatoryArg.
       */
     IDEAL_SIGNAL(missingParameter);
+
+protected:
+    void postEvent(Object *object, Event *event);
 
 private:
     class Private;

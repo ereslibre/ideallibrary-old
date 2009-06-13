@@ -80,4 +80,9 @@ void Application::quit()
     d->quit();
 }
 
+void Application::postEvent(Object *object, Event *event)
+{
+    d->postEvent(object, event);
+}
+
 }
