@@ -24,7 +24,7 @@
 namespace IdealCore {
 
 Thread::Thread(Type type)
-    : d(new PrivateImpl(this, type))
+    : d(new PrivateImpl(type, this))
 {
 }
 

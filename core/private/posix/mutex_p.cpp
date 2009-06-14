@@ -23,7 +23,7 @@
 
 namespace IdealCore {
 
-Mutex::PrivateImpl::PrivateImpl(Mutex *q, RecursionType recursionType)
+Mutex::PrivateImpl::PrivateImpl(RecursionType recursionType, Mutex *q)
     : Private(q)
 {
     pthread_mutexattr_init(&m_attr);

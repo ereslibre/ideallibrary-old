@@ -22,7 +22,7 @@
 
 namespace IdealCore {
 
-Thread::Private::Private(Thread *q, Type type)
+Thread::Private::Private(Type type, Thread *q)
     : m_type(type)
     , q(q)
 {

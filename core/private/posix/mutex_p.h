@@ -30,7 +30,7 @@ class Mutex::PrivateImpl
     : public Mutex::Private
 {
 public:
-    PrivateImpl(Mutex *q, RecursionType recursionType);
+    PrivateImpl(RecursionType recursionType, Mutex *q);
     ~PrivateImpl();
 
     pthread_mutex_t     m_mutex;
