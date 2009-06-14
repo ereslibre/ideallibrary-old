@@ -114,7 +114,7 @@ Application::PrivateImpl::PrivateImpl(Application *q)
     }
 }
 
-void Application::Private::addOptionWithoutArg(Option &option, char optChar, const char *longOpt)
+void Application::addOptionWithoutArg(Option &option, char optChar, const char *longOpt)
 {
     PrivateImpl::OptionItem optionItem;
     {
@@ -129,7 +129,7 @@ void Application::Private::addOptionWithoutArg(Option &option, char optChar, con
     D_I->m_optionList.push_back(optionItem);
 }
 
-void Application::Private::addOptionWithMandatoryArg(Option &option, char optChar, const char *longOpt)
+void Application::addOptionWithMandatoryArg(Option &option, char optChar, const char *longOpt)
 {
     PrivateImpl::OptionItem optionItem;
     {
@@ -144,7 +144,7 @@ void Application::Private::addOptionWithMandatoryArg(Option &option, char optCha
     D_I->m_optionList.push_back(optionItem);
 }
 
-void Application::Private::addOptionWithOptionalArg(Option &option, char optChar, const char *longOpt)
+void Application::addOptionWithOptionalArg(Option &option, char optChar, const char *longOpt)
 {
     PrivateImpl::OptionItem optionItem;
     {
@@ -159,7 +159,7 @@ void Application::Private::addOptionWithOptionalArg(Option &option, char optChar
     D_I->m_optionList.push_back(optionItem);
 }
 
-List<char*> Application::Private::parseOptions(ParsingStrictness parsingStrictness, FailVerbosity failVerbosity)
+List<char*> Application::parseOptions(ParsingStrictness parsingStrictness, FailVerbosity failVerbosity)
 {
     if (failVerbosity == FailSilently) {
         opterr = 0;
@@ -189,11 +189,11 @@ List<char*> Application::Private::parseOptions(ParsingStrictness parsingStrictne
     longopts[D_I->m_optionList.size()] = option;
     int opt;
     if (parsingStrictness == Flexible) {
-        while ((opt = getopt_long_only(m_argc, m_argv, shortopts.data(), longopts, NULL)) != -1) {
+        while ((opt = getopt_long_only(d->m_argc, d->m_argv, shortopts.data(), longopts, NULL)) != -1) {
             if (opt == '?') {
-                q->emit(q->invalidOption);
+                emit(invalidOption);
             } else if (opt == ':') {
-                q->emit(q->missingParameter);
+                emit(missingParameter);
             } else if (optionMap.count(opt)) {
                 PrivateImpl::OptionItem item = optionMap[opt];
                 item.option->d->m_isOptSet = true;
@@ -201,11 +201,11 @@ List<char*> Application::Private::parseOptions(ParsingStrictness parsingStrictne
             }
         }
     } else {
-        while ((opt = getopt_long(m_argc, m_argv, shortopts.data(), longopts, NULL)) != -1) {
+        while ((opt = getopt_long(d->m_argc, d->m_argv, shortopts.data(), longopts, NULL)) != -1) {
             if (opt == '?') {
-                q->emit(q->invalidOption);
+                emit(invalidOption);
             } else if (opt == ':') {
-                q->emit(q->missingParameter);
+                emit(missingParameter);
             } else if (optionMap.count(opt)) {
                 PrivateImpl::OptionItem item = optionMap[opt];
                 item.option->d->m_isOptSet = true;
@@ -218,13 +218,13 @@ List<char*> Application::Private::parseOptions(ParsingStrictness parsingStrictne
         item.option->d->m_isValid = true;
     }
     List<char*> res;
-    for (; optind < m_argc; ++optind) {
-        res.push_back(m_argv[optind]);
+    for (; optind < d->m_argc; ++optind) {
+        res.push_back(d->m_argv[optind]);
     }
     return res;
 }
 
-String Application::Private::getPath(Path path) const
+String Application::getPath(Path path) const
 {
     switch (path) {
         case Prefix:
@@ -264,7 +264,7 @@ void Application::Private::unloadUnneededDynamicLibraries()
     m_markedForUnload.clear();
 }
 
-void Application::Private::quit()
+void Application::quit()
 {
     exit(EXIT_SUCCESS);
 }

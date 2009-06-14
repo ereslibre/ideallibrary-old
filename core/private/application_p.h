@@ -36,21 +36,11 @@ public:
     Private(Application *q);
     virtual ~Private();
 
-    void addOptionWithoutArg(Option &option, char optChar, const char *longOpt);
-    void addOptionWithMandatoryArg(Option &option, char optChar, const char *longOpt);
-    void addOptionWithOptionalArg(Option &option, char optChar, const char *longOpt);
-
-    List<char*> parseOptions(ParsingStrictness parsingStrictness, FailVerbosity failVerbosity);
-
-    String getPath(Path path) const;
-
     void processEvents();
     void processDelayedDeletions();
     void unloadUnneededDynamicLibraries();
 
     void postEvent(Object *object, Event *event);
-
-    void quit();
 
     static bool timerSort(const Timer *left, const Timer *right);
     void checkTimers();

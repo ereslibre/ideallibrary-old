@@ -68,6 +68,6 @@ static Mutex outputMutex;
 #define IDEAL_SDEBUG(message)
 #endif
 
-#define D_I static_cast<PrivateImpl*>(this)
+#define D_I static_cast<PrivateImpl*>(d)
 
 #endif //IDEAL_EXPORT_H
