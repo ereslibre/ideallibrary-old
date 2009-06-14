@@ -23,6 +23,16 @@
 
 namespace IdealCore {
 
+CondVar::Private::Private(Mutex &mutex, CondVar *q)
+    : m_mutex(mutex)
+    , q(q)
+{
+}
+
+CondVar::Private::~Private()
+{
+}
+
 CondVar::CondVar(Mutex &mutex)
     : d(new PrivateImpl(mutex, this))
 {
@@ -31,26 +41,6 @@ CondVar::CondVar(Mutex &mutex)
 CondVar::~CondVar()
 {
     delete d;
-}
-
-void CondVar::wait()
-{
-    d->wait();
-}
-
-void CondVar::timedWait(int ms)
-{
-    d->timedWait(ms);
-}
-
-void CondVar::signal()
-{
-    d->signal();
-}
-
-void CondVar::broadcast()
-{
-    d->broadcast();
 }
 
 }

@@ -35,12 +35,12 @@ CondVar::PrivateImpl::~PrivateImpl()
     pthread_cond_destroy(&m_cond);
 }
 
-void CondVar::Private::wait()
+void CondVar::wait()
 {
-    pthread_cond_wait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex.d)->m_mutex);
+    pthread_cond_wait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(d->m_mutex.d)->m_mutex);
 }
 
-void CondVar::Private::timedWait(int ms)
+void CondVar::timedWait(int ms)
 {
     struct timespec timeout;
     clock_gettime(CLOCK_REALTIME, &timeout);
@@ -50,15 +50,15 @@ void CondVar::Private::timedWait(int ms)
         ++timeout.tv_sec;
         timeout.tv_nsec -= 1000000000;
     }
-    pthread_cond_timedwait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex.d)->m_mutex, &timeout);
+    pthread_cond_timedwait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(d->m_mutex.d)->m_mutex, &timeout);
 }
 
-void CondVar::Private::signal()
+void CondVar::signal()
 {
     pthread_cond_signal(&D_I->m_cond);
 }
 
-void CondVar::Private::broadcast()
+void CondVar::broadcast()
 {
     pthread_cond_broadcast(&D_I->m_cond);
 }
