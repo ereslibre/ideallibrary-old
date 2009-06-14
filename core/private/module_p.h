@@ -36,7 +36,7 @@ public:
     };
 
     Private(Module *q);
-    ~Private();
+    virtual ~Private();
 
     void deref();
 

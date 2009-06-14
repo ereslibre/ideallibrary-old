@@ -27,6 +27,8 @@ namespace IdealCore {
 
 class Mutex::Private
 {
+public:
+    virtual ~Private();
 };
 
 }

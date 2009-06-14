@@ -39,6 +39,8 @@ private:
 
 class Process::Private
 {
+public:
+    virtual ~Private();
 };
 
 }
