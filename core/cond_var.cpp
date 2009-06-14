@@ -23,9 +23,8 @@
 
 namespace IdealCore {
 
-CondVar::Private::Private(Mutex &mutex, CondVar *q)
+CondVar::Private::Private(Mutex &mutex)
     : m_mutex(mutex)
-    , q(q)
 {
 }
 
@@ -34,7 +33,7 @@ CondVar::Private::~Private()
 }
 
 CondVar::CondVar(Mutex &mutex)
-    : d(new PrivateImpl(mutex, this))
+    : d(new PrivateImpl(mutex))
 {
 }
 

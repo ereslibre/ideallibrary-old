@@ -39,11 +39,6 @@ void ProcessCommand::run()
     execvp(params[0], const_cast<char* const*>(params));
 }
 
-Process::PrivateImpl::PrivateImpl(Process *q)
-    : Private(q)
-{
-}
-
 void Process::exec()
 {
     const pid_t pid = fork();

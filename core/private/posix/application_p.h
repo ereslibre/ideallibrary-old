@@ -30,7 +30,7 @@ class Application::PrivateImpl
     : public Application::Private
 {
 public:
-    PrivateImpl(Application *q);
+    PrivateImpl();
 
     struct OptionItem
     {

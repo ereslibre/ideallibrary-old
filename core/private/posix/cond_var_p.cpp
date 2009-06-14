@@ -24,8 +24,8 @@
 
 namespace IdealCore {
 
-CondVar::PrivateImpl::PrivateImpl(Mutex &mutex, CondVar *q)
-    : Private(mutex, q)
+CondVar::PrivateImpl::PrivateImpl(Mutex &mutex)
+    : Private(mutex)
 {
     pthread_cond_init(&m_cond, 0);
 }

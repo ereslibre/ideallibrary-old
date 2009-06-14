@@ -39,11 +39,6 @@ private:
 
 class Process::Private
 {
-public:
-    Private(Process *q);
-    virtual ~Private();
-
-    Process *q; // Initialized in base class
 };
 
 }

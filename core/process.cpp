@@ -29,17 +29,8 @@ ProcessCommand::ProcessCommand(const String &command)
 {
 }
 
-Process::Private::Private(Process *q)
-    : q(q)
-{
-}
-
-Process::Private::~Private()
-{
-}
-
 Process::Process()
-    : d(new PrivateImpl(this))
+    : d(new PrivateImpl)
 {
 }
 

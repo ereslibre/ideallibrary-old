@@ -29,11 +29,10 @@
 
 namespace IdealCore {
 
-Application::Private::Private(Application *q)
+Application::Private::Private()
     : m_sleepTime(-1)
     , m_defaultSleepTime(500)
     , m_nextTimeout(-1)
-    , q(q)
 {
 }
 
@@ -142,7 +141,7 @@ void Application::Private::checkTimers()
 Application::Application(int argc, char **argv)
     : IDEAL_SIGNAL_INIT(invalidOption)
     , IDEAL_SIGNAL_INIT(missingParameter)
-    , d(new PrivateImpl(this))
+    , d(new PrivateImpl)
 {
     d->m_argc = argc;
     d->m_argv = argv;

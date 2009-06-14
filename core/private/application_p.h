@@ -33,7 +33,7 @@ class ProtocolHandler;
 class Application::Private
 {
 public:
-    Private(Application *q);
+    Private();
     virtual ~Private();
 
     void processEvents();
@@ -45,18 +45,17 @@ public:
 
     int                      m_argc;
     char                   **m_argv;
-    int                      m_sleepTime;                   // Initialized in base class
-    const int                m_defaultSleepTime;            // Initialized in base class
+    int                      m_sleepTime;
+    const int                m_defaultSleepTime;
     List<Object*>            m_markedForDeletion;
     Mutex                    m_markedForDeletionMutex;
     List<IdealCore::Module*> m_markedForUnload;
     Mutex                    m_markedForUnloadMutex;
     std::vector<Timer*>      m_runningTimerList;
     Mutex                    m_runningTimerListMutex;
-    int                      m_nextTimeout;                 // Initialized in base class
+    int                      m_nextTimeout;
     List<ProtocolHandler*>   m_protocolHandlerCache;
     Mutex                    m_protocolHandlerCacheMutex;
-    Application             *q;                             // Initialized in base class
 };
 
 }

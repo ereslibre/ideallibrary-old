@@ -30,10 +30,6 @@ Timer::PrivateImpl::PrivateImpl(Timer *q)
 {
 }
 
-Timer::PrivateImpl::~PrivateImpl()
-{
-}
-
 void Timer::timedWait(int ms) const
 {
     struct timespec tw;

@@ -111,7 +111,7 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
             ProtocolHandler *protocolHandler = *it;
             if (protocolHandler->canBeReusedWith(m_file->d->m_uri)) {
                 app_d->m_protocolHandlerCache.erase(it);
-                ++protocolHandler->weight;
+                ++protocolHandler->m_weight;
                 return protocolHandler;
             }
         }
@@ -144,7 +144,7 @@ void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
         ProtocolHandler *const protocolHandlerCachedWithLessWeight = app_d->m_protocolHandlerCache.front();
         app_d->m_protocolHandlerCache.erase(app_d->m_protocolHandlerCache.begin());
         delete protocolHandlerCachedWithLessWeight;
-        ++protocolHandler->weight;
+        ++protocolHandler->m_weight;
         app_d->m_protocolHandlerCache.push_front(protocolHandler);
     }
 }
@@ -163,7 +163,7 @@ void File::Private::Job::fetchInfo()
 
 bool File::Private::Job::LessThanProtocolHandler::operator()(ProtocolHandler *&left, ProtocolHandler *&right)
 {
-    return left->weight < right->weight;
+    return left->m_weight < right->m_weight;
 }
 
 void File::Private::Job::run()

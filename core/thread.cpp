@@ -23,9 +23,8 @@
 
 namespace IdealCore {
 
-Thread::Private::Private(Type type, Thread *q)
+Thread::Private::Private(Type type)
     : m_type(type)
-    , q(q)
 {
 }
 
@@ -34,7 +33,7 @@ Thread::Private::~Private()
 }
 
 Thread::Thread(Type type)
-    : d(new PrivateImpl(type, this))
+    : d(new PrivateImpl(type))
 {
 }
 

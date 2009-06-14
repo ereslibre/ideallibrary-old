@@ -76,8 +76,7 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
     }
 }
 
-Application::PrivateImpl::PrivateImpl(Application *q)
-    : Private(q)
+Application::PrivateImpl::PrivateImpl()
 {
     setlocale(LC_ALL, "");
     {

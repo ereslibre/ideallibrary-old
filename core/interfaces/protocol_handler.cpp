@@ -24,7 +24,7 @@ namespace IdealCore {
 
 ProtocolHandler::ProtocolHandler()
     : IDEAL_SIGNAL_INIT(statResult, StatResult)
-    , weight(0)
+    , m_weight(0)
 {
 }
 

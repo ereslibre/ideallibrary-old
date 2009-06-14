@@ -25,8 +25,8 @@
 
 namespace IdealCore {
 
-Thread::PrivateImpl::PrivateImpl(Type type, Thread *q)
-    : Private(type, q)
+Thread::PrivateImpl::PrivateImpl(Type type)
+    : Private(type)
 {
     pthread_attr_init(&m_attr);
     if (type == NoJoinable) {

@@ -27,11 +27,6 @@ namespace IdealCore {
 
 class Mutex::Private
 {
-public:
-    Private(Mutex *q);
-    virtual ~Private();
-
-    Mutex *q;   // Initialized in base class
 };
 
 }

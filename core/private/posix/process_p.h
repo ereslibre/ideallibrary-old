@@ -32,8 +32,6 @@ class Process::PrivateImpl
     : public Process::Private
 {
 public:
-    PrivateImpl(Process *q);
-
     pid_t m_pid;
 };
 

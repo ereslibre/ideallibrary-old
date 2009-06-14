@@ -123,7 +123,7 @@ public:
     IDEAL_SIGNAL(statResult, StatResult);
 
 private:
-    unsigned int weight;
+    unsigned int m_weight;
 };
 
 }
