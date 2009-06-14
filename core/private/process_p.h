@@ -43,9 +43,6 @@ public:
     Private(Process *q);
     virtual ~Private();
 
-    void exec();
-    void join();
-
     Process *q; // Initialized in base class
 };
 

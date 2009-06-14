@@ -33,7 +33,6 @@ def build(bld):
                         'uri.cpp',
                         'interfaces/protocol_handler.cpp',
                         # private generic stuff
-                        'private/process_p.cpp',
                         'private/thread_p.cpp',
                         'private/timer_p.cpp',
                         # private posix systems stuff

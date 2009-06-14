@@ -23,6 +23,21 @@
 
 namespace IdealCore {
 
+ProcessCommand::ProcessCommand(const String &command)
+    : Process()
+    , command(command)
+{
+}
+
+Process::Private::Private(Process *q)
+    : q(q)
+{
+}
+
+Process::Private::~Private()
+{
+}
+
 Process::Process()
     : d(new PrivateImpl(this))
 {
@@ -31,16 +46,6 @@ Process::Process()
 Process::~Process()
 {
     delete d;
-}
-
-void Process::exec()
-{
-    d->exec();
-}
-
-void Process::join()
-{
-    d->join();
 }
 
 void Process::execCommand(const String &command)

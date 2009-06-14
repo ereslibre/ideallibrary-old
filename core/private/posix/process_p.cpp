@@ -44,20 +44,20 @@ Process::PrivateImpl::PrivateImpl(Process *q)
 {
 }
 
-void Process::Private::exec()
+void Process::exec()
 {
     const pid_t pid = fork();
     switch (pid) {
         case 0:
             D_I->m_pid = getpid();
-            q->run();
+            run();
             exit(EXIT_SUCCESS);
         default:
             break;
     }
 }
 
-void Process::Private::join()
+void Process::join()
 {
     waitpid(D_I->m_pid, NULL, 0);
 }
