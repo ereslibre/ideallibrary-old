@@ -26,10 +26,11 @@
 
 namespace IdealCore {
 
-Object::Private::Private()
+Object::Private::Private(Object *q)
     : m_deleteChildrenRecursively(true)
     , m_blockedSignals(false)
     , m_emitBlocked(false)
+    , q(q)
 {
 }
 
@@ -87,7 +88,7 @@ void Object::Private::cleanConnections()
 }
 
 Object::Object(Object *parent)
-    : d(new Private)
+    : d(new Private(this))
     , IDEAL_SIGNAL_INIT(destroyed)
 {
     d->m_parent = parent;
@@ -294,7 +295,7 @@ List<const SignalBase*> Object::signals() const
 }
 
 Object::Object()
-    : d(new Private)
+    : d(new Private(this))
     , IDEAL_SIGNAL_INIT(destroyed)
 {
     d->m_parent = 0;

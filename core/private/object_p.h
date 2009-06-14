@@ -30,7 +30,7 @@ class Module;
 class Object::Private
 {
 public:
-    Private();
+    Private(Object *q);
 
     void addChild(Object *child);
     void removeChild(Object *child);
