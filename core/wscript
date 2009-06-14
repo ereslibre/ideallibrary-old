@@ -32,8 +32,6 @@ def build(bld):
                         'timer.cpp',
                         'uri.cpp',
                         'interfaces/protocol_handler.cpp',
-                        # private generic stuff
-                        'private/timer_p.cpp',
                         # private posix systems stuff
                         'private/posix/application_p.cpp',
                         'private/posix/cond_var_p.cpp',
