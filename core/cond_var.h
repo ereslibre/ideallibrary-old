@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef CONDVAR_H
-#define CONDVAR_H
+#ifndef COND_VAR_H
+#define COND_VAR_H
 
 #include <ideal_export.h>
 #include <core/mutex.h>
@@ -68,4 +68,4 @@ private:
 
 }
 
-#endif //CONDVAR_H
+#endif //COND_VAR_H

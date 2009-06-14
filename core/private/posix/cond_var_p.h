@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef CONDVAR_P_H_POSIX
-#define CONDVAR_P_H_POSIX
+#ifndef COND_VAR_P_H_POSIX
+#define COND_VAR_P_H_POSIX
 
 #include <pthread.h>
 
@@ -39,5 +39,5 @@ public:
 
 }
 
-#endif //CONDVAR_P_H_POSIX
+#endif //COND_VAR_P_H_POSIX
 
