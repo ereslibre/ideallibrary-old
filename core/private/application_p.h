@@ -40,8 +40,6 @@ public:
     void processDelayedDeletions();
     void unloadUnneededDynamicLibraries();
 
-    void postEvent(Object *object, Event *event);
-
     static bool timerSort(const Timer *left, const Timer *right);
     void checkTimers();
 
