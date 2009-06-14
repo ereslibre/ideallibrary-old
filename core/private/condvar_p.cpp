@@ -22,7 +22,7 @@
 
 namespace IdealCore {
 
-CondVar::Private::Private(Mutex *mutex, CondVar *q)
+CondVar::Private::Private(Mutex &mutex, CondVar *q)
     : m_mutex(mutex)
     , q(q)
 {

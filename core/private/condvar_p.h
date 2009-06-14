@@ -30,7 +30,7 @@ namespace IdealCore {
 class CondVar::Private
 {
 public:
-    Private(Mutex *mutex, CondVar *q);
+    Private(Mutex &mutex, CondVar *q);
     virtual ~Private();
 
     void wait();
@@ -38,7 +38,7 @@ public:
     void signal();
     void broadcast();
 
-    Mutex   *m_mutex;   // Initialized in base class
+    Mutex   &m_mutex;   // Initialized in base class
     CondVar *q;         // Initialized in base class
 };
 

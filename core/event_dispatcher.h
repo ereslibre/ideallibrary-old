@@ -18,26 +18,33 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/application.h>
-#include <core/mutex.h>
-#include <core/condvar.h>
+#ifndef EVENT_DISPATCHER_H
+#define EVENT_DISPATCHER_H
 
-using namespace IdealCore;
+#include <ideal_export.h>
+#include <core/thread.h>
 
-int main(int argc, char **argv)
+namespace IdealCore {
+
+class Event;
+
+class IDEAL_EXPORT EventDispatcher
+    : public Thread
 {
-    Application app(argc, argv);
+public:
+    EventDispatcher();
+    virtual ~EventDispatcher();
 
-    IDEAL_SDEBUG("*** Going to wait for a conditional variable that will never be signaled as maximum 1552 ms");
-    IDEAL_SDEBUG("*** Obviously, there is no possibility of a so fine grain timing");
-    IDEAL_SDEBUG("*** However, we are sure the number (using 'time' command) will always be a bit bigger, never smaller");
+    void postEvent(Event *event);
 
-    Mutex mutex;
-    CondVar condvar(mutex);
-    mutex.lock();
-    condvar.timedWait(1552);
-    mutex.unlock();
+protected:
+    virtual void run();
 
-    return 0;
+private:
+    class Private;
+    Private *const d;
+};
+
 }
 
+#endif //EVENT_DISPATCHER_H

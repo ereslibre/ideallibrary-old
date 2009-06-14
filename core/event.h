@@ -25,6 +25,8 @@
 
 namespace IdealCore {
 
+class Object;
+
 /**
   * @class Event event.h core/event.h
   *
@@ -52,8 +54,13 @@ public:
         FocusOut
     };
 
-    Event(Type type);
+    Event(Object *object, Type type);
     virtual ~Event();
+
+    /**
+      * @return the object of the event
+      */
+    Object *object() const;
 
     /**
       * @return the type of the event

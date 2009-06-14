@@ -65,8 +65,8 @@ void AnObject::slot()
 
 Mutex mutex1;
 Mutex mutex2;
-CondVar cond1 = CondVar(&mutex1);
-CondVar cond2 = CondVar(&mutex2);
+CondVar cond1 = CondVar(mutex1);
+CondVar cond2 = CondVar(mutex2);
 
 class OneClass
     : public Object

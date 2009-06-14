@@ -36,7 +36,7 @@ namespace IdealCore {
 class IDEAL_EXPORT CondVar
 {
 public:
-    CondVar(Mutex *mutex);
+    CondVar(Mutex &mutex);
     virtual ~CondVar();
 
     /**

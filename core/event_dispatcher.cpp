@@ -18,26 +18,43 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/application.h>
-#include <core/mutex.h>
+#include "event_dispatcher.h"
+#include <core/ideal_list.h>
 #include <core/condvar.h>
 
-using namespace IdealCore;
+namespace IdealCore {
 
-int main(int argc, char **argv)
+class EventDispatcher::Private
 {
-    Application app(argc, argv);
+public:
+    Private()
+        : m_eventListCondVar(m_eventListMutex)
+    {
+    }
 
-    IDEAL_SDEBUG("*** Going to wait for a conditional variable that will never be signaled as maximum 1552 ms");
-    IDEAL_SDEBUG("*** Obviously, there is no possibility of a so fine grain timing");
-    IDEAL_SDEBUG("*** However, we are sure the number (using 'time' command) will always be a bit bigger, never smaller");
+    List<Event*> m_eventList;
+    Mutex        m_eventListMutex;
+    CondVar      m_eventListCondVar;
+};
 
-    Mutex mutex;
-    CondVar condvar(mutex);
-    mutex.lock();
-    condvar.timedWait(1552);
-    mutex.unlock();
-
-    return 0;
+EventDispatcher::EventDispatcher()
+    : d(new Private)
+{
 }
 
+EventDispatcher::~EventDispatcher()
+{
+    delete d;
+}
+
+void EventDispatcher::postEvent(Event *event)
+{
+    ContextMutexLocker cml(d->m_eventListMutex);
+    d->m_eventList.push_back(event);
+}
+
+void EventDispatcher::run()
+{
+}
+
+}

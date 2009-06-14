@@ -24,7 +24,7 @@
 
 namespace IdealCore {
 
-CondVar::PrivateImpl::PrivateImpl(Mutex *mutex, CondVar *q)
+CondVar::PrivateImpl::PrivateImpl(Mutex &mutex, CondVar *q)
     : Private(mutex, q)
 {
     pthread_cond_init(&m_cond, 0);
@@ -37,7 +37,7 @@ CondVar::PrivateImpl::~PrivateImpl()
 
 void CondVar::Private::wait()
 {
-    pthread_cond_wait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex->d)->m_mutex);
+    pthread_cond_wait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex.d)->m_mutex);
 }
 
 void CondVar::Private::timedWait(int ms)
@@ -50,7 +50,7 @@ void CondVar::Private::timedWait(int ms)
         ++timeout.tv_sec;
         timeout.tv_nsec -= 1000000000;
     }
-    pthread_cond_timedwait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex->d)->m_mutex, &timeout);
+    pthread_cond_timedwait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex.d)->m_mutex, &timeout);
 }
 
 void CondVar::Private::signal()

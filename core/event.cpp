@@ -19,24 +19,32 @@
  */
 
 #include "event.h"
+#include <core/object.h>
 
 namespace IdealCore {
 
 class Event::Private
 {
 public:
+    Object     *object;
     Event::Type type;
 };
 
-Event::Event(Type type)
+Event::Event(Object *object, Type type)
     : d(new Private)
 {
+    d->object = object;
     d->type = type;
 }
 
 Event::~Event()
 {
     delete d;
+}
+
+Object *Event::object() const
+{
+    return d->object;
 }
 
 Event::Type Event::type() const

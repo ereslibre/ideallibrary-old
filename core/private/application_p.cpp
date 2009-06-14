@@ -74,11 +74,6 @@ void Application::Private::processDelayedDeletions()
 
 void Application::Private::postEvent(Object *object, Event *event)
 {
-    EventEntry eventEntry;
-    eventEntry.object = object;
-    eventEntry.event = event;
-    ContextMutexLocker cml(m_eventEntryListMutex);
-    m_eventEntryList.push_back(eventEntry);
 }
 
 bool Application::Private::timerSort(const Timer *left, const Timer *right)

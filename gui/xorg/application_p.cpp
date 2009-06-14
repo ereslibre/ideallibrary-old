@@ -69,6 +69,7 @@ static const unsigned int FocusOut_        = FocusOut;
 
 void Application::Private::processEvents()
 {
+#if 0
     XEvent xe;
     XNextEvent(dpy, &xe);
     switch (xe.type) {
@@ -146,6 +147,7 @@ void Application::Private::processEvents()
         IDEAL_DEBUG("unknown event received: " << xe.type);
         break;
     }
+#endif
 }
 
 }

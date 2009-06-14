@@ -23,7 +23,7 @@
 
 namespace IdealCore {
 
-CondVar::CondVar(Mutex *mutex)
+CondVar::CondVar(Mutex &mutex)
     : d(new PrivateImpl(mutex, this))
 {
 }

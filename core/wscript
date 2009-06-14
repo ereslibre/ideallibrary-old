@@ -18,6 +18,7 @@ def build(bld):
         source       = ['application.cpp',
                         'condvar.cpp',
                         'event.cpp',
+                        'event_dispatcher.cpp',
                         'extension.cpp',
                         'file.cpp',
                         'ideal_string.cpp',

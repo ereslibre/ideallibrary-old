@@ -198,9 +198,6 @@ public:
       */
     IDEAL_SIGNAL(missingParameter);
 
-protected:
-    void postEvent(Object *object, Event *event);
-
 private:
     class Private;
     class PrivateImpl;
