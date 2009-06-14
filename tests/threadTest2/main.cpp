@@ -20,7 +20,7 @@
 
 #include <core/application.h>
 #include <core/mutex.h>
-#include <core/condvar.h>
+#include <core/cond_var.h>
 
 using namespace IdealCore;
 

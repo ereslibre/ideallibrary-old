@@ -18,43 +18,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "event_dispatcher.h"
-#include <core/ideal_list.h>
-#include <core/cond_var.h>
+#ifndef CONDVAR_P_H_POSIX
+#define CONDVAR_P_H_POSIX
+
+#include <pthread.h>
+
+#include <core/private/cond_var_p.h>
 
 namespace IdealCore {
 
-class EventDispatcher::Private
+class CondVar::PrivateImpl
+    : public CondVar::Private
 {
 public:
-    Private()
-        : m_eventListCondVar(m_eventListMutex)
-    {
-    }
+    PrivateImpl(Mutex &mutex, CondVar *q);
+    ~PrivateImpl();
 
-    List<Event*> m_eventList;
-    Mutex        m_eventListMutex;
-    CondVar      m_eventListCondVar;
+    pthread_cond_t m_cond;
 };
 
-EventDispatcher::EventDispatcher()
-    : d(new Private)
-{
 }
 
-EventDispatcher::~EventDispatcher()
-{
-    delete d;
-}
+#endif //CONDVAR_P_H_POSIX
 
-void EventDispatcher::postEvent(Event *event)
-{
-    ContextMutexLocker cml(d->m_eventListMutex);
-    d->m_eventList.push_back(event);
-}
-
-void EventDispatcher::run()
-{
-}
-
-}

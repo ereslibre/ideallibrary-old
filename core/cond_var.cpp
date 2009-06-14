@@ -18,19 +18,39 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "condvar_p.h"
+#include "cond_var.h"
+#include "private/cond_var_p.h"
 
 namespace IdealCore {
 
-CondVar::Private::Private(Mutex &mutex, CondVar *q)
-    : m_mutex(mutex)
-    , q(q)
+CondVar::CondVar(Mutex &mutex)
+    : d(new PrivateImpl(mutex, this))
 {
 }
 
-CondVar::Private::~Private()
+CondVar::~CondVar()
 {
+    delete d;
+}
+
+void CondVar::wait()
+{
+    d->wait();
+}
+
+void CondVar::timedWait(int ms)
+{
+    d->timedWait(ms);
+}
+
+void CondVar::signal()
+{
+    d->signal();
+}
+
+void CondVar::broadcast()
+{
+    d->broadcast();
 }
 
 }
-

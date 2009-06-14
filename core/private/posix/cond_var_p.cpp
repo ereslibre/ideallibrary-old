@@ -18,39 +18,50 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "condvar.h"
-#include "private/condvar_p.h"
+#include <core/cond_var.h>
+#include "cond_var_p.h"
+#include "mutex_p.h"
 
 namespace IdealCore {
 
-CondVar::CondVar(Mutex &mutex)
-    : d(new PrivateImpl(mutex, this))
+CondVar::PrivateImpl::PrivateImpl(Mutex &mutex, CondVar *q)
+    : Private(mutex, q)
 {
+    pthread_cond_init(&m_cond, 0);
 }
 
-CondVar::~CondVar()
+CondVar::PrivateImpl::~PrivateImpl()
 {
-    delete d;
+    pthread_cond_destroy(&m_cond);
 }
 
-void CondVar::wait()
+void CondVar::Private::wait()
 {
-    d->wait();
+    pthread_cond_wait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex.d)->m_mutex);
 }
 
-void CondVar::timedWait(int ms)
+void CondVar::Private::timedWait(int ms)
 {
-    d->timedWait(ms);
+    struct timespec timeout;
+    clock_gettime(CLOCK_REALTIME, &timeout);
+    timeout.tv_sec += ms / 1000;
+    timeout.tv_nsec += (ms % 1000) * 1000000;
+    if (timeout.tv_nsec >= 1000000000) {
+        ++timeout.tv_sec;
+        timeout.tv_nsec -= 1000000000;
+    }
+    pthread_cond_timedwait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(m_mutex.d)->m_mutex, &timeout);
 }
 
-void CondVar::signal()
+void CondVar::Private::signal()
 {
-    d->signal();
+    pthread_cond_signal(&D_I->m_cond);
 }
 
-void CondVar::broadcast()
+void CondVar::Private::broadcast()
 {
-    d->broadcast();
+    pthread_cond_broadcast(&D_I->m_cond);
 }
 
 }
+

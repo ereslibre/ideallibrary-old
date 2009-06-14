@@ -16,7 +16,7 @@ def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
         source       = ['application.cpp',
-                        'condvar.cpp',
+                        'cond_var.cpp',
                         'event.cpp',
                         'event_dispatcher.cpp',
                         'extension.cpp',
@@ -34,7 +34,7 @@ def build(bld):
                         'interfaces/protocol_handler.cpp',
                         # private generic stuff
                         'private/application_p.cpp',
-                        'private/condvar_p.cpp',
+                        'private/cond_var_p.cpp',
                         'private/module_p.cpp',
                         'private/mutex_p.cpp',
                         'private/process_p.cpp',
@@ -42,7 +42,7 @@ def build(bld):
                         'private/timer_p.cpp',
                         # private posix systems stuff
                         'private/posix/application_p.cpp',
-                        'private/posix/condvar_p.cpp',
+                        'private/posix/cond_var_p.cpp',
                         'private/posix/extension_loader_p.cpp',
                         'private/posix/mutex_p.cpp',
                         'private/posix/process_p.cpp',
