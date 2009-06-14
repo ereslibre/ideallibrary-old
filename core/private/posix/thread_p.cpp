@@ -49,14 +49,14 @@ void *Thread::PrivateImpl::entryPoint(void *param)
     return 0;
 }
 
-void Thread::Private::exec()
+void Thread::exec()
 {
-    pthread_create(&D_I->m_thread, &D_I->m_attr, PrivateImpl::entryPoint, q);
+    pthread_create(&D_I->m_thread, &D_I->m_attr, PrivateImpl::entryPoint, this);
 }
 
-void Thread::Private::join()
+void Thread::join()
 {
-    if (m_type == Joinable) {
+    if (d->m_type == Joinable) {
         pthread_join(D_I->m_thread, NULL);
     } else {
         IDEAL_DEBUG_WARNING("join() has been called in a Thread object with attribute NoJoinable");

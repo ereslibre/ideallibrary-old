@@ -23,6 +23,16 @@
 
 namespace IdealCore {
 
+Thread::Private::Private(Type type, Thread *q)
+    : m_type(type)
+    , q(q)
+{
+}
+
+Thread::Private::~Private()
+{
+}
+
 Thread::Thread(Type type)
     : d(new PrivateImpl(type, this))
 {
@@ -31,16 +41,6 @@ Thread::Thread(Type type)
 Thread::~Thread()
 {
     delete d;
-}
-
-void Thread::exec()
-{
-    d->exec();
-}
-
-void Thread::join()
-{
-    d->join();
 }
 
 Thread::Type Thread::type() const

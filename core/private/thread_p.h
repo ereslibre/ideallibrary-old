@@ -31,9 +31,6 @@ public:
     Private(Type type, Thread *q);
     virtual ~Private();
 
-    void exec();
-    void join();
-
     Type    m_type; // Initialized in base class
     Thread *q;      // Initialized in base class
 };
