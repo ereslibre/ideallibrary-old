@@ -23,6 +23,42 @@
 
 namespace IdealCore {
 
+List<Module::ExtensionInfo> Module::Private::FakeModule::extensionInfoList()
+{
+    return List<ExtensionInfo>();
+}
+
+Module::Private::Private(Module *q)
+    : m_unused(true)
+    , m_refs(0)
+    , q(q)
+{
+}
+
+Module::Private::~Private()
+{
+    if (m_unused) {
+        FakeModule *fakeModule = new FakeModule;
+        fakeModule->d->m_handle = m_handle;
+        ContextMutexLocker cml(m_application->d->m_markedForUnloadMutex);
+        m_application->d->m_markedForUnload.push_back(fakeModule);
+    }
+}
+
+void Module::Private::deref()
+{
+    List<Module*>::iterator it;
+    ContextMutexLocker cml(m_application->d->m_markedForUnloadMutex);
+    for (it = m_application->d->m_markedForUnload.begin(); it != m_application->d->m_markedForUnload.end(); ++it) {
+        if (*it == q) {
+            return;
+        }
+    }
+    if (!--m_refs) {
+        m_application->d->m_markedForUnload.push_back(q);
+    }
+}
+
 Module::Module()
     : d(new Private(this))
 {

@@ -33,11 +33,6 @@ public:
     Private(Mutex &mutex, CondVar *q);
     virtual ~Private();
 
-    void wait();
-    void timedWait(int ms);
-    void signal();
-    void broadcast();
-
     Mutex   &m_mutex;   // Initialized in base class
     CondVar *q;         // Initialized in base class
 };

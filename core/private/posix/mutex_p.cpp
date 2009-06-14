@@ -30,25 +30,25 @@ Mutex::PrivateImpl::PrivateImpl(RecursionType recursionType, Mutex *q)
     if (recursionType == Recursive) {
         pthread_mutexattr_settype(&m_attr, PTHREAD_MUTEX_RECURSIVE);
     }
-    pthread_mutex_init(&D_I->m_mutex, &m_attr);
+    pthread_mutex_init(&m_mutex, &m_attr);
 }
 
 Mutex::PrivateImpl::~PrivateImpl()
 {
-    pthread_mutex_destroy(&D_I->m_mutex);
+    pthread_mutex_destroy(&m_mutex);
 }
 
-void Mutex::Private::lock()
+void Mutex::lock()
 {
     pthread_mutex_lock(&D_I->m_mutex);
 }
 
-bool Mutex::Private::tryLock()
+bool Mutex::tryLock()
 {
     return !pthread_mutex_trylock(&D_I->m_mutex);
 }
 
-void Mutex::Private::unlock()
+void Mutex::unlock()
 {
     pthread_mutex_unlock(&D_I->m_mutex);
 }

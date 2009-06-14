@@ -23,6 +23,15 @@
 
 namespace IdealCore {
 
+Mutex::Private::Private(Mutex *q)
+    : q(q)
+{
+}
+
+Mutex::Private::~Private()
+{
+}
+
 Mutex::Mutex(RecursionType recursionType)
     : d(new PrivateImpl(recursionType, this))
 {
@@ -31,21 +40,6 @@ Mutex::Mutex(RecursionType recursionType)
 Mutex::~Mutex()
 {
     delete d;
-}
-
-void Mutex::lock()
-{
-    d->lock();
-}
-
-bool Mutex::tryLock()
-{
-    return d->tryLock();
-}
-
-void Mutex::unlock()
-{
-    d->unlock();
 }
 
 ContextMutexLocker::ContextMutexLocker(Mutex &mutex)
