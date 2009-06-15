@@ -529,7 +529,7 @@ public:
         m_signal->emit(param...);
     }
 
-    Signal<Param...>* m_signal;
+    Signal<Param...> *m_signal;
 };
 
 /**
