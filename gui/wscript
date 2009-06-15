@@ -12,8 +12,8 @@ def configure(conf):
 def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
-        source       = ['application.cpp', 'painter.cpp', 'widget.cpp', 'xorg/application_p.cpp',
-                        'xorg/widget_p.cpp'],
+        source       = bld.glob('*.cpp') +
+                       bld.glob('xorg/*.cpp'),
         target       = 'idealgui',
         includes     = '.. ../core',
         uselib       = ['X11',
