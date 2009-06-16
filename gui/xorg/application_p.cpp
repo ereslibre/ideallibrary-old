@@ -69,85 +69,97 @@ static const unsigned int FocusOut_        = FocusOut;
 
 void Application::Private::processEvents()
 {
-#if 0
     XEvent xe;
     XNextEvent(dpy, &xe);
     switch (xe.type) {
     case CreateNotify_: {
-        IdealCore::Event e(IdealCore::Event::CreateNotify);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::CreateNotify);
+        widget->event(&e);
     }
         break;
     case MapNotify_: {
-        IdealCore::Event e(IdealCore::Event::MapNotify);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::MapNotify);
+        widget->event(&e);
     }
         break;
     case UnmapNotify_: {
-        IdealCore::Event e(IdealCore::Event::UnmapNotify);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::UnmapNotify);
+        widget->event(&e);
     }
         break;
     case MotionNotify_: {
-        IdealCore::Event e(IdealCore::Event::MotionNotify);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::MotionNotify);
+        widget->event(&e);
     }
         break;
     case EnterNotify_: {
-        IdealCore::Event e(IdealCore::Event::EnterNotify);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::EnterNotify);
+        widget->event(&e);
     }
         break;
     case LeaveNotify_: {
-        IdealCore::Event e(IdealCore::Event::LeaveNotify);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::LeaveNotify);
+        widget->event(&e);
     }
         break;
     case ButtonPress_: {
-        IdealCore::Event e(IdealCore::Event::ButtonPress);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::ButtonPress);
+        widget->event(&e);
     }
         break;
     case ButtonRelease_: {
-        IdealCore::Event e(IdealCore::Event::ButtonRelease);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::ButtonRelease);
+        widget->event(&e);
     }
         break;
     case KeyPress_: {
-        IdealCore::Event e(IdealCore::Event::KeyPress);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::KeyPress);
+        widget->event(&e);
     }
         break;
     case KeyRelease_: {
-        IdealCore::Event e(IdealCore::Event::KeyRelease);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::KeyRelease);
+        widget->event(&e);
     }
         break;
     case ConfigureNotify_: {
-        IdealCore::Event e(IdealCore::Event::ConfigureNotify);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::ConfigureNotify);
+        widget->event(&e);
     }
         break;
     case Expose_: {
-        IdealCore::Event e(IdealCore::Event::Expose);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::Expose);
+        widget->event(&e);
     }
         break;
     case FocusIn_: {
-        IdealCore::Event e(IdealCore::Event::FocusIn);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::FocusIn);
+        widget->event(&e);
     }
         break;
     case FocusOut_: {
-        IdealCore::Event e(IdealCore::Event::FocusOut);
-        widgetMap[xe.xany.window]->event(&e);
+        Widget *const widget = widgetMap[xe.xany.window];
+        IdealCore::Event e(widget, IdealCore::Event::FocusOut);
+        widget->event(&e);
     }
         break;
     default:
         IDEAL_DEBUG("unknown event received: " << xe.type);
         break;
     }
-#endif
 }
 
 }
