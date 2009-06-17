@@ -41,123 +41,59 @@ void Application::Private::processEvents()
 {
     XEvent xe;
     XNextEvent(dpy, &xe);
+    Widget *const widget = widgetMap[xe.xany.window];
+    GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
+    IdealCore::Event *event = 0;
     switch (xe.type) {
-    case CreateNotify_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::CreateNotify);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
+        case CreateNotify_:
+            event = new IdealCore::Event(widget, IdealCore::Event::CreateNotify);
+            break;
+        case MapNotify_:
+            event = new IdealCore::Event(widget, IdealCore::Event::MapNotify);
+            break;
+        case UnmapNotify_:
+            event = new IdealCore::Event(widget, IdealCore::Event::UnmapNotify);
+            break;
+        case MotionNotify_:
+            event = new IdealCore::Event(widget, IdealCore::Event::MotionNotify);
+            break;
+        case EnterNotify_:
+            event = new IdealCore::Event(widget, IdealCore::Event::EnterNotify);
+            break;
+        case LeaveNotify_:
+            event = new IdealCore::Event(widget, IdealCore::Event::LeaveNotify);
+            break;
+        case ButtonPress_:
+            event = new IdealCore::Event(widget, IdealCore::Event::ButtonPress);
+            break;
+        case ButtonRelease_:
+            event = new IdealCore::Event(widget, IdealCore::Event::ButtonRelease);
+            break;
+        case KeyPress_:
+            event = new IdealCore::Event(widget, IdealCore::Event::KeyPress);
+            break;
+        case KeyRelease_:
+            event = new IdealCore::Event(widget, IdealCore::Event::KeyRelease);
+            break;
+        case ConfigureNotify_:
+            event = new IdealCore::Event(widget, IdealCore::Event::ConfigureNotify);
+            break;
+        case Expose_:
+            event = new IdealCore::Event(widget, IdealCore::Event::Expose);
+            break;
+        case FocusIn_:
+            event = new IdealCore::Event(widget, IdealCore::Event::FocusIn);
+            break;
+        case FocusOut_:
+            event = new IdealCore::Event(widget, IdealCore::Event::FocusOut);
+            break;
+        default:
+            delete guiEventDispatcher;
+            IDEAL_DEBUG("unknown event received: " << xe.type);
+            return;
     }
-        break;
-    case MapNotify_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::MapNotify);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case UnmapNotify_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::UnmapNotify);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case MotionNotify_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::MotionNotify);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case EnterNotify_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::EnterNotify);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case LeaveNotify_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::LeaveNotify);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case ButtonPress_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::ButtonPress);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case ButtonRelease_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::ButtonRelease);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case KeyPress_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::KeyPress);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case KeyRelease_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::KeyRelease);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case ConfigureNotify_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::ConfigureNotify);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case Expose_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::Expose);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case FocusIn_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::FocusIn);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    case FocusOut_: {
-        Widget *const widget = widgetMap[xe.xany.window];
-        IdealCore::Event *event = new IdealCore::Event(widget, IdealCore::Event::FocusOut);
-        GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
-        guiEventDispatcher->postEvent(event);
-        guiEventDispatcher->exec();
-    }
-        break;
-    default:
-        IDEAL_DEBUG("unknown event received: " << xe.type);
-        break;
-    }
+    guiEventDispatcher->postEvent(event);
+    guiEventDispatcher->exec();
 }
 
 }
