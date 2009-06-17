@@ -20,21 +20,26 @@
 
 #include "event.h"
 #include <core/object.h>
+#include <core/genious_pointer.h>
 
 namespace IdealCore {
 
 class Event::Private
 {
 public:
-    Object     *object;
-    Event::Type type;
+    Private(Object *object, Type type)
+        : m_object(object)
+        , m_type(type)
+    {
+    }
+
+    GeniousPointer<Object> m_object;
+    Event::Type            m_type;
 };
 
 Event::Event(Object *object, Type type)
-    : d(new Private)
+    : d(new Private(object, type))
 {
-    d->object = object;
-    d->type = type;
 }
 
 Event::~Event()
@@ -44,12 +49,12 @@ Event::~Event()
 
 Object *Event::object() const
 {
-    return d->object;
+    return d->m_object.content();
 }
 
 Event::Type Event::type() const
 {
-    return d->type;
+    return d->m_type;
 }
 
 }
