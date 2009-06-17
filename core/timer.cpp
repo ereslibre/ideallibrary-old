@@ -45,7 +45,6 @@ Timer::Private::~Private()
 bool Timer::Private::listContains() const
 {
     Application::Private *const app_d = q->application()->d;
-    ContextMutexLocker cml(app_d->m_runningTimerListMutex);
     if (app_d->m_runningTimerList.empty()) {
         return false;
     }
@@ -83,9 +82,9 @@ void Timer::start(TimeoutType timeoutType)
     d->m_remaining = d->m_interval;
     d->m_state = Running;
     Application::Private *const app_d = application()->d;
+    ContextMutexLocker cml(app_d->m_runningTimerListMutex);
     if (!d->listContains()) {
         std::vector<Timer*>::iterator it;
-        ContextMutexLocker cml(app_d->m_runningTimerListMutex);
         for (it = app_d->m_runningTimerList.begin(); it != app_d->m_runningTimerList.end(); ++it) {
             Timer *currTimer = *it;
             if (currTimer->d->m_remaining < d->m_interval) {
