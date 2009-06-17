@@ -102,6 +102,7 @@ void Timer::stop()
 {
     d->m_state = Stopped;
     Application::Private *const app_d = application()->d;
+    ContextMutexLocker cml(app_d->m_runningTimerListMutex);
     std::vector<Timer*>::iterator it = app_d->m_runningTimerList.begin();
     while (it != app_d->m_runningTimerList.end()) {
         if (*it == this) {
