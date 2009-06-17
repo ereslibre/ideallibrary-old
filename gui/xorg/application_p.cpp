@@ -41,9 +41,8 @@ void Application::Private::processEvents()
 {
     XEvent xe;
     XNextEvent(dpy, &xe);
-    Widget *const widget = widgetMap[xe.xany.window];
-    GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
     IdealCore::Event *event = 0;
+    Widget *const widget = widgetMap[xe.xany.window];
     switch (xe.type) {
         case CreateNotify_:
             event = new IdealCore::Event(widget, IdealCore::Event::CreateNotify);
@@ -88,10 +87,10 @@ void Application::Private::processEvents()
             event = new IdealCore::Event(widget, IdealCore::Event::FocusOut);
             break;
         default:
-            delete guiEventDispatcher;
             IDEAL_DEBUG("unknown event received: " << xe.type);
             return;
     }
+    GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
     guiEventDispatcher->postEvent(event);
     guiEventDispatcher->exec();
 }
