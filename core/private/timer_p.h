@@ -31,11 +31,11 @@ public:
 
     bool listContains() const;
 
-    TimeoutType m_timeoutType;  // Initialized in base class
-    int         m_interval;     // Initialized in base class
-    int         m_remaining;    // Initialized in base class
-    State       m_state;        // Initialized in base class
-    Timer      *q;              // Initialized in base class
+    TimeoutType m_timeoutType;
+    int         m_interval;
+    int         m_remaining;
+    State       m_state;
+    Timer      *q;
 };
 
 }
