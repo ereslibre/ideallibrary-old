@@ -24,19 +24,6 @@
 
 namespace IdealGUI {
 
-Application::Private::Private(Application *q)
-    : q(q)
-    , guiEventHandler(0)
-{
-    dpy = XOpenDisplay("");
-}
-
-Application::Private::~Private()
-{
-    XCloseDisplay(dpy);
-    delete guiEventHandler;
-}
-
 static const unsigned int CreateNotify_    = CreateNotify;
 static const unsigned int MapNotify_       = MapNotify;
 static const unsigned int UnmapNotify_     = UnmapNotify;
@@ -66,6 +53,19 @@ static const unsigned int FocusOut_        = FocusOut;
 #undef Expose
 #undef FocusIn
 #undef FocusOut
+
+Application::Private::Private(Application *q)
+    : q(q)
+    , guiEventHandler(0)
+{
+    dpy = XOpenDisplay("");
+}
+
+Application::Private::~Private()
+{
+    XCloseDisplay(dpy);
+    delete guiEventHandler;
+}
 
 void Application::Private::processEvents()
 {
