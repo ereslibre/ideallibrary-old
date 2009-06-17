@@ -43,7 +43,8 @@ public:
 };
 
 EventDispatcher::EventDispatcher()
-    : d(new Private)
+    : Thread(NoJoinable)
+    , d(new Private)
 {
 }
 
@@ -60,14 +61,12 @@ void EventDispatcher::postEvent(Event *event)
 void EventDispatcher::run()
 {
     if (!d->m_event) {
-        delete this;
         return;
     }
     if (d->m_event->type() == Event::Timeout) {
         Timer *const timer = static_cast<Timer*>(d->m_event->object());
         timer->emit(timer->timeout);
     }
-    delete this;
 }
 
 }
