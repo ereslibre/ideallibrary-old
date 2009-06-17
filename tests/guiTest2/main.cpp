@@ -43,6 +43,10 @@ bool MyWidget::event(IdealCore::Event *event)
         p.drawLine(200, 100, 300, 300);
         p.drawLine(200, 400, 600, 200);
         p.drawLine(280, 160, 600, 400);
+    } else if (event->type() == IdealCore::Event::ButtonPress) {
+        while (true) {
+            IDEAL_SDEBUG("OK. I am blocking. Am I able to block GUI?");
+        }
     }
     return false;
 }
