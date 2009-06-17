@@ -60,14 +60,14 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
     int fd;
     char filename[L_tmpnam];
     do {
-        if (tmpnam(filename)) {} // tmpnam has attribute "warn_unused_result" for some bad reason...
+        if (tmpnam(filename)) {}
     } while ((fd = open(filename, O_WRONLY | O_CREAT | O_EXCL, 0600)) < 0);
     const pid_t pid = fork();
     switch (pid) {
         case 0:
             char command[BUFSIZ];
             sprintf(command, "attach %d\nbt\n", getppid());
-            write(fd, command, strlen(command));
+            if (write(fd, command, strlen(command))) {};
             close(fd);
             execlp("gdb", "gdb", "-batch", "-x", filename, (char*) 0);
         default:
