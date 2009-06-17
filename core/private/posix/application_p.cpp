@@ -67,7 +67,7 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
         case 0:
             char command[BUFSIZ];
             sprintf(command, "attach %d\nbt\n", getppid());
-            if (write(fd, command, strlen(command))) {};
+            if (write(fd, command, strlen(command))) {}
             close(fd);
             execlp("gdb", "gdb", "-batch", "-x", filename, (char*) 0);
         default:
