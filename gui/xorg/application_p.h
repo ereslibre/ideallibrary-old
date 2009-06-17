@@ -21,8 +21,10 @@
 #include <map>
 #include <iostream>
 #include <X11/Xlib.h>
+#include "fixincludes.h"
+
 #include <gui/application.h>
-#include <core/thread.h>
+#include <core/event_dispatcher.h>
 
 namespace IdealGUI {
 
@@ -42,6 +44,8 @@ public:
 
     class GUIEventHandler;
     GUIEventHandler          *guiEventHandler;
+
+    class GUIEventDispatcher;
 };
 
 class Application::Private::GUIEventHandler
@@ -51,9 +55,18 @@ public:
     GUIEventHandler(Application::Private *priv);
     ~GUIEventHandler();
 
+protected:
     virtual void run();
 
+public:
     Application::Private *priv;
+};
+
+class Application::Private::GUIEventDispatcher
+    : public IdealCore::EventDispatcher
+{
+protected:
+    virtual void run();
 };
 
 }

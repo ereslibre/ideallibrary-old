@@ -19,6 +19,8 @@
  */
 
 #include <X11/extensions/Xrender.h>
+#include "fixincludes.h"
+
 #include <gui/widget.h>
 
 namespace IdealGUI {

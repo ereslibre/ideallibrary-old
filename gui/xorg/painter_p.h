@@ -18,8 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <X11/Xlib.h>
 #include <math.h>
+#include <X11/Xlib.h>
+#include "fixincludes.h"
+
 #include "application_p.h"
 #include "widget_p.h"
 

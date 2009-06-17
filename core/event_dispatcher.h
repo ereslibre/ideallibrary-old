@@ -40,9 +40,8 @@ public:
 protected:
     virtual void run();
 
-private:
-    class Private;
-    Private *const d;
+protected:
+    Event *m_event;
 };
 
 }

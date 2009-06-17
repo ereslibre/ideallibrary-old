@@ -26,46 +26,35 @@
 
 namespace IdealCore {
 
-class EventDispatcher::Private
-{
-public:
-    Private()
-        : m_event(0)
-    {
-    }
-
-    ~Private()
-    {
-        delete m_event;
-    }
-
-    Event *m_event;
-};
-
 EventDispatcher::EventDispatcher()
     : Thread(NoJoinable)
-    , d(new Private)
 {
 }
 
 EventDispatcher::~EventDispatcher()
 {
-    delete d;
+    delete m_event;
 }
 
 void EventDispatcher::postEvent(Event *event)
 {
-    d->m_event = event;
+    m_event = event;
 }
 
 void EventDispatcher::run()
 {
-    if (!d->m_event || !d->m_event->object()) {
+    if (!m_event || !m_event->object()) {
         return;
     }
-    if (d->m_event->type() == Event::Timeout) {
-        Timer *const timer = static_cast<Timer*>(d->m_event->object());
-        timer->emit(timer->timeout);
+    switch (m_event->type()) {
+        case Event::Timeout: {
+            Timer *const timer = static_cast<Timer*>(m_event->object());
+            timer->emit(timer->timeout);
+        }
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("Unexpected event type " << m_event->type());
+            break;
     }
 }
 
