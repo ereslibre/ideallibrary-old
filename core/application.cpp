@@ -27,6 +27,9 @@
 #include "interfaces/protocol_handler.h"
 #include "private/object_p.h"
 
+#include <core/event.h>
+#include <core/event_dispatcher.h>
+
 namespace IdealCore {
 
 Application::Private::Private()
@@ -134,7 +137,10 @@ void Application::Private::checkTimers()
     List<Timer*>::iterator it;
     for (it = expiredTimerList.begin(); it != expiredTimerList.end(); ++it) {
         Timer *const currTimer = *it;
-        currTimer->emit(currTimer->timeout);
+        EventDispatcher *eventDispatcher = new EventDispatcher;
+        Event *event = new Event(currTimer, Event::Timeout);
+        eventDispatcher->postEvent(event);
+        eventDispatcher->exec();
     }
 }
 

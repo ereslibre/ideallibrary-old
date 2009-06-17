@@ -21,6 +21,8 @@
 #include "event_dispatcher.h"
 #include <core/ideal_list.h>
 #include <core/cond_var.h>
+#include <core/timer.h>
+#include <core/event.h>
 
 namespace IdealCore {
 
@@ -28,13 +30,16 @@ class EventDispatcher::Private
 {
 public:
     Private()
-        : m_eventListCondVar(m_eventListMutex)
+        : m_event(0)
     {
     }
 
-    List<Event*> m_eventList;
-    Mutex        m_eventListMutex;
-    CondVar      m_eventListCondVar;
+    ~Private()
+    {
+        delete m_event;
+    }
+
+    Event *m_event;
 };
 
 EventDispatcher::EventDispatcher()
@@ -49,12 +54,19 @@ EventDispatcher::~EventDispatcher()
 
 void EventDispatcher::postEvent(Event *event)
 {
-    ContextMutexLocker cml(d->m_eventListMutex);
-    d->m_eventList.push_back(event);
+    d->m_event = event;
 }
 
 void EventDispatcher::run()
 {
+    if (!d->m_event) {
+        return;
+    }
+    if (d->m_event->type() == Event::Timeout) {
+        Timer *const timer = static_cast<Timer*>(d->m_event->object());
+        timer->emit(timer->timeout);
+    }
+    delete this;
 }
 
 }

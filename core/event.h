@@ -38,6 +38,7 @@ class IDEAL_EXPORT Event
 {
 public:
     enum Type {
+        Timeout,
         CreateNotify,
         MapNotify,
         UnmapNotify,
