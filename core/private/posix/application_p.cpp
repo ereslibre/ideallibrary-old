@@ -65,7 +65,9 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
     const pid_t pid = fork();
     switch (pid) {
         case 0:
-            dprintf(fd, "attach %d\nbt\n", getppid());
+            char command[BUFSIZ];
+            sprintf(command, "attach %d\nbt\n", getppid());
+            write(fd, command, strlen(command));
             close(fd);
             execlp("gdb", "gdb", "-batch", "-x", filename, (char*) 0);
         default:
