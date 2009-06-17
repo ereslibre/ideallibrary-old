@@ -60,7 +60,7 @@ void EventDispatcher::postEvent(Event *event)
 
 void EventDispatcher::run()
 {
-    if (!d->m_event) {
+    if (!d->m_event || !d->m_event->object()) {
         return;
     }
     if (d->m_event->type() == Event::Timeout) {
