@@ -43,6 +43,10 @@ bool MyWidget::event(IdealCore::Event *event)
         p.drawLine(200, 100, 300, 300);
         p.drawLine(200, 400, 600, 200);
         p.drawLine(280, 160, 600, 400);
+    } else if (event->type() == IdealCore::Event::ButtonPress) {
+        while (true) {
+            IDEAL_SDEBUG("OK. I am blocking. Am I able to block GUI?");
+        }
     }
     return false;
 }
@@ -65,11 +69,14 @@ OtherWidget::OtherWidget(Object *parent)
 bool OtherWidget::event(IdealCore::Event *event)
 {
     if (event->type() == IdealCore::Event::MapNotify ||
-        event->type() == IdealCore::Event::Expose) {
+        event->type() == IdealCore::Event::Expose ||
+        event->type() == IdealCore::Event::LeaveNotify) {
         Painter p(this);
         p.drawRectangle(0, 0, 100, 100);
-    } else if (event->type() == IdealCore::Event::ButtonPress) {
+    } else if (event->type() == IdealCore::Event::MotionNotify || 
+               event->type() == IdealCore::Event::EnterNotify) {
         Painter p(this);
+        p.drawRectangle(0, 0, 100, 100);
         p.drawLine(0, 0, 100, 100);
         p.drawLine(100, 0, 0, 100);
     } else if (event->type() == IdealCore::Event::ButtonRelease) {

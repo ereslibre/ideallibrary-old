@@ -17,6 +17,7 @@ def build(bld):
                      'idleTest',
                      'leakTest',
                      'multiSlotTest',
+                     'nonBlockingGUI',
                      'pathTest',
                      'processTest',
                      'protocolHandlerTest',
