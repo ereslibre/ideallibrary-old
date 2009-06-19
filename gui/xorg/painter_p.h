@@ -42,6 +42,7 @@ public:
     ~Private()
     {
         XFreeGC(m_dpy, m_gc);
+        XFlush(m_dpy);
     }
 
     void drawPoint(int x, int y);
