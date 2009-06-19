@@ -27,7 +27,7 @@
 namespace IdealCore {
 
 EventDispatcher::EventDispatcher()
-    : Thread(NoJoinable, HighestPriority)
+    : Thread(NoJoinable)
     , m_event(0)
 {
 }

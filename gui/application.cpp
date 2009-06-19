@@ -27,7 +27,8 @@
 namespace IdealGUI {
 
 Application::Private::GUIEventHandler::GUIEventHandler(Application::Private *priv)
-    : priv(priv)
+    : Thread(NoJoinable)
+    , priv(priv)
 {
 }
 
