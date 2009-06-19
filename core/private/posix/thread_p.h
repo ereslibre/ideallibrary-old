@@ -30,7 +30,7 @@ class Thread::PrivateImpl
     : public Thread::Private
 {
 public:
-    PrivateImpl(Type type);
+    PrivateImpl(Type type, Priority priority);
     ~PrivateImpl();
 
     static void *entryPoint(void *param);

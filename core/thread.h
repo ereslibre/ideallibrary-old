@@ -61,7 +61,13 @@ public:
                       /// @endcode
     };
 
-    Thread(Type type = Joinable);
+    enum Priority {
+        LowestPriority = 0, ///< This thread will run with lowest priority
+        MediumPriority,     ///< This thread will run with medium priority
+        HighestPriority     ///< This thread will run with highest priority
+    };
+
+    Thread(Type type = Joinable, Priority priority = LowestPriority);
     virtual ~Thread();
 
     /**
@@ -78,6 +84,11 @@ public:
       * @return The type of this thread.
       */
     Type type() const;
+
+    /**
+      * @return The priority of this thread.
+      */
+    Priority priority() const;
 
 protected:
     /**

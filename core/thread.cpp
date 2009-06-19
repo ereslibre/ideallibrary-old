@@ -23,8 +23,9 @@
 
 namespace IdealCore {
 
-Thread::Private::Private(Type type)
+Thread::Private::Private(Type type, Priority priority)
     : m_type(type)
+    , m_priority(priority)
 {
 }
 
@@ -32,8 +33,8 @@ Thread::Private::~Private()
 {
 }
 
-Thread::Thread(Type type)
-    : d(new PrivateImpl(type))
+Thread::Thread(Type type, Priority priority)
+    : d(new PrivateImpl(type, priority))
 {
 }
 
@@ -45,6 +46,11 @@ Thread::~Thread()
 Thread::Type Thread::type() const
 {
     return d->m_type;
+}
+
+Thread::Priority Thread::priority() const
+{
+    return d->m_priority;
 }
 
 }

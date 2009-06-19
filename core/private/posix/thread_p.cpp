@@ -25,12 +25,26 @@
 
 namespace IdealCore {
 
-Thread::PrivateImpl::PrivateImpl(Type type)
-    : Private(type)
+Thread::PrivateImpl::PrivateImpl(Type type, Priority priority)
+    : Private(type, priority)
 {
     pthread_attr_init(&m_attr);
     if (type == NoJoinable) {
         pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_DETACHED);
+    }
+    int givenPriority = 0;
+    const int currScheduler = sched_getscheduler(getpid());
+    switch (priority) {
+        case LowestPriority:
+            givenPriority = sched_get_priority_min(sched_getscheduler(getpid()));
+            break;
+        case MediumPriority:
+            givenPriority = std::abs(sched_get_priority_max(currScheduler) -
+                                     sched_get_priority_min(currScheduler)) / 2;
+            break;
+        case HighestPriority:
+            givenPriority = sched_get_priority_max(sched_getscheduler(getpid()));
+            break;
     }
 }
 
