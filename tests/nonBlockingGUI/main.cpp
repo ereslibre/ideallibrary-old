@@ -47,7 +47,7 @@ bool MyWidget::event(IdealCore::Event *event)
         bool printed = false;
         while (true) {
             if (!printed) {
-                IDEAL_SDEBUG("Entered in an endless loop");
+                IDEAL_SDEBUG("*** Entered in an endless loop");
                 printed = true;
             }
         }
