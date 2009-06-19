@@ -70,6 +70,7 @@ bool OtherWidget::event(IdealCore::Event *event)
         p.drawRectangle(0, 0, 100, 100);
     } else if (event->type() == IdealCore::Event::ButtonPress) {
         Painter p(this);
+        p.drawRectangle(0, 0, 100, 100);
         p.drawLine(0, 0, 100, 100);
         p.drawLine(100, 0, 0, 100);
     } else if (event->type() == IdealCore::Event::ButtonRelease) {
