@@ -9,13 +9,10 @@ def configure(conf):
 def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
-        source       = ['main.cpp',
-                        'remote.cpp',
-                        'posix/local.cpp'],
+        source       = bld.glob('*.cpp'),
         target       = 'builtinprotocolhandlers',
         includes     = '../..',
         uselib       = 'LIBCURL',
         uselib_local = 'idealcore',
         install_path = '${PREFIX}/lib/ideal'
     )
-
