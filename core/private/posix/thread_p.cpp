@@ -38,9 +38,11 @@ Thread::PrivateImpl::PrivateImpl(Type type, Priority priority)
         case LowestPriority:
             givenPriority = sched_get_priority_min(sched_getscheduler(getpid()));
             break;
-        case MediumPriority:
-            givenPriority = sched_get_priority_min(currScheduler) + (sched_get_priority_max(currScheduler) -
-                                                                     sched_get_priority_min(currScheduler)) / 2;
+        case MediumPriority: {
+                const int minPrio = sched_get_priority_min(currScheduler);
+                const int maxPrio = sched_get_priority_max(currScheduler);
+                givenPriority = minPrio + (maxPrio - minPrio) / 2;
+            }
             break;
         case HighestPriority:
             givenPriority = sched_get_priority_max(sched_getscheduler(getpid()));
