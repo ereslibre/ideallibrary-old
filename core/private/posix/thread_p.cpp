@@ -45,7 +45,11 @@ Thread::PrivateImpl::PrivateImpl(Type type, Priority priority)
         case HighestPriority:
             givenPriority = sched_get_priority_max(sched_getscheduler(getpid()));
             break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown priority value set to thread");
+            break;
     }
+    pthread_attr_setschedpolicy(&m_attr, givenPriority);
 }
 
 Thread::PrivateImpl::~PrivateImpl()
