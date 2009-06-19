@@ -73,8 +73,7 @@ bool OtherWidget::event(IdealCore::Event *event)
         event->type() == IdealCore::Event::LeaveNotify) {
         Painter p(this);
         p.drawRectangle(0, 0, 100, 100);
-    } else if (event->type() == IdealCore::Event::MotionNotify || 
-               event->type() == IdealCore::Event::EnterNotify) {
+    } else if (event->type() == IdealCore::Event::EnterNotify) {
         Painter p(this);
         p.drawRectangle(0, 0, 100, 100);
         p.drawLine(0, 0, 100, 100);
