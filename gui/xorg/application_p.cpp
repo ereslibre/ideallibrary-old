@@ -28,6 +28,7 @@ Application::Private::Private(Application *q)
     : q(q)
     , guiEventHandler(0)
 {
+    XInitThreads();
     dpy = XOpenDisplay("");
 }
 
