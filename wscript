@@ -3,7 +3,7 @@
 
 import UnitTest, Utils, Options
 
-LIBVERSION = '0.0.5'
+LIBVERSION = '0.0.6'
 
 VERSION    = 'v' + LIBVERSION
 APPNAME    = 'ideallibrary'
