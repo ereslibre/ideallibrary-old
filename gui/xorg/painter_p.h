@@ -34,12 +34,14 @@ public:
         : m_canvas(canvas)
     {
         IdealGUI::Application *app = static_cast<IdealGUI::Application*>(m_canvas->application());
-        Display *dpy = app->d->dpy;
-        XClearWindow(dpy, canvas->d->m_window);
+        m_dpy = app->d->dpy;
+        XClearWindow(m_dpy, m_canvas->d->m_window);
+        m_gc = XCreateGC(m_dpy, m_canvas->d->m_window, 0, 0);
     }
 
     ~Private()
     {
+        XFreeGC(m_dpy, m_gc);
     }
 
     void drawPoint(int x, int y);
@@ -48,27 +50,18 @@ public:
     void drawText(int x, int y, const IdealCore::String &text);
     void fillRectangle(int x, int y, int width, int height);
 
-    Widget *m_canvas;
-    GC      m_gc;
+    Widget  *m_canvas;
+    Display *m_dpy;
+    GC       m_gc;
 };
 
 void Painter::Private::drawPoint(int x, int y)
 {
-    IdealGUI::Application *app = static_cast<IdealGUI::Application*>(m_canvas->application());
-    Display *dpy = app->d->dpy;
-    m_gc = XCreateGC(dpy, m_canvas->d->m_window, 0, 0);
-
-    XDrawPoint(dpy, m_canvas->d->m_window, m_gc, x, y);
-
-    XFreeGC(dpy, m_gc);
+    XDrawPoint(m_dpy, m_canvas->d->m_window, m_gc, x, y);
 }
 
 void Painter::Private::drawLine(int x1, int y1, int x2, int y2)
 {
-    IdealGUI::Application *app = static_cast<IdealGUI::Application*>(m_canvas->application());
-    Display *dpy = app->d->dpy;
-    m_gc = XCreateGC(dpy, m_canvas->d->m_window, 0, 0);
-
     XPointDouble poly[4];
     XDouble dx = (x2 - x1);
     XDouble dy = (y2 - y1);
@@ -92,10 +85,8 @@ void Painter::Private::drawLine(int x1, int y1, int x2, int y2)
     poly[3].x = x1 - ldx;
     poly[3].y = y1 + ldy;
 
-    XRenderCompositeDoublePoly(dpy, PictOpOver, m_canvas->d->m_fillPicture, m_canvas->d->m_picture,
+    XRenderCompositeDoublePoly(m_dpy, PictOpOver, m_canvas->d->m_fillPicture, m_canvas->d->m_picture,
                                m_canvas->d->m_maskFormat, 0, 0, 0, 0, poly, 4, EvenOddRule);
-
-    XFreeGC(dpy, m_gc);
 }
 
 void Painter::Private::drawRectangle(int x, int y, int width, int height)
