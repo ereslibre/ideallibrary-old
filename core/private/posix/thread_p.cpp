@@ -36,7 +36,7 @@ Thread::PrivateImpl::PrivateImpl(Type type, Priority priority)
     const int currScheduler = sched_getscheduler(getpid());
     switch (priority) {
         case LowestPriority:
-            givenPriority = sched_get_priority_min(sched_getscheduler(getpid()));
+            givenPriority = sched_get_priority_min(currScheduler);
             break;
         case MediumPriority: {
                 const int minPrio = sched_get_priority_min(currScheduler);
@@ -45,7 +45,7 @@ Thread::PrivateImpl::PrivateImpl(Type type, Priority priority)
             }
             break;
         case HighestPriority:
-            givenPriority = sched_get_priority_max(sched_getscheduler(getpid()));
+            givenPriority = sched_get_priority_max(currScheduler);
             break;
         default:
             IDEAL_DEBUG_WARNING("unknown priority value set to thread");
