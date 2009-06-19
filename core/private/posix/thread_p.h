@@ -35,8 +35,9 @@ public:
 
     static void *entryPoint(void *param);
 
-    pthread_t      m_thread;
-    pthread_attr_t m_attr;
+    pthread_t          m_thread;
+    pthread_attr_t     m_attr;
+    struct sched_param m_schedParam;
 };
 
 }

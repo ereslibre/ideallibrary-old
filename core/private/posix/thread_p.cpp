@@ -39,8 +39,8 @@ Thread::PrivateImpl::PrivateImpl(Type type, Priority priority)
             givenPriority = sched_get_priority_min(sched_getscheduler(getpid()));
             break;
         case MediumPriority:
-            givenPriority = std::abs(sched_get_priority_max(currScheduler) -
-                                     sched_get_priority_min(currScheduler)) / 2;
+            givenPriority = (sched_get_priority_max(currScheduler) -
+                             sched_get_priority_min(currScheduler)) / 2;
             break;
         case HighestPriority:
             givenPriority = sched_get_priority_max(sched_getscheduler(getpid()));
@@ -49,7 +49,8 @@ Thread::PrivateImpl::PrivateImpl(Type type, Priority priority)
             IDEAL_DEBUG_WARNING("unknown priority value set to thread");
             break;
     }
-    pthread_attr_setschedpolicy(&m_attr, givenPriority);
+    m_schedParam.sched_priority = givenPriority;
+    pthread_attr_setschedparam(&m_attr, &m_schedParam);
 }
 
 Thread::PrivateImpl::~PrivateImpl()
