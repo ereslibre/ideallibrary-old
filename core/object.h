@@ -653,9 +653,9 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
-    static inline void disconnectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    static inline void disconnectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
     {
-        signal.disconnectSynchronized(receiver, member);
+        signal.disconnectSynchronized(receiver, member, mutex);
     }
 
     /**
@@ -683,9 +683,9 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
-    static inline void disconnectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    static inline void disconnectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
     {
-        signal.disconnectMultiSynchronized(receiver, member);
+        signal.disconnectMultiSynchronized(receiver, member, mutex);
     }
 
     /**
@@ -728,9 +728,9 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
-    static inline void disconnectStaticSynchronized(const Signal<Param...> &signal, Member member)
+    static inline void disconnectStaticSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
     {
-        signal.disconnectStaticSynchronized(member);
+        signal.disconnectStaticSynchronized(member, mutex);
     }
 
     /**
@@ -758,9 +758,9 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
-    static inline void disconnectStaticMultiSynchronized(const Signal<Param...> &signal, Member member)
+    static inline void disconnectStaticMultiSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
     {
-        signal.disconnectStaticMultiSynchronized(member);
+        signal.disconnectStaticMultiSynchronized(member, mutex);
     }
 
     /**

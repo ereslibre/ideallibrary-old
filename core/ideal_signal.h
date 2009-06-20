@@ -608,7 +608,7 @@ private:
     }
 
     template <typename Receiver, typename Member>
-    void disconnectSynchronized(Receiver *receiver, Member member) const
+    void disconnectSynchronized(Receiver *receiver, Member member, Mutex *mutex) const
     {
         if (!receiver) {
             IDEAL_DEBUG_WARNING("disconnection failed. NULL receiver");
@@ -618,8 +618,8 @@ private:
         List<CallbackDummy*>::iterator it;
         ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-            Callback<Receiver, Member, Param...> *const curr = dynamic_cast<CallbackSynchronized<Receiver, Member, Param...>*>(*it);
-            if (curr && curr->m_receiver == static_cast<void*>(receiver) && curr->m_member == member) {
+            CallbackSynchronized<Receiver, Member, Param...> *const curr = dynamic_cast<CallbackSynchronized<Receiver, Member, Param...>*>(*it);
+            if (curr && curr->m_receiver == static_cast<void*>(receiver) && curr->m_member == member && curr->m_mutex == mutex) {
                 m_connections.erase(it);
                 delete curr;
                 return;
@@ -650,7 +650,7 @@ private:
     }
 
     template <typename Receiver, typename Member>
-    void disconnectMultiSynchronized(Receiver *receiver, Member member) const
+    void disconnectMultiSynchronized(Receiver *receiver, Member member, Mutex *mutex) const
     {
         if (!receiver) {
             IDEAL_DEBUG_WARNING("disconnection failed. NULL receiver");
@@ -660,8 +660,8 @@ private:
         List<CallbackDummy*>::iterator it;
         ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-            CallbackMulti<Receiver, Member, Param...> *const curr = dynamic_cast<CallbackMultiSynchronized<Receiver, Member, Param...>*>(*it);
-            if (curr && curr->m_receiver == static_cast<void*>(receiver) && curr->m_member == member) {
+            CallbackMultiSynchronized<Receiver, Member, Param...> *const curr = dynamic_cast<CallbackMultiSynchronized<Receiver, Member, Param...>*>(*it);
+            if (curr && curr->m_receiver == static_cast<void*>(receiver) && curr->m_member == member && curr->m_mutex == mutex) {
                 m_connections.erase(it);
                 delete curr;
                 return;
@@ -678,7 +678,7 @@ private:
         List<CallbackDummy*>::iterator it;
         ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-            const CallbackStatic<Member, Param...> *const curr = dynamic_cast<CallbackStatic<Member, Param...>*>(*it);
+            CallbackStatic<Member, Param...> *const curr = dynamic_cast<CallbackStatic<Member, Param...>*>(*it);
             if (curr && curr->m_member == member) {
                 m_connections.erase(it);
                 delete curr;
@@ -689,13 +689,13 @@ private:
     }
 
     template <typename Member>
-    void disconnectStaticSynchronized(Member member) const
+    void disconnectStaticSynchronized(Member member, Mutex *mutex) const
     {
         List<CallbackDummy*>::iterator it;
         ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-            const CallbackStatic<Member, Param...> *const curr = dynamic_cast<CallbackStaticSynchronized<Member, Param...>*>(*it);
-            if (curr && curr->m_member == member) {
+            CallbackStaticSynchronized<Member, Param...> *const curr = dynamic_cast<CallbackStaticSynchronized<Member, Param...>*>(*it);
+            if (curr && curr->m_member == member && curr->m_mutex == mutex) {
                 m_connections.erase(it);
                 delete curr;
                 return;
@@ -710,7 +710,7 @@ private:
         List<CallbackDummy*>::iterator it;
         ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-            const CallbackStaticMulti<Member, Param...> *const curr = dynamic_cast<CallbackStaticMulti<Member, Param...>*>(*it);
+            CallbackStaticMulti<Member, Param...> *const curr = dynamic_cast<CallbackStaticMulti<Member, Param...>*>(*it);
             if (curr && curr->m_member == member) {
                 m_connections.erase(it);
                 delete curr;
@@ -721,13 +721,13 @@ private:
     }
 
     template <typename Member>
-    void disconnectStaticMultiSynchronized(Member member) const
+    void disconnectStaticMultiSynchronized(Member member, Mutex *mutex) const
     {
         List<CallbackDummy*>::iterator it;
         ContextMutexLocker cml(m_connectionsMutex);
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-            const CallbackStaticMulti<Member, Param...> *const curr = dynamic_cast<CallbackStaticMultiSynchronized<Member, Param...>*>(*it);
-            if (curr && curr->m_member == member) {
+            CallbackStaticMultiSynchronized<Member, Param...> *const curr = dynamic_cast<CallbackStaticMultiSynchronized<Member, Param...>*>(*it);
+            if (curr && curr->m_member == member && curr->m_mutex == mutex) {
                 m_connections.erase(it);
                 delete curr;
                 return;
