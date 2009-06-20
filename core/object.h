@@ -529,9 +529,9 @@ public:
     }
 
     template <typename Receiver, typename Member, typename... Param>
-    static inline void connectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    static inline void connectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
     {
-        signal.connectSynchronized(receiver, member);
+        signal.connectSynchronized(receiver, member, mutex);
     }
 
     /**
@@ -546,9 +546,9 @@ public:
     }
 
     template <typename Receiver, typename Member, typename... Param>
-    static inline void connectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    static inline void connectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
     {
-        signal.connectMultiSynchronized(receiver, member);
+        signal.connectMultiSynchronized(receiver, member, mutex);
     }
 
     /**
@@ -574,9 +574,9 @@ public:
     }
 
     template <typename Member, typename... Param>
-    static inline void connectStaticSynchronized(const Signal<Param...> &signal, Member member)
+    static inline void connectStaticSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
     {
-        signal.connectStaticSynchronized(member);
+        signal.connectStaticSynchronized(member, mutex);
     }
 
     /**
@@ -591,9 +591,9 @@ public:
     }
 
     template <typename Member, typename... Param>
-    static inline void connectStaticMultiSynchronized(const Signal<Param...> &signal, Member member)
+    static inline void connectStaticMultiSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
     {
-        signal.connectStaticMultiSynchronized(member);
+        signal.connectStaticMultiSynchronized(member, mutex);
     }
 
     /**

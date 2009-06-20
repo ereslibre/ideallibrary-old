@@ -39,13 +39,15 @@ int main(int argc, char **argv)
     Application app(argc, argv);
     s_app = &app;
 
+    Mutex commonMutex;
+
     Timer t(&app);
     t.setInterval(100);
-    Object::connectStatic(t.timeout, myStaticMethod);
+    Object::connectStaticSynchronized(t.timeout, myStaticMethod, &commonMutex);
 
     Timer t2(&app);
     t2.setInterval(100);
-    Object::connectStatic(t2.timeout, myStaticMethod);
+    Object::connectStaticSynchronized(t2.timeout, myStaticMethod, &commonMutex);
 
     t.start();
     t2.start();
