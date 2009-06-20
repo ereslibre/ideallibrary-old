@@ -625,7 +625,7 @@ private:
                 return;
             }
         }
-        IDEAL_SDEBUG("no slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no synchronized slot disconnected. No previous connection found.");
     }
 
     template <typename Receiver, typename Member>
@@ -667,7 +667,7 @@ private:
                 return;
             }
         }
-        IDEAL_SDEBUG("no multi slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no multi synchronized slot disconnected. No previous connection found.");
     }
 
     void disconnect(const Signal<Param...> &signal) const;
@@ -701,7 +701,7 @@ private:
                 return;
             }
         }
-        IDEAL_SDEBUG("no static slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no static synchronized slot disconnected. No previous connection found.");
     }
 
     template <typename Member>
@@ -733,7 +733,7 @@ private:
                 return;
             }
         }
-        IDEAL_SDEBUG("no static multi slot disconnected. No previous connection found.");
+        IDEAL_SDEBUG("no static multi synchronized slot disconnected. No previous connection found.");
     }
 
     void emit(const Param&... param) const
