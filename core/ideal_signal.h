@@ -129,7 +129,7 @@ class CallbackSynchronized
 public:
     CallbackSynchronized(Receiver *receiver, Member member, Mutex *mutex)
         : m_member(member)
-        , m_synMutex(mutex)
+        , m_mutex(mutex)
     {
         this->m_receiver = receiver;
     }
@@ -144,14 +144,12 @@ public:
             }
             receiver = static_cast<Receiver*>(this->m_receiver);
         }
-        ContextMutexLocker cml(m_mutex);
-        ContextMutexLocker cml2(*m_synMutex);
+        ContextMutexLocker cml(*m_mutex);
         (receiver->*m_member)(param...);
     }
 
     Member m_member;
-    Mutex  m_mutex;
-    Mutex *m_synMutex;
+    Mutex *m_mutex;
 };
 
 /**
@@ -197,7 +195,7 @@ public:
     CallbackMultiSynchronized(SignalResource *signalResource, Receiver *receiver, Member member, Mutex *mutex)
         : m_member(member)
         , m_sender(reinterpret_cast<Object*>(signalResource))
-        , m_synMutex(mutex)
+        , m_mutex(mutex)
     {
         this->m_receiver = receiver;
     }
@@ -212,15 +210,13 @@ public:
             }
             receiver = static_cast<Receiver*>(this->m_receiver);
         }
-        ContextMutexLocker cml(m_mutex);
-        ContextMutexLocker cml2(*m_synMutex);
+        ContextMutexLocker cml(*m_mutex);
         (receiver->*m_member)(m_sender, param...);
     }
 
     Member         m_member;
     Object * const m_sender;
-    Mutex          m_mutex;
-    Mutex         *m_synMutex;
+    Mutex         *m_mutex;
 };
 
 /**
@@ -255,21 +251,19 @@ class CallbackStaticSynchronized
 public:
     CallbackStaticSynchronized(Member member, Mutex *mutex)
         : m_member(member)
-        , m_synMutex(mutex)
+        , m_mutex(mutex)
     {
         this->m_receiver = 0;
     }
 
     virtual void operator()(const Param&... param)
     {
-        ContextMutexLocker cml(m_mutex);
-        ContextMutexLocker cml2(*m_synMutex);
+        ContextMutexLocker cml(*m_mutex);
         (*m_member)(param...);
     }
 
     Member m_member;
-    Mutex  m_mutex;
-    Mutex *m_synMutex;
+    Mutex *m_mutex;
 };
 
 /**
@@ -307,22 +301,20 @@ public:
     CallbackStaticMultiSynchronized(SignalResource *signalResource, Member member, Mutex *mutex)
         : m_member(member)
         , m_sender(reinterpret_cast<Object*>(signalResource))
-        , m_synMutex(mutex)
+        , m_mutex(mutex)
     {
         this->m_receiver = 0;
     }
 
     virtual void operator()(const Param&... param)
     {
-        ContextMutexLocker cml(m_mutex);
-        ContextMutexLocker cml2(*m_synMutex);
+        ContextMutexLocker cml(*m_mutex);
         (*m_member)(m_sender, param...);
     }
 
     Member         m_member;
     Object * const m_sender;
-    Mutex          m_mutex;
-    Mutex         *m_synMutex;
+    Mutex         *m_mutex;
 };
 
 /**
