@@ -19,6 +19,7 @@
  */
 
 #include "file.h"
+#include "private/file_p.h"
 
 #include <core/module.h>
 #include <core/extension_loader.h>
@@ -29,26 +30,6 @@
 #define PH_CACHE_SIZE 10
 
 namespace IdealCore {
-
-class File::Private
-{
-public:
-    Private(File *q);
-
-    ProtocolHandler::ErrorCode m_errorCode;
-    bool                       m_stated;
-    bool                       m_exists;
-    File::Type                 m_type;
-    String                     m_ownerUser;
-    String                     m_ownerGroup;
-    File::Permissions          m_permissions;
-    double                     m_size;
-    String                     m_contentType;
-    Uri                        m_uri;
-    File               * const q;
-
-    class Job;
-};
 
 File::Private::Private(File *q)
     : m_errorCode(ProtocolHandler::Unknown)
