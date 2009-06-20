@@ -528,6 +528,12 @@ public:
         signal.connect(receiver, member);
     }
 
+    template <typename Receiver, typename Member, typename... Param>
+    static inline void connectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    {
+        signal.connectSynchronized(receiver, member);
+    }
+
     /**
       * Connects @p signal to the multi method @p member on @p receiver.
       *
@@ -537,6 +543,12 @@ public:
     static inline void connectMulti(const Signal<Param...> &signal, Receiver *receiver, Member member)
     {
         signal.connectMulti(receiver, member);
+    }
+
+    template <typename Receiver, typename Member, typename... Param>
+    static inline void connectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    {
+        signal.connectMultiSynchronized(receiver, member);
     }
 
     /**
@@ -561,6 +573,12 @@ public:
         signal.connectStatic(member);
     }
 
+    template <typename Member, typename... Param>
+    static inline void connectStaticSynchronized(const Signal<Param...> &signal, Member member)
+    {
+        signal.connectStaticSynchronized(member);
+    }
+
     /**
       * Connects @p signal to the static multi method or function @p member.
       *
@@ -570,6 +588,12 @@ public:
     static inline void connectStaticMulti(const Signal<Param...> &signal, Member member)
     {
         signal.connectStaticMulti(member);
+    }
+
+    template <typename Member, typename... Param>
+    static inline void connectStaticMultiSynchronized(const Signal<Param...> &signal, Member member)
+    {
+        signal.connectStaticMultiSynchronized(member);
     }
 
     /**
@@ -587,6 +611,12 @@ public:
         signal.disconnect(receiver, member);
     }
 
+    template <typename Receiver, typename Member, typename... Param>
+    static inline void disconnectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    {
+        signal.disconnectSynchronized(receiver, member);
+    }
+
     /**
       * Disconnects @p signal from multi @p member on @p receiver.
       *
@@ -600,6 +630,12 @@ public:
     static inline void disconnectMulti(const Signal<Param...> &signal, Receiver *receiver, Member member)
     {
         signal.disconnectMulti(receiver, member);
+    }
+
+    template <typename Receiver, typename Member, typename... Param>
+    static inline void disconnectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member)
+    {
+        signal.disconnectMultiSynchronized(receiver, member);
     }
 
     /**
@@ -632,6 +668,12 @@ public:
         signal.disconnectStatic(member);
     }
 
+    template <typename Member, typename... Param>
+    static inline void disconnectStaticSynchronized(const Signal<Param...> &signal, Member member)
+    {
+        signal.disconnectStaticSynchronized(member);
+    }
+
     /**
       * Disconnects @p signal from multi static method or function @p member.
       *
@@ -645,6 +687,12 @@ public:
     static inline void disconnectStaticMulti(const Signal<Param...> &signal, Member member)
     {
         signal.disconnectStaticMulti(member);
+    }
+
+    template <typename Member, typename... Param>
+    static inline void disconnectStaticMultiSynchronized(const Signal<Param...> &signal, Member member)
+    {
+        signal.disconnectStaticMultiSynchronized(member);
     }
 
     /**
