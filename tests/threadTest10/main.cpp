@@ -42,7 +42,7 @@ public:
     }
 
 private:
-    int   m_i;
+    int m_i;
 };
 
 int main(int argc, char **argv)
