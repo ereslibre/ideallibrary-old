@@ -39,7 +39,11 @@ class IDEAL_EXPORT SignalResource
     template <typename Receiver, typename Member, typename... Param>
     friend class Callback;
     template <typename Receiver, typename Member, typename... Param>
+    friend class CallbackSynchronized;
+    template <typename Receiver, typename Member, typename... Param>
     friend class CallbackMulti;
+    template <typename Receiver, typename Member, typename... Param>
+    friend class CallbackMultiSynchronized;
 
 public:
     SignalResource();
