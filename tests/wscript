@@ -34,5 +34,6 @@ def build(bld):
                      'threadTest7',
                      'threadTest8',
                      'threadTest9',
+                     'threadTest10',
                      'timerTest',
                      'timerTest2'])
