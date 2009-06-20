@@ -238,8 +238,8 @@ String Application::getPath(Path path) const
             return getenv("PKG_CONFIG_PATH");
         case Home:
             return getenv("HOME");
-        case Module:
-            return IDEALLIBRARY_PREFIX "/lib/ideal";
+        case Modules:
+            return IDEALLIBRARY_PREFIX "/lib/ideal/";
 #ifndef NDEBUG
         case UnitTest:
             return String(getenv("HOME")) + "/.ideal-unittests";

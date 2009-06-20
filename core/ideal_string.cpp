@@ -174,6 +174,11 @@ size_t String::find(wchar_t c) const
     return d->m_str.find(c);
 }
 
+size_t String::rfind(wchar_t c) const
+{
+    return d->m_str.rfind(c);
+}
+
 const char *String::data() const
 {
     if (!d->m_ansiStr) {

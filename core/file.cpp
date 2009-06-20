@@ -98,7 +98,7 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
         }
     }
     ProtocolHandler *res = 0;
-    Module *module = ExtensionLoader::loadModule(IDEALLIBRARY_PREFIX "/lib/ideal/libbuiltinprotocolhandlers.so", m_file);
+    Module *module = ExtensionLoader::loadModule("libbuiltinprotocolhandlers.so", m_file);
     List<Module::ExtensionInfo> extensionList = module->extensionInfoList();
     List<Module::ExtensionInfo>::iterator extIt;
     for (extIt = extensionList.begin(); extIt != extensionList.end(); ++extIt) {

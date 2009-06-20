@@ -107,7 +107,7 @@ public:
         Library,     ///< Environment variable $LD_LIBRARY_PATH
         PkgConfig,   ///< Environment variable $PKG_CONFIG_PATH
         Home,        ///< Home path of the current user
-        Module       ///< Path in which Ideal modules are stored
+        Modules      ///< List of paths separated by colons where modules for this application are located
 #ifndef NDEBUG
       , UnitTest     ///< @internal. Path for unit testing with files/folders
 #endif

@@ -41,12 +41,12 @@ class IDEAL_EXPORT ExtensionLoader
 {
 public:
     /**
-      * Tries to load a module located at @p path.
+      * Tries to load a module with name @p name.
       *
       * When you are given the result, you can ask the Module class for the extensions it
       * contains. You can load extensions using ExtensionLoader::loadExtension method.
       *
-      * @return The module located at @p path if the loading of the module was successful. 0
+      * @return The module with name @p name if the loading of the module was successful. 0
       *         otherwise.
       *
       * @note You should never delete the returned content. The Ideal Library will take care of it.
@@ -65,9 +65,9 @@ public:
       *
       * @see Module
       */
-    static Module *loadModule(const String &path, Object *object)
+    static Module *loadModule(const String &name, Object *object)
     {
-        return Private::loadModule(path, object);
+        return Private::loadModule(name, object);
     }
 
     /**

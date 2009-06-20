@@ -83,6 +83,8 @@ public:
 
     size_t find(wchar_t c) const;
 
+    size_t rfind(wchar_t c) const;
+
     /**
       * Returns a substring of this string starting at @p pos with @p n
       * characters maximum.

@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
     ProtocolHandler *protocolHandler = 0;
 
-    Module *module = ExtensionLoader::loadModule(IDEALLIBRARY_PREFIX "/lib/ideal/libbuiltinprotocolhandlers.so", &app);
+    Module *module = ExtensionLoader::loadModule("libbuiltinprotocolhandlers.so", &app);
     List<Module::ExtensionInfo> extensionList = module->extensionInfoList();
     List<Module::ExtensionInfo>::iterator it;
     for (it = extensionList.begin(); it != extensionList.end(); ++it) {

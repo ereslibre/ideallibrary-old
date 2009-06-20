@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("*** Library path is:\t" << app.getPath(Application::Library));
     IDEAL_SDEBUG("*** pkg-config path is:\t" << app.getPath(Application::PkgConfig));
     IDEAL_SDEBUG("*** Home path is:\t" << app.getPath(Application::Home));
-    IDEAL_SDEBUG("*** Module path is:\t" << app.getPath(Application::Module));
+    IDEAL_SDEBUG("*** Module path is:\t" << app.getPath(Application::Modules));
 
     return 0;
 }

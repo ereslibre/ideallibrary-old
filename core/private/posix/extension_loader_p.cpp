@@ -19,6 +19,8 @@
  */
 
 #include <dlfcn.h>
+#include <sys/stat.h>
+
 #include <core/extension_loader.h>
 #include <core/private/module_p.h>
 #include <core/private/extension_p.h>
@@ -31,8 +33,27 @@ typedef void moduleFactoryDestructor(IdealCore::Module*);
 typedef IdealCore::Extension *extensionFactoryCreator();
 typedef void extensionFactoryDestructor(IdealCore::Extension*);
 
-Module *ExtensionLoader::Private::loadModule(const String &path, Object *object)
+Module *ExtensionLoader::Private::loadModule(const String &name, Object *object)
 {
+    const String modulesPaths = object->application()->getPath(Application::Modules);
+    const List<String> modulesPathList = modulesPaths.split(':');
+    String path;
+    struct stat statRes;
+    bool moduleFound = false;
+    List<String>::const_iterator it;
+    for (it = modulesPathList.begin(); it != modulesPathList.end(); ++it) {
+        Uri currPath(*it);
+        currPath.setFilename(name);
+        if (!stat(currPath.path().data(), &statRes)) {
+            path = currPath.path();
+            moduleFound = true;
+            break;
+        }
+    }
+    if (!moduleFound) {
+        IDEAL_DEBUG_WARNING("The module with name " << name << " could not be found");
+        return 0;
+    }
     void *handle = dlopen(path.data(), RTLD_LAZY);
     if (!handle) {
         IDEAL_DEBUG_WARNING("there was a problem dlopening a shared library: " << dlerror());

@@ -286,6 +286,11 @@ String Uri::filenameLessPath() const
     return d->m_filenameLessPath;
 }
 
+void Uri::setFilename(const String &filename)
+{
+    d->initializeContents(d->m_filenameLessPath + filename);
+}
+
 String Uri::filename() const
 {
     return d->m_filename;
