@@ -124,31 +124,21 @@ public:
   */
 template <typename Receiver, typename Member, typename... Param>
 class CallbackSynchronized
-    : public CallbackBase<Param...>
+    : public Callback<Receiver, Member, Param...>
 {
 public:
     CallbackSynchronized(Receiver *receiver, Member member, Mutex *mutex)
-        : m_member(member)
+        : Callback<Receiver, Member, Param...>(receiver, member)
         , m_mutex(mutex)
     {
-        this->m_receiver = receiver;
     }
 
     virtual void operator()(const Param&... param)
     {
-        Receiver *receiver = 0;
-        {
-            ContextMutexLocker cml(this->m_receiver->m_mutex);
-            if (static_cast<Receiver*>(this->m_receiver)->areSignalsBlocked()) {
-                return;
-            }
-            receiver = static_cast<Receiver*>(this->m_receiver);
-        }
         ContextMutexLocker cml(*m_mutex);
-        (receiver->*m_member)(param...);
+        Callback<Receiver, Member, Param...>::operator()(param...);
     }
 
-    Member m_member;
     Mutex *m_mutex;
 };
 
@@ -189,34 +179,22 @@ public:
   */
 template <typename Receiver, typename Member, typename... Param>
 class CallbackMultiSynchronized
-    : public CallbackBase<Param...>
+    : public CallbackMulti<Receiver, Member, Param...>
 {
 public:
     CallbackMultiSynchronized(SignalResource *signalResource, Receiver *receiver, Member member, Mutex *mutex)
-        : m_member(member)
-        , m_sender(reinterpret_cast<Object*>(signalResource))
+        : CallbackMulti<Receiver, Member, Param...>(signalResource, receiver, member)
         , m_mutex(mutex)
     {
-        this->m_receiver = receiver;
     }
 
     virtual void operator()(const Param&... param)
     {
-        Receiver *receiver = 0;
-        {
-            ContextMutexLocker cml(this->m_receiver->m_mutex);
-            if (static_cast<Receiver*>(this->m_receiver)->areSignalsBlocked()) {
-                return;
-            }
-            receiver = static_cast<Receiver*>(this->m_receiver);
-        }
         ContextMutexLocker cml(*m_mutex);
-        (receiver->*m_member)(m_sender, param...);
+        CallbackMulti<Receiver, Member, Param...>::operator()(param...);
     }
 
-    Member         m_member;
-    Object * const m_sender;
-    Mutex         *m_mutex;
+    Mutex *m_mutex;
 };
 
 /**
@@ -246,23 +224,21 @@ public:
   */
 template <typename Member, typename... Param>
 class CallbackStaticSynchronized
-    : public CallbackBase<Param...>
+    : public CallbackStatic<Member, Param...>
 {
 public:
     CallbackStaticSynchronized(Member member, Mutex *mutex)
-        : m_member(member)
+        : CallbackStatic<Member, Param...>(member)
         , m_mutex(mutex)
     {
-        this->m_receiver = 0;
     }
 
     virtual void operator()(const Param&... param)
     {
         ContextMutexLocker cml(*m_mutex);
-        (*m_member)(param...);
+        CallbackStatic<Member, Param...>::operator()(param...);
     }
 
-    Member m_member;
     Mutex *m_mutex;
 };
 
@@ -295,26 +271,22 @@ public:
   */
 template <typename Member, typename... Param>
 class CallbackStaticMultiSynchronized
-    : public CallbackBase<Param...>
+    : public CallbackStaticMulti<Member, Param...>
 {
 public:
     CallbackStaticMultiSynchronized(SignalResource *signalResource, Member member, Mutex *mutex)
-        : m_member(member)
-        , m_sender(reinterpret_cast<Object*>(signalResource))
+        : CallbackStaticMulti<Member, Param...>(signalResource, member)
         , m_mutex(mutex)
     {
-        this->m_receiver = 0;
     }
 
     virtual void operator()(const Param&... param)
     {
         ContextMutexLocker cml(*m_mutex);
-        (*m_member)(m_sender, param...);
+        CallbackStaticMulti<Member, Param...>::operator()(param...);
     }
 
-    Member         m_member;
-    Object * const m_sender;
-    Mutex         *m_mutex;
+    Mutex *m_mutex;
 };
 
 /**
