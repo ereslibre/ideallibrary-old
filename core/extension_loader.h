@@ -59,7 +59,6 @@ private:
             StopAtFirst = 0,
             FindAll
         };
-
         static Module *loadModule(const String &path, Object *parent);
         static Extension *loadExtension(Module *module, const String &entryPoint);
         static List<Extension*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent, Behavior behavior);
@@ -70,15 +69,17 @@ template <typename T>
 List<T*> ExtensionLoader::findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
 {
     List<T*> retList;
-    if (!parent) {
-        IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
-        return retList;
-    }
     if (!extensionLoadDecider) {
         IDEAL_DEBUG_WARNING("the extension load decider cannot be NULL");
         return retList;
     }
+    if (!parent) {
+        IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
+        delete extensionLoadDecider;
+        return retList;
+    }
     const List<Extension*> extensionList = Private::findExtensions(extensionLoadDecider, parent, Private::FindAll);
+    delete extensionLoadDecider;
     List<Extension*>::const_iterator it;
     for (it = extensionList.begin(); it != extensionList.end(); ++it) {
         Extension *const extension = *it;
@@ -91,15 +92,17 @@ List<T*> ExtensionLoader::findExtensions(ExtensionLoadDecider *extensionLoadDeci
 template <typename T>
 T *ExtensionLoader::findFirstExtension(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
 {
-    if (!parent) {
-        IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
-        return 0;
-    }
     if (!extensionLoadDecider) {
         IDEAL_DEBUG_WARNING("the extension load decider cannot be NULL");
         return 0;
     }
+    if (!parent) {
+        IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
+        delete extensionLoadDecider;
+        return 0;
+    }
     const List<Extension*> extensionList = Private::findExtensions(extensionLoadDecider, parent, Private::StopAtFirst);
+    delete extensionLoadDecider;
     if (extensionList.empty()) {
         return 0;
     }

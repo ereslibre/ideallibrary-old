@@ -55,11 +55,7 @@ int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    ProtocolHandler *protocolHandler = 0;
-
-    ExtensionLoadDecider *extensionLoadDecider = new ExtensionLoadDecider;
-    protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(extensionLoadDecider, &app);
-    delete extensionLoadDecider;
+    ProtocolHandler *protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionLoadDecider, &app);
 
     if (protocolHandler) {
         Object::connectStatic(protocolHandler->statResult, statResultSlot);
