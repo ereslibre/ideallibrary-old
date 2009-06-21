@@ -24,11 +24,11 @@
 using namespace IdealCore;
 using namespace std;
 
-class MyApplication
+class PathTestApplication
     : public Application
 {
 public:
-    MyApplication(int argc, char **argv)
+    PathTestApplication(int argc, char **argv)
         : Application(argc, argv, "pathTest")
     {
     }
@@ -41,7 +41,7 @@ public:
 
 int main(int argc, char **argv)
 {
-    MyApplication app(argc, argv);
+    PathTestApplication app(argc, argv);
 
     IDEAL_SDEBUG("*** Path is:\t\t" << app.getPath(Application::Global));
     IDEAL_SDEBUG("*** Library path is:\t" << app.getPath(Application::Library));
