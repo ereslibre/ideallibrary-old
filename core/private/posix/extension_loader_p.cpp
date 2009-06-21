@@ -111,4 +111,42 @@ List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *
     return retList;
 }
 
+List<Module::ExtensionInfo> ExtensionLoader::findExtensionsInfo(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
+{
+    const String modulesPaths = parent->application()->getPath(Application::Modules);
+    const List<String> modulesPathList = modulesPaths.split(':');
+    List<Module::ExtensionInfo> retList;
+    List<String>::const_iterator it;
+    for (it = modulesPathList.begin(); it != modulesPathList.end(); ++it) {
+        const String currPath = *it;
+        DIR *dir = opendir(currPath.data());
+        if (!dir) {
+            continue;
+        }
+        struct dirent *dirEntry;
+        while ((dirEntry = readdir(dir))) {
+            const String filename = dirEntry->d_name;
+            if (!filename.compare(".") || !filename.compare("..")) {
+                continue;
+            }
+            Uri uri(currPath);
+            uri.setFilename(filename);
+            Module *const module = Private::loadModule(uri.path(), parent);
+            if (!module) {
+                continue;
+            }
+            const List<Module::ExtensionInfo> extensionInfoList = module->extensionInfoList();
+            List<Module::ExtensionInfo>::const_iterator it;
+            for (it = extensionInfoList.begin(); it != extensionInfoList.end(); ++it) {
+                const Module::ExtensionInfo extensionInfo = *it;
+                if (extensionLoadDecider->loadExtension(extensionInfo)) {
+                    retList.push_back(extensionInfo);
+                }
+            }
+        }
+        closedir(dir);
+    }
+    return retList;
+}
+
 }

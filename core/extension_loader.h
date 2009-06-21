@@ -48,6 +48,8 @@ public:
     template <typename T>
     static List<T*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent);
 
+    static List<Module::ExtensionInfo> findExtensionsInfo(ExtensionLoadDecider *extensionLoadDecider, Object *parent);
+
     template <typename T>
     static T *findFirstExtension(ExtensionLoadDecider *extensionLoadDecider, Object *parent);
 
