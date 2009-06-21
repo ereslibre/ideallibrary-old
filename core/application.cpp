@@ -167,11 +167,6 @@ String Application::prefix() const
     return String();
 }
 
-String Application::name() const
-{
-    return d->m_name;
-}
-
 int Application::exec()
 {
     while (true) {

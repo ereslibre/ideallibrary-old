@@ -115,8 +115,6 @@ public:
     /**
       * Constructs a new application object with @p argc number of args, and @p argv arguments.
       * If @p name is an empty string, @p argv[0] will be used as the application name.
-      *
-      * @see name
       */
     Application(int argc, char **argv, const String &name = String());
     virtual ~Application();
@@ -126,15 +124,6 @@ public:
       *         be reimplemented in order to look in the correct place for modules and extensions.
       */
     virtual String prefix() const;
-
-    /**
-      * @return The application name in a system fashion. For example, "myfavouriteapp", but not
-      *         "My Favourite App".
-      *
-      * @note This will be used among other things to look for modules and extensions on the correct
-      *       place.
-      */
-    String name() const;
 
     /**
       * An option without argument will be added to the list of possible options being passed

@@ -239,10 +239,11 @@ String Application::getPath(Path path) const
             return getenv("HOME");
         case Modules:
             if (!d->m_prefixSet) {
-                if (prefix().empty()) {
+                const String appPrefix = prefix();
+                if (appPrefix.empty()) {
                     setenv("IDEAL_MODULES_PATH", IDEALLIBRARY_PREFIX "/lib/ideal/modules/", 1);
                 } else {
-                    const String pathList = prefix() + "/lib/" + name() + "/modules/:" IDEALLIBRARY_PREFIX "/lib/ideal/modules/";
+                    const String pathList = appPrefix + "/lib/" + d->m_name + "/modules/:" IDEALLIBRARY_PREFIX "/lib/ideal/modules/";
                     setenv("IDEAL_MODULES_PATH", pathList.data(), 1);
                 }
                 d->m_prefixSet = true;
