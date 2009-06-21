@@ -18,36 +18,33 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef LOCAL_H
-#define LOCAL_H
+#ifndef FILE_P_H
+#define FILE_P_H
 
-#include <core/interfaces/protocol_handler.h>
+#include <core/file.h>
 
 namespace IdealCore {
 
-class BuiltinProtocolHandlersLocal
-    : public ProtocolHandler
+class File::Private
 {
 public:
-    BuiltinProtocolHandlersLocal();
-    ~BuiltinProtocolHandlersLocal();
+    Private(File *q);
 
-    virtual void cd(const Uri &uri);
-    virtual void mkdir(const Uri &uri);
-    virtual void rm(const Uri &uri);
-    virtual void stat(const Uri &uri);
-    virtual bool canBeReusedWith(const Uri &uri) const;
+    ProtocolHandler::ErrorCode m_errorCode;
+    bool                       m_stated;
+    bool                       m_exists;
+    File::Type                 m_type;
+    String                     m_ownerUser;
+    String                     m_ownerGroup;
+    File::Permissions          m_permissions;
+    double                     m_size;
+    String                     m_contentType;
+    Uri                        m_uri;
+    File               * const q;
 
-    virtual String name() const;
-    virtual String description() const;
-    virtual String author() const;
-    virtual String version() const;
-
-private:
-    class Private;
-    Private *const d;
+    class Job;
 };
 
 }
 
-#endif //LOCAL_H
+#endif //FILE_P_H

@@ -152,6 +152,26 @@ bool BuiltinProtocolHandlersRemote::canBeReusedWith(const Uri &uri) const
            (uri.port() == -1 || d->m_uri.port() == uri.port());
 }
 
+String BuiltinProtocolHandlersRemote::name() const
+{
+    return "Builtin remote protocol handler set";
+}
+
+String BuiltinProtocolHandlersRemote::description() const
+{
+    return "Contains support for http, https, ftp and sftp protocols";
+}
+
+String BuiltinProtocolHandlersRemote::author() const
+{
+    return "Rafael Fernández López";
+}
+
+String BuiltinProtocolHandlersRemote::version() const
+{
+    return IDEALLIBRARY_VERSION;
+}
+
 }
 
 EXTENSION_ENTRY_POINT(builtinProtocolHandlersRemote, IdealCore::BuiltinProtocolHandlersRemote)

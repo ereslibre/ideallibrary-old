@@ -10,7 +10,6 @@ def build(bld):
                      'connectionTest',
                      'crossedDeletions',
                      'deleteAfterSignal',
-                     'extensionLoaderTest',
                      'fileTest',
                      'guiTest',
                      'guiTest2',

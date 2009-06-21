@@ -79,12 +79,17 @@ public:
     String filenameLessPath() const;
 
     /**
+      * Sets the filename of this URI. If this URI object contains a filename, it will be overriden.
+      */
+    void setFilename(const String &filename);
+
+    /**
       * @return The filename specified on the URI. An empty string if no filename specified.
       */
     String filename() const;
 
     /**
-      * @return The full URI
+      * @return The full URI.
       */
     String uri() const;
 

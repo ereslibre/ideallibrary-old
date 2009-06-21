@@ -19,6 +19,9 @@
  */
 
 #include <dlfcn.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
 #include <core/extension_loader.h>
 #include <core/private/module_p.h>
 #include <core/private/extension_p.h>
@@ -31,8 +34,27 @@ typedef void moduleFactoryDestructor(IdealCore::Module*);
 typedef IdealCore::Extension *extensionFactoryCreator();
 typedef void extensionFactoryDestructor(IdealCore::Extension*);
 
-Module *ExtensionLoader::Private::loadModule(const String &path, Object *object)
+Module *ExtensionLoader::Private::loadModule(const String &name, Object *parent)
 {
+    const String modulesPaths = parent->application()->getPath(Application::Modules);
+    const List<String> modulesPathList = modulesPaths.split(':');
+    String path;
+    struct stat statRes;
+    bool moduleFound = false;
+    List<String>::const_iterator it;
+    for (it = modulesPathList.begin(); it != modulesPathList.end(); ++it) {
+        Uri currPath(*it);
+        currPath.setFilename(name);
+        if (!stat(currPath.path().data(), &statRes)) {
+            path = currPath.path();
+            moduleFound = true;
+            break;
+        }
+    }
+    if (!moduleFound) {
+        IDEAL_DEBUG_WARNING("The module with name " << name << " could not be found");
+        return 0;
+    }
     void *handle = dlopen(path.data(), RTLD_LAZY);
     if (!handle) {
         IDEAL_DEBUG_WARNING("there was a problem dlopening a shared library: " << dlerror());
@@ -48,7 +70,7 @@ Module *ExtensionLoader::Private::loadModule(const String &path, Object *object)
     Module *module = factoryCreator();
     module->d->m_handle = handle;
     module->d->m_path = path;
-    module->d->m_application = object->application();
+    module->d->m_application = parent->application();
     return module;
 }
 
@@ -70,6 +92,40 @@ Extension *ExtensionLoader::Private::loadExtension(Module *module, const String 
     ++module->d->m_refs;
     extension->d->m_module = module;
     return extension;
+}
+
+List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
+{
+    const String modulesPaths = parent->application()->getPath(Application::Modules);
+    const List<String> modulesPathList = modulesPaths.split(':');
+    List<Extension*> retList;
+    List<String>::const_iterator it;
+    for (it = modulesPathList.begin(); it != modulesPathList.end(); ++it) {
+        const String currPath = *it;
+        DIR *dir = opendir(currPath.data());
+        if (dir) {
+            struct dirent *dirEntry;
+            while ((dirEntry = readdir(dir))) {
+                const String filename = dirEntry->d_name;
+                if (!filename.compare(".") || !filename.compare("..")) {
+                    continue;
+                }
+                Module *const module = loadModule(filename, parent);
+                if (module) {
+                    const List<Module::ExtensionInfo> extensionInfoList = module->extensionInfoList();
+                    List<Module::ExtensionInfo>::const_iterator it;
+                    for (it = extensionInfoList.begin(); it != extensionInfoList.end(); ++it) {
+                        const Module::ExtensionInfo extensionInfo = *it;
+                        if (extensionLoadDecider->loadExtension(extensionInfo)) {
+                            retList.push_back(loadExtension(module, extensionInfo.entryPoint));
+                        }
+                    }
+                }
+            }
+            closedir(dir);
+        }
+    }
+    return retList;
 }
 
 }
