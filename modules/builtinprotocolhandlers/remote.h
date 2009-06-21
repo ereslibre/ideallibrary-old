@@ -32,16 +32,16 @@ public:
     BuiltinProtocolHandlersRemote();
     ~BuiltinProtocolHandlersRemote();
 
-    void cd(const Uri &uri);
-    void mkdir(const Uri &uri);
-    void rm(const Uri &uri);
-    void stat(const Uri &uri);
-    bool canBeReusedWith(const Uri &uri) const;
+    virtual void cd(const Uri &uri);
+    virtual void mkdir(const Uri &uri);
+    virtual void rm(const Uri &uri);
+    virtual void stat(const Uri &uri);
+    virtual bool canBeReusedWith(const Uri &uri) const;
 
-    String name() const;
-    String description() const;
-    String author() const;
-    String version() const;
+    virtual String name() const;
+    virtual String description() const;
+    virtual String author() const;
+    virtual String version() const;
 
 private:
     class Private;

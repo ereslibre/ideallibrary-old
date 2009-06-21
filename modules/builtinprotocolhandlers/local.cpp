@@ -18,36 +18,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef LOCAL_H
-#define LOCAL_H
-
-#include <core/interfaces/protocol_handler.h>
+#include "local.h"
 
 namespace IdealCore {
 
-class BuiltinProtocolHandlersLocal
-    : public ProtocolHandler
+String BuiltinProtocolHandlersLocal::name() const
 {
-public:
-    BuiltinProtocolHandlersLocal();
-    ~BuiltinProtocolHandlersLocal();
-
-    virtual void cd(const Uri &uri);
-    virtual void mkdir(const Uri &uri);
-    virtual void rm(const Uri &uri);
-    virtual void stat(const Uri &uri);
-    virtual bool canBeReusedWith(const Uri &uri) const;
-
-    virtual String name() const;
-    virtual String description() const;
-    virtual String author() const;
-    virtual String version() const;
-
-private:
-    class Private;
-    Private *const d;
-};
-
+    return "Builtin local protocol handler";
 }
 
-#endif //LOCAL_H
+String BuiltinProtocolHandlersLocal::description() const
+{
+    return "Contains support for local file operations";
+}
+
+String BuiltinProtocolHandlersLocal::author() const
+{
+    return "Rafael Fernández López";
+}
+
+String BuiltinProtocolHandlersLocal::version() const
+{
+    return IDEALLIBRARY_VERSION;
+}
+
+}
