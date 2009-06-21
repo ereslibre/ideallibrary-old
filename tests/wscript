@@ -2,7 +2,8 @@
 # Rafael Fernández López, 2009
 
 def configure(conf):
-    conf.sub_config('pathTest')
+    conf.sub_config(['ownModulesTest',
+                     'pathTest'])
 
 def build(bld):
     bld.add_subdirs(['basicApp',
@@ -17,6 +18,7 @@ def build(bld):
                      'leakTest',
                      'multiSlotTest',
                      'nonBlockingGUI',
+                     'ownModulesTest',
                      'pathTest',
                      'processTest',
                      'protocolHandlerTest',
