@@ -70,5 +70,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** Module not found");
     }
 
+    delete fooInterface;
+
     return 0;
 }
