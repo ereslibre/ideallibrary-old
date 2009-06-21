@@ -80,33 +80,35 @@ List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *
     for (it = modulesPathList.begin(); it != modulesPathList.end(); ++it) {
         const String currPath = *it;
         DIR *dir = opendir(currPath.data());
-        if (dir) {
-            struct dirent *dirEntry;
-            while ((dirEntry = readdir(dir))) {
-                const String filename = dirEntry->d_name;
-                if (!filename.compare(".") || !filename.compare("..")) {
-                    continue;
-                }
-                Uri uri(currPath);
-                uri.setFilename(filename);
-                Module *const module = loadModule(uri.path(), parent);
-                if (module) {
-                    const List<Module::ExtensionInfo> extensionInfoList = module->extensionInfoList();
-                    List<Module::ExtensionInfo>::const_iterator it;
-                    for (it = extensionInfoList.begin(); it != extensionInfoList.end(); ++it) {
-                        const Module::ExtensionInfo extensionInfo = *it;
-                        if (extensionLoadDecider->loadExtension(extensionInfo)) {
-                            retList.push_back(loadExtension(module, extensionInfo.entryPoint));
-                            if (behavior == StopAtFirst) {
-                                closedir(dir);
-                                return retList;
-                            }
-                        }
+        if (!dir) {
+            continue;
+        }
+        struct dirent *dirEntry;
+        while ((dirEntry = readdir(dir))) {
+            const String filename = dirEntry->d_name;
+            if (!filename.compare(".") || !filename.compare("..")) {
+                continue;
+            }
+            Uri uri(currPath);
+            uri.setFilename(filename);
+            Module *const module = loadModule(uri.path(), parent);
+            if (!module) {
+                continue;
+            }
+            const List<Module::ExtensionInfo> extensionInfoList = module->extensionInfoList();
+            List<Module::ExtensionInfo>::const_iterator it;
+            for (it = extensionInfoList.begin(); it != extensionInfoList.end(); ++it) {
+                const Module::ExtensionInfo extensionInfo = *it;
+                if (extensionLoadDecider->loadExtension(extensionInfo)) {
+                    retList.push_back(loadExtension(module, extensionInfo.entryPoint));
+                    if (behavior == StopAtFirst) {
+                        closedir(dir);
+                        return retList;
                     }
                 }
             }
-            closedir(dir);
         }
+        closedir(dir);
     }
     return retList;
 }
