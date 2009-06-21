@@ -34,27 +34,8 @@ typedef void moduleFactoryDestructor(IdealCore::Module*);
 typedef IdealCore::Extension *extensionFactoryCreator();
 typedef void extensionFactoryDestructor(IdealCore::Extension*);
 
-Module *ExtensionLoader::Private::loadModule(const String &name, Object *parent)
+Module *ExtensionLoader::Private::loadModule(const String &path, Object *parent)
 {
-    const String modulesPaths = parent->application()->getPath(Application::Modules);
-    const List<String> modulesPathList = modulesPaths.split(':');
-    String path;
-    struct stat statRes;
-    bool moduleFound = false;
-    List<String>::const_iterator it;
-    for (it = modulesPathList.begin(); it != modulesPathList.end(); ++it) {
-        Uri currPath(*it);
-        currPath.setFilename(name);
-        if (!stat(currPath.path().data(), &statRes)) {
-            path = currPath.path();
-            moduleFound = true;
-            break;
-        }
-    }
-    if (!moduleFound) {
-        IDEAL_DEBUG_WARNING("The module with name " << name << " could not be found");
-        return 0;
-    }
     void *handle = dlopen(path.data(), RTLD_LAZY);
     if (!handle) {
         IDEAL_DEBUG_WARNING("there was a problem dlopening a shared library: " << dlerror());
@@ -76,10 +57,6 @@ Module *ExtensionLoader::Private::loadModule(const String &name, Object *parent)
 
 Extension *ExtensionLoader::Private::loadExtension(Module *module, const String &entryPoint)
 {
-    if (!module) {
-        IDEAL_DEBUG_WARNING("the module you are trying to load the extension from is NULL");
-        return 0;
-    }
     char *symbolError = dlerror();
     extensionFactoryCreator *factoryCreator = (extensionFactoryCreator*) dlsym(module->d->m_handle, entryPoint.data());
     symbolError = dlerror();
@@ -94,7 +71,7 @@ Extension *ExtensionLoader::Private::loadExtension(Module *module, const String 
     return extension;
 }
 
-List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
+List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent, Behavior behavior)
 {
     const String modulesPaths = parent->application()->getPath(Application::Modules);
     const List<String> modulesPathList = modulesPaths.split(':');
@@ -110,7 +87,9 @@ List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *
                 if (!filename.compare(".") || !filename.compare("..")) {
                     continue;
                 }
-                Module *const module = loadModule(filename, parent);
+                Uri uri(currPath);
+                uri.setFilename(filename);
+                Module *const module = loadModule(uri.path(), parent);
                 if (module) {
                     const List<Module::ExtensionInfo> extensionInfoList = module->extensionInfoList();
                     List<Module::ExtensionInfo>::const_iterator it;
@@ -118,6 +97,10 @@ List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *
                         const Module::ExtensionInfo extensionInfo = *it;
                         if (extensionLoadDecider->loadExtension(extensionInfo)) {
                             retList.push_back(loadExtension(module, extensionInfo.entryPoint));
+                            if (behavior == StopAtFirst) {
+                                closedir(dir);
+                                return retList;
+                            }
                         }
                     }
                 }

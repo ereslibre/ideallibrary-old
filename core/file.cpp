@@ -110,12 +110,9 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
         }
     }
     ExtensionLoadDecider *extensionLoadDecider = new ExtensionLoadDecider(m_file);
-    List<ProtocolHandler*> protocolHandlerList = ExtensionLoader::findExtensions<ProtocolHandler>(extensionLoadDecider, m_file);
+    ProtocolHandler *protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(extensionLoadDecider, m_file);
     delete extensionLoadDecider;
-    if (protocolHandlerList.empty()) {
-        return 0;
-    }
-    return protocolHandlerList.front();
+    return protocolHandler;
 }
 
 void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)

@@ -58,12 +58,8 @@ int main(int argc, char **argv)
     ProtocolHandler *protocolHandler = 0;
 
     ExtensionLoadDecider *extensionLoadDecider = new ExtensionLoadDecider;
-    List<ProtocolHandler*> protocolHandlerList = ExtensionLoader::findExtensions<ProtocolHandler>(extensionLoadDecider, &app);
+    protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(extensionLoadDecider, &app);
     delete extensionLoadDecider;
-
-    if (!protocolHandlerList.empty()) {
-        protocolHandler = protocolHandlerList.front();
-    }
 
     if (protocolHandler) {
         Object::connectStatic(protocolHandler->statResult, statResultSlot);

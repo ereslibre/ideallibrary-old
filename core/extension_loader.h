@@ -46,36 +46,65 @@ public:
     };
 
     template <typename T>
-    static List<T*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
-    {
-        List<T*> retList;
-        if (!parent) {
-            IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
-            return retList;
-        }
-        if (!extensionLoadDecider) {
-            IDEAL_DEBUG_WARNING("the extension load decider cannot be NULL");
-            return retList;
-        }
-        const List<Extension*> extensionList = Private::findExtensions(extensionLoadDecider, parent);
-        List<Extension*>::const_iterator it;
-        for (it = extensionList.begin(); it != extensionList.end(); ++it) {
-            Extension *const extension = *it;
-            extension->reparent(parent);
-            retList.push_back(static_cast<T*>(extension));
-        }
-        return retList;
-    }
+    static List<T*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent);
+
+    template <typename T>
+    static T *findFirstExtension(ExtensionLoadDecider *extensionLoadDecider, Object *parent);
 
 private:
     class Private
     {
     public:
+        enum Behavior {
+            StopAtFirst = 0,
+            FindAll
+        };
+
         static Module *loadModule(const String &path, Object *parent);
         static Extension *loadExtension(Module *module, const String &entryPoint);
-        static List<Extension*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent);
+        static List<Extension*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent, Behavior behavior);
     };
 };
+
+template <typename T>
+List<T*> ExtensionLoader::findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
+{
+    List<T*> retList;
+    if (!parent) {
+        IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
+        return retList;
+    }
+    if (!extensionLoadDecider) {
+        IDEAL_DEBUG_WARNING("the extension load decider cannot be NULL");
+        return retList;
+    }
+    const List<Extension*> extensionList = Private::findExtensions(extensionLoadDecider, parent, Private::FindAll);
+    List<Extension*>::const_iterator it;
+    for (it = extensionList.begin(); it != extensionList.end(); ++it) {
+        Extension *const extension = *it;
+        extension->reparent(parent);
+        retList.push_back(static_cast<T*>(extension));
+    }
+    return retList;
+}
+
+template <typename T>
+T *ExtensionLoader::findFirstExtension(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
+{
+    if (!parent) {
+        IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
+        return 0;
+    }
+    if (!extensionLoadDecider) {
+        IDEAL_DEBUG_WARNING("the extension load decider cannot be NULL");
+        return 0;
+    }
+    const List<Extension*> extensionList = Private::findExtensions(extensionLoadDecider, parent, Private::StopAtFirst);
+    if (extensionList.empty()) {
+        return 0;
+    }
+    return static_cast<T*>(extensionList.front());
+}
 
 }
 
