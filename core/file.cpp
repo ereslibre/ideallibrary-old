@@ -73,7 +73,7 @@ public:
     public:
         ExtensionLoadDecider(File *file);
 
-        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo);
+        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const;
 
     private:
         File *m_file;
@@ -156,7 +156,7 @@ File::Private::Job::ExtensionLoadDecider::ExtensionLoadDecider(File *file)
 {
 }
 
-bool File::Private::Job::ExtensionLoadDecider::loadExtension(const Module::ExtensionInfo &extensionInfo)
+bool File::Private::Job::ExtensionLoadDecider::loadExtension(const Module::ExtensionInfo &extensionInfo) const
 {
     if (extensionInfo.componentOwner.compare("ideallibrary") ||
         extensionInfo.extensionType != Module::ProtocolHandler) {

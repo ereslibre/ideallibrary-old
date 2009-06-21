@@ -36,24 +36,33 @@ static void statResultSlot(ProtocolHandler::StatResult statResult)
     IDEAL_SDEBUG("\t\t*** Is directory?\t" << ((statResult.type & File::Directory) ? "yes" : "no"));
 }
 
+class ExtensionLoadDecider
+    : public ExtensionLoader::ExtensionLoadDecider
+{
+public:
+    virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const
+    {
+        if (extensionInfo.componentOwner.compare("ideallibrary") ||
+            extensionInfo.extensionType != Module::ProtocolHandler) {
+            return false;
+        }
+        ProtocolHandler::AdditionalInfo *additionalInfo = static_cast<ProtocolHandler::AdditionalInfo*>(extensionInfo.additionalInfo);
+        return additionalInfo->handlesProtocols.contains("file");
+    }
+};
+
 int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
     ProtocolHandler *protocolHandler = 0;
 
-    Module *module = ExtensionLoader::loadModule("libbuiltinprotocolhandlers.so", &app);
-    List<Module::ExtensionInfo> extensionList = module->extensionInfoList();
-    List<Module::ExtensionInfo>::iterator it;
-    for (it = extensionList.begin(); it != extensionList.end(); ++it) {
-        Module::ExtensionInfo extensionInfo = *it;
-        if (!extensionInfo.componentOwner.compare("ideallibrary")) {
-            ProtocolHandler::AdditionalInfo *additionalInfo = static_cast<ProtocolHandler::AdditionalInfo*>(extensionInfo.additionalInfo);
-            if (additionalInfo->handlesProtocols.contains("file")) {
-                protocolHandler = ExtensionLoader::loadExtension<ProtocolHandler>(module, extensionInfo.entryPoint, &app);
-                break;
-            }
-        }
+    ExtensionLoadDecider *extensionLoadDecider = new ExtensionLoadDecider;
+    List<ProtocolHandler*> protocolHandlerList = ExtensionLoader::findExtensions<ProtocolHandler>(extensionLoadDecider, &app);
+    delete extensionLoadDecider;
+
+    if (!protocolHandlerList.empty()) {
+        protocolHandler = protocolHandlerList.front();
     }
 
     if (protocolHandler) {

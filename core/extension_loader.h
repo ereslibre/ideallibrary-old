@@ -101,7 +101,7 @@ public:
     class ExtensionLoadDecider
     {
     public:
-        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) = 0;
+        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const = 0;
     };
 
     template <typename T>
