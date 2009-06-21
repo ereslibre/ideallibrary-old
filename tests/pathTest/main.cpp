@@ -19,15 +19,30 @@
  */
 
 #include <core/application.h>
+#include <pathtest_conf.h>
 
 using namespace IdealCore;
 using namespace std;
 
+class MyApplication
+    : public Application
+{
+public:
+    MyApplication(int argc, char **argv)
+        : Application(argc, argv, "pathTest")
+    {
+    }
+
+    virtual String prefix() const
+    {
+        return PATHTEST_PREFIX;
+    }
+};
+
 int main(int argc, char **argv)
 {
-    Application app(argc, argv);
+    MyApplication app(argc, argv);
 
-    IDEAL_SDEBUG("*** Prefix path is:\t" << app.getPath(Application::Prefix));
     IDEAL_SDEBUG("*** Path is:\t\t" << app.getPath(Application::Global));
     IDEAL_SDEBUG("*** Library path is:\t" << app.getPath(Application::Library));
     IDEAL_SDEBUG("*** pkg-config path is:\t" << app.getPath(Application::PkgConfig));

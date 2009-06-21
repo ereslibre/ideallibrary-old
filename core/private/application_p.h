@@ -33,7 +33,7 @@ class ProtocolHandler;
 class Application::Private
 {
 public:
-    Private();
+    Private(Application *q);
     virtual ~Private();
 
     void processEvents();
@@ -45,6 +45,8 @@ public:
 
     int                      m_argc;
     char                   **m_argv;
+    String                   m_name;
+    bool                     m_prefixSet;
     int                      m_sleepTime;
     const int                m_defaultSleepTime;
     List<Object*>            m_markedForDeletion;
@@ -56,6 +58,7 @@ public:
     int                      m_nextTimeout;
     List<ProtocolHandler*>   m_protocolHandlerCache;
     Mutex                    m_protocolHandlerCacheMutex;
+    Application             *q;
 };
 
 }

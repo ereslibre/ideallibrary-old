@@ -78,9 +78,9 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
     }
 }
 
-Application::PrivateImpl::PrivateImpl()
+Application::PrivateImpl::PrivateImpl(Application *q)
+    : Private(q)
 {
-    setenv("IDEAL_MODULES_PATH", IDEALLIBRARY_PREFIX "/lib/ideal/modules/", 1);
     setlocale(LC_ALL, "");
     {
         struct sigaction sa;
@@ -229,8 +229,6 @@ List<char*> Application::parseOptions(ParsingStrictness parsingStrictness, FailV
 String Application::getPath(Path path) const
 {
     switch (path) {
-        case Prefix:
-            return IDEALLIBRARY_PREFIX;
         case Global:
             return getenv("PATH");
         case Library:
@@ -240,6 +238,15 @@ String Application::getPath(Path path) const
         case Home:
             return getenv("HOME");
         case Modules:
+            if (!d->m_prefixSet) {
+                if (prefix().empty()) {
+                    setenv("IDEAL_MODULES_PATH", IDEALLIBRARY_PREFIX "/lib/ideal/modules/", 1);
+                } else {
+                    const String pathList = prefix() + "/lib/" + name() + "/modules/:" IDEALLIBRARY_PREFIX "/lib/ideal/modules/";
+                    setenv("IDEAL_MODULES_PATH", pathList.data(), 1);
+                }
+                d->m_prefixSet = true;
+            }
             return getenv("IDEAL_MODULES_PATH");
 #ifndef NDEBUG
         case UnitTest:

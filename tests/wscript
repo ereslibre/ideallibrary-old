@@ -2,7 +2,7 @@
 # Rafael Fernández López, 2009
 
 def configure(conf):
-    pass
+    conf.sub_config('pathTest')
 
 def build(bld):
     bld.add_subdirs(['basicApp',

@@ -32,10 +32,12 @@
 
 namespace IdealCore {
 
-Application::Private::Private()
-    : m_sleepTime(-1)
+Application::Private::Private(Application *q)
+    : m_prefixSet(false)
+    , m_sleepTime(-1)
     , m_defaultSleepTime(500)
     , m_nextTimeout(-1)
+    , q(q)
 {
 }
 
@@ -144,19 +146,30 @@ void Application::Private::checkTimers()
     }
 }
 
-Application::Application(int argc, char **argv)
+Application::Application(int argc, char **argv, const String &name)
     : IDEAL_SIGNAL_INIT(invalidOption)
     , IDEAL_SIGNAL_INIT(missingParameter)
-    , d(new PrivateImpl)
+    , d(new PrivateImpl(this))
 {
     d->m_argc = argc;
     d->m_argv = argv;
+    d->m_name = name.empty() ? argv[0] : name;
     static_cast<Object*>(this)->d->m_application = this;
 }
 
 Application::~Application()
 {
     delete d;
+}
+
+String Application::prefix() const
+{
+    return String();
+}
+
+String Application::name() const
+{
+    return d->m_name;
 }
 
 int Application::exec()
