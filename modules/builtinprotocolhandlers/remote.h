@@ -38,6 +38,11 @@ public:
     void stat(const Uri &uri);
     bool canBeReusedWith(const Uri &uri) const;
 
+    String name() const;
+    String description() const;
+    String author() const;
+    String version() const;
+
 private:
     class Private;
     Private *const d;

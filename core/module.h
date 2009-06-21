@@ -166,26 +166,6 @@ public:
           * (or library).
           */
         String componentOwner;
-
-        /**
-          * The name of the extension (human readable).
-          */
-        String name;
-
-        /**
-          * The description of the extension.
-          */
-        String description;
-
-        /**
-          * The author (or authors) of the extension.
-          */
-        String author;
-
-        /**
-          * The version of the extension.
-          */
-        String version;
     };
 
     /**

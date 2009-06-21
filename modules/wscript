@@ -6,5 +6,3 @@ def configure(conf):
 
 def build(bld):
     bld.add_subdirs('builtinprotocolhandlers')
-    if not bld.env['RELEASE']:
-        bld.add_subdirs('foo')

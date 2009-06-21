@@ -55,6 +55,14 @@ public:
     Extension();
     virtual ~Extension();
 
+    virtual String name() const = 0;
+
+    virtual String description() const = 0;
+
+    virtual String author() const = 0;
+
+    virtual String version() const = 0;
+
 private:
     class Private;
     Private *const d;

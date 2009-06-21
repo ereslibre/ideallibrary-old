@@ -53,20 +53,12 @@ public:
             l1.extensionType = Module::ProtocolHandler;
             l1.additionalInfo = &additionalInfol1;
             l1.componentOwner = "ideallibrary";
-            l1.name = "Builtin remote protocol handler set";
-            l1.description = "Contains support for http, https, ftp and sftp protocols";
-            l1.author = "Rafael Fernández López";
-            l1.version = IDEALLIBRARY_VERSION;
 
             Module::ExtensionInfo l2;
             l2.entryPoint = "builtinProtocolHandlersLocal";
             l2.extensionType = Module::ProtocolHandler;
             l2.additionalInfo = &additionalInfol2;
             l2.componentOwner = "ideallibrary";
-            l2.name = "Builtin local protocol handler";
-            l2.description = "Contains support for local file operations";
-            l2.author = "Rafael Fernández López";
-            l2.version = IDEALLIBRARY_VERSION;
 
             res.push_back(l1);
             res.push_back(l2);
