@@ -38,14 +38,12 @@ Module *ExtensionLoader::Private::loadModule(const String &path, Object *parent)
 {
     void *handle = dlopen(path.data(), RTLD_LAZY);
     if (!handle) {
-        IDEAL_DEBUG_WARNING("there was a problem dlopening a shared library: " << dlerror());
         return 0;
     }
     char *symbolError = dlerror();
     moduleFactoryCreator *factoryCreator = (moduleFactoryCreator*) dlsym(handle, "globalModuleEntryPoint");
     symbolError = dlerror();
     if (symbolError) {
-        IDEAL_DEBUG_WARNING("there was a problem loading a module extension: " << symbolError);
         return 0;
     }
     Module *module = factoryCreator();

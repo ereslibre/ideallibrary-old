@@ -15,5 +15,5 @@ def build(bld):
         includes     = '../..',
         uselib       = 'LIBCURL',
         uselib_local = 'idealcore',
-        install_path = '${PREFIX}/lib/ideal'
+        install_path = '${PREFIX}/lib/ideal/modules'
     )

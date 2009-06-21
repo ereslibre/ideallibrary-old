@@ -80,6 +80,7 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
 
 Application::PrivateImpl::PrivateImpl()
 {
+    setenv("IDEAL_MODULES_PATH", IDEALLIBRARY_PREFIX "/lib/ideal/modules/", 1);
     setlocale(LC_ALL, "");
     {
         struct sigaction sa;
@@ -239,7 +240,7 @@ String Application::getPath(Path path) const
         case Home:
             return getenv("HOME");
         case Modules:
-            return IDEALLIBRARY_PREFIX "/lib/ideal/";
+            return getenv("IDEAL_MODULES_PATH");
 #ifndef NDEBUG
         case UnitTest:
             return String(getenv("HOME")) + "/.ideal-unittests";
