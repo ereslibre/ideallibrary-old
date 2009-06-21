@@ -58,16 +58,16 @@ class ModuleImpl
 public:
     List<Module::ExtensionInfo> extensionInfoList()
     {
-            List<Module::ExtensionInfo> res;
+        List<Module::ExtensionInfo> res;
 
-            Module::ExtensionInfo l1;
-            l1.entryPoint = "ownModulesTestFooInterface";
-            l1.extensionType = Module::UserDefinedExtensionType;
-            l1.additionalInfo = 0;
-            l1.componentOwner = "ownModulesTest";
-            res.push_back(l1);
+        Module::ExtensionInfo l1;
+        l1.entryPoint = "ownModulesTestFooInterface";
+        l1.extensionType = Module::UserDefinedExtensionType;
+        l1.additionalInfo = 0;
+        l1.componentOwner = "ownModulesTest";
+        res.push_back(l1);
 
-            return res;
+        return res;
     }
 };
 
