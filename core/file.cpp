@@ -67,6 +67,18 @@ public:
         bool operator()(ProtocolHandler *&left, ProtocolHandler *&right);
     };
 
+    class ExtensionLoadDecider
+        : public ExtensionLoader::ExtensionLoadDecider
+    {
+    public:
+        ExtensionLoadDecider(File *file);
+
+        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo);
+
+    private:
+        File *m_file;
+    };
+
     File            *m_file;
     Operation        m_operation;
     ProtocolHandler *m_protocolHandler;
@@ -97,21 +109,13 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
             }
         }
     }
-    ProtocolHandler *res = 0;
-    Module *module = ExtensionLoader::loadModule("libbuiltinprotocolhandlers.so", m_file);
-    List<Module::ExtensionInfo> extensionList = module->extensionInfoList();
-    List<Module::ExtensionInfo>::iterator extIt;
-    for (extIt = extensionList.begin(); extIt != extensionList.end(); ++extIt) {
-        Module::ExtensionInfo extensionInfo = *extIt;
-        if (!extensionInfo.componentOwner.compare("ideallibrary")) {
-            ProtocolHandler::AdditionalInfo *additionalInfo = static_cast<ProtocolHandler::AdditionalInfo*>(extensionInfo.additionalInfo);
-            if (additionalInfo->handlesProtocols.contains(m_file->d->m_uri.scheme())) {
-                res = ExtensionLoader::loadExtension<ProtocolHandler>(module, extensionInfo.entryPoint, m_file);
-                break;
-            }
-        }
+    ExtensionLoadDecider *extensionLoadDecider = new ExtensionLoadDecider(m_file);
+    List<ProtocolHandler*> protocolHandlerList = ExtensionLoader::findExtensions<ProtocolHandler>(extensionLoadDecider, m_file);
+    delete extensionLoadDecider;
+    if (protocolHandlerList.empty()) {
+        return 0;
     }
-    return res;
+    return protocolHandlerList.front();
 }
 
 void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
@@ -145,6 +149,21 @@ void File::Private::Job::fetchInfo()
 bool File::Private::Job::LessThanProtocolHandler::operator()(ProtocolHandler *&left, ProtocolHandler *&right)
 {
     return left->m_weight < right->m_weight;
+}
+
+File::Private::Job::ExtensionLoadDecider::ExtensionLoadDecider(File *file)
+    : m_file(file)
+{
+}
+
+bool File::Private::Job::ExtensionLoadDecider::loadExtension(const Module::ExtensionInfo &extensionInfo)
+{
+    if (extensionInfo.componentOwner.compare("ideallibrary") ||
+        extensionInfo.extensionType != Module::ProtocolHandler) {
+        return false;
+    }
+    ProtocolHandler::AdditionalInfo *additionalInfo = static_cast<ProtocolHandler::AdditionalInfo*>(extensionInfo.additionalInfo);
+    return additionalInfo->handlesProtocols.contains(m_file->d->m_uri.scheme());
 }
 
 void File::Private::Job::run()

@@ -25,10 +25,9 @@
 #include <core/object.h>
 #include <core/ideal_string.h>
 #include <core/extension.h>
+#include <core/module.h>
 
 namespace IdealCore {
-
-class Module;
 
 /**
   * @class ExtensionLoader extension_loader.h core/extension_loader.h
@@ -88,21 +87,52 @@ public:
     template <typename T>
     static T *loadExtension(Module *module, const String &entryPoint, Object *parent)
     {
+        if (!parent) {
+            IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
+            return 0;
+        }
         Extension *extension = Private::loadExtension(module, entryPoint);
-        if (extension && parent) {
+        if (extension) {
             extension->reparent(parent);
-        } else if (extension) {
-            IDEAL_DEBUG_WARNING("extension parent has been set to NULL. This should not happen.");
         }
         return static_cast<T*>(extension);
+    }
+
+    class ExtensionLoadDecider
+    {
+    public:
+        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) = 0;
+    };
+
+    template <typename T>
+    static List<T*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
+    {
+        List<T*> retList;
+        if (!parent) {
+            IDEAL_DEBUG_WARNING("the extension parent cannot be NULL");
+            return retList;
+        }
+        if (!extensionLoadDecider) {
+            IDEAL_DEBUG_WARNING("the extension load decider cannot be NULL");
+            return retList;
+        }
+        const List<Extension*> extensionList = Private::findExtensions(extensionLoadDecider, parent);
+        List<Extension*>::const_iterator it;
+        for (it = extensionList.begin(); it != extensionList.end(); ++it) {
+            Extension *const extension = *it;
+            extension->reparent(parent);
+            retList.push_back(static_cast<T*>(extension));
+        }
+        return retList;
     }
 
 private:
     class Private
     {
     public:
-        static Module *loadModule(const String &path, Object *object);
+        static Module *loadModule(const String &path, Object *parent);
         static Extension *loadExtension(Module *module, const String &entryPoint);
+        static List<Extension*> findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent);
     };
 };
 
