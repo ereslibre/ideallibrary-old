@@ -81,16 +81,29 @@ public:
       */
     bool contains(wchar_t c) const;
 
+    /**
+      * @return The first position in which character @p c is found. If @p c is not found, npos is
+      *         returned instead.
+      */
     size_t find(wchar_t c) const;
 
+    /**
+      * @return The first position in which character @p c is found starting to search from the right.
+      *         If @p c is not found, npos is returned instead.
+      */
     size_t rfind(wchar_t c) const;
 
     /**
-      * Returns a substring of this string starting at @p pos with @p n
-      * characters maximum.
+      * Returns a substring of this string starting at @p pos with @p n characters maximum.
       */
     String substr(size_t pos = 0, size_t n = npos) const;
 
+    /**
+      * Compares the current string to @p s.
+      *
+      * @return < 0, 0 or > 0 if this string is less than, equal to, or greater than @p s
+      *         respectively.
+      */
     int compare(const char *s) const;
 
     /**

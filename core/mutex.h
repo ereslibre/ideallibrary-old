@@ -59,7 +59,7 @@ public:
       * @note If this mutex is already locked, this method will not block calling thread.
       */
     bool tryLock();
-    
+
     /**
       * Unlocks this mutex.
       */

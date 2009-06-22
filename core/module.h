@@ -139,6 +139,8 @@ public:
       * this extension or not based on the attributes of this struct.
       *
       * @see ExtensionLoader
+      *
+      * @author Rafael Fernández López <ereslibre@ereslibre.es>
       */
     struct ExtensionInfo
     {

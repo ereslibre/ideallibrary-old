@@ -36,10 +36,9 @@ static void statResultSlot(ProtocolHandler::StatResult statResult)
     IDEAL_SDEBUG("\t\t*** Is directory?\t" << ((statResult.type & File::Directory) ? "yes" : "no"));
 }
 
-class ExtensionLoadDecider
+struct ExtensionLoadDecider
     : public ExtensionLoader::ExtensionLoadDecider
 {
-public:
     virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const
     {
         if (extensionInfo.componentOwner.compare("ideallibrary") ||

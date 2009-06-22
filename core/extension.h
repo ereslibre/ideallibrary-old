@@ -55,12 +55,24 @@ public:
     Extension();
     virtual ~Extension();
 
+    /**
+      * @return The name of the extension in a human readable way
+      */
     virtual String name() const = 0;
 
+    /**
+      * @return The description of the extension
+      */
     virtual String description() const = 0;
 
+    /**
+      * @return The author of the extension
+      */
     virtual String author() const = 0;
 
+    /**
+      * @return The version of the extension
+      */
     virtual String version() const = 0;
 
 private:

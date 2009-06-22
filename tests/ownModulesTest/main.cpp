@@ -42,10 +42,9 @@ public:
     }
 };
 
-class ExtensionLoadDecider
+struct ExtensionLoadDecider
     : public ExtensionLoader::ExtensionLoadDecider
 {
-public:
     bool loadExtension(const Module::ExtensionInfo &extensionInfo) const
     {
         return extensionInfo.extensionType == Module::UserDefinedExtensionType &&

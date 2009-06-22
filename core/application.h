@@ -106,7 +106,7 @@ public:
         Library,     ///< Environment variable $LD_LIBRARY_PATH
         PkgConfig,   ///< Environment variable $PKG_CONFIG_PATH
         Home,        ///< Home path of the current user
-        Modules      ///< List of paths separated by colons where modules for this application are located
+        Modules      ///< List of paths separated by colons where modules for this application are searched
 #ifndef NDEBUG
       , UnitTest     ///< @internal. Path for unit testing with files/folders
 #endif
@@ -114,7 +114,18 @@ public:
 
     /**
       * Constructs a new application object with @p argc number of args, and @p argv arguments.
-      * If @p name is an empty string, @p argv[0] will be used as the application name.
+      *
+      * @param name The name of the application in a system-fashion. This parameter will be used
+      *             to give preference to certain paths when searching for modules. For example,
+      *             if @p name is "myFooApp" when asking the ExtensionLoader for extensions, the
+      *             paths that will be checked out in a posix system will be:
+      *             "${APP_PREFIX}/lib/myFooApp/modules/:${IDEAL_PREFIX}/lib/ideal/modules/".
+      *             If an empty string is provided, @p argv[0] is taken as @p name.
+      *
+      * @note For this module searching being completely portable, you will need to reimplement
+      *       prefix() on your application, so your application can tell where was installed.
+      *
+      * @see ExtensionLoader
       */
     Application(int argc, char **argv, const String &name = String());
     virtual ~Application();
@@ -122,6 +133,8 @@ public:
     /**
       * @return The prefix of this application. This returns an empty string by default, and should
       *         be reimplemented in order to look in the correct place for modules and extensions.
+      *         If an empty string is returned, modules are only searched in the default places,
+      *         which means in a posix system: "${IDEAL_PREFIX}/lib/ideal/modules/".
       */
     virtual String prefix() const;
 

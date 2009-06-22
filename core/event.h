@@ -59,12 +59,12 @@ public:
     virtual ~Event();
 
     /**
-      * @return the object of the event
+      * @return The object of the event
       */
     Object *object() const;
 
     /**
-      * @return the type of the event
+      * @return The type of the event
       */
     Type type() const;
 

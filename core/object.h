@@ -529,7 +529,7 @@ public:
     }
 
     /**
-      * Connects @p signal to the method @p member on @p receiver.
+      * Connects @p signal to the synchronized method @p member on @p receiver.
       *
       * When @p signal is emitted, before calling to @p member on @p receiver, the mutex @p mutex
       * will be locked. When this call has finished, the mutex @p mutex will become unlocked.
@@ -554,7 +554,7 @@ public:
     }
 
     /**
-      * Connects @p signal to the multi method @p member on @p receiver.
+      * Connects @p signal to the multi synchronized method @p member on @p receiver.
       *
       * When @p signal is emitted, before calling to @p member on @p receiver, the mutex @p mutex
       * will be locked. When this call has finished, the mutex @p mutex will become unlocked.
@@ -590,7 +590,7 @@ public:
     }
 
     /**
-      * Connects @p signal to the static method or function @p member.
+      * Connects @p signal to the static synchronized method or function @p member.
       *
       * When @p signal is emitted, before calling to @p member, the mutex @p mutex will be locked.
       * When this call has finished, the mutex @p mutex will become unlocked.
@@ -615,7 +615,7 @@ public:
     }
 
     /**
-      * Connects @p signal to the static multi method or function @p member.
+      * Connects @p signal to the static multi synchronized method or function @p member.
       *
       * When @p signal is emitted, before calling to @p member, the mutex @p mutex will be locked.
       * When this call has finished, the mutex @p mutex will become unlocked.
@@ -644,7 +644,7 @@ public:
     }
 
     /**
-      * Disconnects @p signal from @p member on @p receiver.
+      * Disconnects @p signal from synchronized @p member on @p receiver.
       *
       * @note It is possible to connect the same signal to the same member and
       *       receiver more than one time. This will disconnect only the first
@@ -674,7 +674,7 @@ public:
     }
 
     /**
-      * Disconnects @p signal from multi @p member on @p receiver.
+      * Disconnects @p signal from multi synchronized @p member on @p receiver.
       *
       * @note It is possible to connect the same signal to the same member and
       *       receiver more than one time. This will disconnect only the first
@@ -719,7 +719,7 @@ public:
     }
 
     /**
-      * Disconnects @p signal from static method or function @p member.
+      * Disconnects @p signal from static synchronized method or function @p member.
       *
       * @note It is possible to connect the same signal to the same static
       *       method or function more than one time. This will disconnect
@@ -749,7 +749,7 @@ public:
     }
 
     /**
-      * Disconnects @p signal from multi static method or function @p member.
+      * Disconnects @p signal from multi static synchronized method or function @p member.
       *
       * @note It is possible to connect the same signal to the same static
       *       method or function more than one time. This will disconnect
