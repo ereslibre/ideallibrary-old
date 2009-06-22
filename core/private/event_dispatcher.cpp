@@ -18,56 +18,45 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <map>
-#include <iostream>
-#include <X11/Xlib.h>
-#include "fixincludes.h"
+#include "event_dispatcher.h"
+#include <core/ideal_list.h>
+#include <core/cond_var.h>
+#include <core/timer.h>
+#include <core/event.h>
 
-#include <core/private/event_dispatcher.h>
+namespace IdealCore {
 
-#include <gui/application.h>
-
-namespace IdealGUI {
-
-class Widget;
-
-class Application::Private
+EventDispatcher::EventDispatcher()
+    : Thread(NoJoinable)
+    , m_event(0)
 {
-public:
-    Private(Application *q);
-    ~Private();
+}
 
-    void processEvents();
-
-    Display                  *dpy;
-    std::map<Window, Widget*> widgetMap;
-    Application              *q;
-
-    class GUIEventHandler;
-    GUIEventHandler          *guiEventHandler;
-
-    class GUIEventDispatcher;
-};
-
-class Application::Private::GUIEventHandler
-    : public IdealCore::Thread
+EventDispatcher::~EventDispatcher()
 {
-public:
-    GUIEventHandler(Application::Private *priv);
-    ~GUIEventHandler();
+    delete m_event;
+}
 
-protected:
-    virtual void run();
-
-public:
-    Application::Private *priv;
-};
-
-class Application::Private::GUIEventDispatcher
-    : public IdealCore::EventDispatcher
+void EventDispatcher::postEvent(Event *event)
 {
-protected:
-    virtual void run();
-};
+    m_event = event;
+}
+
+void EventDispatcher::run()
+{
+    if (!m_event || !m_event->object()) {
+        return;
+    }
+    switch (m_event->type()) {
+        case Event::Timeout: {
+            Timer *const timer = static_cast<Timer*>(m_event->object());
+            timer->emit(timer->timeout);
+        }
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("Unexpected event type " << m_event->type());
+            break;
+    }
+}
 
 }

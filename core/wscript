@@ -17,6 +17,7 @@ def build(bld):
         features     = 'cxx cshlib',
         source       = bld.glob('*.cpp') +
                        bld.glob('interfaces/*.cpp') +
+                       bld.glob('private/*.cpp') +
                        bld.glob('private/posix/*.cpp'),
         target       = 'idealcore',
         includes     = '..',

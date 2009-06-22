@@ -18,56 +18,32 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <map>
-#include <iostream>
-#include <X11/Xlib.h>
-#include "fixincludes.h"
+#ifndef EVENT_DISPATCHER_H
+#define EVENT_DISPATCHER_H
 
-#include <core/private/event_dispatcher.h>
+#include <ideal_export.h>
+#include <core/thread.h>
 
-#include <gui/application.h>
+namespace IdealCore {
 
-namespace IdealGUI {
+class Event;
 
-class Widget;
-
-class Application::Private
+class IDEAL_EXPORT EventDispatcher
+    : public Thread
 {
 public:
-    Private(Application *q);
-    ~Private();
+    EventDispatcher();
+    virtual ~EventDispatcher();
 
-    void processEvents();
-
-    Display                  *dpy;
-    std::map<Window, Widget*> widgetMap;
-    Application              *q;
-
-    class GUIEventHandler;
-    GUIEventHandler          *guiEventHandler;
-
-    class GUIEventDispatcher;
-};
-
-class Application::Private::GUIEventHandler
-    : public IdealCore::Thread
-{
-public:
-    GUIEventHandler(Application::Private *priv);
-    ~GUIEventHandler();
+    void postEvent(Event *event);
 
 protected:
     virtual void run();
 
-public:
-    Application::Private *priv;
-};
-
-class Application::Private::GUIEventDispatcher
-    : public IdealCore::EventDispatcher
-{
 protected:
-    virtual void run();
+    Event *m_event;
 };
 
 }
+
+#endif //EVENT_DISPATCHER_H
