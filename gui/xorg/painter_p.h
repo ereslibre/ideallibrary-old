@@ -38,6 +38,7 @@ public:
         m_dpy = app->d->m_dpy;
         XClearWindow(m_dpy, canvas->d->m_window);
         m_cairo = cairo_create(canvas->d->m_cs);
+        cairo_set_line_width(m_cairo, 1.0);
     }
 
     ~Private()
