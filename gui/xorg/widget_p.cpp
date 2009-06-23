@@ -21,22 +21,26 @@
 #include "widget_p.h"
 #include "application_p.h"
 
+#include <cairo-xlib.h>
+
 namespace IdealGUI {
 
 Widget::Private::Private(Widget *q)
     : m_window(0)
+    , m_cs(0)
     , q(q)
 {
 }
 
 Widget::Private::~Private()
 {
+    cairo_surface_destroy(m_cs);
 }
 
 void Widget::Private::show(int x, int y, int width, int height)
 {
     IdealGUI::Application *app = static_cast<IdealGUI::Application*>(q->application());
-    Display *dpy = app->d->dpy;
+    Display *dpy = app->d->m_dpy;
     if (!m_window) {
         if (!m_parentWidget) {
             m_window = XCreateSimpleWindow(dpy, XDefaultRootWindow(dpy), x, y, width, height, 0,
@@ -47,40 +51,18 @@ void Widget::Private::show(int x, int y, int width, int height)
                                            XWhitePixel(dpy, XDefaultScreen(dpy)),
                                            XWhitePixel(dpy, XDefaultScreen(dpy)));
         }
-        app->d->widgetMap[m_window] = q;
+        app->d->m_widgetMap[m_window] = q;
         XSelectInput(dpy, m_window, ExposureMask | ButtonPressMask | ButtonReleaseMask |
                                     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
                                     FocusChangeMask | KeyPressMask | KeyReleaseMask |
                                     StructureNotifyMask | SubstructureNotifyMask);
     }
-    {
-        XRenderColor color;
-        color.red = 0xFFFF;
-        color.green = 0;
-        color.blue = 0;
-        color.alpha = 0xFFFF;
-        m_fillPicture = XRenderCreateSolidFill(dpy, &color);
-    }
-    {
-        XRenderPictFormat *format = XRenderFindStandardFormat(dpy, PictStandardRGB24);
-        XRenderPictureAttributes attr;
-        attr.poly_edge = PolyEdgeSmooth;
-        attr.poly_mode = PolyModePrecise;
-        m_picture = XRenderCreatePicture(dpy, m_window, format, 0, &attr);
-    }
-    {
-        m_maskFormat = XRenderFindStandardFormat(dpy, PictStandardA8);
-    }
     XMapWindow(dpy, m_window);
-    XFlush(dpy);
+    m_cs = cairo_xlib_surface_create(dpy, m_window, DefaultVisual(dpy, 0), width, height);
 }
 
 void Widget::Private::hide()
 {
-    IdealGUI::Application *app = static_cast<IdealGUI::Application*>(q->application());
-    Display *dpy = app->d->dpy;
-    XUnmapWindow(dpy, m_window);
-    XFlush(dpy);
 }
 
 }

@@ -18,6 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <cairo.h>
+
 #include <X11/extensions/Xrender.h>
 #include "fixincludes.h"
 
@@ -36,9 +38,7 @@ public:
 
     Widget            *m_parentWidget;
     Window             m_window;
-    Picture            m_fillPicture;
-    Picture            m_picture;
-    XRenderPictFormat *m_maskFormat;
+    cairo_surface_t   *m_cs;
     Widget            *q;
 };
 

@@ -39,12 +39,12 @@ public:
 
     void processEvents();
 
-    Display                  *dpy;
-    std::map<Window, Widget*> widgetMap;
+    Display                  *m_dpy;
+    std::map<Window, Widget*> m_widgetMap;
     Application              *q;
 
     class GUIEventHandler;
-    GUIEventHandler          *guiEventHandler;
+    GUIEventHandler          *m_guiEventHandler;
 
     class GUIEventDispatcher;
 };

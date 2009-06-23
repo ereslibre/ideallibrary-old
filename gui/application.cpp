@@ -85,10 +85,10 @@ Application::~Application()
 
 int Application::exec()
 {
-    if (!d->guiEventHandler) {
-        d->guiEventHandler = new Private::GUIEventHandler(d);
+    if (!d->m_guiEventHandler) {
+        d->m_guiEventHandler = new Private::GUIEventHandler(d);
     }
-    d->guiEventHandler->exec();
+    d->m_guiEventHandler->exec();
     return IdealCore::Application::exec();
 }
 

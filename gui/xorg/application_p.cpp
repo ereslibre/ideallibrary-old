@@ -26,24 +26,24 @@ namespace IdealGUI {
 
 Application::Private::Private(Application *q)
     : q(q)
-    , guiEventHandler(0)
+    , m_guiEventHandler(0)
 {
     XInitThreads();
-    dpy = XOpenDisplay("");
+    m_dpy = XOpenDisplay("");
 }
 
 Application::Private::~Private()
 {
-    XCloseDisplay(dpy);
-    delete guiEventHandler;
+    XCloseDisplay(m_dpy);
+    delete m_guiEventHandler;
 }
 
 void Application::Private::processEvents()
 {
     XEvent xe;
-    XNextEvent(dpy, &xe);
+    XNextEvent(m_dpy, &xe);
     IdealCore::Event *event = 0;
-    Widget *const widget = widgetMap[xe.xany.window];
+    Widget *const widget = m_widgetMap[xe.xany.window];
     switch (xe.type) {
         case CreateNotify_:
             event = new IdealCore::Event(widget, IdealCore::Event::CreateNotify);
@@ -79,6 +79,9 @@ void Application::Private::processEvents()
             event = new IdealCore::Event(widget, IdealCore::Event::ConfigureNotify);
             break;
         case Expose_:
+            if (xe.xexpose.count >= 1) {
+                return;
+            }
             event = new IdealCore::Event(widget, IdealCore::Event::Expose);
             break;
         case FocusIn_:

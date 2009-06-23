@@ -18,7 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <math.h>
+#include <cairo.h>
+
 #include <X11/Xlib.h>
 #include "fixincludes.h"
 
@@ -34,15 +35,15 @@ public:
         : m_canvas(canvas)
     {
         IdealGUI::Application *app = static_cast<IdealGUI::Application*>(m_canvas->application());
-        m_dpy = app->d->dpy;
-        XClearWindow(m_dpy, m_canvas->d->m_window);
-        m_gc = XCreateGC(m_dpy, m_canvas->d->m_window, 0, 0);
+        m_dpy = app->d->m_dpy;
+        XClearWindow(m_dpy, canvas->d->m_window);
+        m_cairo = cairo_create(canvas->d->m_cs);
     }
 
     ~Private()
     {
-        XFreeGC(m_dpy, m_gc);
-        XFlush(m_dpy);
+        cairo_show_page(m_cairo);
+        cairo_destroy(m_cairo);
     }
 
     void drawPoint(int x, int y);
@@ -52,50 +53,25 @@ public:
     void fillRectangle(int x, int y, int width, int height);
 
     Widget  *m_canvas;
+    cairo_t *m_cairo;
     Display *m_dpy;
-    GC       m_gc;
 };
 
 void Painter::Private::drawPoint(int x, int y)
 {
-    XDrawPoint(m_dpy, m_canvas->d->m_window, m_gc, x, y);
 }
 
 void Painter::Private::drawLine(int x1, int y1, int x2, int y2)
 {
-    XPointDouble poly[4];
-    XDouble dx = (x2 - x1);
-    XDouble dy = (y2 - y1);
-    XDouble len = sqrt(dx * dx + dy * dy);
-    XDouble ldx = (0.6 / 2.0) * dy / len;
-    XDouble ldy = (0.6 / 2.0) * dx / len;
-
-    // bottom right corner
-    poly[0].x = x1 + ldx;
-    poly[0].y = y1 - ldy;
-
-    // top right corner
-    poly[1].x = x2 + ldx;
-    poly[1].y = y2 - ldy;
-
-    // top left corner
-    poly[2].x = x2 - ldx;
-    poly[2].y = y2 + ldy;
-
-    // bottom left corner
-    poly[3].x = x1 - ldx;
-    poly[3].y = y1 + ldy;
-
-    XRenderCompositeDoublePoly(m_dpy, PictOpOver, m_canvas->d->m_fillPicture, m_canvas->d->m_picture,
-                               m_canvas->d->m_maskFormat, 0, 0, 0, 0, poly, 4, EvenOddRule);
+    cairo_move_to(m_cairo, x1, y1);
+    cairo_line_to(m_cairo, x2, y2);
+    cairo_stroke(m_cairo);
 }
 
 void Painter::Private::drawRectangle(int x, int y, int width, int height)
 {
-   drawLine(x, y, x + width, y);
-   drawLine(x + width, y, x + width, y + height);
-   drawLine(x + width, y + height, x, y + height);
-   drawLine(x, y + height, x, y);
+    cairo_rectangle(m_cairo, x, y, width, height);
+    cairo_stroke(m_cairo);
 }
 
 void Painter::Private::drawText(int x, int y, const IdealCore::String &text)

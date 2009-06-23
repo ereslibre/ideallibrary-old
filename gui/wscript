@@ -2,12 +2,9 @@
 # Rafael Fernández López, 2009
 
 def configure(conf):
-    conf.check_cfg(package = 'x11', args = '--cflags --libs')
-    if not conf.env['HAVE_X11'] == 1:
-        conf.fatal('Cannot continue without x11. Please, install the development package and try again')
-    conf.check_cfg(package = 'xrender', args = '--cflags --libs')
-    if not conf.env['HAVE_XRENDER'] == 1:
-        conf.fatal('Cannot continue without xrender. Please, install the development package and try again')
+    conf.check_cfg(package = 'cairo-xlib-xrender', args = '--cflags --libs')
+    if not conf.env['HAVE_CAIRO_XLIB_XRENDER'] == 1:
+        conf.fatal('Cannot continue without cairo. Please, install the development package and try again')
 
 def build(bld):
     bld.new_task_gen(
@@ -16,8 +13,7 @@ def build(bld):
                        bld.glob('xorg/*.cpp'),
         target       = 'idealgui',
         includes     = '.. ../core',
-        uselib       = ['X11',
-                        'XRENDER'],
+        uselib       = 'CAIRO-XLIB-XRENDER',
         uselib_local = 'idealcore',
         vnum         = bld.env['LIBVERSION']
     )
