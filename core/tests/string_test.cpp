@@ -119,13 +119,11 @@ void StringTest::miscTests()
     {
         String specialChars = String('%') + String('3') + String('4');
         CPPUNIT_ASSERT_EQUAL(String("%34"), specialChars);
-        CPPUNIT_ASSERT_EQUAL((const char *) "%34", specialChars.data());
         CPPUNIT_ASSERT_EQUAL((size_t) 3, specialChars.size());
     }
     {
         String specialChars = String("%34");
         CPPUNIT_ASSERT_EQUAL(String("%34"), specialChars);
-        CPPUNIT_ASSERT_EQUAL((const char *) "%34", specialChars.data());
         CPPUNIT_ASSERT_EQUAL((size_t) 3, specialChars.size());
     }
 }
