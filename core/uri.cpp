@@ -108,7 +108,7 @@ String Uri::Private::decodeUri(const String &uri) const
             byte1 += uri[i + 2];
             unsigned long byte1Val = strtoul(byte1.data(), 0, 16);
             if (!(byte1Val & (1 << 7))) {
-                res += byte1;
+                res += byte1Val;
                 i += 3;
             } else if (((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && !(byte1Val & (1 << 5)))) {
                 String byte2(uri[i + 4]);
