@@ -47,7 +47,7 @@ public:
 
     void calculateSize()
     {
-        uint i = 0;
+        size_t i = 0;
         while (true) {
             const char c = m_str[i];
             if (c == '\0') {
