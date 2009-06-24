@@ -126,6 +126,10 @@ void StringTest::miscTests()
         CPPUNIT_ASSERT_EQUAL(String("%34"), specialChars);
         CPPUNIT_ASSERT_EQUAL((size_t) 3, specialChars.size());
     }
+    {
+        String specialChars("file:///home/user/imágenes/spécial.png");
+        CPPUNIT_ASSERT_EQUAL((size_t) 38, specialChars.size());
+    }
 }
 
 String StringTest::returnSpecialChars()

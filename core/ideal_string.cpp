@@ -42,6 +42,7 @@ public:
     {
         Private *privateCopy = new Private;
         privateCopy->m_str = m_str;
+        privateCopy->m_size = m_size;
         return privateCopy;
     }
 

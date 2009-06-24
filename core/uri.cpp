@@ -65,43 +65,37 @@ char hex_Ideal[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 
 String Uri::Private::getHex(char ch) const
 {
-    return String('%') + String(hex_Ideal[(ch >> 4)]) + String(hex_Ideal[(ch & 0xF)]);
+    return String('%') + hex_Ideal[(ch >> 4) & 0xF] + hex_Ideal[(ch & 0xF)];
 }
 
 String Uri::Private::encodeUri(const String &uri) const
 {
-    return uri;
-#if 0
     String res;
+    size_t j = 0;
     for (size_t i = 0; i < uri.size(); ++i) {
-        const char currChar = uri[i];
-        if (unreserved_Ideal.find(currChar) != std::string::npos ||
-            reserved_Ideal.find(currChar) != std::string::npos) {
-            res += currChar;
-        } else if (currChar < 128) {
-            res += getHex(currChar);
-        } else if (currChar < 2048) {
-            res += getHex((currChar >> 6) | 0xC0) +
-                   getHex((currChar & 0x3F) | 0x80);
-        } else if (currChar < 65536) {
-            res += getHex((currChar >> 12) | 0xE0) +
-                   getHex(((currChar >> 6) & 0x3F) | 0x80) +
-                   getHex((currChar & 0x3F) | 0x80);
-        } else {
-            res += getHex((currChar >> 18) | 0xF0) +
-                   getHex(((currChar >> 12) & 0x3F) | 0x80) +
-                   getHex(((currChar >> 6) & 0x3F) | 0x80) +
-                   getHex((currChar & 0x3F) | 0x80);
+        const char c = uri[j];
+        if (unreserved_Ideal.find(c) != std::string::npos ||
+            reserved_Ideal.find(c) != std::string::npos) {
+            res += c;
+        } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
+            res += getHex(c);
+        } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
+            res += getHex(c);
+            --i;
+        } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && !(c & (1 << 4))) {
+            res += getHex(c);
+            i -= 2;
+        } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && (c & (1 << 4))) {
+            res += getHex(c);
+            i -= 3;
         }
+        ++j;
     }
     return res;
-#endif
 }
 
 String Uri::Private::decodeUri(const String &uri) const
 {
-    return uri;
-#if 0
     if (!uri.contains('%')) {
         return uri;
     }
@@ -112,36 +106,42 @@ String Uri::Private::decodeUri(const String &uri) const
         if (currChar == '%') {
             String byte1(uri[i + 1]);
             byte1 += uri[i + 2];
-            const char byte1Val = strtoul(byte1.data(), 0, 16);
-            if (byte1Val < 128) {
+            unsigned long byte1Val = strtoul(byte1.data(), 0, 16);
+            if (!(byte1Val & (1 << 7))) {
                 res += byte1;
                 i += 3;
-            } else if (byte1Val < 224) {
+            } else if (((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && !(byte1Val & (1 << 5)))) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
-                const char byte2Val = strtoul(byte2.data(), 0, 16);
-                res += ((byte1Val & 0x1F) << 6) | (byte2Val & 0x3F);
+                unsigned long byte2Val = strtoul(byte2.data(), 0, 16);
+                res += byte1Val;
+                res += byte2Val;
                 i += 6;
-            } else if (byte1Val < 240) {
+            } else if ((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && (byte1Val & (1 << 5)) && !(byte1Val & (1 << 4))) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
                 byte3 += uri[i + 8];
-                const char byte2Val = strtoul(byte2.data(), 0, 16);
-                const char byte3Val = strtoul(byte3.data(), 0, 16);
-                res += (((byte1Val & 0xF) << 12) | ((byte2Val & 0x3F) << 6) | (byte3Val & 0x3F));
+                unsigned long byte2Val = strtoul(byte2.data(), 0, 16);
+                unsigned long byte3Val = strtoul(byte3.data(), 0, 16);
+                res += byte1Val;
+                res += byte2Val;
+                res += byte3Val;
                 i += 9;
-            } else {
+            } else if ((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && (byte1Val & (1 << 5)) && (byte1Val & (1 << 4))) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
                 byte3 += uri[i + 8];
                 String byte4(uri[i + 10]);
                 byte4 += uri[i + 11];
-                const char byte2Val = strtoul(byte2.data(), 0, 16);
-                const char byte3Val = strtoul(byte3.data(), 0, 16);
-                const char byte4Val = strtoul(byte4.data(), 0, 16);
-                res += (((byte1Val & 0x7) << 18) | ((byte2Val & 0x3F) << 12) | ((byte3Val & 0x3F) << 6) | (byte4Val & 0x3F));
+                unsigned long byte2Val = strtoul(byte2.data(), 0, 16);
+                unsigned long byte3Val = strtoul(byte3.data(), 0, 16);
+                unsigned long byte4Val = strtoul(byte4.data(), 0, 16);
+                res += byte1Val;
+                res += byte2Val;
+                res += byte3Val;
+                res += byte4Val;
                 i += 12;
             }
         } else {
@@ -150,7 +150,6 @@ String Uri::Private::decodeUri(const String &uri) const
         }
     }
     return res;
-#endif
 }
 
 void Uri::Private::reconstructPath(int count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail)
