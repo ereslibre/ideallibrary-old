@@ -72,7 +72,8 @@ String Uri::Private::encodeUri(const String &uri) const
 {
     String res;
     size_t j = 0;
-    for (size_t i = 0; i < uri.size(); ++i) {
+    size_t e = 0;
+    for (size_t i = 0; i < uri.size() + e; ++i) {
         const char c = uri[j];
         if (unreserved_Ideal.find(c) != std::string::npos ||
             reserved_Ideal.find(c) != std::string::npos) {
@@ -81,13 +82,13 @@ String Uri::Private::encodeUri(const String &uri) const
             res += getHex(c);
         } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
             res += getHex(c);
-            --i;
+            ++e;
         } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && !(c & (1 << 4))) {
             res += getHex(c);
-            i -= 2;
+            e += 2;
         } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && (c & (1 << 4))) {
             res += getHex(c);
-            i -= 3;
+            e += 3;
         }
         ++j;
     }
