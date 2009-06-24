@@ -33,7 +33,7 @@ public:
     {
     }
 
-    String getHex(wchar_t ch) const;
+    String getHex(char ch) const;
     String encodeUri(const String &uri) const;
     String decodeUri(const String &uri) const;
 
@@ -54,27 +54,29 @@ public:
     bool   m_isValidUri;
 };
 
-std::wstring unreserved_Ideal = L"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                 "abcdefghijklmnopqrstuvwxyz-_.~";
+std::string unreserved_Ideal = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                               "abcdefghijklmnopqrstuvwxyz-_.~";
 
-std::wstring reserved_Ideal = L"!*'();:@&=+$,/?%#[]";
+std::string reserved_Ideal = "!*'();:@&=+$,/?%#[]";
 
 char hex_Ideal[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                      'A', 'B', 'C', 'D', 'E', 'F',
                      'a', 'b', 'c', 'd', 'e', 'f' };
 
-String Uri::Private::getHex(wchar_t ch) const
+String Uri::Private::getHex(char ch) const
 {
     return String('%') + String(hex_Ideal[(ch >> 4)]) + String(hex_Ideal[(ch & 0xF)]);
 }
 
 String Uri::Private::encodeUri(const String &uri) const
 {
+    return uri;
+#if 0
     String res;
     for (size_t i = 0; i < uri.size(); ++i) {
-        const wchar_t currChar = uri[i];
-        if (unreserved_Ideal.find(currChar) != std::wstring::npos ||
-            reserved_Ideal.find(currChar) != std::wstring::npos) {
+        const char currChar = uri[i];
+        if (unreserved_Ideal.find(currChar) != std::string::npos ||
+            reserved_Ideal.find(currChar) != std::string::npos) {
             res += currChar;
         } else if (currChar < 128) {
             res += getHex(currChar);
@@ -93,10 +95,13 @@ String Uri::Private::encodeUri(const String &uri) const
         }
     }
     return res;
+#endif
 }
 
 String Uri::Private::decodeUri(const String &uri) const
 {
+    return uri;
+#if 0
     if (!uri.contains('%')) {
         return uri;
     }
@@ -107,14 +112,14 @@ String Uri::Private::decodeUri(const String &uri) const
         if (currChar == '%') {
             String byte1(uri[i + 1]);
             byte1 += uri[i + 2];
-            const wchar_t byte1Val = strtoul(byte1.data(), 0, 16);
+            const char byte1Val = strtoul(byte1.data(), 0, 16);
             if (byte1Val < 128) {
                 res += byte1;
                 i += 3;
             } else if (byte1Val < 224) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
-                const wchar_t byte2Val = strtoul(byte2.data(), 0, 16);
+                const char byte2Val = strtoul(byte2.data(), 0, 16);
                 res += ((byte1Val & 0x1F) << 6) | (byte2Val & 0x3F);
                 i += 6;
             } else if (byte1Val < 240) {
@@ -122,8 +127,8 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
                 byte3 += uri[i + 8];
-                const wchar_t byte2Val = strtoul(byte2.data(), 0, 16);
-                const wchar_t byte3Val = strtoul(byte3.data(), 0, 16);
+                const char byte2Val = strtoul(byte2.data(), 0, 16);
+                const char byte3Val = strtoul(byte3.data(), 0, 16);
                 res += (((byte1Val & 0xF) << 12) | ((byte2Val & 0x3F) << 6) | (byte3Val & 0x3F));
                 i += 9;
             } else {
@@ -133,9 +138,9 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte3 += uri[i + 8];
                 String byte4(uri[i + 10]);
                 byte4 += uri[i + 11];
-                const wchar_t byte2Val = strtoul(byte2.data(), 0, 16);
-                const wchar_t byte3Val = strtoul(byte3.data(), 0, 16);
-                const wchar_t byte4Val = strtoul(byte4.data(), 0, 16);
+                const char byte2Val = strtoul(byte2.data(), 0, 16);
+                const char byte3Val = strtoul(byte3.data(), 0, 16);
+                const char byte4Val = strtoul(byte4.data(), 0, 16);
                 res += (((byte1Val & 0x7) << 18) | ((byte2Val & 0x3F) << 12) | ((byte3Val & 0x3F) << 6) | (byte4Val & 0x3F));
                 i += 12;
             }
@@ -145,6 +150,7 @@ String Uri::Private::decodeUri(const String &uri) const
         }
     }
     return res;
+#endif
 }
 
 void Uri::Private::reconstructPath(int count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail)
