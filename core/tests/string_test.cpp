@@ -106,21 +106,33 @@ void StringTest::testSplit()
 void StringTest::miscTests()
 {
     String specialChars = returnSpecialChars();
-    CPPUNIT_ASSERT_EQUAL((size_t) 7, specialChars.size());
+    CPPUNIT_ASSERT_EQUAL((size_t) 10, specialChars.size());
     {
         String specialChars2(specialChars);
-        CPPUNIT_ASSERT_EQUAL((size_t) 7, specialChars2.size());
+        CPPUNIT_ASSERT_EQUAL((size_t) 10, specialChars2.size());
     }
     {
         String specialChars;
         specialChars = returnSpecialChars();
-        CPPUNIT_ASSERT_EQUAL((size_t) 7, specialChars.size());
+        CPPUNIT_ASSERT_EQUAL((size_t) 10, specialChars.size());
+    }
+    {
+        String specialChars = String('%') + String('3') + String('4');
+        CPPUNIT_ASSERT_EQUAL(String("%34"), specialChars);
+        CPPUNIT_ASSERT_EQUAL((const char *) "%34", specialChars.data());
+        CPPUNIT_ASSERT_EQUAL((size_t) 3, specialChars.size());
+    }
+    {
+        String specialChars = String("%34");
+        CPPUNIT_ASSERT_EQUAL(String("%34"), specialChars);
+        CPPUNIT_ASSERT_EQUAL((const char *) "%34", specialChars.data());
+        CPPUNIT_ASSERT_EQUAL((size_t) 3, specialChars.size());
     }
 }
 
 String StringTest::returnSpecialChars()
 {
-    return "áéíóúñ€";
+    return "áéíóúñ€%32";
 }
 
 int main(int argc, char **argv)
