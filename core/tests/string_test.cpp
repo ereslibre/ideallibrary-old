@@ -130,6 +130,46 @@ void StringTest::miscTests()
         String specialChars("file:///home/user/imágenes/spécial.png");
         CPPUNIT_ASSERT_EQUAL((size_t) 38, specialChars.size());
     }
+    {
+        String specialChars("šťžľčěďňřůĺ");
+        CPPUNIT_ASSERT_EQUAL((size_t) 11, specialChars.size());
+    }
+    {
+        String specialChars("абвгдеёжзийклмно");
+        CPPUNIT_ASSERT_EQUAL((size_t) 16, specialChars.size());
+    }
+    {
+        String specialChars("ЂЉЊЋЏђљњћџ");
+        CPPUNIT_ASSERT_EQUAL((size_t) 10, specialChars.size());
+    }
+    {
+        String specialChars("ščžćđ");
+        CPPUNIT_ASSERT_EQUAL((size_t) 5, specialChars.size());
+    }
+    {
+        String specialChars("ЎўЄєҐґ");
+        CPPUNIT_ASSERT_EQUAL((size_t) 6, specialChars.size());
+    }
+    {
+        String specialChars("ሰማይ አይታረስ ንጉሥ አይከሰስ።");
+        CPPUNIT_ASSERT_EQUAL((size_t) 20, specialChars.size());
+    }
+    {
+        String specialChars("⡌⠁⠧⠑ ⠼⠁⠒  ⡍⠜⠇⠑⠹⠰⠎ ⡣⠕⠌");
+        CPPUNIT_ASSERT_EQUAL((size_t) 21, specialChars.size());
+    }
+    {
+        String specialChars("ᚻᛖ ᚳᚹᚫᚦ ᚦᚫᛏ ᚻᛖ ᛒᚢᛞᛖ ᚩᚾ ᚦᚫᛗ ᛚᚪᚾᛞᛖ ᚾᚩᚱᚦᚹᛖᚪᚱᛞᚢᛗ ᚹᛁᚦ ᚦᚪ ᚹᛖᛥᚫ");
+        CPPUNIT_ASSERT_EQUAL((size_t) 56, specialChars.size());
+    }
+    {
+        String specialChars("てすと");
+        CPPUNIT_ASSERT_EQUAL((size_t) 3, specialChars.size());
+    }
+    {
+        String specialChars("ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃ");
+        CPPUNIT_ASSERT_EQUAL((size_t) 19, specialChars.size());
+    }
 }
 
 String StringTest::returnSpecialChars()
