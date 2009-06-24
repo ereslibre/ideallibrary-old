@@ -257,7 +257,7 @@ String &String::operator+=(const String &str)
         d = d->copy();
     }
     d->m_str += str.d->m_str;
-    d->calculateSize();
+    d->m_size += str.d->m_size;
     return *this;
 }
 
@@ -287,7 +287,7 @@ String String::operator+(const String &str) const
 {
     String res;
     res.d->m_str += str.d->m_str;
-    res.d->calculateSize();
+    res.d->m_size = d->m_size + str.d->m_size;
     return res;
 }
 
