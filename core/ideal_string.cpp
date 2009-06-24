@@ -20,7 +20,6 @@
 
 #include "ideal_string.h"
 
-#include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -30,14 +29,13 @@ class String::Private
 {
 public:
     Private()
-        : m_ansiStr(0)
+        : m_size(0)
         , m_refs(1)
     {
     }
 
     ~Private()
     {
-        delete m_ansiStr;
     }
 
     Private *copy()
@@ -45,6 +43,36 @@ public:
         Private *privateCopy = new Private;
         privateCopy->m_str = m_str;
         return privateCopy;
+    }
+
+    void calculateSize()
+    {
+        uint i = 0;
+        while (true) {
+            const char c = m_str[i];
+            if (c == '\0') {
+                break;
+            }
+            if (!(c & (1 << 7))) {
+                ++m_size;
+            } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
+                IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
+                return;
+            } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
+                ++i;
+                ++m_size;
+            } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && !(c & (1 << 4))) {
+                i += 2;
+                ++m_size;
+            } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && (c & (1 << 4))) {
+                i += 3;
+                ++m_size;
+            } else {
+                IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
+                return;
+            }
+            ++i;
+        }
     }
 
     void ref()
@@ -65,39 +93,9 @@ public:
         return m_refs;
     }
 
-    void initWideStr(const char *data)
-    {
-        delete m_ansiStr;
-        m_ansiStr = 0;
-        size_t count = mbstowcs(NULL, data, 0);
-        if (count == (size_t) -1) {
-            IDEAL_DEBUG_WARNING("string could not be converted");
-            return;
-        }
-        ++count;
-        wchar_t *wideStr = new wchar_t[count];
-        mbstowcs(wideStr, data, count);
-        m_str = wideStr;
-        delete[] wideStr;
-    }
-
-    void initAnsiStr()
-    {
-        size_t count = wcstombs(NULL, m_str.data(), 0);
-        if (count == (size_t) -1) {
-            IDEAL_DEBUG_WARNING("string could not be converted");
-            return;
-        }
-        ++count;
-        char *ansiStr = new char[count];
-        wcstombs(ansiStr, m_str.data(), count);
-        m_ansiStr = new std::string(ansiStr);
-        delete[] ansiStr;
-    }
-
-    std::wstring m_str;
-    std::string* m_ansiStr;
-    int          m_refs;
+    std::string m_str;
+    int         m_size;
+    int         m_refs;
 };
 
 String::String()
@@ -114,30 +112,31 @@ String::String(const String &str)
 String::String(const std::string &str)
     : d(new Private)
 {
-    d->initWideStr(str.data());
+    d->m_str = str;
+    d->calculateSize();
 }
 
 String::String(const char *str)
     : d(new Private)
 {
-    if (str) {
-        d->initWideStr(str);
-    }
+    d->m_str = str;
+    d->calculateSize();
 }
 
 String::String(const char *str, size_t n)
     : d(new Private)
 {
     if (str) {
-        const std::string theString(str, n);
-        d->initWideStr(theString.data());
+        d->m_str = std::string(str, n);
+        d->calculateSize();
     }
 }
 
-String::String(wchar_t c)
+String::String(char c)
     : d(new Private)
 {
     d->m_str = c;
+    d->m_size = 1;
 }
 
 String::~String()
@@ -161,69 +160,59 @@ bool String::empty() const
 
 size_t String::size() const
 {
-    return d->m_str.size();
+    return d->m_size;
 }
 
-bool String::contains(wchar_t c) const
+bool String::contains(char c) const
 {
     return d->m_str.find(c) != std::string::npos;
 }
 
-size_t String::find(wchar_t c) const
+size_t String::find(char c) const
 {
     return d->m_str.find(c);
 }
 
-size_t String::rfind(wchar_t c) const
+size_t String::rfind(char c) const
 {
     return d->m_str.rfind(c);
 }
 
 const char *String::data() const
 {
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
-    return d->m_ansiStr->data();
+    return d->m_str.data();
 }
 
 String String::substr(size_t pos, size_t n) const
 {
-    String res;
-    res.d->m_str = d->m_str.substr(pos, n);
+    String res(d->m_str.substr(pos, n));
     return res;
 }
 
 int String::compare(const char *s) const
 {
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
-    return strcoll(d->m_ansiStr->data(), s);
+    return strcoll(d->m_str.data(), s);
 }
 
 List<String> String::split(char separator) const
 {
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
     List<String> res;
     size_t pos = 0;
     size_t oldPos = 0;
-    while((pos = d->m_ansiStr->find(separator, pos)) != String::npos) {
-        if (pos > 0 && pos <= d->m_ansiStr->size() - 1) {
-            res.push_back(d->m_ansiStr->substr(oldPos, pos - oldPos));
+    while((pos = d->m_str.find(separator, pos)) != String::npos) {
+        if (pos > 0 && pos <= d->m_str.size() - 1) {
+            res.push_back(d->m_str.substr(oldPos, pos - oldPos));
         }
         ++pos;
         oldPos = pos;
     }
-    if (oldPos <= d->m_ansiStr->size() - 1) {
-        res.push_back(d->m_ansiStr->substr(oldPos));
+    if (oldPos <= d->m_str.size() - 1) {
+        res.push_back(d->m_str.substr(oldPos));
     }
     return res;
 }
 
-wchar_t String::operator[](int pos) const
+char String::operator[](int pos) const
 {
     return d->m_str[pos];
 }
@@ -245,19 +234,19 @@ String &String::operator=(const char *str)
         d->deref();
         d = d->copy();
     }
-    d->initWideStr(str);
+    d->m_str = str;
+    d->calculateSize();
     return *this;
 }
 
-String &String::operator=(wchar_t c)
+String &String::operator=(char c)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = d->copy();
     }
     d->m_str = c;
-    delete d->m_ansiStr;
-    d->m_ansiStr = 0;
+    d->m_size = 1;
     return *this;
 }
 
@@ -268,8 +257,7 @@ String &String::operator+=(const String &str)
         d = d->copy();
     }
     d->m_str += str.d->m_str;
-    delete d->m_ansiStr;
-    d->m_ansiStr = 0;
+    d->calculateSize();
     return *this;
 }
 
@@ -279,53 +267,43 @@ String &String::operator+=(const char *str)
         d->deref();
         d = d->copy();
     }
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
-    std::string res(*d->m_ansiStr);
-    res.append(str);
-    d->initWideStr(res.data());
+    d->m_str += str;
+    d->calculateSize();
     return *this;
 }
 
-String &String::operator+=(wchar_t c)
+String &String::operator+=(char c)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = d->copy();
     }
     d->m_str += c;
-    delete d->m_ansiStr;
-    d->m_ansiStr = 0;
+    ++d->m_size;
     return *this;
 }
 
 String String::operator+(const String &str) const
 {
     String res;
-    res.d->m_str = d->m_str + str.d->m_str;
+    res.d->m_str += str.d->m_str;
+    res.d->calculateSize();
     return res;
 }
 
 String String::operator+(const char *str) const
 {
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
     String res;
-    std::string tempRes(*d->m_ansiStr);
-    tempRes.append(str);
-    res.d->initWideStr(tempRes.data());
+    res.d->m_str += str;
+    res.d->calculateSize();
     return res;
 }
 
-String String::operator+(wchar_t c) const
+String String::operator+(char c) const
 {
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
     String res;
     res.d->m_str = d->m_str + c;
+    res.d->m_size = d->m_size + 1;
     return res;
 }
 
@@ -334,13 +312,7 @@ bool String::operator==(const String &str) const
     if (this == &str) {
         return true;
     }
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
-    if (!str.d->m_ansiStr) {
-        str.d->initAnsiStr();
-    }
-    return !strcoll(d->m_ansiStr->data(), str.d->m_ansiStr->data());
+    return !strcoll(d->m_str.data(), str.d->m_str.data());
 }
 
 bool String::operator!=(const String &str) const
@@ -353,13 +325,7 @@ bool String::operator<(const String &str) const
     if (this == &str) {
         return false;
     }
-    if (!d->m_ansiStr) {
-        d->initAnsiStr();
-    }
-    if (!str.d->m_ansiStr) {
-        str.d->initAnsiStr();
-    }
-    return strcoll(d->m_ansiStr->data(), str.d->m_ansiStr->data()) < 0;
+    return strcoll(d->m_str.data(), str.d->m_str.data()) < 0;
 }
 
 bool String::operator>(const String &str) const

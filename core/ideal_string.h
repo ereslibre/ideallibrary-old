@@ -40,14 +40,14 @@ class IDEAL_EXPORT String
 {
 public:
     /// Returned when a char or a substring has not been found.
-    static const size_t npos = std::wstring::npos;
+    static const size_t npos = std::string::npos;
 
     String();
     String(const String &str);
     String(const std::string &str);
     String(const char *str);
     String(const char *str, size_t n);
-    String(wchar_t c);
+    String(char c);
     virtual ~String();
 
     /**
@@ -79,19 +79,19 @@ public:
     /**
       * @return True if the string contains @p c. False otherwise.
       */
-    bool contains(wchar_t c) const;
+    bool contains(char c) const;
 
     /**
       * @return The first position in which character @p c is found. If @p c is not found, npos is
       *         returned instead.
       */
-    size_t find(wchar_t c) const;
+    size_t find(char c) const;
 
     /**
       * @return The first position in which character @p c is found starting to search from the right.
       *         If @p c is not found, npos is returned instead.
       */
-    size_t rfind(wchar_t c) const;
+    size_t rfind(char c) const;
 
     /**
       * Returns a substring of this string starting at @p pos with @p n characters maximum.
@@ -119,17 +119,17 @@ public:
       */
     List<String> split(char separator) const;
 
-    wchar_t operator[](int pos) const;
+    char operator[](int pos) const;
 
     String &operator=(const String &str);
     String &operator=(const char *str);
-    String &operator=(wchar_t c);
+    String &operator=(char c);
     String &operator+=(const String &str);
     String &operator+=(const char *str);
-    String &operator+=(wchar_t c);
+    String &operator+=(char c);
     String operator+(const String &str) const;
     String operator+(const char *str) const;
-    String operator+(wchar_t c) const;
+    String operator+(char c) const;
     bool operator==(const String &str) const;
     bool operator!=(const String &str) const;
     bool operator<(const String &str) const;
