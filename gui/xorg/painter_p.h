@@ -43,7 +43,6 @@ public:
 
     ~Private()
     {
-        cairo_show_page(m_cairo);
         cairo_destroy(m_cairo);
     }
 
@@ -77,6 +76,8 @@ void Painter::Private::drawRectangle(int x, int y, int width, int height)
 
 void Painter::Private::drawText(int x, int y, const IdealCore::String &text)
 {
+    cairo_move_to(m_cairo, x, y);
+    cairo_show_text(m_cairo, text.data());
 }
 
 void Painter::Private::fillRectangle(int x, int y, int width, int height)
