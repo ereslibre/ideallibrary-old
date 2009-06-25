@@ -39,6 +39,7 @@ public:
         XClearWindow(m_dpy, canvas->d->m_window);
         m_cairo = cairo_create(canvas->d->m_cs);
         cairo_set_line_width(m_cairo, 1.0);
+        cairo_select_font_face(m_cairo, "ClearlyU", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     }
 
     ~Private()

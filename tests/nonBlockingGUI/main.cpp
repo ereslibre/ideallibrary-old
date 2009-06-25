@@ -43,8 +43,9 @@ bool MyWidget::event(IdealCore::Event *event)
         p.drawLine(200, 100, 300, 300);
         p.drawLine(200, 400, 600, 200);
         p.drawLine(280, 160, 600, 400);
-        p.drawText(350, 400, "Hi, how are you ?");
-        p.drawText(350, 420, "Some special characters: á, é, í, ó, ú, €, ñ");
+        p.drawText(300, 400, "Hi, how are you ?");
+        p.drawText(300, 420, "Some special characters: á, é, í, ó, ú, €, ñ");
+        p.drawText(300, 440, "More special characters: ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃ");
     } else if (event->type() == IdealCore::Event::ButtonPress) {
         bool printed = false;
         while (true) {
