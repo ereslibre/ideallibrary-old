@@ -28,11 +28,10 @@ namespace IdealCore {
 class Thread::Private
 {
 public:
-    Private(Type type, Priority priority);
+    Private(Type type);
     virtual ~Private();
 
     Type     m_type;
-    Priority m_priority;
 };
 
 }
