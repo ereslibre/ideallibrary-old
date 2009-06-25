@@ -54,17 +54,17 @@ public:
     bool   m_isValidUri;
 };
 
-std::string unreserved_Ideal = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                               "abcdefghijklmnopqrstuvwxyz-_.~";
+const std::string uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                   "abcdefghijklmnopqrstuvwxyz-_.~";
 
-std::string reserved_Ideal = "!*'();:@&=+$,/?%#[]";
+const std::string uri_reserved = "!*'();:@&=+$,/?%#[]";
 
-char hex_Ideal[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                     'A', 'B', 'C', 'D', 'E', 'F' };
+const char uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                         'A', 'B', 'C', 'D', 'E', 'F' };
 
 String Uri::Private::getHex(char ch) const
 {
-    return String('%') + hex_Ideal[(ch >> 4) & 0xF] + hex_Ideal[(ch & 0xF)];
+    return String('%') + uri_hex[(ch >> 4) & 0xF] + uri_hex[ch & 0xF];
 }
 
 String Uri::Private::encodeUri(const String &uri) const
@@ -74,8 +74,8 @@ String Uri::Private::encodeUri(const String &uri) const
     size_t e = 0;
     for (size_t i = 0; i < uri.size() + e; ++i) {
         const char c = uri[j];
-        if (unreserved_Ideal.find(c) != std::string::npos ||
-            reserved_Ideal.find(c) != std::string::npos) {
+        if (uri_unreserved.find(c) != std::string::npos ||
+            uri_reserved.find(c) != std::string::npos) {
             res += c;
         } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
             res += getHex(c);
