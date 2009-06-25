@@ -295,7 +295,7 @@ String String::operator+(const String &str) const
 String String::operator+(const char *str) const
 {
     String res;
-    res.d->m_str += str;
+    res.d->m_str = d->m_str + str;
     res.d->calculateSize();
     return res;
 }
