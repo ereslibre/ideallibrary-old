@@ -6,7 +6,7 @@ import Options
 def configure(conf):
     if not Options.options.release:
         conf.sub_config('tests')
-    conf.env['LIB_CORE'] = ['rt', 'dl', 'pthread']
+    conf.env['LIB_CORE'] = ['dl', 'pthread']
     conf.check_cfg(package = 'liburiparser', args = '--cflags --libs')
     if not conf.env['HAVE_LIBURIPARSER'] == 1:
         conf.fatal('Cannot continue without liburiparser. Please, install the development package and try again')

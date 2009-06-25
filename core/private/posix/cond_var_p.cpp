@@ -18,6 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <sys/time.h>
+
 #include <core/cond_var.h>
 #include "cond_var_p.h"
 #include "mutex_p.h"
@@ -42,10 +44,11 @@ void CondVar::wait()
 
 void CondVar::timedWait(int ms)
 {
+    struct timeval curr;
+    gettimeofday(&curr, 0);
     struct timespec timeout;
-    clock_gettime(CLOCK_REALTIME, &timeout);
-    timeout.tv_sec += ms / 1000;
-    timeout.tv_nsec += (ms % 1000) * 1000000;
+    timeout.tv_sec = curr.tv_sec + ms / 1000;
+    timeout.tv_nsec = curr.tv_usec * 1000 + (ms % 1000) * 1000000;
     if (timeout.tv_nsec >= 1000000000) {
         ++timeout.tv_sec;
         timeout.tv_nsec -= 1000000000;
