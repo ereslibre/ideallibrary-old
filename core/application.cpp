@@ -26,7 +26,7 @@
 #include "private/timer_p.h"
 #include "interfaces/protocol_handler.h"
 #include "private/object_p.h"
-#include "private/event_dispatcher.h"
+#include "private/event_dispatcher_p.h"
 
 #include <core/event.h>
 

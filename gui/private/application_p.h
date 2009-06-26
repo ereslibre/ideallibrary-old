@@ -22,7 +22,7 @@
 #define APPLICATION_P_H
 
 #include <core/thread.h>
-#include <core/private/event_dispatcher.h>
+#include <core/private/event_dispatcher_p.h>
 
 namespace IdealGUI {
 

@@ -18,7 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "event_dispatcher.h"
+#include "event_dispatcher_p.h"
+
 #include <core/ideal_list.h>
 #include <core/cond_var.h>
 #include <core/timer.h>
