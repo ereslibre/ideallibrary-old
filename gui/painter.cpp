@@ -19,43 +19,27 @@
  */
 
 #include "painter.h"
-#include "xorg/painter_p.h"
+#include "private/painter_p.h"
 
 namespace IdealGUI {
 
+Painter::Private::Private(Widget *canvas)
+    : m_canvas(canvas)
+{
+}
+
+Painter::Private::~Private()
+{
+}
+
 Painter::Painter(Widget *widget)
-    : d(new Private(widget))
+    : d(new PrivateImpl(widget))
 {
 }
 
 Painter::~Painter()
 {
     delete d;
-}
-
-void Painter::drawPoint(int x, int y)
-{
-    d->drawPoint(x, y);
-}
-
-void Painter::drawLine(int x1, int y1, int x2, int y2)
-{
-    d->drawLine(x1, y1, x2, y2);
-}
-
-void Painter::drawRectangle(int x, int y, int width, int height)
-{
-    d->drawRectangle(x, y, width, height);
-}
-
-void Painter::drawText(int x, int y, const IdealCore::String &text)
-{
-    d->drawText(x, y, text);
-}
-
-void Painter::fillRectangle(int x, int y, int width, int height)
-{
-    d->fillRectangle(x, y, width, height);
 }
 
 }

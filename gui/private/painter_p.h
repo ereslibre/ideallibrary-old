@@ -18,42 +18,24 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APPLICATION_GUI_H
-#define APPLICATION_GUI_H
+#ifndef PAINTER_P_H
+#define PAINTER_P_H
 
-#include <ideal_export.h>
-#include <core/application.h>
+#include <gui/painter.h>
 
-/**
-  * The IdealGUI namespace.
-  *
-  * It provides a way of working with GUIs.
-  */
 namespace IdealGUI {
 
-/**
-  * @class Application application.h gui/application.h
-  *
-  * @author Rafael Fernández López <ereslibre@ereslibre.es>
-  */
-class IDEAL_EXPORT Application
-    : public IdealCore::Application
+class Painter::Private
 {
-    friend class Widget;
-    friend class Painter;
-
 public:
-    Application(int argc, char **argv);
-    virtual ~Application();
+    Private(Widget *canvas);
+    virtual ~Private();
 
-    virtual int exec();
-    
-private:
-    class Private;
-    class PrivateImpl;
-    Private *const d;
+    Widget  *m_canvas;
 };
 
 }
 
-#endif //APPLICATION_GUI_H
+#include <gui/private/xorg/painter_p.h>
+
+#endif //PAINTER_P_H

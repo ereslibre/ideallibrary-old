@@ -18,42 +18,30 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APPLICATION_GUI_H
-#define APPLICATION_GUI_H
+#ifndef WIDGET_P_H_XORG
+#define WIDGET_P_H_XORG
 
-#include <ideal_export.h>
-#include <core/application.h>
+#include <cairo.h>
 
-/**
-  * The IdealGUI namespace.
-  *
-  * It provides a way of working with GUIs.
-  */
+#include <X11/Xlib.h>
+#include "fixincludes.h"
+
+#include <gui/widget.h>
+#include <gui/private/widget_p.h>
+
 namespace IdealGUI {
 
-/**
-  * @class Application application.h gui/application.h
-  *
-  * @author Rafael Fernández López <ereslibre@ereslibre.es>
-  */
-class IDEAL_EXPORT Application
-    : public IdealCore::Application
+class Widget::PrivateImpl
+    : public Widget::Private
 {
-    friend class Widget;
-    friend class Painter;
-
 public:
-    Application(int argc, char **argv);
-    virtual ~Application();
+    PrivateImpl(Widget *q);
+    ~PrivateImpl();
 
-    virtual int exec();
-    
-private:
-    class Private;
-    class PrivateImpl;
-    Private *const d;
+    Window           m_window;
+    cairo_surface_t *m_cs;
 };
 
 }
 
-#endif //APPLICATION_GUI_H
+#endif //WIDGET_P_H_XORG

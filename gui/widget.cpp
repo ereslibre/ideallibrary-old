@@ -19,13 +19,22 @@
  */
 
 #include "widget.h"
-#include "xorg/widget_p.h"
+#include "private/widget_p.h"
 
 namespace IdealGUI {
 
+Widget::Private::Private(Widget *q)
+    : q(q)
+{
+}
+
+Widget::Private::~Private()
+{
+}
+
 Widget::Widget(Object *parent)
     : Object(parent)
-    , d(new Private(this))
+    , d(new PrivateImpl(this))
 {
     d->m_parentWidget = dynamic_cast<Widget*>(parent);
 }
@@ -35,24 +44,14 @@ Widget::~Widget()
     delete d;
 }
 
-bool Widget::event(IdealCore::Event *event)
-{
-    return false;
-}
-
-void Widget::show(int x, int y, int width, int height)
-{
-    d->show(x, y, width, height);
-}
-
-void Widget::hide()
-{
-    d->hide();
-}
-
 Widget *Widget::parentWidget() const
 {
     return d->m_parentWidget;
+}
+
+bool Widget::event(IdealCore::Event *event)
+{
+    return false;
 }
 
 }

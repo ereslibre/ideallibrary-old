@@ -1,21 +1,20 @@
 - Core
 
-    - liburiparser - http://uriparser.sourceforge.net
+    - liburiparser - http://uriparser.sourceforge.net/
 
 - Networking
 
-    - libcurl
+    - libcurl - http://curl.haxx.se/
 
 - GUI
 
-    - libX11
-    - libXrender
+    - libcairo - http://www.cairographics.org/
 
 - Testing framework
 
-    - The testing framework links against cppunit library.
+    - libcppunit - http://sourceforge.net/projects/cppunit/
 
 - Documentation
 
-    - dot (graphviz)
+    - dot (graphviz) - http://www.graphviz.org/
 

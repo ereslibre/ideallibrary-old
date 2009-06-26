@@ -18,42 +18,55 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APPLICATION_GUI_H
-#define APPLICATION_GUI_H
+#ifndef APPLICATION_P_H
+#define APPLICATION_P_H
 
-#include <ideal_export.h>
-#include <core/application.h>
+#include <core/thread.h>
+#include <core/private/event_dispatcher.h>
 
-/**
-  * The IdealGUI namespace.
-  *
-  * It provides a way of working with GUIs.
-  */
 namespace IdealGUI {
 
-/**
-  * @class Application application.h gui/application.h
-  *
-  * @author Rafael Fernández López <ereslibre@ereslibre.es>
-  */
-class IDEAL_EXPORT Application
-    : public IdealCore::Application
+class Widget;
+
+class Application::Private
 {
-    friend class Widget;
-    friend class Painter;
+public:
+    Private(Application *q);
+    virtual ~Private();
+
+    void processEvents();
+
+    class GUIEventHandler;
+    GUIEventHandler *m_guiEventHandler;
+
+    class GUIEventDispatcher;
+
+    Application     *q;
+};
+
+class Application::Private::GUIEventHandler
+    : public IdealCore::Thread
+{
+public:
+    GUIEventHandler(Application::Private *priv);
+    ~GUIEventHandler();
+
+protected:
+    virtual void run();
 
 public:
-    Application(int argc, char **argv);
-    virtual ~Application();
+    Application::Private *priv;
+};
 
-    virtual int exec();
-    
-private:
-    class Private;
-    class PrivateImpl;
-    Private *const d;
+class Application::Private::GUIEventDispatcher
+    : public IdealCore::EventDispatcher
+{
+protected:
+    virtual void run();
 };
 
 }
 
-#endif //APPLICATION_GUI_H
+#include <gui/private/xorg/application_p.h>
+
+#endif //APPLICATION_P_H

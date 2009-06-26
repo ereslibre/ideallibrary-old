@@ -47,6 +47,7 @@ public:
 
 private:
     class Private;
+    class PrivateImpl;
     Private *const d;
 };
 

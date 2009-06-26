@@ -31,7 +31,7 @@ public:
     Private(Type type);
     virtual ~Private();
 
-    Type     m_type;
+    Type m_type;
 };
 
 }

@@ -38,6 +38,8 @@ static const unsigned int Expose_          = Expose;
 static const unsigned int FocusIn_         = FocusIn;
 static const unsigned int FocusOut_        = FocusOut;
 
+}
+
 #undef CreateNotify
 #undef MapNotify
 #undef UnmapNotify
@@ -52,7 +54,5 @@ static const unsigned int FocusOut_        = FocusOut;
 #undef Expose
 #undef FocusIn
 #undef FocusOut
-
-}
 
 #endif

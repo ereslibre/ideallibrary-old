@@ -18,56 +18,32 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <map>
-#include <iostream>
+#ifndef PAINTER_P_H_XORG
+#define PAINTER_P_H_XORG
+
+#include <gui/private/painter_p.h>
+
+#include <cairo.h>
+
 #include <X11/Xlib.h>
 #include "fixincludes.h"
 
-#include <core/private/event_dispatcher.h>
-
-#include <gui/application.h>
+#include <gui/painter.h>
+#include <gui/private/painter_p.h>
 
 namespace IdealGUI {
 
-class Widget;
-
-class Application::Private
+class Painter::PrivateImpl
+    : public Painter::Private
 {
 public:
-    Private(Application *q);
-    ~Private();
+    PrivateImpl(Widget *canvas);
+    ~PrivateImpl();
 
-    void processEvents();
-
-    Display                  *m_dpy;
-    std::map<Window, Widget*> m_widgetMap;
-    Application              *q;
-
-    class GUIEventHandler;
-    GUIEventHandler          *m_guiEventHandler;
-
-    class GUIEventDispatcher;
-};
-
-class Application::Private::GUIEventHandler
-    : public IdealCore::Thread
-{
-public:
-    GUIEventHandler(Application::Private *priv);
-    ~GUIEventHandler();
-
-protected:
-    virtual void run();
-
-public:
-    Application::Private *priv;
-};
-
-class Application::Private::GUIEventDispatcher
-    : public IdealCore::EventDispatcher
-{
-protected:
-    virtual void run();
+    Display *m_dpy;
+    cairo_t *m_cairo;
 };
 
 }
+
+#endif //PAINTER_P_H_XORG

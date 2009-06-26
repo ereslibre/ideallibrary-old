@@ -10,9 +10,10 @@ def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
         source       = bld.glob('*.cpp') +
-                       bld.glob('xorg/*.cpp'),
+                       bld.glob('private/xorg/*.cpp'),
         target       = 'idealgui',
-        includes     = '.. ../core',
+        includes     = ['..',
+                        '../core'],
         uselib       = 'CAIRO-XLIB-XRENDER',
         uselib_local = 'idealcore',
         vnum         = bld.env['LIBVERSION']

@@ -20,30 +20,30 @@
 
 #include <core/event.h>
 #include "application_p.h"
+
 #include <gui/widget.h>
 
 namespace IdealGUI {
 
-Application::Private::Private(Application *q)
-    : q(q)
-    , m_guiEventHandler(0)
+Application::PrivateImpl::PrivateImpl(Application *q)
+    : Private(q)
 {
     XInitThreads();
     m_dpy = XOpenDisplay("");
 }
 
-Application::Private::~Private()
+Application::PrivateImpl::~PrivateImpl()
 {
     XCloseDisplay(m_dpy);
-    delete m_guiEventHandler;
 }
 
 void Application::Private::processEvents()
 {
+    IdealGUI::Application::PrivateImpl *const d = static_cast<IdealGUI::Application::PrivateImpl*>(this);
     XEvent xe;
-    XNextEvent(m_dpy, &xe);
+    XNextEvent(d->m_dpy, &xe);
     IdealCore::Event *event = 0;
-    Widget *const widget = m_widgetMap[xe.xany.window];
+    Widget *const widget = d->m_widgetMap[xe.xany.window];
     switch (xe.type) {
         case CreateNotify_:
             event = new IdealCore::Event(widget, IdealCore::Event::CreateNotify);

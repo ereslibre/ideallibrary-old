@@ -19,12 +19,23 @@
  */
 
 #include "application.h"
-#include "xorg/application_p.h"
+#include "private/application_p.h"
 
 #include <core/event.h>
 #include <gui/widget.h>
 
 namespace IdealGUI {
+
+Application::Private::Private(Application *q)
+    : m_guiEventHandler(0)
+    , q(q)
+{
+}
+
+Application::Private::~Private()
+{
+    delete m_guiEventHandler;
+}
 
 Application::Private::GUIEventHandler::GUIEventHandler(Application::Private *priv)
     : Thread(NoJoinable)
@@ -74,7 +85,7 @@ void Application::Private::GUIEventDispatcher::run()
 
 Application::Application(int argc, char **argv)
     : IdealCore::Application(argc, argv)
-    , d(new Private(this))
+    , d(new PrivateImpl(this))
 {
 }
 

@@ -18,10 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <cairo.h>
-
-#include <X11/extensions/Xrender.h>
-#include "fixincludes.h"
+#ifndef WIDGET_P_H
+#define WIDGET_P_H
 
 #include <gui/widget.h>
 
@@ -31,15 +29,14 @@ class Widget::Private
 {
 public:
     Private(Widget *q);
-    ~Private();
+    virtual ~Private();
 
-    void show(int x, int y, int width, int height);
-    void hide();
-
-    Widget            *m_parentWidget;
-    Window             m_window;
-    cairo_surface_t   *m_cs;
-    Widget            *q;
+    Widget *m_parentWidget;
+    Widget *q;
 };
 
 }
+
+#include <gui/private/xorg/widget_p.h>
+
+#endif //WIDGET_P_H
