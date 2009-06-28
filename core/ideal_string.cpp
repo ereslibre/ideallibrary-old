@@ -120,8 +120,10 @@ String::String(const std::string &str)
 String::String(const char *str)
     : d(new Private)
 {
-    d->m_str = str;
-    d->calculateSize();
+    if (str) {
+        d->m_str = str;
+        d->calculateSize();
+    }
 }
 
 String::String(const char *str, size_t n)
