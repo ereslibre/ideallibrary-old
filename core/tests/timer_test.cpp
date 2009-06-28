@@ -32,6 +32,8 @@
 using namespace IdealCore;
 
 static int res;
+static int s_argc;
+static char **s_argv;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TimerTest);
 
@@ -53,7 +55,7 @@ void TimerTest::nullInterval()
 {
     const pid_t pid = fork();
     if (!pid) {
-        Application app(0, 0);
+        Application app(s_argc, s_argv);
         Timer timer(&app);
         Object::connectStatic(timer.timeout, timerTimeout);
         Object::connect(timer.timeout, &app, &Application::quit);
@@ -70,7 +72,7 @@ void TimerTest::secondInterval()
 {
     const pid_t pid = fork();
     if (!pid) {
-        Application app(0, 0);
+        Application app(s_argc, s_argv);
         Timer timer(&app);
         Object::connectStatic(timer.timeout, timerTimeout);
         Object::connect(timer.timeout, &app, &Application::quit);
@@ -103,7 +105,7 @@ void TimerTest::testLoops()
 {
     const pid_t pid = fork();
     if (!pid) {
-        Application app(0, 0);
+        Application app(s_argc, s_argv);
         Timer timer1(&app);
         Object::connectStatic(timer1.timeout, timeout1);
         timer1.setInterval(1000);
@@ -146,7 +148,7 @@ void TimerTest::testStop()
 {
     const pid_t pid = fork();
     if (!pid) {
-        Application app(0, 0);
+        Application app(s_argc, s_argv);
         staticTimer = new Timer(&app);
         Object::connectStatic(staticTimer->timeout, unreachable);
         staticTimer->setInterval(600);
@@ -168,6 +170,8 @@ void TimerTest::testStop()
 
 int main(int argc, char **argv)
 {
+    s_argc = argc;
+    s_argv = argv;
     IDEAL_SDEBUG("*** This test will take 21 seconds at least. Please, be patient");
 
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
