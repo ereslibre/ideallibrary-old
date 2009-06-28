@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     PushButton *pushButton = new PushButton(myWidget);
     pushButton->setText("Exit");
     myWidget->show(0, 0, 640, 480);
-    pushButton->show(100, 200, 100, 40);
+    pushButton->show(100, 200, 101, 41);
 
     IdealCore::Object::connect(pushButton->clicked, &app, &Application::quit);
 

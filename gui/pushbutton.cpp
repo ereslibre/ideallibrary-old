@@ -48,13 +48,12 @@ PushButton::Private::Private(PushButton *q)
 void PushButton::Private::drawButton() const
 {
     Painter p(q);
-    p.drawRectangle(0, 0, 100, 40);
-    if (m_mouseOver) {
-        p.drawLine(0, 1, 100, 1);
-        p.drawLine(0, 39, 100, 39);
-        p.drawLine(1, 0, 1, 40);
-        p.drawLine(99, 0, 99, 40);
+    if (m_buttonPress && m_mouseOver) {
+        p.setPenColor(0, 0, 1.0);
+    } else if (m_mouseOver) {
+        p.setPenColor(1.0, 0, 0);
     }
+    p.drawRectangle(1, 1, 99, 39);
     p.drawText(10, 25, m_text);
 }
 
@@ -88,7 +87,6 @@ bool PushButton::event(IdealCore::Event *event)
             d->drawButton();
             break;
         case IdealCore::Event::EnterNotify:
-        case IdealCore::Event::MotionNotify:
             d->m_mouseOver = true;
             d->drawButton();
             break;
@@ -99,12 +97,14 @@ bool PushButton::event(IdealCore::Event *event)
             break;
         case IdealCore::Event::ButtonPress:
             d->m_buttonPress = true;
+            d->drawButton();
             break;
         case IdealCore::Event::ButtonRelease:
             if (d->m_buttonPress) {
                 emit(clicked);
             }
             d->m_buttonPress = false;
+            d->drawButton();
             break;
         default:
             break;
