@@ -21,6 +21,7 @@
 #include <core/event.h>
 #include <gui/widget.h>
 #include <gui/painter.h>
+#include <gui/pushbutton.h>
 #include <gui/application.h>
 
 using namespace IdealGUI;
@@ -41,8 +42,11 @@ bool MyWidget::event(IdealCore::Event *event)
         Painter p(this);
         p.drawLine(10, 10, 100, 100);
         p.drawLine(200, 100, 300, 300);
+        p.setPenColor(1.0, 0, 0);
         p.drawLine(200, 400, 600, 200);
+        p.setPenColor(0, 0, 0);
         p.drawLine(280, 160, 600, 400);
+        p.drawPoint(600, 20);
         p.drawText(300, 400, "Hi, how are you ?");
         p.drawText(300, 420, "Some special characters: á, é, í, ó, ú, €, ñ");
         p.drawText(300, 440, "More special characters: ЂЉЊЋЏђ, абвгдеёжзий");
@@ -58,39 +62,6 @@ bool MyWidget::event(IdealCore::Event *event)
     return false;
 }
 
-class OtherWidget
-    : public Widget
-{
-public:
-    OtherWidget(Object *parent);
-
-protected:
-    virtual bool event(IdealCore::Event *event);
-};
-
-OtherWidget::OtherWidget(Object *parent)
-    : Widget(parent)
-{
-}
-
-bool OtherWidget::event(IdealCore::Event *event)
-{
-    if (event->type() == IdealCore::Event::MapNotify ||
-        event->type() == IdealCore::Event::Expose ||
-        event->type() == IdealCore::Event::LeaveNotify) {
-        Painter p(this);
-        p.drawRectangle(0, 0, 100, 100);
-    } else if (event->type() == IdealCore::Event::EnterNotify) {
-        Painter p(this);
-        p.drawRectangle(0, 0, 100, 100);
-        p.drawLine(0, 0, 100, 100);
-        p.drawLine(100, 0, 0, 100);
-    } else if (event->type() == IdealCore::Event::ButtonRelease) {
-        application()->quit();
-    }
-    return false;
-}
-
 MyWidget::MyWidget(Object *parent)
     : Widget(parent)
 {
@@ -101,9 +72,12 @@ int main(int argc, char **argv)
     Application app(argc, argv);
 
     MyWidget *myWidget = new MyWidget(&app);
-    OtherWidget *otherWidget = new OtherWidget(myWidget);
+    PushButton *pushButton = new PushButton(myWidget);
+    pushButton->setText("Exit");
     myWidget->show(0, 0, 640, 480);
-    otherWidget->show(100, 200, 100, 100);
+    pushButton->show(100, 200, 100, 40);
+
+    IdealCore::Object::connect(pushButton->clicked, &app, &Application::quit);
 
     return app.exec();
 }

@@ -38,6 +38,7 @@ Painter::PrivateImpl::PrivateImpl(Widget *canvas)
     Widget::PrivateImpl *const w_d = static_cast<IdealGUI::Widget::PrivateImpl*>(canvas->d);
     XClearWindow(m_dpy, w_d->m_window);
     m_cairo = cairo_create(w_d->m_cs);
+    cairo_set_source_rgba(m_cairo, 0, 0, 0, 1.0);
     cairo_set_line_width(m_cairo, 1.0);
     cairo_select_font_face(m_cairo, "DejaVu Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size(m_cairo, 12);
@@ -48,30 +49,36 @@ Painter::PrivateImpl::~PrivateImpl()
     cairo_destroy(m_cairo);
 }
 
-void Painter::drawPoint(int x, int y)
+void Painter::setPenColor(double red, double green, double blue, double alpha)
 {
+    cairo_set_source_rgba(D_I->m_cairo, red, green, blue, alpha);
 }
 
-void Painter::drawLine(int x1, int y1, int x2, int y2)
+void Painter::drawPoint(double x, double y)
+{
+    drawRectangle(x, y, 1, 1);
+}
+
+void Painter::drawLine(double x1, double y1, double x2, double y2)
 {
     cairo_move_to(D_I->m_cairo, x1, y1);
     cairo_line_to(D_I->m_cairo, x2, y2);
     cairo_stroke(D_I->m_cairo);
 }
 
-void Painter::drawRectangle(int x, int y, int width, int height)
+void Painter::drawRectangle(double x, double y, double width, double height)
 {
     cairo_rectangle(D_I->m_cairo, x, y, width, height);
     cairo_stroke(D_I->m_cairo);
 }
 
-void Painter::drawText(int x, int y, const IdealCore::String &text)
+void Painter::drawText(double x, double y, const IdealCore::String &text)
 {
     cairo_move_to(D_I->m_cairo, x, y);
     cairo_show_text(D_I->m_cairo, text.data());
 }
 
-void Painter::fillRectangle(int x, int y, int width, int height)
+void Painter::fillRectangle(double x, double y, double width, double height)
 {
 }
 

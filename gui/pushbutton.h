@@ -18,41 +18,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef PAINTER_H
-#define PAINTER_H
+#ifndef PUSHBUTTON_H
+#define PUSHBUTTON_H
 
 #include <ideal_export.h>
+
 #include <core/ideal_string.h>
+#include <gui/widget.h>
 
 namespace IdealGUI {
 
-class Widget;
-
-/**
-  * @class Painter painter.h gui/painter.h
-  *
-  * @author Rafael Fernández López <ereslibre@ereslibre.es>
-  */
-class IDEAL_EXPORT Painter
+class IDEAL_EXPORT PushButton
+    : public Widget
 {
 public:
-    Painter(Widget *widget);
-    virtual ~Painter();
+    PushButton(Object *parent);
+    virtual ~PushButton();
 
-    void setPenColor(double red, double green, double blue, double alpha = 1.0);
+    IdealCore::String text() const;
+    void setText(const IdealCore::String &text);
 
-    void drawPoint(double x, double y);
-    void drawLine(double x1, double y1, double x2, double y2);
-    void drawRectangle(double x, double y, double width, double height);
-    void drawText(double x, double y, const IdealCore::String &text);
-    void fillRectangle(double x, double y, double width, double height);
+protected:
+    virtual bool event(IdealCore::Event *event);
+
+public:
+    IDEAL_SIGNAL(clicked);
 
 private:
     class Private;
-    class PrivateImpl;
     Private *const d;
 };
 
 }
 
-#endif //PAINTER_H
+#endif //PUSHBUTTON_H
