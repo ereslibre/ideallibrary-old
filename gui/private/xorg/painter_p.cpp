@@ -39,7 +39,7 @@ Painter::PrivateImpl::PrivateImpl(Widget *canvas)
     XClearWindow(m_dpy, w_d->m_window);
     m_cairo = cairo_create(w_d->m_cs);
     cairo_set_line_width(m_cairo, 1.0);
-    cairo_select_font_face(m_cairo, "sans-serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_select_font_face(m_cairo, "DejaVu Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size(m_cairo, 12);
 }
 
