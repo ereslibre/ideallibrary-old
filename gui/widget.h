@@ -22,7 +22,10 @@
 #define WIDGET_H
 
 #include <ideal_export.h>
+
 #include <core/object.h>
+#include <gui/point.h>
+#include <gui/size.h>
 
 namespace IdealCore {
     class Event;
@@ -46,8 +49,10 @@ public:
     virtual ~Widget();
 
     // temporary parameters until we have layouting code
-    void show(int x = 0, int y = 0, int width = 300, int height = 300);
+    void show(const Point &point);
     void hide();
+
+    virtual Size minimumSize() const = 0;
 
     Widget *parentWidget() const;
 

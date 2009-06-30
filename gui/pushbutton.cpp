@@ -69,6 +69,12 @@ PushButton::~PushButton()
     delete d;
 }
 
+Size PushButton::minimumSize() const
+{
+    // FIXME
+    return Size(100, 100);
+}
+
 IdealCore::String PushButton::text() const
 {
     return d->m_text;

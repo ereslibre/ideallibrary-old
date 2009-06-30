@@ -31,8 +31,21 @@ class MyWidget
 public:
     MyWidget(Object *parent);
 
+    virtual Size minimumSize() const;
+
+protected:
     virtual bool event(IdealCore::Event *event);
 };
+
+MyWidget::MyWidget(Object *parent)
+    : Widget(parent)
+{
+}
+
+Size MyWidget::minimumSize() const
+{
+    return Size(640, 480);
+}
 
 bool MyWidget::event(IdealCore::Event *event)
 {
@@ -53,6 +66,8 @@ class OtherWidget
 public:
     OtherWidget(Object *parent);
 
+    virtual Size minimumSize() const;
+
 protected:
     virtual bool event(IdealCore::Event *event);
 };
@@ -60,6 +75,11 @@ protected:
 OtherWidget::OtherWidget(Object *parent)
     : Widget(parent)
 {
+}
+
+Size OtherWidget::minimumSize() const
+{
+    return Size(100, 100);
 }
 
 bool OtherWidget::event(IdealCore::Event *event)
@@ -79,19 +99,14 @@ bool OtherWidget::event(IdealCore::Event *event)
     return false;
 }
 
-MyWidget::MyWidget(Object *parent)
-    : Widget(parent)
-{
-}
-
 int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
     MyWidget *myWidget = new MyWidget(&app);
     OtherWidget *otherWidget = new OtherWidget(myWidget);
-    myWidget->show(0, 0, 640, 480);
-    otherWidget->show(100, 200, 100, 100);
+    myWidget->show(Point(0, 0));
+    otherWidget->show(Point(100, 200));
 
     return app.exec();
 }

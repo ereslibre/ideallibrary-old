@@ -35,6 +35,8 @@ class MyWidget
 public:
     MyWidget(Object *parent);
 
+    virtual Size minimumSize() const;
+
 protected:
     virtual bool event(IdealCore::Event *event);
 };
@@ -42,6 +44,11 @@ protected:
 MyWidget::MyWidget(Object *parent)
     : Widget(parent)
 {
+}
+
+Size MyWidget::minimumSize() const
+{
+    return Size(220, 220);
 }
 
 bool MyWidget::event(IdealCore::Event *event)
@@ -75,7 +82,7 @@ int main(int argc, char **argv)
     IdealCore::Object::connectStatic(myFile->sizeResult, sizeResult);
 
     MyWidget *myWidget = new MyWidget(&app);
-    myWidget->show();
+    myWidget->show(Point(0, 0));
 
     IDEAL_SDEBUG("*** Press any key to get the size of a remote file");
 

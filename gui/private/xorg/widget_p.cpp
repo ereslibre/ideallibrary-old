@@ -37,8 +37,12 @@ Widget::PrivateImpl::~PrivateImpl()
     cairo_surface_destroy(m_cs);
 }
 
-void Widget::show(int x, int y, int width, int height)
+void Widget::show(const Point &point)
 {
+    const int x = point.x();
+    const int y = point.y();
+    const int width = minimumSize().width();
+    const int height = minimumSize().height();
     IdealGUI::Application *app = static_cast<IdealGUI::Application*>(application());
     IdealGUI::Application::PrivateImpl *a_d = static_cast<IdealGUI::Application::PrivateImpl*>(app->d);
     Display *dpy = a_d->m_dpy;

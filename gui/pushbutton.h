@@ -35,6 +35,8 @@ public:
     PushButton(Object *parent);
     virtual ~PushButton();
 
+    virtual Size minimumSize() const;
+
     IdealCore::String text() const;
     void setText(const IdealCore::String &text);
 

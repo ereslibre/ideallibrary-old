@@ -32,8 +32,21 @@ class MyWidget
 public:
     MyWidget(Object *parent);
 
+    virtual Size minimumSize() const;
+
+protected:
     virtual bool event(IdealCore::Event *event);
 };
+
+MyWidget::MyWidget(Object *parent)
+    : Widget(parent)
+{
+}
+
+Size MyWidget::minimumSize() const
+{
+    return Size(640, 480);
+}
 
 bool MyWidget::event(IdealCore::Event *event)
 {
@@ -62,11 +75,6 @@ bool MyWidget::event(IdealCore::Event *event)
     return false;
 }
 
-MyWidget::MyWidget(Object *parent)
-    : Widget(parent)
-{
-}
-
 int main(int argc, char **argv)
 {
     Application app(argc, argv);
@@ -74,8 +82,8 @@ int main(int argc, char **argv)
     MyWidget *myWidget = new MyWidget(&app);
     PushButton *pushButton = new PushButton(myWidget);
     pushButton->setText("Exit");
-    myWidget->show(0, 0, 640, 480);
-    pushButton->show(100, 200, 101, 41);
+    myWidget->show(Point(0, 0));
+    pushButton->show(Point(100, 200));
 
     IdealCore::Object::connect(pushButton->clicked, &app, &Application::quit);
 
