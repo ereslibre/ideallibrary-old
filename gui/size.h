@@ -18,36 +18,40 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef RECT_H
-#define RECT_H
+#ifndef SIZE_H
+#define SIZE_H
 
 #include <ideal_export.h>
 
-#include <gui/size.h>
-#include <gui/point.h>
-
 namespace IdealGUI {
 
-class IDEAL_EXPORT Rect
+class IDEAL_EXPORT Size
 {
 public:
-    Rect(const Point &topLeft, const Size &size);
-    Rect(const Rect &rect);
-    ~Rect();
+    Size(double width, double height);
+    Size(const Size &size);
+    ~Size();
 
-    Point topLeft() const;
-    void setTopLeft(const Point &topLeft);
+    double width() const;
+    void setWidth(double width);
 
-    Size size() const;
-    void setSize(const Size &size);
+    double height() const;
+    void setHeight(double height);
 
-    Point topRight() const;
-    Point bottomLeft() const;
-    Point bottomRight() const;
+    double &rwidth() const;
+    double &rheight() const;
 
-    bool operator==(const Rect &rect);
-    bool operator!=(const Rect &rect);
-    Rect &operator=(const Rect &rect);
+    bool operator==(const Size &size);
+    bool operator!=(const Size &size);
+    Size &operator=(const Size &size);
+    Size operator+(const Size &size);
+    Size operator-(const Size &size);
+    Size operator*(const Size &size);
+    Size operator/(const Size &size);
+    Size &operator+=(const Size &size);
+    Size &operator-=(const Size &size);
+    Size &operator*=(const Size &size);
+    Size &operator/=(const Size &size);
 
 private:
     class Private;
@@ -56,4 +60,4 @@ private:
 
 }
 
-#endif //RECT_H
+#endif //SIZE_H

@@ -25,27 +25,25 @@ namespace IdealGUI {
 class Rect::Private
 {
 public:
-    Private(const Point &topLeft, double width, double height);
+    Private(const Point &topLeft, const Size &size);
 
-    Point  m_topLeft;
-    double m_width;
-    double m_height;
+    Point m_topLeft;
+    Size  m_size;
 };
 
-Rect::Private::Private(const Point &topLeft, double width, double height)
+Rect::Private::Private(const Point &topLeft, const Size &size)
     : m_topLeft(topLeft)
-    , m_width(width)
-    , m_height(height)
+    , m_size(size)
 {
 }
 
-Rect::Rect(const Point &topLeft, double width, double height)
-    : d(new Private(topLeft, width, height))
+Rect::Rect(const Point &topLeft, const Size &size)
+    : d(new Private(topLeft, size))
 {
 }
 
 Rect::Rect(const Rect &rect)
-    : d(new Private(rect.d->m_topLeft, rect.d->m_width, rect.d->m_height))
+    : d(new Private(rect.d->m_topLeft, rect.d->m_size))
 {
 }
 
@@ -64,58 +62,45 @@ void Rect::setTopLeft(const Point &topLeft)
     d->m_topLeft = topLeft;
 }
 
-double Rect::width() const
+Size Rect::size() const
 {
-    return d->m_width;
+    return d->m_size;
 }
 
-void Rect::setWidth(double width)
+void Rect::setSize(const Size &size)
 {
-    d->m_width = width;
-}
-
-double Rect::height() const
-{
-    return d->m_height;
-}
-
-void Rect::setHeight(double height)
-{
-    d->m_height = height;
+    d->m_size = size;
 }
 
 Point Rect::topRight() const
 {
-    return Point(d->m_topLeft.x() + d->m_width, d->m_topLeft.y());
+    return Point(d->m_topLeft.x() + d->m_size.width(), d->m_topLeft.y());
 }
 
 Point Rect::bottomLeft() const
 {
-    return Point(d->m_topLeft.x(), d->m_topLeft.y() + d->m_height);
+    return Point(d->m_topLeft.x(), d->m_topLeft.y() + d->m_size.height());
 }
 
 Point Rect::bottomRight() const
 {
-    return Point(d->m_topLeft.x() + d->m_width, d->m_topLeft.y() + d->m_height);
+    return Point(d->m_topLeft.x() + d->m_size.width(), d->m_topLeft.y() + d->m_size.height());
 }
 
 bool Rect::operator==(const Rect &rect)
 {
-    return d->m_topLeft == rect.d->m_topLeft && d->m_width == rect.d->m_width &&
-           d->m_height == rect.d->m_height;
+    return d->m_topLeft == rect.d->m_topLeft && d->m_size == rect.d->m_size;
 }
 
 bool Rect::operator!=(const Rect &rect)
 {
-    return d->m_topLeft != rect.d->m_topLeft || d->m_width != rect.d->m_width ||
-           d->m_height != rect.d->m_height;
+    return d->m_topLeft != rect.d->m_topLeft || d->m_size != rect.d->m_size;
 }
 
 Rect &Rect::operator=(const Rect &rect)
 {
     d->m_topLeft = rect.d->m_topLeft;
-    d->m_width = rect.d->m_width;
-    d->m_height = rect.d->m_height;
+    d->m_size = rect.d->m_size;
     return *this;
 }
 
