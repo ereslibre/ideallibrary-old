@@ -18,45 +18,24 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APPLICATION_GUI_H
-#define APPLICATION_GUI_H
+#ifndef STYLE_H
+#define STYLE_H
 
 #include <ideal_export.h>
-#include <core/application.h>
-#include <gui/interfaces/style.h>
 
-/**
-  * The IdealGUI namespace.
-  *
-  * It provides a way of working with GUIs.
-  */
+#include <core/extension.h>
+
 namespace IdealGUI {
 
-/**
-  * @class Application application.h gui/application.h
-  *
-  * @author Rafael Fernández López <ereslibre@ereslibre.es>
-  */
-class IDEAL_EXPORT Application
-    : public IdealCore::Application
+class Widget;
+
+class IDEAL_EXPORT Style
+    : public IdealCore::Extension
 {
-    friend class Widget;
-    friend class Painter;
-
 public:
-    Application(int argc, char **argv);
-    virtual ~Application();
-
-    virtual int exec();
-
-    Style *style() const;
-    
-private:
-    class Private;
-    class PrivateImpl;
-    Private *const d;
+    virtual void drawWidget(Widget *widget) const = 0;
 };
 
 }
 
-#endif //APPLICATION_GUI_H
+#endif //STYLE_H

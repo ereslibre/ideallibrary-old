@@ -21,10 +21,16 @@
 #include "widget.h"
 #include "private/widget_p.h"
 
+#include <core/event.h>
+#include <gui/application.h>
+
 namespace IdealGUI {
 
 Widget::Private::Private(Widget *q)
-    : q(q)
+    : m_focused(false)
+    , m_hovered(false)
+    , m_pressed(false)
+    , q(q)
 {
 }
 
@@ -44,13 +50,61 @@ Widget::~Widget()
     delete d;
 }
 
+Widget::StyleInfo Widget::styleInfo() const
+{
+    StyleInfo styleInfo;
+    styleInfo.isFocused = d->m_focused;
+    styleInfo.isHovered = d->m_hovered;
+    styleInfo.isPressed = d->m_pressed;
+    return styleInfo;
+}
+
+void Widget::drawWidget()
+{
+    GUIApplication()->style()->drawWidget(this);
+}
+
 Widget *Widget::parentWidget() const
 {
     return d->m_parentWidget;
 }
 
+Application *Widget::GUIApplication() const
+{
+    return dynamic_cast<Application*>(application());
+}
+
 bool Widget::event(IdealCore::Event *event)
 {
+    bool drawPending = false;
+    switch (event->type()) {
+        case IdealCore::Event::MapNotify:
+        case IdealCore::Event::Expose:
+            drawPending = true;
+            break;
+        case IdealCore::Event::EnterNotify:
+            d->m_hovered = true;
+            drawPending = true;
+            break;
+        case IdealCore::Event::LeaveNotify:
+            d->m_hovered = false;
+            d->m_pressed = false;
+            drawPending = true;
+            break;
+        case IdealCore::Event::ButtonPress:
+            d->m_pressed = true;
+            drawPending = true;
+            break;
+        case IdealCore::Event::ButtonRelease:
+            d->m_pressed = false;
+            drawPending = true;
+            break;
+        default:
+            break;
+    }
+    if (drawPending) {
+        drawWidget();
+    }
     return false;
 }
 

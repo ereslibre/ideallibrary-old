@@ -32,6 +32,12 @@ class IDEAL_EXPORT PushButton
     : public Widget
 {
 public:
+    struct StyleInfo
+        : public Widget::StyleInfo
+    {
+        IdealCore::String text;
+    };
+
     PushButton(Object *parent);
     virtual ~PushButton();
 

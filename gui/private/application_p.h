@@ -36,6 +36,8 @@ public:
 
     void processEvents();
 
+    Style           *m_style;
+
     class GUIEventHandler;
     GUIEventHandler *m_guiEventHandler;
 

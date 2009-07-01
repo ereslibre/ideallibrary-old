@@ -22,6 +22,7 @@
 
 #include <core/event.h>
 #include <gui/painter.h>
+#include <gui/application.h>
 
 namespace IdealGUI {
 
@@ -30,31 +31,13 @@ class PushButton::Private
 public:
     Private(PushButton *q);
 
-    void drawButton() const;
-
     IdealCore::String m_text;
-    bool              m_mouseOver;
-    bool              m_buttonPress;
     PushButton       *q;
 };
 
 PushButton::Private::Private(PushButton *q)
-    : m_mouseOver(false)
-    , m_buttonPress(false)
-    , q(q)
+    : q(q)
 {
-}
-
-void PushButton::Private::drawButton() const
-{
-    Painter p(q);
-    if (m_buttonPress && m_mouseOver) {
-        p.setPenColor(0, 0, 1.0);
-    } else if (m_mouseOver) {
-        p.setPenColor(1.0, 0, 0);
-    }
-    p.drawRectangle(1, 1, 99, 39);
-    p.drawText(10, 25, m_text);
 }
 
 PushButton::PushButton(Object *parent)
@@ -72,7 +55,7 @@ PushButton::~PushButton()
 Size PushButton::minimumSize() const
 {
     // FIXME
-    return Size(100, 100);
+    return Size(102, 41);
 }
 
 IdealCore::String PushButton::text() const
@@ -87,35 +70,17 @@ void PushButton::setText(const IdealCore::String &text)
 
 bool PushButton::event(IdealCore::Event *event)
 {
+    const Widget::StyleInfo sInfo = styleInfo();
     switch (event->type()) {
-        case IdealCore::Event::Expose:
-        case IdealCore::Event::MapNotify:
-            d->drawButton();
-            break;
-        case IdealCore::Event::EnterNotify:
-            d->m_mouseOver = true;
-            d->drawButton();
-            break;
-        case IdealCore::Event::LeaveNotify:
-            d->m_mouseOver = false;
-            d->m_buttonPress = false;
-            d->drawButton();
-            break;
-        case IdealCore::Event::ButtonPress:
-            d->m_buttonPress = true;
-            d->drawButton();
-            break;
         case IdealCore::Event::ButtonRelease:
-            if (d->m_buttonPress) {
+            if (sInfo.isPressed) {
                 emit(clicked);
             }
-            d->m_buttonPress = false;
-            d->drawButton();
             break;
         default:
             break;
     }
-    return false;
+    return Widget::event(event);
 }
 
 }

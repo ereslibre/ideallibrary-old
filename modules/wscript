@@ -6,3 +6,4 @@ def configure(conf):
 
 def build(bld):
     bld.add_subdirs('builtinprotocolhandlers')
+    bld.add_subdirs('defaultstyle')

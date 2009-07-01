@@ -18,45 +18,47 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APPLICATION_GUI_H
-#define APPLICATION_GUI_H
+#include "defaultstyle.h"
 
-#include <ideal_export.h>
-#include <core/application.h>
-#include <gui/interfaces/style.h>
+#include <gui/painter.h>
+#include <gui/widget.h>
+#include <gui/pushbutton.h>
 
-/**
-  * The IdealGUI namespace.
-  *
-  * It provides a way of working with GUIs.
-  */
 namespace IdealGUI {
 
-/**
-  * @class Application application.h gui/application.h
-  *
-  * @author Rafael Fernández López <ereslibre@ereslibre.es>
-  */
-class IDEAL_EXPORT Application
-    : public IdealCore::Application
+void DefaultStyle::drawWidget(Widget *widget) const
 {
-    friend class Widget;
-    friend class Painter;
+    const Widget::StyleInfo sInfo = widget->styleInfo();
+    Painter p(widget);
+    if (sInfo.isPressed && sInfo.isHovered) {
+        p.setPenColor(0, 0, 1.0);
+    } else if (sInfo.isHovered) {
+        p.setPenColor(1.0, 0, 0);
+    }
+    p.drawRectangle(1, 1, 99, 39);
+    p.drawText(10, 25, "Test");
+}
 
-public:
-    Application(int argc, char **argv);
-    virtual ~Application();
+IdealCore::String DefaultStyle::name() const
+{
+    return "Style by default";
+}
 
-    virtual int exec();
+IdealCore::String DefaultStyle::description() const
+{
+    return "The Ideal Library's style by default";
+}
 
-    Style *style() const;
-    
-private:
-    class Private;
-    class PrivateImpl;
-    Private *const d;
-};
+IdealCore::String DefaultStyle::author() const
+{
+    return "Rafael Fernández López";
+}
+
+IdealCore::String DefaultStyle::version() const
+{
+    return IDEALLIBRARY_VERSION;
+}
 
 }
 
-#endif //APPLICATION_GUI_H
+EXTENSION_ENTRY_POINT(defaultStyle, IdealGUI::DefaultStyle)

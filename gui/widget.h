@@ -33,6 +33,8 @@ namespace IdealCore {
 
 namespace IdealGUI {
 
+class Application;
+
 /**
   * @class Widget widget.h gui/widget.h
   *
@@ -45,6 +47,12 @@ class IDEAL_EXPORT Widget
     friend class Painter;
 
 public:
+    struct StyleInfo {
+        bool isFocused;
+        bool isHovered;
+        bool isPressed;
+    };
+
     Widget(Object *parent);
     virtual ~Widget();
 
@@ -54,7 +62,13 @@ public:
 
     virtual Size minimumSize() const = 0;
 
+    virtual StyleInfo styleInfo() const;
+
+    virtual void drawWidget();
+
     Widget *parentWidget() const;
+
+    Application *GUIApplication() const;
 
 protected:
     virtual bool event(IdealCore::Event *event);

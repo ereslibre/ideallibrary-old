@@ -87,6 +87,7 @@ class IDEAL_EXPORT Module
 public:
     enum ExtensionType {
         ProtocolHandler = 0,             ///< Protocol handler extension type
+        Style,                           ///< Application drawing style
         UserDefinedExtensionType = 1000  ///< User defined extension types should start at this value
     };
 
