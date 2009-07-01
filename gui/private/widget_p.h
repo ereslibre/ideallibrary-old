@@ -32,7 +32,6 @@ public:
     virtual ~Private();
 
     Widget    *m_parentWidget;
-    StyleInfo *m_styleInfo;
     Widget    *q;
 };
 

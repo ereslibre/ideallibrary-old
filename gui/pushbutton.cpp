@@ -32,19 +32,16 @@ public:
     Private(PushButton *q);
     ~Private();
 
-    StyleInfo  *m_styleInfo;
     PushButton *q;
 };
 
 PushButton::Private::Private(PushButton *q)
-    : m_styleInfo(new StyleInfo)
-    , q(q)
+    : q(q)
 {
 }
 
 PushButton::Private::~Private()
 {
-    delete m_styleInfo;
 }
 
 PushButton::PushButton(Object *parent)
@@ -52,6 +49,7 @@ PushButton::PushButton(Object *parent)
     , IDEAL_SIGNAL_INIT(clicked)
     , d(new Private(this))
 {
+    m_styleInfo = new StyleInfo;
 }
 
 PushButton::~PushButton()
@@ -65,24 +63,14 @@ Size PushButton::minimumSize() const
     return Size(102, 41);
 }
 
-Widget::StyleInfo *PushButton::styleInfo() const
-{
-    // FIXME: do something automatic and less memory consuming
-    Widget::StyleInfo *wstyleInfo = Widget::styleInfo();
-    d->m_styleInfo->isFocused = wstyleInfo->isFocused;
-    d->m_styleInfo->isHovered = wstyleInfo->isHovered;
-    d->m_styleInfo->isPressed = wstyleInfo->isPressed;
-    return d->m_styleInfo;
-}
-
 IdealCore::String PushButton::text() const
 {
-    return d->m_styleInfo->text;
+    return static_cast<StyleInfo*>(m_styleInfo)->text;
 }
 
 void PushButton::setText(const IdealCore::String &text)
 {
-    d->m_styleInfo->text = text;
+    static_cast<StyleInfo*>(m_styleInfo)->text = text;
 }
 
 bool PushButton::event(IdealCore::Event *event)

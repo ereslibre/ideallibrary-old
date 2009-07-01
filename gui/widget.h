@@ -48,6 +48,11 @@ class IDEAL_EXPORT Widget
 
 public:
     struct StyleInfo {
+        StyleInfo()
+            : isFocused(false)
+            , isHovered(false)
+            , isPressed(false) { }
+
         bool isFocused;
         bool isHovered;
         bool isPressed;
@@ -62,7 +67,7 @@ public:
 
     virtual Size minimumSize() const = 0;
 
-    virtual StyleInfo *styleInfo() const;
+    StyleInfo *styleInfo();
 
     virtual void drawWidget();
 
@@ -72,6 +77,9 @@ public:
 
 protected:
     virtual bool event(IdealCore::Event *event);
+
+protected:
+    StyleInfo *m_styleInfo;
 
 private:
     class Private;

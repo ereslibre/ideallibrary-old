@@ -30,7 +30,7 @@ void DefaultStyle::drawWidget(Widget *widget) const
 {
     const Widget::StyleInfo *sInfo = widget->styleInfo();
     Painter p(widget);
-    if (sInfo->isPressed && sInfo->isHovered) {
+    if (sInfo->isPressed) {
         p.setPenColor(0, 0, 1.0);
     } else if (sInfo->isHovered) {
         p.setPenColor(1.0, 0, 0);
