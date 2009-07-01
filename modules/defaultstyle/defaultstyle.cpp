@@ -35,10 +35,10 @@ void DefaultStyle::drawWidget(Widget *widget) const
     } else if (sInfo->isHovered) {
         p.setPenColor(1.0, 0, 0);
     }
-    p.drawRectangle(1, 1, 99, 39);
+    p.drawRectangle(Point(1, 1), Size(99, 39));
     if (dynamic_cast<PushButton*>(widget)) {
         const PushButton::StyleInfo *sInfo = static_cast<const PushButton::StyleInfo*>(widget->styleInfo());
-        p.drawText(10, 25, sInfo->text);
+        p.drawText(Point(10, 25), sInfo->text);
     }
 }
 

@@ -52,10 +52,10 @@ bool MyWidget::event(IdealCore::Event *event)
     if (event->type() == IdealCore::Event::MapNotify ||
         event->type() == IdealCore::Event::Expose) {
         Painter p(this);
-        p.drawLine(10, 10, 100, 100);
-        p.drawLine(200, 100, 300, 300);
-        p.drawLine(200, 400, 600, 200);
-        p.drawLine(280, 160, 600, 400);
+        p.drawLine(Point(10, 10), Point(100, 100));
+        p.drawLine(Point(200, 100), Point(300, 300));
+        p.drawLine(Point(200, 400), Point(600, 200));
+        p.drawLine(Point(280, 160), Point(600, 400));
     }
     return false;
 }
@@ -87,12 +87,12 @@ bool OtherWidget::event(IdealCore::Event *event)
     if (event->type() == IdealCore::Event::MapNotify ||
         event->type() == IdealCore::Event::Expose) {
         Painter p(this);
-        p.drawRectangle(0, 0, 100, 100);
+        p.drawRectangle(Point(0, 0), Size(100, 100));
     } else if (event->type() == IdealCore::Event::ButtonPress) {
         Painter p(this);
-        p.drawRectangle(0, 0, 100, 100);
-        p.drawLine(0, 0, 100, 100);
-        p.drawLine(100, 0, 0, 100);
+        p.drawRectangle(Point(0, 0), Size(100, 100));
+        p.drawLine(Point(0, 0), Point(100, 100));
+        p.drawLine(Point(100, 0), Point(0, 100));
     } else if (event->type() == IdealCore::Event::ButtonRelease) {
         application()->quit();
     }

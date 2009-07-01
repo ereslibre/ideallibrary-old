@@ -53,16 +53,16 @@ bool MyWidget::event(IdealCore::Event *event)
     if (event->type() == IdealCore::Event::MapNotify ||
         event->type() == IdealCore::Event::Expose) {
         Painter p(this);
-        p.drawLine(10, 10, 100, 100);
-        p.drawLine(200, 100, 300, 300);
+        p.drawLine(Point(10, 10), Point(100, 100));
+        p.drawLine(Point(200, 100), Point(300, 300));
         p.setPenColor(1.0, 0, 0);
-        p.drawLine(200, 400, 600, 200);
+        p.drawLine(Point(200, 400), Point(600, 200));
         p.setPenColor(0, 0, 0);
-        p.drawLine(280, 160, 600, 400);
-        p.drawPoint(600, 20);
-        p.drawText(300, 400, "Hi, how are you ?");
-        p.drawText(300, 420, "Some special characters: á, é, í, ó, ú, €, ñ");
-        p.drawText(300, 440, "More special characters: ЂЉЊЋЏђ, абвгдеёжзий");
+        p.drawLine(Point(280, 160), Point(600, 400));
+        p.drawPoint(Point(600, 20));
+        p.drawText(Point(300, 400), "Hi, how are you ?");
+        p.drawText(Point(300, 420), "Some special characters: á, é, í, ó, ú, €, ñ");
+        p.drawText(Point(300, 440), "More special characters: ЂЉЊЋЏђ, абвгдеёжзий");
     } else if (event->type() == IdealCore::Event::ButtonPress) {
         bool printed = false;
         while (true) {

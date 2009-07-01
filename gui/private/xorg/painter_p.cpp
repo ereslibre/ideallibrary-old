@@ -55,31 +55,31 @@ void Painter::setPenColor(double red, double green, double blue, double alpha)
     cairo_set_source_rgba(D_I->m_cairo, red, green, blue, alpha);
 }
 
-void Painter::drawPoint(double x, double y)
+void Painter::drawPoint(const Point &point)
 {
-    drawRectangle(x, y, 2, 2);
+    drawRectangle(point, Size(2, 2));
 }
 
-void Painter::drawLine(double x1, double y1, double x2, double y2)
+void Painter::drawLine(const Point &point1, const Point &point2)
 {
-    cairo_move_to(D_I->m_cairo, x1, y1);
-    cairo_line_to(D_I->m_cairo, x2, y2);
+    cairo_move_to(D_I->m_cairo, point1.x(), point1.y());
+    cairo_line_to(D_I->m_cairo, point2.x(), point2.y());
     cairo_stroke(D_I->m_cairo);
 }
 
-void Painter::drawRectangle(double x, double y, double width, double height)
+void Painter::drawRectangle(const Point &topLeft, const Size &size)
 {
-    cairo_rectangle(D_I->m_cairo, x, y, width, height);
+    cairo_rectangle(D_I->m_cairo, topLeft.x(), topLeft.y(), size.width(), size.height());
     cairo_stroke(D_I->m_cairo);
 }
 
-void Painter::drawText(double x, double y, const IdealCore::String &text)
+void Painter::drawText(const Point &bottomLeft, const IdealCore::String &text)
 {
-    cairo_move_to(D_I->m_cairo, x, y);
+    cairo_move_to(D_I->m_cairo, bottomLeft.x(), bottomLeft.y());
     cairo_show_text(D_I->m_cairo, text.data());
 }
 
-void Painter::fillRectangle(double x, double y, double width, double height)
+void Painter::fillRectangle(const Point &topLeft, const Size &size)
 {
 }
 

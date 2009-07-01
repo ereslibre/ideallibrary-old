@@ -23,6 +23,8 @@
 
 #include <ideal_export.h>
 #include <core/ideal_string.h>
+#include <gui/point.h>
+#include <gui/size.h>
 
 namespace IdealGUI {
 
@@ -41,11 +43,11 @@ public:
 
     void setPenColor(double red, double green, double blue, double alpha = 1.0);
 
-    void drawPoint(double x, double y);
-    void drawLine(double x1, double y1, double x2, double y2);
-    void drawRectangle(double x, double y, double width, double height);
-    void drawText(double x, double y, const IdealCore::String &text);
-    void fillRectangle(double x, double y, double width, double height);
+    void drawPoint(const Point &point);
+    void drawLine(const Point &point1, const Point &point2);
+    void drawRectangle(const Point &topLeft, const Size &size);
+    void drawText(const Point &bottomLeft, const IdealCore::String &text);
+    void fillRectangle(const Point &topLeft, const Size &size);
 
 private:
     class Private;

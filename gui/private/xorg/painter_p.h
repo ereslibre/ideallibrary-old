@@ -21,8 +21,6 @@
 #ifndef PAINTER_P_H_XORG
 #define PAINTER_P_H_XORG
 
-#include <gui/private/painter_p.h>
-
 #include <cairo.h>
 
 #include <X11/Xlib.h>
