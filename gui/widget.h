@@ -67,7 +67,7 @@ public:
 
     virtual Size minimumSize() const = 0;
 
-    StyleInfo *styleInfo();
+    const StyleInfo *styleInfo() const;
 
     virtual void drawWidget();
 

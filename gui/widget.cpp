@@ -49,7 +49,7 @@ Widget::~Widget()
     delete m_styleInfo;
 }
 
-Widget::StyleInfo *Widget::styleInfo()
+const Widget::StyleInfo *Widget::styleInfo() const
 {
     return m_styleInfo;
 }
