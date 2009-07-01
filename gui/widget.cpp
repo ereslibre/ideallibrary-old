@@ -27,15 +27,17 @@
 namespace IdealGUI {
 
 Widget::Private::Private(Widget *q)
-    : m_focused(false)
-    , m_hovered(false)
-    , m_pressed(false)
+    : m_styleInfo(new StyleInfo)
     , q(q)
 {
+    m_styleInfo->isFocused = false;
+    m_styleInfo->isHovered = false;
+    m_styleInfo->isPressed = false;
 }
 
 Widget::Private::~Private()
 {
+    delete m_styleInfo;
 }
 
 Widget::Widget(Object *parent)
@@ -50,13 +52,9 @@ Widget::~Widget()
     delete d;
 }
 
-Widget::StyleInfo Widget::styleInfo() const
+Widget::StyleInfo *Widget::styleInfo() const
 {
-    StyleInfo styleInfo;
-    styleInfo.isFocused = d->m_focused;
-    styleInfo.isHovered = d->m_hovered;
-    styleInfo.isPressed = d->m_pressed;
-    return styleInfo;
+    return d->m_styleInfo;
 }
 
 void Widget::drawWidget()
@@ -83,20 +81,20 @@ bool Widget::event(IdealCore::Event *event)
             drawPending = true;
             break;
         case IdealCore::Event::EnterNotify:
-            d->m_hovered = true;
+            d->m_styleInfo->isHovered = true;
             drawPending = true;
             break;
         case IdealCore::Event::LeaveNotify:
-            d->m_hovered = false;
-            d->m_pressed = false;
+            d->m_styleInfo->isHovered = false;
+            d->m_styleInfo->isPressed = false;
             drawPending = true;
             break;
         case IdealCore::Event::ButtonPress:
-            d->m_pressed = true;
+            d->m_styleInfo->isPressed = true;
             drawPending = true;
             break;
         case IdealCore::Event::ButtonRelease:
-            d->m_pressed = false;
+            d->m_styleInfo->isPressed = false;
             drawPending = true;
             break;
         default:

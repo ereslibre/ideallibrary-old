@@ -30,14 +30,21 @@ class PushButton::Private
 {
 public:
     Private(PushButton *q);
+    ~Private();
 
-    IdealCore::String m_text;
-    PushButton       *q;
+    StyleInfo  *m_styleInfo;
+    PushButton *q;
 };
 
 PushButton::Private::Private(PushButton *q)
-    : q(q)
+    : m_styleInfo(new StyleInfo)
+    , q(q)
 {
+}
+
+PushButton::Private::~Private()
+{
+    delete m_styleInfo;
 }
 
 PushButton::PushButton(Object *parent)
@@ -58,22 +65,32 @@ Size PushButton::minimumSize() const
     return Size(102, 41);
 }
 
+Widget::StyleInfo *PushButton::styleInfo() const
+{
+    // FIXME: do something automatic and less memory consuming
+    Widget::StyleInfo *wstyleInfo = Widget::styleInfo();
+    d->m_styleInfo->isFocused = wstyleInfo->isFocused;
+    d->m_styleInfo->isHovered = wstyleInfo->isHovered;
+    d->m_styleInfo->isPressed = wstyleInfo->isPressed;
+    return d->m_styleInfo;
+}
+
 IdealCore::String PushButton::text() const
 {
-    return d->m_text;
+    return d->m_styleInfo->text;
 }
 
 void PushButton::setText(const IdealCore::String &text)
 {
-    d->m_text = text;
+    d->m_styleInfo->text = text;
 }
 
 bool PushButton::event(IdealCore::Event *event)
 {
-    const Widget::StyleInfo sInfo = styleInfo();
+    const Widget::StyleInfo *sInfo = styleInfo();
     switch (event->type()) {
         case IdealCore::Event::ButtonRelease:
-            if (sInfo.isPressed) {
+            if (sInfo->isPressed) {
                 emit(clicked);
             }
             break;

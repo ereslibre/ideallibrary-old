@@ -31,11 +31,9 @@ public:
     Private(Widget *q);
     virtual ~Private();
 
-    Widget *m_parentWidget;
-    bool    m_focused;
-    bool    m_hovered;
-    bool    m_pressed;
-    Widget *q;
+    Widget    *m_parentWidget;
+    StyleInfo *m_styleInfo;
+    Widget    *q;
 };
 
 }

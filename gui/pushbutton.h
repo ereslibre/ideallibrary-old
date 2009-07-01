@@ -43,6 +43,8 @@ public:
 
     virtual Size minimumSize() const;
 
+    virtual Widget::StyleInfo *styleInfo() const;
+
     IdealCore::String text() const;
     void setText(const IdealCore::String &text);
 
