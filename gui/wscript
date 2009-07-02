@@ -25,3 +25,4 @@ def build(bld):
     )
     bld.install_files('${PREFIX}/lib/pkgconfig', 'idealgui.pc')
     bld.install_files('${PREFIX}/include/ideal/gui', '*.h')
+    bld.install_files('${PREFIX}/include/ideal/gui/interfaces', 'interfaces/*.h')
