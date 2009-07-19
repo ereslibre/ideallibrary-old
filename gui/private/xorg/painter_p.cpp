@@ -50,6 +50,93 @@ Painter::PrivateImpl::~PrivateImpl()
     XFlush(m_dpy);
 }
 
+void Painter::setOperator(Operator op)
+{
+    cairo_operator_t cairo_operator;
+    switch (op) {
+        case ClearOperator:
+            cairo_operator = CAIRO_OPERATOR_CLEAR;
+            break;
+        case SourceOperator:
+            cairo_operator = CAIRO_OPERATOR_SOURCE;
+            break;
+        case OverOperator:
+            cairo_operator = CAIRO_OPERATOR_OVER;
+            break;
+        case InOperator:
+            cairo_operator = CAIRO_OPERATOR_IN;
+            break;
+        case OutOperator:
+            cairo_operator = CAIRO_OPERATOR_OUT;
+            break;
+        case AtopOperator:
+            cairo_operator = CAIRO_OPERATOR_ATOP;
+            break;
+        case DestOperator:
+            cairo_operator = CAIRO_OPERATOR_DEST;
+            break;
+        case DestOverOperator:
+            cairo_operator = CAIRO_OPERATOR_DEST_OVER;
+            break;
+        case DestInOperator:
+            cairo_operator = CAIRO_OPERATOR_DEST_IN;
+            break;
+        case DestOutOperator:
+            cairo_operator = CAIRO_OPERATOR_DEST_OUT;
+            break;
+        case DestAtopOperator:
+            cairo_operator = CAIRO_OPERATOR_DEST_ATOP;
+            break;
+        case XorOperator:
+            cairo_operator = CAIRO_OPERATOR_XOR;
+            break;
+        case AddOperator:
+            cairo_operator = CAIRO_OPERATOR_ADD;
+            break;
+        case SaturateOperator:
+            cairo_operator = CAIRO_OPERATOR_SATURATE;
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown painter operator");
+            cairo_operator = CAIRO_OPERATOR_OVER;
+            break;
+    }
+    cairo_set_operator(D_I->m_cairo, cairo_operator);
+}
+
+void Painter::setAntialias(Antialias antialias)
+{
+    cairo_antialias_t cairo_antialias = CAIRO_ANTIALIAS_DEFAULT;
+    switch (antialias) {
+        case DefaultAntialias:
+            cairo_antialias = CAIRO_ANTIALIAS_DEFAULT;
+            break;
+        case NoneAntialias:
+            cairo_antialias = CAIRO_ANTIALIAS_NONE;
+            break;
+        case GrayAntialias:
+            cairo_antialias = CAIRO_ANTIALIAS_GRAY;
+            break;
+        case SubpixelAntialias:
+            cairo_antialias = CAIRO_ANTIALIAS_SUBPIXEL;
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown antialias parameter");
+            break;
+    }
+    cairo_set_antialias(D_I->m_cairo, cairo_antialias);
+}
+
+void Painter::saveState()
+{
+    cairo_save(D_I->m_cairo);
+}
+
+void Painter::restoreState()
+{
+    cairo_restore(D_I->m_cairo);
+}
+
 void Painter::setPenColor(double red, double green, double blue, double alpha)
 {
     cairo_set_source_rgba(D_I->m_cairo, red, green, blue, alpha);

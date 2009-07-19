@@ -41,6 +41,37 @@ public:
     Painter(Widget *widget);
     virtual ~Painter();
 
+    enum Operator {
+        ClearOperator = 0,
+        SourceOperator,
+        OverOperator,
+        InOperator,
+        OutOperator,
+        AtopOperator,
+        DestOperator,
+        DestOverOperator,
+        DestInOperator,
+        DestOutOperator,
+        DestAtopOperator,
+        XorOperator,
+        AddOperator,
+        SaturateOperator
+    };
+
+    void setOperator(Operator op);
+
+    enum Antialias {
+        DefaultAntialias = 0,
+        NoneAntialias,
+        GrayAntialias,
+        SubpixelAntialias
+    };
+
+    void setAntialias(Antialias antialias);
+
+    void saveState();
+    void restoreState();
+
     void setPenColor(double red, double green, double blue, double alpha = 1.0);
 
     void drawPoint(const Point &point);
