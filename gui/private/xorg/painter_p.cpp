@@ -52,79 +52,80 @@ Painter::PrivateImpl::~PrivateImpl()
 
 void Painter::setOperator(Operator op)
 {
-    cairo_operator_t cairo_operator;
+    cairo_operator_t cairoOperator;
     switch (op) {
         case ClearOperator:
-            cairo_operator = CAIRO_OPERATOR_CLEAR;
+            cairoOperator = CAIRO_OPERATOR_CLEAR;
             break;
         case SourceOperator:
-            cairo_operator = CAIRO_OPERATOR_SOURCE;
+            cairoOperator = CAIRO_OPERATOR_SOURCE;
             break;
         case OverOperator:
-            cairo_operator = CAIRO_OPERATOR_OVER;
+            cairoOperator = CAIRO_OPERATOR_OVER;
             break;
         case InOperator:
-            cairo_operator = CAIRO_OPERATOR_IN;
+            cairoOperator = CAIRO_OPERATOR_IN;
             break;
         case OutOperator:
-            cairo_operator = CAIRO_OPERATOR_OUT;
+            cairoOperator = CAIRO_OPERATOR_OUT;
             break;
         case AtopOperator:
-            cairo_operator = CAIRO_OPERATOR_ATOP;
+            cairoOperator = CAIRO_OPERATOR_ATOP;
             break;
         case DestOperator:
-            cairo_operator = CAIRO_OPERATOR_DEST;
+            cairoOperator = CAIRO_OPERATOR_DEST;
             break;
         case DestOverOperator:
-            cairo_operator = CAIRO_OPERATOR_DEST_OVER;
+            cairoOperator = CAIRO_OPERATOR_DEST_OVER;
             break;
         case DestInOperator:
-            cairo_operator = CAIRO_OPERATOR_DEST_IN;
+            cairoOperator = CAIRO_OPERATOR_DEST_IN;
             break;
         case DestOutOperator:
-            cairo_operator = CAIRO_OPERATOR_DEST_OUT;
+            cairoOperator = CAIRO_OPERATOR_DEST_OUT;
             break;
         case DestAtopOperator:
-            cairo_operator = CAIRO_OPERATOR_DEST_ATOP;
+            cairoOperator = CAIRO_OPERATOR_DEST_ATOP;
             break;
         case XorOperator:
-            cairo_operator = CAIRO_OPERATOR_XOR;
+            cairoOperator = CAIRO_OPERATOR_XOR;
             break;
         case AddOperator:
-            cairo_operator = CAIRO_OPERATOR_ADD;
+            cairoOperator = CAIRO_OPERATOR_ADD;
             break;
         case SaturateOperator:
-            cairo_operator = CAIRO_OPERATOR_SATURATE;
+            cairoOperator = CAIRO_OPERATOR_SATURATE;
             break;
         default:
             IDEAL_DEBUG_WARNING("unknown painter operator");
-            cairo_operator = CAIRO_OPERATOR_OVER;
+            cairoOperator = CAIRO_OPERATOR_OVER;
             break;
     }
-    cairo_set_operator(D_I->m_cairo, cairo_operator);
+    cairo_set_operator(D_I->m_cairo, cairoOperator);
 }
 
 void Painter::setAntialias(Antialias antialias)
 {
-    cairo_antialias_t cairo_antialias = CAIRO_ANTIALIAS_DEFAULT;
+    cairo_antialias_t cairoAntialias;
     switch (antialias) {
         case DefaultAntialias:
-            cairo_antialias = CAIRO_ANTIALIAS_DEFAULT;
+            cairoAntialias = CAIRO_ANTIALIAS_DEFAULT;
             break;
         case NoneAntialias:
-            cairo_antialias = CAIRO_ANTIALIAS_NONE;
+            cairoAntialias = CAIRO_ANTIALIAS_NONE;
             break;
         case GrayAntialias:
-            cairo_antialias = CAIRO_ANTIALIAS_GRAY;
+            cairoAntialias = CAIRO_ANTIALIAS_GRAY;
             break;
         case SubpixelAntialias:
-            cairo_antialias = CAIRO_ANTIALIAS_SUBPIXEL;
+            cairoAntialias = CAIRO_ANTIALIAS_SUBPIXEL;
             break;
         default:
             IDEAL_DEBUG_WARNING("unknown antialias parameter");
+            cairoAntialias = CAIRO_ANTIALIAS_DEFAULT;
             break;
     }
-    cairo_set_antialias(D_I->m_cairo, cairo_antialias);
+    cairo_set_antialias(D_I->m_cairo, cairoAntialias);
 }
 
 void Painter::saveState()
@@ -140,6 +141,71 @@ void Painter::restoreState()
 void Painter::setPenColor(double red, double green, double blue, double alpha)
 {
     cairo_set_source_rgba(D_I->m_cairo, red, green, blue, alpha);
+}
+
+void Painter::setLineWidth(double width)
+{
+    cairo_set_line_width(D_I->m_cairo, width);
+}
+
+void Painter::setFillRule(FillRule fillRule)
+{
+    cairo_fill_rule_t cairoFillRule;
+    switch (fillRule) {
+        case WindingFillRule:
+            cairoFillRule = CAIRO_FILL_RULE_WINDING;
+            break;
+        case EvenOddFillRule:
+            cairoFillRule = CAIRO_FILL_RULE_EVEN_ODD;
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown fill rule parameter");
+            cairoFillRule = CAIRO_FILL_RULE_WINDING;
+            break;
+    }
+    cairo_set_fill_rule(D_I->m_cairo, cairoFillRule);
+}
+
+void Painter::setLineCap(LineCap lineCap)
+{
+    cairo_line_cap_t cairoLineCap;
+    switch (lineCap) {
+        case ButtLineCap:
+            cairoLineCap = CAIRO_LINE_CAP_BUTT;
+            break;
+        case RoundLineCap:
+            cairoLineCap = CAIRO_LINE_CAP_ROUND;
+            break;
+        case SquareLineCap:
+            cairoLineCap = CAIRO_LINE_CAP_SQUARE;
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown line cap parameter");
+            cairoLineCap = CAIRO_LINE_CAP_BUTT;
+            break;
+    }
+    cairo_set_line_cap(D_I->m_cairo, cairoLineCap);
+}
+
+void Painter::setLineJoin(LineJoin lineJoin)
+{
+    cairo_line_join_t cairoLineJoin;
+    switch (lineJoin) {
+        case MiterLineJoin:
+            cairoLineJoin = CAIRO_LINE_JOIN_MITER;
+            break;
+        case RoundLineJoin:
+            cairoLineJoin = CAIRO_LINE_JOIN_ROUND;
+            break;
+        case BevelLineJoin:
+            cairoLineJoin = CAIRO_LINE_JOIN_BEVEL;
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown line join parameter");
+            cairoLineJoin = CAIRO_LINE_JOIN_MITER;
+            break;
+    }
+    cairo_set_line_join(D_I->m_cairo, cairoLineJoin);
 }
 
 void Painter::drawPoint(const Point &point)

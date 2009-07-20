@@ -73,6 +73,30 @@ public:
     void restoreState();
 
     void setPenColor(double red, double green, double blue, double alpha = 1.0);
+    void setLineWidth(double width);
+
+    enum FillRule {
+        WindingFillRule = 0,
+        EvenOddFillRule
+    };
+
+    void setFillRule(FillRule fillRule);
+
+    enum LineCap {
+        ButtLineCap = 0,
+        RoundLineCap,
+        SquareLineCap
+    };
+
+    void setLineCap(LineCap lineCap);
+
+    enum LineJoin {
+        MiterLineJoin = 0,
+        RoundLineJoin,
+        BevelLineJoin
+    };
+
+    void setLineJoin(LineJoin lineJoin);
 
     void drawPoint(const Point &point);
     void drawLine(const Point &point1, const Point &point2);
