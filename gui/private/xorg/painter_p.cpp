@@ -208,6 +208,31 @@ void Painter::setLineJoin(LineJoin lineJoin)
     cairo_set_line_join(D_I->m_cairo, cairoLineJoin);
 }
 
+void Painter::setDash(const double *dashes, int numDashes, double offset)
+{
+    cairo_set_dash(D_I->m_cairo, dashes, numDashes, offset);
+}
+
+void Painter::setMiterLimit(double miterLimit)
+{
+    cairo_set_miter_limit(D_I->m_cairo, miterLimit);
+}
+
+void Painter::translate(double tx, double ty)
+{
+    cairo_translate(D_I->m_cairo, tx, ty);
+}
+
+void Painter::scale(double sx, double sy)
+{
+    cairo_scale(D_I->m_cairo, sx, sy);
+}
+
+void Painter::rotate(double angle)
+{
+    cairo_rotate(D_I->m_cairo, angle);
+}
+
 void Painter::drawPoint(const Point &point)
 {
     drawRectangle(point, Size(2, 2));

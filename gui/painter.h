@@ -98,6 +98,16 @@ public:
 
     void setLineJoin(LineJoin lineJoin);
 
+    void setDash(const double *dashes, int numDashes, double offset);
+
+    void setMiterLimit(double miterLimit);
+
+    void translate(double tx, double ty);
+
+    void scale(double sx, double sy);
+
+    void rotate(double angle);
+
     void drawPoint(const Point &point);
     void drawLine(const Point &point1, const Point &point2);
     void drawRectangle(const Point &topLeft, const Size &size);
