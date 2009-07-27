@@ -27,6 +27,7 @@
 
 #include "application_p.h"
 #include "widget_p.h"
+#include "matrix_p.h"
 
 namespace IdealGUI {
 
@@ -231,6 +232,16 @@ void Painter::scale(double sx, double sy)
 void Painter::rotate(double angle)
 {
     cairo_rotate(D_I->m_cairo, angle);
+}
+
+void Painter::transform(const Matrix &matrix)
+{
+    cairo_transform(D_I->m_cairo, &matrix.d->m_matrix);
+}
+
+void Painter::setMatrix(const Matrix &matrix)
+{
+    cairo_set_matrix(D_I->m_cairo, &matrix.d->m_matrix);
 }
 
 void Painter::drawPoint(const Point &point)

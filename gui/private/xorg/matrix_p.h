@@ -18,41 +18,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef MATRIX_P_H_XORG
+#define MATRIX_P_H_XORG
 
-#include <ideal_export.h>
+#include <gui/matrix.h>
+#include <cairo.h>
 
 namespace IdealGUI {
 
-/**
-  * @class Matrix matrix.h gui/matrix.h
-  *
-  * @author Rafael Fernández López <ereslibre@ereslibre.es>
-  */
-class IDEAL_EXPORT Matrix
+class Matrix::Private
 {
-    friend class Painter;
-
 public:
-    Matrix(double xx, double yx,
-           double xy, double yy,
-           double x0, double y0);
-    Matrix(const Matrix &matrix);
-    ~Matrix();
-
-    static Matrix identity();
-    static Matrix translate(double tx, double ty);
-    static Matrix scale(double sx, double sy);
-    static Matrix rotate(double radians);
-
-private:
-    Matrix();
-
-    class Private;
-    Private *const d;
+    cairo_matrix_t m_matrix;
 };
 
 }
 
-#endif
+#endif //MATRIX_P_H_XORG

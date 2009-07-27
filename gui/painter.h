@@ -23,6 +23,7 @@
 
 #include <ideal_export.h>
 #include <core/ideal_string.h>
+#include <gui/matrix.h>
 #include <gui/point.h>
 #include <gui/size.h>
 
@@ -107,6 +108,10 @@ public:
     void scale(double sx, double sy);
 
     void rotate(double angle);
+
+    void transform(const Matrix &matrix);
+
+    void setMatrix(const Matrix &matrix);
 
     void drawPoint(const Point &point);
     void drawLine(const Point &point1, const Point &point2);

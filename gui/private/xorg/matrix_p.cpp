@@ -18,17 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gui/matrix.h>
-
-#include <cairo.h>
+#include "matrix_p.h"
 
 namespace IdealGUI {
-
-class Matrix::Private
-{
-public:
-    cairo_matrix_t m_matrix;
-};
 
 Matrix::Matrix(double xx, double yx, double xy, double yy, double x0, double y0)
     : d(new Private)
