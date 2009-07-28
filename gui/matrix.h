@@ -50,9 +50,10 @@ private:
     Matrix();
 
     class Private;
+    class PrivateImpl;
     Private *const d;
 };
 
 }
 
-#endif
+#endif //MATRIX_H

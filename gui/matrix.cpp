@@ -18,27 +18,33 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef MATRIX_P_H_XORG
-#define MATRIX_P_H_XORG
-
-#include <cairo.h>
-
-#include <gui/private/matrix_p.h>
+#include "matrix.h"
+#include "private/matrix_p.h"
 
 namespace IdealGUI {
 
-class Matrix::PrivateImpl
-    : public Matrix::Private
+Matrix::Private::~Private()
 {
-public:
-    PrivateImpl(double xx, double yx, double xy, double yy, double x0, double y0);
-    PrivateImpl(const Matrix &matrix);
-    PrivateImpl();
-    virtual ~PrivateImpl();
-
-    cairo_matrix_t m_matrix;
-};
-
 }
 
-#endif //MATRIX_P_H_XORG
+Matrix::Matrix(double xx, double yx, double xy, double yy, double x0, double y0)
+    : d(new PrivateImpl(xx, yx, xy, yy, x0, y0))
+{
+}
+
+Matrix::Matrix(const Matrix &matrix)
+    : d(new PrivateImpl(matrix))
+{
+}
+
+Matrix::~Matrix()
+{
+    delete d;
+}
+
+Matrix::Matrix()
+    : d(new PrivateImpl)
+{
+}
+
+}

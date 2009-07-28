@@ -18,58 +18,61 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <gui/matrix.h>
 #include "matrix_p.h"
 
 namespace IdealGUI {
 
-Matrix::Matrix(double xx, double yx, double xy, double yy, double x0, double y0)
-    : d(new Private)
+Matrix::PrivateImpl::PrivateImpl(double xx, double yx, double xy, double yy, double x0, double y0)
 {
-    cairo_matrix_init(&d->m_matrix, xx, yx, xy, yy, x0, y0);
+    cairo_matrix_init(&m_matrix, xx, yx, xy, yy, x0, y0);
 }
 
-Matrix::Matrix(const Matrix &matrix)
-    : d(new Private)
+Matrix::PrivateImpl::PrivateImpl(const Matrix &matrix)
 {
-    cairo_matrix_init(&d->m_matrix, matrix.d->m_matrix.xx, matrix.d->m_matrix.yx, matrix.d->m_matrix.xy, matrix.d->m_matrix.yy, matrix.d->m_matrix.x0, matrix.d->m_matrix.y0);
+    cairo_matrix_init(&m_matrix,
+                      static_cast<PrivateImpl*>(matrix.d)->m_matrix.xx,
+                      static_cast<PrivateImpl*>(matrix.d)->m_matrix.yx,
+                      static_cast<PrivateImpl*>(matrix.d)->m_matrix.xy,
+                      static_cast<PrivateImpl*>(matrix.d)->m_matrix.yy,
+                      static_cast<PrivateImpl*>(matrix.d)->m_matrix.x0,
+                      static_cast<PrivateImpl*>(matrix.d)->m_matrix.y0);
 }
 
-Matrix::~Matrix()
+Matrix::PrivateImpl::PrivateImpl()
 {
-    delete d;
+}
+
+Matrix::PrivateImpl::~PrivateImpl()
+{
 }
 
 Matrix Matrix::identity()
 {
     Matrix m;
-    cairo_matrix_init_identity(&m.d->m_matrix);
+    cairo_matrix_init_identity(&static_cast<PrivateImpl*>(m.d)->m_matrix);
     return m;
 }
 
 Matrix Matrix::translate(double tx, double ty)
 {
     Matrix m;
-    cairo_matrix_init_translate(&m.d->m_matrix, tx, ty);
+    cairo_matrix_init_translate(&static_cast<PrivateImpl*>(m.d)->m_matrix, tx, ty);
     return m;
 }
 
 Matrix Matrix::scale(double sx, double sy)
 {
     Matrix m;
-    cairo_matrix_init_scale(&m.d->m_matrix, sx, sy);
+    cairo_matrix_init_scale(&static_cast<PrivateImpl*>(m.d)->m_matrix, sx, sy);
     return m;
 }
 
 Matrix Matrix::rotate(double radians)
 {
     Matrix m;
-    cairo_matrix_init_rotate(&m.d->m_matrix, radians);
+    cairo_matrix_init_rotate(&static_cast<PrivateImpl*>(m.d)->m_matrix, radians);
     return m;
-}
-
-Matrix::Matrix()
-    : d(new Private)
-{
 }
 
 }

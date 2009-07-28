@@ -236,12 +236,12 @@ void Painter::rotate(double angle)
 
 void Painter::transform(const Matrix &matrix)
 {
-    cairo_transform(D_I->m_cairo, &matrix.d->m_matrix);
+    cairo_transform(D_I->m_cairo, &static_cast<Matrix::PrivateImpl*>(matrix.d)->m_matrix);
 }
 
 void Painter::setMatrix(const Matrix &matrix)
 {
-    cairo_set_matrix(D_I->m_cairo, &matrix.d->m_matrix);
+    cairo_set_matrix(D_I->m_cairo, &static_cast<Matrix::PrivateImpl*>(matrix.d)->m_matrix);
 }
 
 void Painter::drawPoint(const Point &point)
