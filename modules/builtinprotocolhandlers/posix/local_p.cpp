@@ -157,6 +157,10 @@ void BuiltinProtocolHandlersLocal::stat(const Uri &uri)
     emit(statResult, d->stat(uri));
 }
 
+void BuiltinProtocolHandlersLocal::get(const Uri &uri)
+{
+}
+
 bool BuiltinProtocolHandlersLocal::canBeReusedWith(const Uri &uri) const
 {
     return uri.scheme().empty() || !uri.scheme().compare("file");

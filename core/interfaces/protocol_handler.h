@@ -99,14 +99,19 @@ public:
     virtual void mkdir(const Uri &uri) = 0;
 
     /**
-      * Deletes recursively @p path.
+      * Deletes recursively @p uri.
       */
     virtual void rm(const Uri &uri) = 0;
 
     /**
-      * Stats path @p path.
+      * Stats path @p uri.
       */
     virtual void stat(const Uri &uri) = 0;
+
+    /**
+      * Retrieves the file at @p uri.
+      */
+    virtual void get(const Uri &uri) = 0;
 
     /**
       * @return Whether this protocol handler can be reused with @p uri. For example, if you have
@@ -121,6 +126,7 @@ public:
 
 public:
     IDEAL_SIGNAL(statResult, StatResult);
+    IDEAL_SIGNAL(dataRead, String);
 
 private:
     unsigned int m_weight;

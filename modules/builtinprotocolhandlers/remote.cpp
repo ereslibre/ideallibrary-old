@@ -31,6 +31,14 @@ static size_t discardOutput(void*, size_t size, size_t nmemb, void*)
     return size * nmemb;
 }
 
+static size_t processOutput(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+    String res(static_cast<char*>(ptr));
+    BuiltinProtocolHandlersRemote *const protocolHandler = static_cast<BuiltinProtocolHandlersRemote*>(stream);
+    protocolHandler->emit(protocolHandler->dataRead, res);
+    return size * nmemb;
+}
+
 class BuiltinProtocolHandlersRemote::Private
 {
 public:
@@ -53,11 +61,11 @@ public:
             m_curl = curl_easy_init();
             curl_easy_setopt(m_curl, CURLOPT_NOSIGNAL, 1L);
             curl_easy_setopt(m_curl, CURLOPT_VERBOSE, 0L);
-            curl_easy_setopt(m_curl, CURLOPT_NOBODY, 1L);
-            curl_easy_setopt(m_curl, CURLOPT_FILETIME, 1L);
-            curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, discardOutput);
         }
         curl_easy_setopt(m_curl, CURLOPT_URL, uri.uri().data());
+        curl_easy_setopt(m_curl, CURLOPT_NOBODY, 1L);
+        curl_easy_setopt(m_curl, CURLOPT_FILETIME, 1L);
+        curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, discardOutput);
         StatResult statResult;
         statResult.errorCode = ProtocolHandler::Unknown;
         statResult.exists = false;
@@ -141,6 +149,15 @@ void BuiltinProtocolHandlersRemote::stat(const Uri &uri)
 {
     d->m_uri = uri;
     emit(statResult, d->stat(uri));
+}
+
+void BuiltinProtocolHandlersRemote::get(const Uri &uri)
+{
+    curl_easy_setopt(d->m_curl, CURLOPT_URL, uri.uri().data());
+    curl_easy_setopt(d->m_curl, CURLOPT_NOBODY, 0L);
+    curl_easy_setopt(d->m_curl, CURLOPT_FILETIME, 0L);
+    curl_easy_setopt(d->m_curl, CURLOPT_WRITEDATA, this);
+    curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, processOutput);
 }
 
 bool BuiltinProtocolHandlersRemote::canBeReusedWith(const Uri &uri) const
