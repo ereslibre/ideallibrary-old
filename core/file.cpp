@@ -62,6 +62,7 @@ public:
     void cacheOrDiscard(ProtocolHandler *protocolHandler);
 
     void fetchInfo();
+    void get();
 
     struct LessThanProtocolHandler
     {
@@ -141,6 +142,18 @@ void File::Private::Job::fetchInfo()
     }
 }
 
+void File::Private::Job::get()
+{
+    m_protocolHandler = findProtocolHandler();
+    if (m_protocolHandler) {
+        connect(m_protocolHandler->dataRead, m_file->dataRead);
+        m_protocolHandler->get(m_file->d->m_uri);
+        disconnect(m_protocolHandler->dataRead, m_file->dataRead);
+    } else {
+        IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
+    }
+}
+
 bool File::Private::Job::LessThanProtocolHandler::operator()(ProtocolHandler *&left, ProtocolHandler *&right)
 {
     return left->m_weight < right->m_weight;
@@ -163,6 +176,10 @@ bool File::Private::Job::ExtensionLoadDecider::loadExtension(const Module::Exten
 
 void File::Private::Job::run()
 {
+    if (m_operation == FileGet) {
+        get();
+        return;
+    }
     bool wasStated = true;
     if (!m_file->d->m_stated) {
         fetchInfo();
