@@ -52,7 +52,8 @@ public:
         FileOwnerGroup,
         FilePermissions,
         FileSize,
-        FileContentType
+        FileContentType,
+        FileGet
     };
 
     Job(File *file, Type type);
@@ -221,6 +222,7 @@ File::File(const Uri &uri, Object *parent)
     , IDEAL_SIGNAL_INIT(permissionsResult, Permissions)
     , IDEAL_SIGNAL_INIT(sizeResult, double)
     , IDEAL_SIGNAL_INIT(contentTypeResult, String)
+    , IDEAL_SIGNAL_INIT(dataRead, String)
     , IDEAL_SIGNAL_INIT(error, ProtocolHandler::ErrorCode)
     , d(new Private(this))
 {
@@ -279,6 +281,13 @@ Thread *File::contentType(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileContentType;
+    return job;
+}
+
+Thread *File::get(Thread::Type type) const
+{
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
+    job->m_operation = Private::Job::FileGet;
     return job;
 }
 

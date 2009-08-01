@@ -164,6 +164,11 @@ public:
     Thread *contentType(Thread::Type type = Thread::NoJoinable) const;
 
     /**
+      * @return A constructed thread object that will be able to run asynchronously, signaling dataRead several times until the file has been reached EOF or it has been cancelled, or the maximum amount or bytes for that file has been reached.
+      */
+    Thread *get(Thread::Type type = Thread::NoJoinable) const;
+
+    /**
       * @return The URI of the file object.
       */
     Uri uri() const;
@@ -207,6 +212,11 @@ public:
       * The content type of this file.
       */
     IDEAL_SIGNAL(contentTypeResult, String);
+
+    /**
+      * The data ready to be read.
+      */
+    IDEAL_SIGNAL(dataRead, String);
 
     /**
       * If for any reason, the request could not finish correctly, this signal will be emitted with
