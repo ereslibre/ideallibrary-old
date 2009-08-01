@@ -59,6 +59,11 @@ public:
         }
     }
 
+    void fileData(const String &contents)
+    {
+        std::cout << contents;
+    }
+
 private:
     int numReceived;
     Mutex numReceivedMutex;
@@ -131,6 +136,16 @@ int main(int argc, char **argv)
         sizeJob->exec();
         sizeJob->join();
     }
+
+    IDEAL_SDEBUG("");
+    IDEAL_SDEBUG("*** Retrieving a Linux Kernel README synchronously");
+    IDEAL_SDEBUG("");
+
+    File kernelReadme("http://www.kernel.org/pub/linux/kernel/README", &app);
+    Object::connect(kernelReadme.dataRead, &app, &MyApplication::fileData);
+    Thread *contentsJob = kernelReadme.get(Thread::Joinable);
+    contentsJob->exec();
+    contentsJob->join();
 
     IDEAL_SDEBUG("");
     IDEAL_SDEBUG("*** Completely asynchronous way coming");

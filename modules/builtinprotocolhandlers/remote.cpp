@@ -153,11 +153,19 @@ void BuiltinProtocolHandlersRemote::stat(const Uri &uri)
 
 void BuiltinProtocolHandlersRemote::get(const Uri &uri)
 {
+    d->m_uri = uri;
+    if (!d->m_curl) {
+        d->m_curl = curl_easy_init();
+        curl_easy_setopt(d->m_curl, CURLOPT_NOSIGNAL, 1L);
+        curl_easy_setopt(d->m_curl, CURLOPT_VERBOSE, 0L);
+    }
     curl_easy_setopt(d->m_curl, CURLOPT_URL, uri.uri().data());
     curl_easy_setopt(d->m_curl, CURLOPT_NOBODY, 0L);
     curl_easy_setopt(d->m_curl, CURLOPT_FILETIME, 0L);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, processOutput);
+    // TODO: handle return value
+    curl_easy_perform(d->m_curl);
 }
 
 bool BuiltinProtocolHandlersRemote::canBeReusedWith(const Uri &uri) const
