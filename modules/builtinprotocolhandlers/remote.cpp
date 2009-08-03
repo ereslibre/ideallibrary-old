@@ -165,7 +165,10 @@ void BuiltinProtocolHandlersRemote::get(const Uri &uri)
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, processOutput);
     // TODO: handle return value
-    curl_easy_perform(d->m_curl);
+    const CURLcode retCode = curl_easy_perform(d->m_curl);
+    if (retCode != CURLE_OK) {
+
+    }
 }
 
 bool BuiltinProtocolHandlersRemote::canBeReusedWith(const Uri &uri) const

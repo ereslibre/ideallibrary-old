@@ -18,51 +18,24 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "byte_stream.h"
+#ifndef BYTESTREAM_TEST_H
+#define BYTESTREAM_TEST_H
 
-#include <string.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include <core/ideal_string.h>
 
-namespace IdealCore {
-
-class ByteStream::Private
+class ByteStreamTest
+    : public CppUnit::TestFixture
 {
+    CPPUNIT_TEST_SUITE(ByteStreamTest);
+    CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST_SUITE_END();
+
 public:
-    Private(const char *data)
-        :  m_data(0)
-    {
-        const size_t size = strlen(data);
-        m_data = new char[size + 1];
-        memcpy(m_data, data, size);
-        m_data[size] = '\0';
-    }
+    void setUp();
+    void tearDown();
 
-    ~Private()
-    {
-        delete m_data;
-    }
-
-    char *m_data;
+    void testConstructor();
 };
 
-ByteStream::ByteStream(const char *data)
-    : d(new Private(data))
-{
-}
-
-ByteStream::~ByteStream()
-{
-    delete d;
-}
-
-const char *ByteStream::data() const
-{
-    return d->m_data;
-}
-
-}
-
-std::ostream &operator<<(std::ostream &stream, const IdealCore::ByteStream &byteStream)
-{
-    stream << byteStream.data();
-    return stream;
-}
+#endif //BYTESTREAM_TEST_H
