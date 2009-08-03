@@ -43,7 +43,7 @@ class IDEAL_EXPORT Option
 
 public:
     Option();
-    ~Option();
+    virtual ~Option();
 
     /**
       * @return whether this option was added to the options of the application using

@@ -30,7 +30,7 @@ class IDEAL_EXPORT Size
 public:
     Size(double width, double height);
     Size(const Size &size);
-    ~Size();
+    virtual ~Size();
 
     double width() const;
     void setWidth(double width);

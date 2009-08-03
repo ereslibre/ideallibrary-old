@@ -39,7 +39,7 @@ public:
            double xy, double yy,
            double x0, double y0);
     Matrix(const Matrix &matrix);
-    ~Matrix();
+    virtual ~Matrix();
 
     static Matrix identity();
     static Matrix translate(double tx, double ty);

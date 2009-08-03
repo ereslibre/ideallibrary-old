@@ -62,7 +62,7 @@ public:
     /**
       * @note This will not destroy the contents.
       */
-    ~GeniousPointer();
+    virtual ~GeniousPointer();
 
     /**
       * @internal

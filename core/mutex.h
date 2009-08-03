@@ -134,7 +134,7 @@ class IDEAL_EXPORT ContextMutexLocker
 {
 public:
     ContextMutexLocker(Mutex &mutex);
-    ~ContextMutexLocker();
+    virtual ~ContextMutexLocker();
 
 private:
     Mutex &m_mutex;

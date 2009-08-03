@@ -30,7 +30,7 @@ class IDEAL_EXPORT Point
 public:
     Point(double x, double y);
     Point(const Point &point);
-    ~Point();
+    virtual ~Point();
 
     double x() const;
     void setX(double x);

@@ -34,7 +34,7 @@ class IDEAL_EXPORT Path
 {
 public:
     Path();
-    ~Path();
+    virtual ~Path();
 
     enum Type {
         Absolute = 0,

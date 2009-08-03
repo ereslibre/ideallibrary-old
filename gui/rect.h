@@ -33,7 +33,7 @@ class IDEAL_EXPORT Rect
 public:
     Rect(const Point &topLeft, const Size &size);
     Rect(const Rect &rect);
-    ~Rect();
+    virtual ~Rect();
 
     Point topLeft() const;
     void setTopLeft(const Point &topLeft);
