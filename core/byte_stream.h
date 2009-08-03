@@ -27,7 +27,7 @@
 namespace IdealCore {
 
 /**
-  * @class ByteStream bytestream.h core/bytestream.h
+  * @class ByteStream byte_stream.h core/byte_stream.h
   *
   * A stream of bytes.
   *
