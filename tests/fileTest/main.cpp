@@ -59,7 +59,7 @@ public:
         }
     }
 
-    void fileData(const String &contents)
+    void fileData(const ByteStream &contents)
     {
         std::cout << contents;
     }

@@ -23,6 +23,7 @@
 
 #include <ideal_export.h>
 #include <core/extension.h>
+#include <core/byte_stream.h>
 
 namespace IdealCore {
 
@@ -126,7 +127,7 @@ public:
 
 public:
     IDEAL_SIGNAL(statResult, StatResult);
-    IDEAL_SIGNAL(dataRead, String);
+    IDEAL_SIGNAL(dataRead, ByteStream);
 
 private:
     unsigned int m_weight;

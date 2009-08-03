@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "bytestream.h"
+#include "byte_stream.h"
 
 namespace IdealCore {
 
@@ -50,3 +50,8 @@ const char *ByteStream::data() const
 
 }
 
+std::ostream &operator<<(std::ostream &stream, const IdealCore::ByteStream &byteStream)
+{
+    stream << byteStream.data();
+    return stream;
+}

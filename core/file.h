@@ -216,7 +216,7 @@ public:
     /**
       * The data ready to be read.
       */
-    IDEAL_SIGNAL(dataRead, String);
+    IDEAL_SIGNAL(dataRead, ByteStream);
 
     /**
       * If for any reason, the request could not finish correctly, this signal will be emitted with

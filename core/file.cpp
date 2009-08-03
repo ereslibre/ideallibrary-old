@@ -239,7 +239,7 @@ File::File(const Uri &uri, Object *parent)
     , IDEAL_SIGNAL_INIT(permissionsResult, Permissions)
     , IDEAL_SIGNAL_INIT(sizeResult, double)
     , IDEAL_SIGNAL_INIT(contentTypeResult, String)
-    , IDEAL_SIGNAL_INIT(dataRead, String)
+    , IDEAL_SIGNAL_INIT(dataRead, ByteStream)
     , IDEAL_SIGNAL_INIT(error, ProtocolHandler::ErrorCode)
     , d(new Private(this))
 {

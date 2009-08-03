@@ -33,7 +33,7 @@ static size_t discardOutput(void*, size_t size, size_t nmemb, void*)
 
 static size_t processOutput(void *ptr, size_t size, size_t nmemb, void *stream)
 {
-    String res(static_cast<char*>(ptr));
+    ByteStream res(static_cast<char*>(ptr));
     BuiltinProtocolHandlersRemote *const protocolHandler = static_cast<BuiltinProtocolHandlersRemote*>(stream);
     protocolHandler->emit(protocolHandler->dataRead, res);
     return size * nmemb;

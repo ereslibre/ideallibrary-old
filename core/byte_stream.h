@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef BYTESTREAM_H
-#define BYTESTREAM_H
+#ifndef BYTE_STREAM_H
+#define BYTE_STREAM_H
 
 #include <ideal_export.h>
 #include <core/ideal_string.h>
@@ -48,4 +48,6 @@ private:
 
 }
 
-#endif //BYTESTREAM_H
+IDEAL_EXPORT std::ostream &operator<<(std::ostream &stream, const IdealCore::ByteStream &byteStream);
+
+#endif //BYTE_STREAM_H
