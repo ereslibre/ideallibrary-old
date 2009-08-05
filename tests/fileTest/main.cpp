@@ -158,7 +158,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** Retrieving the full README now");
         IDEAL_SDEBUG("");
 
-        Thread *contentsJob = kernelReadme.get(Thread::Joinable);
+        Thread *contentsJob = kernelReadme.get(0, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
     }
