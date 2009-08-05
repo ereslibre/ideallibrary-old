@@ -62,7 +62,6 @@ public:
     };
 
     struct StatResult {
-        ErrorCode errorCode; ///< Whether happened an error or not when stating.
         bool exists;         ///< Whether this file exists or not.
         int type;            ///< The type of this file. Matches File::Type.
         String ownerUser;    ///< The user owner of this file.
@@ -128,6 +127,7 @@ public:
 public:
     IDEAL_SIGNAL(statResult, StatResult);
     IDEAL_SIGNAL(dataRead, ByteStream);
+    IDEAL_SIGNAL(error, ErrorCode);
 
 private:
     unsigned int m_weight;

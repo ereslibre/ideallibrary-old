@@ -32,8 +32,7 @@
 namespace IdealCore {
 
 File::Private::Private(File *q)
-    : m_errorCode(ProtocolHandler::Unknown)
-    , m_stated(false)
+    : m_stated(false)
     , m_exists(false)
     , m_type(UnknownType)
     , m_permissions(UnknownPermissions)
@@ -135,8 +134,18 @@ void File::Private::Job::fetchInfo()
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
         connect(m_protocolHandler->statResult, m_file, &File::statResultSlot);
+        if (m_operation == FileExists) {
+            connect(m_protocolHandler->error, m_file, &File::errorSlotForExists);
+        } else {
+            connect(m_protocolHandler->error, m_file, &File::errorSlot);
+        }
         m_protocolHandler->stat(m_file->d->m_uri);
         disconnect(m_protocolHandler->statResult, m_file, &File::statResultSlot);
+        if (m_operation == FileExists) {
+            disconnect(m_protocolHandler->error, m_file, &File::errorSlotForExists);
+        } else {
+            disconnect(m_protocolHandler->error, m_file, &File::errorSlot);
+        }
     } else {
         IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
     }
@@ -147,8 +156,10 @@ void File::Private::Job::get()
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
         connect(m_protocolHandler->dataRead, m_file->dataRead);
+        connect(m_protocolHandler->error, m_file->error);
         m_protocolHandler->get(m_file->d->m_uri);
         disconnect(m_protocolHandler->dataRead, m_file->dataRead);
+        disconnect(m_protocolHandler->error, m_file->error);
     } else {
         IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
     }
@@ -190,11 +201,6 @@ void File::Private::Job::run()
         m_file->d->m_stated = true;
     }
     if (m_file->d->m_errorCode != ProtocolHandler::NoError) {
-        if (m_operation == FileExists && m_file->d->m_errorCode == ProtocolHandler::FileNotFound) {
-            m_file->emit(m_file->existsResult, false);
-        } else {
-            m_file->emit(m_file->error, m_file->d->m_errorCode);
-        }
         delete m_protocolHandler;
         return;
     }
@@ -315,7 +321,7 @@ Uri File::uri() const
 
 void File::statResultSlot(ProtocolHandler::StatResult statResult)
 {
-    d->m_errorCode = statResult.errorCode;
+    d->m_errorCode = ProtocolHandler::NoError;
     d->m_exists = statResult.exists;
     d->m_type = (Type) statResult.type;
     d->m_ownerUser = statResult.ownerUser;
@@ -323,6 +329,22 @@ void File::statResultSlot(ProtocolHandler::StatResult statResult)
     d->m_permissions = (Permissions) statResult.permissions;
     d->m_size = statResult.size;
     d->m_contentType = statResult.contentType;
+}
+
+void File::errorSlot(ProtocolHandler::ErrorCode errorCode)
+{
+    d->m_errorCode = errorCode;
+    emit(error, errorCode);
+}
+
+void File::errorSlotForExists(ProtocolHandler::ErrorCode errorCode)
+{
+    d->m_errorCode = errorCode;
+    if (errorCode == ProtocolHandler::FileNotFound) {
+        emit(existsResult, false);
+    } else {
+        emit(error, errorCode);
+    }
 }
 
 }

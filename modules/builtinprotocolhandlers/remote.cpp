@@ -57,6 +57,7 @@ public:
 
     StatResult stat(const Uri &uri)
     {
+        m_success = false;
         if (!m_curl) {
             m_curl = curl_easy_init();
             curl_easy_setopt(m_curl, CURLOPT_NOSIGNAL, 1L);
@@ -67,7 +68,6 @@ public:
         curl_easy_setopt(m_curl, CURLOPT_FILETIME, 1L);
         curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, discardOutput);
         StatResult statResult;
-        statResult.errorCode = ProtocolHandler::Unknown;
         statResult.exists = false;
         statResult.type = File::UnknownType;
         statResult.ownerUser = String();
@@ -81,7 +81,6 @@ public:
         const CURLcode retCode = curl_easy_perform(m_curl);
         switch (retCode) {
             case CURLE_OK: {
-                    statResult.errorCode = ProtocolHandler::NoError;
                     long serverResponse;
                     curl_easy_getinfo(m_curl, CURLINFO_RESPONSE_CODE, &serverResponse);
                     if (serverResponse >= 200 && serverResponse < 400) {
@@ -93,23 +92,24 @@ public:
                         if (contentType) {
                             statResult.contentType = contentType;
                         }
+                        m_success = true;
                     } else {
-                        statResult.errorCode = ProtocolHandler::FileNotFound;
+                        emit(q->error, FileNotFound);
                     }
                 }
                 break;
             case CURLE_FTP_COULDNT_RETR_FILE:
             case CURLE_REMOTE_FILE_NOT_FOUND:
-                statResult.errorCode = ProtocolHandler::FileNotFound;
+                emit(q->error, FileNotFound);
                 break;
             case CURLE_LOGIN_DENIED:
-                statResult.errorCode = ProtocolHandler::LoginFailed;
+                emit(q->error, LoginFailed);
                 break;
             case CURLE_COULDNT_RESOLVE_HOST:
-                statResult.errorCode = ProtocolHandler::CouldNotResolveHost;
+                emit(q->error, CouldNotResolveHost);
                 break;
             case CURLE_COULDNT_CONNECT:
-                statResult.errorCode = ProtocolHandler::CouldNotConnect;
+                emit(q->error, CouldNotConnect);
                 break;
             default:
                 IDEAL_DEBUG_WARNING("unknown error code: " << retCode);
@@ -120,6 +120,7 @@ public:
 
     CURL                          *m_curl;
     Uri                            m_uri;
+    bool                           m_success;
     BuiltinProtocolHandlersRemote *q;
 };
 
@@ -148,7 +149,10 @@ void BuiltinProtocolHandlersRemote::rm(const Uri &uri)
 void BuiltinProtocolHandlersRemote::stat(const Uri &uri)
 {
     d->m_uri = uri;
-    emit(statResult, d->stat(uri));
+    const StatResult statRes = d->stat(uri);
+    if (d->m_success) {
+        emit(statResult, statRes);
+    }
 }
 
 void BuiltinProtocolHandlersRemote::get(const Uri &uri)

@@ -34,12 +34,17 @@ namespace IdealCore {
 class BuiltinProtocolHandlersLocal::Private
 {
 public:
+    Private(BuiltinProtocolHandlersLocal *q)
+        : q(q)
+    {
+    }
+
     StatResult stat(const Uri &uri)
     {
+        m_success = false;
         StatResult statRes;
         {
             struct stat statResult;
-            statRes.errorCode = ProtocolHandler::Unknown;
             statRes.exists = false;
             statRes.type = File::UnknownType;
             statRes.ownerUser = String();
@@ -51,7 +56,6 @@ public:
             statRes.contentType = String();
             statRes.uri = uri;
             if (!::stat(uri.path().data(), &statResult)) {
-                statRes.errorCode = ProtocolHandler::NoError;
                 statRes.exists = true;
                 statRes.type = File::UnknownType;
                 if (S_ISREG(statResult.st_mode)) {
@@ -109,14 +113,15 @@ public:
                 statRes.size = statResult.st_size;
                 statRes.lastAccessed = statResult.st_atime;
                 statRes.lastModified = statResult.st_mtime;
+                m_success = true;
             } else {
                 switch (errno) {
                     case ENOENT:
                     case ENOTDIR:
-                        statRes.errorCode = ProtocolHandler::FileNotFound;
+                        emit(q->error, FileNotFound);
                         break;
                     case EACCES:
-                        statRes.errorCode = ProtocolHandler::InsufficientPermissions;
+                        emit(q->error, InsufficientPermissions);
                         break;
                     default:
                         break;
@@ -125,10 +130,13 @@ public:
         }
         return statRes;
     }
+
+    bool                          m_success;
+    BuiltinProtocolHandlersLocal *q;
 };
 
 BuiltinProtocolHandlersLocal::BuiltinProtocolHandlersLocal()
-    : d(new Private)
+    : d(new Private(this))
 {
 }
 
@@ -154,7 +162,10 @@ void BuiltinProtocolHandlersLocal::rm(const Uri &uri)
 
 void BuiltinProtocolHandlersLocal::stat(const Uri &uri)
 {
-    emit(statResult, d->stat(uri));
+    const StatResult statRes = d->stat(uri);
+    if (d->m_success) {
+        emit(statResult, statRes);
+    }
 }
 
 void BuiltinProtocolHandlersLocal::get(const Uri &uri)

@@ -228,6 +228,8 @@ public:
 
 private:
     void statResultSlot(ProtocolHandler::StatResult statResult);
+    void errorSlot(ProtocolHandler::ErrorCode errorCode);
+    void errorSlotForExists(ProtocolHandler::ErrorCode errorCode);
 
     class Private;
     Private *const d;
