@@ -149,7 +149,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** Retrieving only 1 KB of the README");
         IDEAL_SDEBUG("");
 
-        Thread *contentsJob1KB = kernelReadme.get(Thread::Joinable, 1024);
+        Thread *contentsJob1KB = kernelReadme.get(1024, Thread::Joinable);
         contentsJob1KB->exec();
         contentsJob1KB->join();
 

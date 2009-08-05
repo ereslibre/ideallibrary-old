@@ -309,7 +309,7 @@ Thread *File::contentType(Thread::Type type) const
     return job;
 }
 
-Thread *File::get(Thread::Type type, double maxBytes) const
+Thread *File::get(double maxBytes, Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileGet;

@@ -166,7 +166,7 @@ public:
     /**
       * @return A constructed thread object that will be able to run asynchronously, signaling dataRead several times until the file has been reached EOF or it has been cancelled, or maxBytes has been reached.
       */
-    Thread *get(Thread::Type type = Thread::NoJoinable, double maxBytes = 0) const;
+    Thread *get(double maxBytes = 0, Thread::Type type = Thread::NoJoinable) const;
 
     /**
       * @return The URI of the file object.
