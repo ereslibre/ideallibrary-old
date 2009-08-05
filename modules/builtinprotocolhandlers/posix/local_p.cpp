@@ -168,7 +168,7 @@ void BuiltinProtocolHandlersLocal::stat(const Uri &uri)
     }
 }
 
-void BuiltinProtocolHandlersLocal::get(const Uri &uri)
+void BuiltinProtocolHandlersLocal::get(const Uri &uri, double maxBytes)
 {
 }
 

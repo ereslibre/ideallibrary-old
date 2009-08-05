@@ -109,9 +109,10 @@ public:
     virtual void stat(const Uri &uri) = 0;
 
     /**
-      * Retrieves the file at @p uri.
+      * Retrieves the file at @p uri. If @p maxBytes is 0, it will be attempted to retrieve the
+      * whole file. If @p maxBytes is greater than 0, then a maximum of @p maxBytes will be retrieved.
       */
-    virtual void get(const Uri &uri) = 0;
+    virtual void get(const Uri &uri, double maxBytes = 0) = 0;
 
     /**
       * @return Whether this protocol handler can be reused with @p uri. For example, if you have

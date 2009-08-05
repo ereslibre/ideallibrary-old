@@ -141,11 +141,27 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("*** Retrieving a Linux Kernel README synchronously");
     IDEAL_SDEBUG("");
 
-    File kernelReadme("http://www.kernel.org/pub/linux/kernel/README", &app);
-    Object::connect(kernelReadme.dataRead, &app, &MyApplication::fileData);
-    Thread *contentsJob = kernelReadme.get(Thread::Joinable);
-    contentsJob->exec();
-    contentsJob->join();
+    {
+        File kernelReadme("http://www.kernel.org/pub/linux/kernel/README", &app);
+        Object::connect(kernelReadme.dataRead, &app, &MyApplication::fileData);
+
+        IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("*** Retrieving only 1 KB of the README");
+        IDEAL_SDEBUG("");
+
+        Thread *contentsJob1KB = kernelReadme.get(Thread::Joinable, 1024);
+        contentsJob1KB->exec();
+        contentsJob1KB->join();
+
+        IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("*** Retrieving the full README now");
+        IDEAL_SDEBUG("");
+
+        Thread *contentsJob = kernelReadme.get(Thread::Joinable);
+        contentsJob->exec();
+        contentsJob->join();
+    }
 
     IDEAL_SDEBUG("");
     IDEAL_SDEBUG("*** Completely asynchronous way coming");

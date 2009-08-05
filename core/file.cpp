@@ -82,6 +82,7 @@ public:
 
     File            *m_file;
     Operation        m_operation;
+    double           m_maxBytes;
     ProtocolHandler *m_protocolHandler;
 
 protected:
@@ -91,6 +92,7 @@ protected:
 File::Private::Job::Job(File *file, Type type)
     : Thread(type)
     , m_file(file)
+    , m_maxBytes(0)
     , m_protocolHandler(0)
 {
 }
@@ -157,7 +159,7 @@ void File::Private::Job::get()
     if (m_protocolHandler) {
         connect(m_protocolHandler->dataRead, m_file->dataRead);
         connect(m_protocolHandler->error, m_file->error);
-        m_protocolHandler->get(m_file->d->m_uri);
+        m_protocolHandler->get(m_file->d->m_uri, m_maxBytes);
         disconnect(m_protocolHandler->dataRead, m_file->dataRead);
         disconnect(m_protocolHandler->error, m_file->error);
     } else {
@@ -307,10 +309,11 @@ Thread *File::contentType(Thread::Type type) const
     return job;
 }
 
-Thread *File::get(Thread::Type type) const
+Thread *File::get(Thread::Type type, double maxBytes) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::FileGet;
+    job->m_maxBytes = maxBytes;
     return job;
 }
 
