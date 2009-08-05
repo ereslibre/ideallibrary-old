@@ -28,7 +28,7 @@ class ByteStream::Private
 {
 public:
     Private(const char *data)
-        :  m_data(0)
+        : m_data(0)
     {
         const size_t size = strlen(data);
         m_data = new char[size + 1];
