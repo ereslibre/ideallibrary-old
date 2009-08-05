@@ -822,12 +822,6 @@ public:
       */
     void deleteLater();
 
-    /**
-      * @internal
-      * @note Defined for binary compatibility reasons.
-      */
-    virtual void *virtual_hook(int id, void *param);
-
 protected:
     /**
       * @internal

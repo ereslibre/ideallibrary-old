@@ -257,11 +257,6 @@ void Object::deleteLater()
     d->m_application->d->m_markedForDeletion.push_back(this);
 }
 
-void *Object::virtual_hook(int id, void *param)
-{
-    return 0;
-}
-
 void Object::signalCreated(const SignalBase *signal)
 {
     ContextMutexLocker cml(d->m_signalsMutex);
