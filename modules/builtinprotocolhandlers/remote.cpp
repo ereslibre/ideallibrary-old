@@ -36,7 +36,7 @@ class BuiltinProtocolHandlersRemote::Private
 public:
     Private(BuiltinProtocolHandlersRemote *q)
         : m_curl(0)
-        , m_maxBytes(0)
+        , m_maxBytes(NoMaxBytes)
         , m_currentSize(0)
         , q(q)
     {

@@ -74,6 +74,8 @@ public:
         Uri uri;             ///< The uri of this file.
     };
 
+    static const double NoMaxBytes = 0;
+
     /**
       * Sets the working directory at @p uri.
       */
@@ -109,7 +111,7 @@ public:
     virtual void stat(const Uri &uri) = 0;
 
     /**
-      * Retrieves the file at @p uri. If @p maxBytes is 0, it will be attempted to retrieve the
+      * Retrieves the file at @p uri. If @p maxBytes is NoMaxBytes, it will be attempted to retrieve the
       * whole file. If @p maxBytes is greater than 0, then a maximum of @p maxBytes will be retrieved.
       *
       * @note Please note that since data will usually come in data packets the implementation should
@@ -122,7 +124,7 @@ public:
       *       - You end up with 1200 bytes, what is more than 1 KB, but the transmission is stopped,
       *         so dataRead will not be emitted again for this transmission.
       */
-    virtual void get(const Uri &uri, double maxBytes = 0) = 0;
+    virtual void get(const Uri &uri, double maxBytes = NoMaxBytes) = 0;
 
     /**
       * @return Whether this protocol handler can be reused with @p uri. For example, if you have

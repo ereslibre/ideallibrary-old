@@ -92,7 +92,7 @@ protected:
 File::Private::Job::Job(File *file, Type type)
     : Thread(type)
     , m_file(file)
-    , m_maxBytes(0)
+    , m_maxBytes(ProtocolHandler::NoMaxBytes)
     , m_protocolHandler(0)
 {
 }

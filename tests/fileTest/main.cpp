@@ -146,19 +146,22 @@ int main(int argc, char **argv)
         Object::connect(kernelReadme.dataRead, &app, &MyApplication::fileData);
 
         IDEAL_SDEBUG("");
-        IDEAL_SDEBUG("*** Retrieving only 1 KB of the README");
+        IDEAL_SDEBUG("*** Retrieving only 1 KB of the README by http");
         IDEAL_SDEBUG("");
 
         Thread *contentsJob1KB = kernelReadme.get(1024, Thread::Joinable);
         contentsJob1KB->exec();
         contentsJob1KB->join();
 
+        File kernelReadmeFtp("ftp://ftp.kernel.org/pub/linux/kernel/README", &app);
+        Object::connect(kernelReadmeFtp.dataRead, &app, &MyApplication::fileData);
+
         IDEAL_SDEBUG("");
         IDEAL_SDEBUG("");
-        IDEAL_SDEBUG("*** Retrieving the full README now");
+        IDEAL_SDEBUG("*** Retrieving the full README now by ftp");
         IDEAL_SDEBUG("");
 
-        Thread *contentsJob = kernelReadme.get(0, Thread::Joinable);
+        Thread *contentsJob = kernelReadmeFtp.get(0, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
     }

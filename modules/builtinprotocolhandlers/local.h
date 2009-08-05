@@ -36,7 +36,7 @@ public:
     virtual void mkdir(const Uri &uri);
     virtual void rm(const Uri &uri);
     virtual void stat(const Uri &uri);
-    virtual void get(const Uri &uri, double maxBytes = 0);
+    virtual void get(const Uri &uri, double maxBytes = NoMaxBytes);
     virtual bool canBeReusedWith(const Uri &uri) const;
 
     virtual String name() const;
