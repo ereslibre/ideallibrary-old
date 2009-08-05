@@ -161,7 +161,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** Retrieving the full README now by ftp");
         IDEAL_SDEBUG("");
 
-        Thread *contentsJob = kernelReadmeFtp.get(0, Thread::Joinable);
+        Thread *contentsJob = kernelReadmeFtp.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
     }
