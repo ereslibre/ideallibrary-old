@@ -164,7 +164,14 @@ public:
     Thread *contentType(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling dataRead several times until the file has been reached EOF or it has been cancelled, or maxBytes has been reached.
+      * @param maxBytes If set to ProtocolHandler::NoMaxBytes, it will be attempted to retrieve the full
+      *        file. Otherwise when @p maxBytes bytes are reached, no more chunks will be requested.
+      *
+      * @return A constructed thread object that will be able to run asynchronously, signaling dataRead
+      *         several times until the file has been reached EOF or it has been cancelled, or maxBytes
+      *         has been reached.
+      *
+      * @see ProtocolHandler::get()
       */
     Thread *get(double maxBytes = ProtocolHandler::NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
 
