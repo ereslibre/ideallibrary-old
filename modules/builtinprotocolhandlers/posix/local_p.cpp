@@ -21,6 +21,7 @@
 #include "../local.h"
 
 #include <errno.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -170,6 +171,22 @@ void BuiltinProtocolHandlersLocal::stat(const Uri &uri)
 
 void BuiltinProtocolHandlersLocal::get(const Uri &uri, double maxBytes)
 {
+    double currentSize = 0;
+    const int fd = open(uri.path().data(), O_RDONLY);
+    ssize_t bytesRead;
+    char *buf = new char[BUFSIZ];
+    bzero(buf, BUFSIZ);
+    while ((bytesRead = read(fd, buf, BUFSIZ)) > 0) {
+        ByteStream res(buf);
+        currentSize += bytesRead;
+        emit(dataRead, res);
+        if (maxBytes && currentSize >= maxBytes) {
+            break;
+        }
+        bzero(buf, BUFSIZ);
+    }
+    close(fd);
+    delete buf;
 }
 
 bool BuiltinProtocolHandlersLocal::canBeReusedWith(const Uri &uri) const

@@ -164,6 +164,18 @@ int main(int argc, char **argv)
         Thread *contentsJob = kernelReadmeFtp.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
+
+        File stdio("file:///usr/include/stdio.h", &app);
+        Object::connect(stdio.dataRead, &app, &MyApplication::fileData);
+
+        IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("*** Retrieving /usr/include/stdio.h");
+        IDEAL_SDEBUG("");
+
+        contentsJob = stdio.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
+        contentsJob->exec();
+        contentsJob->join();
+
     }
 
     IDEAL_SDEBUG("");
