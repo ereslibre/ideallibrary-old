@@ -175,7 +175,6 @@ int main(int argc, char **argv)
         contentsJob = stdio.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
-
     }
 
     IDEAL_SDEBUG("");
