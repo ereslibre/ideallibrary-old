@@ -26,11 +26,6 @@
 
 namespace IdealCore {
 
-static size_t discardOutput(void*, size_t size, size_t nmemb, void*)
-{
-    return size * nmemb;
-}
-
 class BuiltinProtocolHandlersRemote::Private
 {
 public:
@@ -49,7 +44,8 @@ public:
         }
     }
 
-    static size_t processOutput(void *ptr, size_t size, size_t nmemb, void *stream);
+    static size_t processAndNotifyOutput(void *ptr, size_t size, size_t nmemb, void *stream);
+    static size_t processAndDiscardOutput(void*, size_t size, size_t nmemb, void*);
     StatResult stat(const Uri &uri);
 
     CURL                          *m_curl;
@@ -60,7 +56,7 @@ public:
     BuiltinProtocolHandlersRemote *q;
 };
 
-size_t BuiltinProtocolHandlersRemote::Private::processOutput(void *ptr, size_t size, size_t nmemb, void *stream)
+size_t BuiltinProtocolHandlersRemote::Private::processAndNotifyOutput(void *ptr, size_t size, size_t nmemb, void *stream)
 {
     ByteStream res(static_cast<char*>(ptr));
     BuiltinProtocolHandlersRemote *const protocolHandler = static_cast<BuiltinProtocolHandlersRemote*>(stream);
@@ -71,6 +67,12 @@ size_t BuiltinProtocolHandlersRemote::Private::processOutput(void *ptr, size_t s
         return 0;
     }
     return receivedBytes;
+}
+
+size_t BuiltinProtocolHandlersRemote::Private::processAndDiscardOutput(void*, size_t size, size_t nmemb, void*)
+{
+    // TODO: process timestamp
+    return size * nmemb;
 }
 
 ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::Private::stat(const Uri &uri)
@@ -84,7 +86,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::Private::stat(const U
     curl_easy_setopt(m_curl, CURLOPT_URL, uri.uri().data());
     curl_easy_setopt(m_curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(m_curl, CURLOPT_FILETIME, 1L);
-    curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, discardOutput);
+    curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, processAndDiscardOutput);
     StatResult statResult;
     statResult.exists = false;
     statResult.type = File::UnknownType;
@@ -181,7 +183,7 @@ void BuiltinProtocolHandlersRemote::get(const Uri &uri, double maxBytes)
     curl_easy_setopt(d->m_curl, CURLOPT_NOBODY, 0L);
     curl_easy_setopt(d->m_curl, CURLOPT_FILETIME, 0L);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEDATA, this);
-    curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::processOutput);
+    curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::processAndNotifyOutput);
     // TODO: handle return value
     curl_easy_perform(d->m_curl);
 }
