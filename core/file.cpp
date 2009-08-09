@@ -112,7 +112,11 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
             }
         }
     }
-    return ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionLoadDecider(m_file), m_file);
+    ProtocolHandler *res = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionLoadDecider(m_file), m_file);
+    if (!res) {
+        IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
+    }
+    return res;
 }
 
 void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
@@ -148,8 +152,6 @@ void File::Private::Job::fetchInfo()
         } else {
             disconnect(m_protocolHandler->error, m_file, &File::errorSlot);
         }
-    } else {
-        IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
     }
 }
 
@@ -164,8 +166,6 @@ void File::Private::Job::get()
         disconnect(m_protocolHandler->dataRead, m_file->dataRead);
         disconnect(m_protocolHandler->dirRead, m_file->dirRead);
         disconnect(m_protocolHandler->error, m_file->error);
-    } else {
-        IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
     }
 }
 
