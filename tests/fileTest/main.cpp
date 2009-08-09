@@ -178,6 +178,16 @@ int main(int argc, char **argv)
     }
 
     IDEAL_SDEBUG("");
+    IDEAL_SDEBUG("*** Listing ftp://ftp.kernel.org/pub/");
+    IDEAL_SDEBUG("");
+
+    File listDir("ftp://ftp.kernel.org/pub/", &app);
+    Object::connect(listDir.dataRead, &app, &MyApplication::fileData);
+    Thread *listDirStat = listDir.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
+    listDirStat->exec();
+    listDirStat->join();
+
+    IDEAL_SDEBUG("");
     IDEAL_SDEBUG("*** Completely asynchronous way coming");
     IDEAL_SDEBUG("");
 
