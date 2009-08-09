@@ -239,6 +239,11 @@ public:
     IDEAL_SIGNAL(dataRead, ByteStream);
 
     /**
+      * The contents of a directory.
+      */
+    IDEAL_SIGNAL(dirRead, List<Uri>);
+
+    /**
       * If for any reason, the request could not finish correctly, this signal will be emitted with
       * the proper error code set.
       *

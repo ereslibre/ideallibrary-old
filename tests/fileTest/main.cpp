@@ -64,6 +64,17 @@ public:
         std::cout << contents;
     }
 
+    void dirData(const List<Uri> &uriList)
+    {
+        IDEAL_SDEBUG("Found " << uriList.size() << " entries");
+        IDEAL_SDEBUG("");
+        List<Uri>::const_iterator it;
+        for (it = uriList.begin(); it != uriList.end(); ++it) {
+            Uri uri = *it;
+            IDEAL_SDEBUG("Found entry: " << uri.uri());
+        }
+    }
+
 private:
     int numReceived;
     Mutex numReceivedMutex;
@@ -186,6 +197,16 @@ int main(int argc, char **argv)
     Thread *listDirStat = listDir.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
     listDirStat->exec();
     listDirStat->join();
+
+    IDEAL_SDEBUG("");
+    IDEAL_SDEBUG("*** Listing " << app.getPath(Application::Home));
+    IDEAL_SDEBUG("");
+
+    File listLocalDir(app.getPath(Application::Home), &app);
+    Object::connect(listLocalDir.dirRead, &app, &MyApplication::dirData);
+    Thread *listLocalDirStat = listLocalDir.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
+    listLocalDirStat->exec();
+    listLocalDirStat->join();
 
     IDEAL_SDEBUG("");
     IDEAL_SDEBUG("*** Completely asynchronous way coming");

@@ -23,6 +23,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <pwd.h>
@@ -143,6 +144,13 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Ur
 
 void BuiltinProtocolHandlersLocal::Private::getDir(const Uri &uri)
 {
+    List<Uri> res;
+    DIR *const dir = opendir(uri.path().data());
+    struct dirent *dirEntry;
+    while ((dirEntry = readdir(dir))) {
+        res.push_back(Uri(uri.path(), dirEntry->d_name));
+    }
+    emit(q->dirRead, res);
 }
 
 void BuiltinProtocolHandlersLocal::Private::getFile(const Uri &uri, double maxBytes)

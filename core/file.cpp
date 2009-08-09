@@ -158,9 +158,11 @@ void File::Private::Job::get()
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
         connect(m_protocolHandler->dataRead, m_file->dataRead);
+        connect(m_protocolHandler->dirRead, m_file->dirRead);
         connect(m_protocolHandler->error, m_file->error);
         m_protocolHandler->get(m_file->d->m_uri, m_maxBytes);
         disconnect(m_protocolHandler->dataRead, m_file->dataRead);
+        disconnect(m_protocolHandler->dirRead, m_file->dirRead);
         disconnect(m_protocolHandler->error, m_file->error);
     } else {
         IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
@@ -248,6 +250,7 @@ File::File(const Uri &uri, Object *parent)
     , IDEAL_SIGNAL_INIT(sizeResult, double)
     , IDEAL_SIGNAL_INIT(contentTypeResult, String)
     , IDEAL_SIGNAL_INIT(dataRead, ByteStream)
+    , IDEAL_SIGNAL_INIT(dirRead, List<Uri>)
     , IDEAL_SIGNAL_INIT(error, ProtocolHandler::ErrorCode)
     , d(new Private(this))
 {
