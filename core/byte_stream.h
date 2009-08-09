@@ -39,6 +39,8 @@ public:
     ByteStream(const char *data);
     virtual ~ByteStream();
 
+    int size() const;
+
     const char *data() const;
 
 private:

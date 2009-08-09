@@ -29,11 +29,12 @@ class ByteStream::Private
 public:
     Private(const char *data)
         : m_data(0)
+        , m_size(0)
     {
-        const size_t size = strlen(data);
-        m_data = new char[size + 1];
-        memcpy(m_data, data, size);
-        m_data[size] = '\0';
+        m_size = strlen(data);
+        m_data = new char[m_size + 1];
+        memcpy(m_data, data, m_size);
+        m_data[m_size] = '\0';
     }
 
     ~Private()
@@ -42,6 +43,7 @@ public:
     }
 
     char *m_data;
+    int   m_size;
 };
 
 ByteStream::ByteStream(const char *data)
@@ -52,6 +54,11 @@ ByteStream::ByteStream(const char *data)
 ByteStream::~ByteStream()
 {
     delete d;
+}
+
+int ByteStream::size() const
+{
+    return d->m_size;
 }
 
 const char *ByteStream::data() const
