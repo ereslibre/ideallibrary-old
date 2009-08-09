@@ -140,6 +140,7 @@ public:
 public:
     IDEAL_SIGNAL(statResult, StatResult);
     IDEAL_SIGNAL(dataRead, ByteStream);
+    IDEAL_SIGNAL(dirRead, List<Uri>);
     IDEAL_SIGNAL(error, ErrorCode);
 
 private:

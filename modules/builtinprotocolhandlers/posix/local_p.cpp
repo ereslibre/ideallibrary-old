@@ -40,101 +40,130 @@ public:
     {
     }
 
-    StatResult stat(const Uri &uri)
-    {
-        m_success = false;
-        StatResult statRes;
-        {
-            struct stat statResult;
-            statRes.exists = false;
-            statRes.type = File::UnknownType;
-            statRes.ownerUser = String();
-            statRes.ownerGroup = String();
-            statRes.permissions = File::UnknownPermissions;
-            statRes.size = 0;
-            statRes.lastAccessed = -1;
-            statRes.lastModified = -1;
-            statRes.contentType = String();
-            statRes.uri = uri;
-            if (!::stat(uri.path().data(), &statResult)) {
-                statRes.exists = true;
-                statRes.type = File::UnknownType;
-                if (S_ISREG(statResult.st_mode)) {
-                    statRes.type |= File::RegularFile;
-                } else if (S_ISDIR(statResult.st_mode)) {
-                    statRes.type |= File::Directory;
-                } else if (S_ISCHR(statResult.st_mode)) {
-                    statRes.type |= File::CharacterDevice;
-                } else if (S_ISBLK(statResult.st_mode)) {
-                    statRes.type |= File::BlockDevice;
-                } else if (S_ISLNK(statResult.st_mode)) {
-                    statRes.type |= File::SymbolicLink;
-                } else if (S_ISSOCK(statResult.st_mode)) {
-                    statRes.type |= File::Socket;
-                } else if (S_ISFIFO(statResult.st_mode)) {
-                    statRes.type |= File::Pipe;
-                }
-                const struct passwd *const password = getpwuid(statResult.st_uid);
-                if (password) {
-                    statRes.ownerUser = password->pw_name;
-                }
-                const struct group *const gr = getgrgid(statResult.st_gid);
-                if (gr) {
-                    statRes.ownerGroup = gr->gr_name;
-                }
-                statRes.permissions = File::NoPermissions;
-                const mode_t mode = statResult.st_mode;
-                if (mode & S_IRUSR) {
-                    statRes.permissions |= File::OwnerCanRead;
-                }
-                if (mode & S_IWUSR) {
-                    statRes.permissions |= File::OwnerCanWrite;
-                }
-                if (mode & S_IXUSR) {
-                    statRes.permissions |= File::OwnerCanExecute;
-                }
-                if (mode & S_IRGRP) {
-                    statRes.permissions |= File::GroupCanRead;
-                }
-                if (mode & S_IWGRP) {
-                    statRes.permissions |= File::GroupCanWrite;
-                }
-                if (mode & S_IXGRP) {
-                    statRes.permissions |= File::GroupCanExecute;
-                }
-                if (mode & S_IROTH) {
-                    statRes.permissions |= File::OthersCanRead;
-                }
-                if (mode & S_IWOTH) {
-                    statRes.permissions |= File::OthersCanWrite;
-                }
-                if (mode & S_IXOTH) {
-                    statRes.permissions |= File::OthersCanExecute;
-                }
-                statRes.size = statResult.st_size;
-                statRes.lastAccessed = statResult.st_atime;
-                statRes.lastModified = statResult.st_mtime;
-                m_success = true;
-            } else {
-                switch (errno) {
-                    case ENOENT:
-                    case ENOTDIR:
-                        emit(q->error, FileNotFound);
-                        break;
-                    case EACCES:
-                        emit(q->error, InsufficientPermissions);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        return statRes;
-    }
+    StatResult stat(const Uri &uri);
+
+    void getDir(const Uri &uri);
+    void getFile(const Uri &uri, double maxBytes);
 
     bool                          m_success;
     BuiltinProtocolHandlersLocal *q;
 };
+
+ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Uri &uri)
+{
+    m_success = false;
+    StatResult statRes;
+    {
+        struct stat statResult;
+        statRes.exists = false;
+        statRes.type = File::UnknownType;
+        statRes.ownerUser = String();
+        statRes.ownerGroup = String();
+        statRes.permissions = File::UnknownPermissions;
+        statRes.size = 0;
+        statRes.lastAccessed = -1;
+        statRes.lastModified = -1;
+        statRes.contentType = String();
+        statRes.uri = uri;
+        if (!::stat(uri.path().data(), &statResult)) {
+            statRes.exists = true;
+            statRes.type = File::UnknownType;
+            if (S_ISREG(statResult.st_mode)) {
+                statRes.type |= File::RegularFile;
+            } else if (S_ISDIR(statResult.st_mode)) {
+                statRes.type |= File::Directory;
+            } else if (S_ISCHR(statResult.st_mode)) {
+                statRes.type |= File::CharacterDevice;
+            } else if (S_ISBLK(statResult.st_mode)) {
+                statRes.type |= File::BlockDevice;
+            } else if (S_ISLNK(statResult.st_mode)) {
+                statRes.type |= File::SymbolicLink;
+            } else if (S_ISSOCK(statResult.st_mode)) {
+                statRes.type |= File::Socket;
+            } else if (S_ISFIFO(statResult.st_mode)) {
+                statRes.type |= File::Pipe;
+            }
+            const struct passwd *const password = getpwuid(statResult.st_uid);
+            if (password) {
+                statRes.ownerUser = password->pw_name;
+            }
+            const struct group *const gr = getgrgid(statResult.st_gid);
+            if (gr) {
+                statRes.ownerGroup = gr->gr_name;
+            }
+            statRes.permissions = File::NoPermissions;
+            const mode_t mode = statResult.st_mode;
+            if (mode & S_IRUSR) {
+                statRes.permissions |= File::OwnerCanRead;
+            }
+            if (mode & S_IWUSR) {
+                statRes.permissions |= File::OwnerCanWrite;
+            }
+            if (mode & S_IXUSR) {
+                statRes.permissions |= File::OwnerCanExecute;
+            }
+            if (mode & S_IRGRP) {
+                statRes.permissions |= File::GroupCanRead;
+            }
+            if (mode & S_IWGRP) {
+                statRes.permissions |= File::GroupCanWrite;
+            }
+            if (mode & S_IXGRP) {
+                statRes.permissions |= File::GroupCanExecute;
+            }
+            if (mode & S_IROTH) {
+                statRes.permissions |= File::OthersCanRead;
+            }
+            if (mode & S_IWOTH) {
+                statRes.permissions |= File::OthersCanWrite;
+            }
+            if (mode & S_IXOTH) {
+                statRes.permissions |= File::OthersCanExecute;
+            }
+            statRes.size = statResult.st_size;
+            statRes.lastAccessed = statResult.st_atime;
+            statRes.lastModified = statResult.st_mtime;
+            m_success = true;
+        } else {
+            switch (errno) {
+            case ENOENT:
+            case ENOTDIR:
+                emit(q->error, FileNotFound);
+                break;
+            case EACCES:
+                emit(q->error, InsufficientPermissions);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    return statRes;
+}
+
+void BuiltinProtocolHandlersLocal::Private::getDir(const Uri &uri)
+{
+}
+
+void BuiltinProtocolHandlersLocal::Private::getFile(const Uri &uri, double maxBytes)
+{
+    double currentSize = 0;
+    const int fd = open(uri.path().data(), O_RDONLY);
+    ssize_t bytesRead;
+    char *buf = new char[BUFSIZ];
+    bzero(buf, BUFSIZ);
+    while ((bytesRead = read(fd, buf, BUFSIZ)) > 0) {
+        ByteStream res(buf);
+        currentSize += bytesRead;
+        emit(q->dataRead, res);
+        if (maxBytes && currentSize >= maxBytes) {
+            break;
+        }
+        bzero(buf, BUFSIZ);
+    }
+    close(fd);
+    delete buf;
+}
 
 BuiltinProtocolHandlersLocal::BuiltinProtocolHandlersLocal()
     : d(new Private(this))
@@ -171,22 +200,26 @@ void BuiltinProtocolHandlersLocal::stat(const Uri &uri)
 
 void BuiltinProtocolHandlersLocal::get(const Uri &uri, double maxBytes)
 {
-    double currentSize = 0;
-    const int fd = open(uri.path().data(), O_RDONLY);
-    ssize_t bytesRead;
-    char *buf = new char[BUFSIZ];
-    bzero(buf, BUFSIZ);
-    while ((bytesRead = read(fd, buf, BUFSIZ)) > 0) {
-        ByteStream res(buf);
-        currentSize += bytesRead;
-        emit(dataRead, res);
-        if (maxBytes && currentSize >= maxBytes) {
-            break;
+    struct stat statResult;
+    if (!::stat(uri.path().data(), &statResult)) {
+        if (S_ISDIR(statResult.st_mode)) {
+            d->getDir(uri);
+        } else {
+            d->getFile(uri, maxBytes);
         }
-        bzero(buf, BUFSIZ);
+    } else {
+        switch (errno) {
+            case ENOENT:
+            case ENOTDIR:
+                emit(error, FileNotFound);
+                break;
+            case EACCES:
+                emit(error, InsufficientPermissions);
+                break;
+            default:
+                break;
+        }
     }
-    close(fd);
-    delete buf;
 }
 
 bool BuiltinProtocolHandlersLocal::canBeReusedWith(const Uri &uri) const
