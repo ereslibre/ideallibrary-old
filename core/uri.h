@@ -39,6 +39,7 @@ class IDEAL_EXPORT Uri
 public:
     Uri();
     Uri(const String &uri);
+    Uri(const String &path, const String &filename);
     Uri(const char *uri);
     Uri(const Uri &uri);
     virtual ~Uri();

@@ -228,6 +228,16 @@ Uri::Uri(const String &uri)
     d->initializeContents(uri);
 }
 
+Uri::Uri(const String &path, const String &filename)
+    : d(new Private)
+{
+    if (path[path.size() - 1] == '/') {
+        d->initializeContents(path + filename);
+    } else {
+        d->initializeContents(path + '/' + filename);
+    }
+}
+
 Uri::Uri(const char *uri)
     : d(new Private)
 {
@@ -248,14 +258,14 @@ Uri::Uri(const Uri &uri)
     d->m_filename = uri.d->m_filename;
     d->m_query = uri.d->m_query;
     d->m_fragment = uri.d->m_fragment;
-    d->m_isValidUri = uri.d->m_isValidUri;    
+    d->m_isValidUri = uri.d->m_isValidUri;
 }
 
 Uri::~Uri()
 {
     delete d;
 }
-    
+
 String Uri::scheme() const
 {
     return d->m_scheme;
