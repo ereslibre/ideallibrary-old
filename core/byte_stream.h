@@ -36,6 +36,7 @@ namespace IdealCore {
 class IDEAL_EXPORT ByteStream
 {
 public:
+    ByteStream();
     ByteStream(const char *data);
     virtual ~ByteStream();
 

@@ -31,10 +31,12 @@ public:
         : m_data(0)
         , m_size(0)
     {
-        m_size = strlen(data);
-        m_data = new char[m_size + 1];
-        memcpy(m_data, data, m_size);
-        m_data[m_size] = '\0';
+        if (data) {
+            m_size = strlen(data);
+            m_data = new char[m_size + 1];
+            memcpy(m_data, data, m_size);
+            m_data[m_size] = '\0';
+        }
     }
 
     ~Private()
@@ -45,6 +47,11 @@ public:
     char *m_data;
     int   m_size;
 };
+
+ByteStream::ByteStream()
+    : d(new Private(0))
+{
+}
 
 ByteStream::ByteStream(const char *data)
     : d(new Private(data))
