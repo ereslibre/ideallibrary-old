@@ -99,6 +99,19 @@ public:
         Pipe            = 64  ///< This is a pipe
     };
 
+    enum Event {
+        AccessEvent          = 0,
+        AttributeChangeEvent = 1,
+        CloseEvent           = 2,
+        CreateEvent          = 4,
+        DeleteEvent          = 8,
+        ModifyEvent          = 16,
+        MoveEvent            = 32,
+        OpenEvent            = 64
+    };
+
+    void trackEvents(Event event);
+
     /**
       * @return A constructed thread object that will be able to run asynchronously, signaling
       *         existsResult, or error, depending if the operation could be executed successfully.

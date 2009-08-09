@@ -260,6 +260,11 @@ File::~File()
     delete d;
 }
 
+void File::trackEvents(Event event)
+{
+    // TODO
+}
+
 Thread *File::exists(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
