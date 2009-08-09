@@ -33,6 +33,7 @@ public:
         : m_curl(0)
         , m_maxBytes(NoMaxBytes)
         , m_currentSize(0)
+        , m_isDir(false)
         , q(q)
     {
     }
@@ -53,6 +54,7 @@ public:
     bool                           m_success;
     double                         m_maxBytes;
     double                         m_currentSize;
+    bool                           m_isDir;
     BuiltinProtocolHandlersRemote *q;
 };
 
@@ -60,13 +62,19 @@ size_t BuiltinProtocolHandlersRemote::Private::processAndNotifyOutput(void *ptr,
 {
     ByteStream res(static_cast<char*>(ptr));
     BuiltinProtocolHandlersRemote *const protocolHandler = static_cast<BuiltinProtocolHandlersRemote*>(stream);
-    protocolHandler->emit(protocolHandler->dataRead, res);
     const size_t receivedBytes = size * nmemb;
-    protocolHandler->d->m_currentSize += receivedBytes;
-    if (protocolHandler->d->m_maxBytes && (protocolHandler->d->m_currentSize >= protocolHandler->d->m_maxBytes)) {
-        return 0;
+    if (protocolHandler->d->m_isDir) {
+        // TODO: parse output
+        IDEAL_SDEBUG("I should be parsing output here :)");
+    } else {
+        protocolHandler->emit(protocolHandler->dataRead, res);
+        protocolHandler->d->m_currentSize += receivedBytes;
+        if (protocolHandler->d->m_maxBytes && (protocolHandler->d->m_currentSize >= protocolHandler->d->m_maxBytes)) {
+            return 0;
+        }
     }
     return receivedBytes;
+
 }
 
 size_t BuiltinProtocolHandlersRemote::Private::processAndDiscardOutput(void*, size_t size, size_t nmemb, void*)
@@ -171,9 +179,10 @@ void BuiltinProtocolHandlersRemote::stat(const Uri &uri)
 
 void BuiltinProtocolHandlersRemote::get(const Uri &uri, double maxBytes)
 {
-    d->m_uri = uri;
     d->m_maxBytes = maxBytes;
     d->m_currentSize = 0;
+    const StatResult statRes = d->stat(uri);
+    d->m_isDir = statRes.exists && statRes.type == File::Directory;
     if (!d->m_curl) {
         d->m_curl = curl_easy_init();
         curl_easy_setopt(d->m_curl, CURLOPT_NOSIGNAL, 1L);
@@ -184,7 +193,6 @@ void BuiltinProtocolHandlersRemote::get(const Uri &uri, double maxBytes)
     curl_easy_setopt(d->m_curl, CURLOPT_FILETIME, 0L);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::processAndNotifyOutput);
-    // TODO: handle return value
     curl_easy_perform(d->m_curl);
 }
 
