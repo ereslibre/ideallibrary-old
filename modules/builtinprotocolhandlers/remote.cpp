@@ -164,6 +164,14 @@ void BuiltinProtocolHandlersRemote::mkdir(const Uri &uri)
 {
 }
 
+void BuiltinProtocolHandlersRemote::cp(const Uri &source, const Uri &target)
+{
+}
+
+void BuiltinProtocolHandlersRemote::mv(const Uri &source, const Uri &target)
+{
+}
+
 void BuiltinProtocolHandlersRemote::rm(const Uri &uri)
 {
 }

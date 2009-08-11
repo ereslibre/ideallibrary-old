@@ -101,6 +101,16 @@ public:
     virtual void mkdir(const Uri &uri) = 0;
 
     /**
+      * Copies @p source in @p target.
+      */
+    virtual void cp(const Uri &source, const Uri &target) = 0;
+
+    /**
+      * Moves @p source to @p target.
+      */
+    virtual void mv(const Uri &source, const Uri &target) = 0;
+
+    /**
       * Deletes recursively @p uri.
       */
     virtual void rm(const Uri &uri) = 0;

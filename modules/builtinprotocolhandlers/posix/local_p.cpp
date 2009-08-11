@@ -193,6 +193,14 @@ void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri)
     ::mkdir(uri.path().data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 }
 
+void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target)
+{
+}
+
+void BuiltinProtocolHandlersLocal::mv(const Uri &source, const Uri &target)
+{
+}
+
 void BuiltinProtocolHandlersLocal::rm(const Uri &uri)
 {
     unlink(uri.path().data());
