@@ -110,7 +110,10 @@ public:
         OpenEvent            = 64
     };
 
-    void trackEvents(Event event);
+    /**
+      * Track events @p events on this file.
+      */
+    void trackEvents(Event events);
 
     /**
       * @return A constructed thread object that will be able to run asynchronously, signaling

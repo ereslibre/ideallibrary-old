@@ -263,7 +263,7 @@ File::~File()
     delete d;
 }
 
-void File::trackEvents(Event event)
+void File::trackEvents(Event events)
 {
     // TODO
 }

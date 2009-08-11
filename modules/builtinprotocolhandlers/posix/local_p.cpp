@@ -199,6 +199,8 @@ void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target)
 
 void BuiltinProtocolHandlersLocal::mv(const Uri &source, const Uri &target)
 {
+    link(source.path().data(), target.path().data());
+    unlink(source.path().data());
 }
 
 void BuiltinProtocolHandlersLocal::rm(const Uri &uri)
