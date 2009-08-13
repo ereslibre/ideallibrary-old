@@ -43,7 +43,7 @@ void File::trackEvents(Event events)
     }
     Application::PrivateImpl *app_d = static_cast<Application::PrivateImpl*>(application()->d);
     if (!app_d->m_inotifyStarted) {
-        if ((app_d->m_inotify = inotify_init()) > -1) {
+        if ((app_d->m_inotify = inotify_init1(IN_NONBLOCK)) > -1) {
             app_d->m_inotifyStarted = true;
         }
     }
