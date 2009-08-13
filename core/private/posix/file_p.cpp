@@ -18,28 +18,35 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FILE_P_H
-#define FILE_P_H
+#include <sys/inotify.h>
 
 #include <core/file.h>
+#include "file_p.h"
+#include <core/application.h>
+#include "application_p.h"
 
 namespace IdealCore {
 
-class File::Private
+File::PrivateImpl::PrivateImpl(File *q)
+    : Private(q)
 {
-public:
-    Private(File *q);
-
-    bool         m_stated;
-    Uri          m_uri;
-    Event        m_events;
-    File * const q;
-
-    class Job;
-};
-
 }
 
-#include <core/private/posix/file_p.h>
+File::PrivateImpl::~PrivateImpl()
+{
+}
 
-#endif //FILE_P_H
+void File::trackEvents(Event events)
+{
+    if (events == d->m_events) {
+        return;
+    }
+    Application::PrivateImpl *app_d = static_cast<Application::PrivateImpl*>(application()->d);
+    if (!app_d->m_inotifyStarted) {
+        if ((app_d->m_inotify = inotify_init()) > -1) {
+            app_d->m_inotifyStarted = true;
+        }
+    }
+}
+
+}

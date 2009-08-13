@@ -100,14 +100,15 @@ public:
     };
 
     enum Event {
-        AccessEvent          = 0,
-        AttributeChangeEvent = 1,
-        CloseEvent           = 2,
-        CreateEvent          = 4,
-        DeleteEvent          = 8,
-        ModifyEvent          = 16,
-        MoveEvent            = 32,
-        OpenEvent            = 64
+        NoEvent              = 0,
+        AccessEvent          = 1,
+        AttributeChangeEvent = 2,
+        CloseEvent           = 4,
+        CreateEvent          = 8,
+        DeleteEvent          = 16,
+        ModifyEvent          = 32,
+        MoveEvent            = 64,
+        OpenEvent            = 128
     };
 
     /**
@@ -160,6 +161,7 @@ public:
 
 private:
     class Private;
+    class PrivateImpl;
     Private *const d;
 };
 

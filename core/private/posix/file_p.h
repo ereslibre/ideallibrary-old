@@ -18,28 +18,23 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FILE_P_H
-#define FILE_P_H
+#ifndef FILE_P_H_POSIX
+#define FILE_P_H_POSIX
 
-#include <core/file.h>
+#include <core/private/file_p.h>
 
 namespace IdealCore {
 
-class File::Private
+class File::PrivateImpl
+    : public File::Private
 {
 public:
-    Private(File *q);
+    PrivateImpl(File *q);
+    ~PrivateImpl();
 
-    bool         m_stated;
-    Uri          m_uri;
-    Event        m_events;
-    File * const q;
-
-    class Job;
+    int  m_inotifyWatch;
 };
 
 }
 
-#include <core/private/posix/file_p.h>
-
-#endif //FILE_P_H
+#endif //FILE_P_H_POSIX

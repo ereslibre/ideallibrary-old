@@ -33,6 +33,7 @@ namespace IdealCore {
 
 File::Private::Private(File *q)
     : m_stated(false)
+    , m_events(NoEvent)
     , q(q)
 {
 }
@@ -199,7 +200,7 @@ File::File(const Uri &uri, Object *parent)
     , IDEAL_SIGNAL_INIT(dataRead, ByteStream)
     , IDEAL_SIGNAL_INIT(dirRead, List<Uri>)
     , IDEAL_SIGNAL_INIT(error, ProtocolHandler::ErrorCode)
-    , d(new Private(this))
+    , d(new PrivateImpl(this))
 {
     setDeleteChildrenRecursively(false);
     d->m_uri = uri;
@@ -208,11 +209,6 @@ File::File(const Uri &uri, Object *parent)
 File::~File()
 {
     delete d;
-}
-
-void File::trackEvents(Event events)
-{
-    // TODO
 }
 
 Thread *File::stat(Thread::Type type) const

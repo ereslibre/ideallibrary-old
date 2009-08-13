@@ -39,6 +39,8 @@ public:
     };
 
     List<OptionItem> m_optionList;
+    bool             m_inotifyStarted;
+    int              m_inotify;
 };
 
 }
