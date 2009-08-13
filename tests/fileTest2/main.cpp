@@ -23,12 +23,18 @@
 
 using namespace IdealCore;
 
+static void eventReceived(const File::EventNotify &eventNotify)
+{
+    IDEAL_SDEBUG("Received event: " << eventNotify.event << " for URI: " << eventNotify.uri.uri());
+}
+
 int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
     File f(app.getPath(Application::Home), &app);
-    f.trackEvents(File::AccessEvent);
+    Object::connectStatic(f.event, eventReceived);
+    f.setTrackEvents(File::AllEvent);
 
     return app.exec();
 }

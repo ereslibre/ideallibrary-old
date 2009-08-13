@@ -285,7 +285,36 @@ void Application::Private::checkFileWatches()
             while (i < len) {
                 struct inotify_event *const event = (struct inotify_event*) &buf[i];
                 File *const file = d_i->m_inotifyMap[event->wd];
-                IDEAL_SDEBUG("inotify noted something on file at " << file->uri().uri());
+                File::EventNotify eventNotify;
+                eventNotify.event = File::NoEvent;
+                if (event->mask & IN_ACCESS) {
+                    eventNotify.event |= File::AccessEvent;
+                }
+                if (event->mask & IN_ATTRIB) {
+                    eventNotify.event |= File::AttributeChangeEvent;
+                }
+                if (event->mask & IN_CLOSE) {
+                    eventNotify.event |= File::CloseEvent;
+                }
+                if (event->mask & IN_CREATE) {
+                    eventNotify.event |= File::CreateEvent;
+                }
+                if (event->mask & IN_DELETE) {
+                    eventNotify.event |= File::DeleteEvent;
+                }
+                if (event->mask & IN_MODIFY) {
+                    eventNotify.event |= File::ModifyEvent;
+                }
+                if (event->mask & IN_MOVE) {
+                    eventNotify.event |= File::MoveEvent;
+                }
+                if (event->mask & IN_OPEN) {
+                    eventNotify.event |= File::OpenEvent;
+                }
+                if (event->len) {
+                    eventNotify.uri = Uri(file->uri().uri(), event->name);
+                }
+                emit(file->event, eventNotify);
                 i += EVENT_SIZE + event->len;
             }
         }

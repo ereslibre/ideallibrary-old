@@ -108,13 +108,22 @@ public:
         DeleteEvent          = 16,
         ModifyEvent          = 32,
         MoveEvent            = 64,
-        OpenEvent            = 128
+        OpenEvent            = 128,
+        AllEvent             = AccessEvent | AttributeChangeEvent | CloseEvent | CreateEvent |
+                               DeleteEvent | ModifyEvent | MoveEvent | OpenEvent
+    };
+
+    struct EventNotify {
+        int event;
+        Uri uri;
     };
 
     /**
       * Track events @p events on this file.
       */
-    void trackEvents(Event events);
+    void setTrackEvents(Event events);
+
+    Event trackEvents() const;
 
     Thread *stat(Thread::Type type = Thread::NoJoinable) const;
 
@@ -150,6 +159,8 @@ public:
       * The contents of a directory.
       */
     IDEAL_SIGNAL(dirRead, List<Uri>);
+
+    IDEAL_SIGNAL(event, EventNotify);
 
     /**
       * If for any reason, the request could not finish correctly, this signal will be emitted with

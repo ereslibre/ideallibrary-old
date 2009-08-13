@@ -45,7 +45,7 @@ File::PrivateImpl::~PrivateImpl()
     }
 }
 
-void File::trackEvents(Event events)
+void File::setTrackEvents(Event events)
 {
     if (events == d->m_events) {
         return;

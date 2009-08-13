@@ -199,6 +199,7 @@ File::File(const Uri &uri, Object *parent)
     , IDEAL_SIGNAL_INIT(statResult, ProtocolHandler::StatResult)
     , IDEAL_SIGNAL_INIT(dataRead, ByteStream)
     , IDEAL_SIGNAL_INIT(dirRead, List<Uri>)
+    , IDEAL_SIGNAL_INIT(event, EventNotify)
     , IDEAL_SIGNAL_INIT(error, ProtocolHandler::ErrorCode)
     , d(new PrivateImpl(this))
 {
@@ -209,6 +210,11 @@ File::File(const Uri &uri, Object *parent)
 File::~File()
 {
     delete d;
+}
+
+File::Event File::trackEvents() const
+{
+    return d->m_events;
 }
 
 Thread *File::stat(Thread::Type type) const
