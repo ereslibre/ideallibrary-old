@@ -278,13 +278,13 @@ void Application::Private::checkFileWatches()
     int len = 0;
     int i = 0;
 
-    PrivateImpl *d_i = static_cast<PrivateImpl*>(this);
+    PrivateImpl *const d_i = static_cast<PrivateImpl*>(this);
 
     len = read(d_i->m_inotify, buf, BUF_LEN);
     if (len >= 0) {
         while (i < len) {
-            struct inotify_event *event = (struct inotify_event*) &buf[i];
-            File *file = d_i->m_inotifyMap[event->wd];
+            struct inotify_event *const event = (struct inotify_event*) &buf[i];
+            File *const file = d_i->m_inotifyMap[event->wd];
             IDEAL_SDEBUG("inotify noted something on file at " << file->uri().uri());
             i += EVENT_SIZE + event->len;
         }
