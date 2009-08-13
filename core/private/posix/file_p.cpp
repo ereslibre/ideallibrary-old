@@ -34,6 +34,15 @@ File::PrivateImpl::PrivateImpl(File *q)
 
 File::PrivateImpl::~PrivateImpl()
 {
+    if (m_events != NoEvent) {
+        Application::PrivateImpl *app_d = static_cast<Application::PrivateImpl*>(q->application()->d);
+        inotify_rm_watch(app_d->m_inotify, m_inotifyWatch);
+        app_d->m_inotifyMap.erase(m_inotifyWatch);
+        if (!app_d->m_inotifyMap.size()) {
+            app_d->m_inotifyStarted = false;
+            close(app_d->m_inotify);
+        }
+    }
 }
 
 void File::trackEvents(Event events)
@@ -79,6 +88,10 @@ void File::trackEvents(Event events)
         } else {
             inotify_rm_watch(app_d->m_inotify, D_I->m_inotifyWatch);
             app_d->m_inotifyMap.erase(D_I->m_inotifyWatch);
+            if (!app_d->m_inotifyMap.size()) {
+                app_d->m_inotifyStarted = false;
+                close(app_d->m_inotify);
+            }
         }
     } else {
         IDEAL_DEBUG_WARNING("it was not possible to track events for file " << uri().uri());
