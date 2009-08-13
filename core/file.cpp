@@ -51,7 +51,7 @@ public:
     ProtocolHandler *findProtocolHandler();
     void cacheOrDiscard(ProtocolHandler *protocolHandler);
 
-    void fetchInfo();
+    void stat();
     void get();
 
     struct LessThanProtocolHandler
@@ -126,7 +126,7 @@ void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
     }
 }
 
-void File::Private::Job::fetchInfo()
+void File::Private::Job::stat()
 {
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
@@ -180,7 +180,7 @@ void File::Private::Job::run()
     }
     bool wasStated = true;
     if (!m_file->d->m_stated) {
-        fetchInfo();
+        stat();
         if (!m_protocolHandler) {
             return;
         }
