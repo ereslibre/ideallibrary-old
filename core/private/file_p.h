@@ -30,17 +30,11 @@ class File::Private
 public:
     Private(File *q);
 
-    ProtocolHandler::ErrorCode m_errorCode;
-    bool                       m_stated;
-    bool                       m_exists;
-    File::Type                 m_type;
-    String                     m_ownerUser;
-    String                     m_ownerGroup;
-    File::Permissions          m_permissions;
-    double                     m_size;
-    String                     m_contentType;
-    Uri                        m_uri;
-    File               * const q;
+    ProtocolHandler::ErrorCode  m_errorCode;
+    ProtocolHandler::StatResult m_statResult;
+    bool                        m_stated;
+    Uri                         m_uri;
+    File                * const q;
 
     class Job;
 };

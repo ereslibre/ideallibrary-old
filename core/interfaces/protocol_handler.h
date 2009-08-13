@@ -111,7 +111,7 @@ public:
     virtual void mv(const Uri &source, const Uri &target) = 0;
 
     /**
-      * Deletes recursively @p uri.
+      * Deletes @p uri.
       */
     virtual void rm(const Uri &uri) = 0;
 

@@ -121,14 +121,11 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::Private::stat(const U
                     statResult.contentType = contentType;
                 }
                 m_success = true;
-            } else {
-                emit(q->error, FileNotFound);
             }
         }
             break;
         case CURLE_FTP_COULDNT_RETR_FILE:
         case CURLE_REMOTE_FILE_NOT_FOUND:
-            emit(q->error, FileNotFound);
             break;
         case CURLE_LOGIN_DENIED:
             emit(q->error, LoginFailed);
@@ -142,7 +139,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::Private::stat(const U
         default:
             IDEAL_DEBUG_WARNING("unknown error code: " << retCode);
             break;
-        }
+    }
     return statResult;
 }
 

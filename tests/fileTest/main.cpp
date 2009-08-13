@@ -25,9 +25,9 @@
 
 using namespace IdealCore;
 
-static void fileSize(double size)
+static void fileSize(const ProtocolHandler::StatResult &statResult)
 {
-    IDEAL_SDEBUG("\tSize:\t" << (size / (1024 * 1024)) << " MiB");
+    IDEAL_SDEBUG("\tSize:\t" << (statResult.size / (1024 * 1024)) << " MiB");
 }
 
 static void error(Object *file, ProtocolHandler::ErrorCode errorCode)
@@ -45,10 +45,10 @@ public:
     {
     }
 
-    void fileSize(Object *file, double size)
+    void fileSize(Object *file, const ProtocolHandler::StatResult &statResult)
     {
         IDEAL_SDEBUG("*** File:\t" << static_cast<File*>(file)->uri().uri());
-        ::fileSize(size);
+        ::fileSize(statResult);
         numReceivedMutex.lock();
         ++numReceived;
         if (numReceived == 3) {
@@ -92,60 +92,60 @@ int main(int argc, char **argv)
     {
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", &app);
-        Object::connectStatic(f.sizeResult, fileSize);
-        Thread *sizeJob = f.size(Thread::Joinable);
-        sizeJob->exec();
-        sizeJob->join();
+        Object::connectStatic(f.statResult, fileSize);
+        Thread *statJob = f.stat(Thread::Joinable);
+        statJob->exec();
+        statJob->join();
     }
     // from now on, petitions should be far faster, since we can reuse the existing connection
     {
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.0.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.0.tar.gz", &app);
-        Object::connectStatic(f.sizeResult, fileSize);
-        Thread *sizeJob = f.size(Thread::Joinable);
-        sizeJob->exec();
-        sizeJob->join();
+        Object::connectStatic(f.statResult, fileSize);
+        Thread *statJob = f.stat(Thread::Joinable);
+        statJob->exec();
+        statJob->join();
     }
     {
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.8.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.8.tar.gz", &app);
-        Object::connectStatic(f.sizeResult, fileSize);
-        Thread *sizeJob = f.size(Thread::Joinable);
-        sizeJob->exec();
-        sizeJob->join();
+        Object::connectStatic(f.statResult, fileSize);
+        Thread *statJob = f.stat(Thread::Joinable);
+        statJob->exec();
+        statJob->join();
     }
     {
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.gz", &app);
-        Object::connectStatic(f.sizeResult, fileSize);
-        Thread *sizeJob = f.size(Thread::Joinable);
-        sizeJob->exec();
-        sizeJob->join();
+        Object::connectStatic(f.statResult, fileSize);
+        Thread *statJob = f.stat(Thread::Joinable);
+        statJob->exec();
+        statJob->join();
     }
     {
         IDEAL_SDEBUG("*** File:\tftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.1.tar.gz");
         File f("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.1.tar.gz", &app);
-        Object::connectStatic(f.sizeResult, fileSize);
-        Thread *sizeJob = f.size(Thread::Joinable);
-        sizeJob->exec();
-        sizeJob->join();
+        Object::connectStatic(f.statResult, fileSize);
+        Thread *statJob = f.stat(Thread::Joinable);
+        statJob->exec();
+        statJob->join();
     }
     {
         IDEAL_SDEBUG("*** File:\tfooishbar://foo");
         File f("fooishbar://foo", &app);
-        Object::connectStatic(f.sizeResult, fileSize);
-        Thread *sizeJob = f.size(Thread::Joinable);
-        sizeJob->exec();
-        sizeJob->join();
+        Object::connectStatic(f.statResult, fileSize);
+        Thread *statJob = f.stat(Thread::Joinable);
+        statJob->exec();
+        statJob->join();
     }
     {
         IDEAL_SDEBUG("*** File:\tftp://ftp.ereslibre.es");
         File f("ftp://ftp.ereslibre.es", &app);
-        Object::connectStatic(f.sizeResult, fileSize);
+        Object::connectStatic(f.statResult, fileSize);
         Object::connectStaticMulti(f.error, error);
-        Thread *sizeJob = f.size(Thread::Joinable);
-        sizeJob->exec();
-        sizeJob->join();
+        Thread *statJob = f.stat(Thread::Joinable);
+        statJob->exec();
+        statJob->join();
     }
 
     IDEAL_SDEBUG("");
@@ -213,17 +213,17 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("");
 
     File f1("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", &app);
-    Object::connectMulti(f1.sizeResult, &app, &MyApplication::fileSize);
+    Object::connectMulti(f1.statResult, &app, &MyApplication::fileSize);
     File f2("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.0.tar.gz", &app);
-    Object::connectMulti(f2.sizeResult, &app, &MyApplication::fileSize);
+    Object::connectMulti(f2.statResult, &app, &MyApplication::fileSize);
     File f3("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.1.tar.gz", &app);
-    Object::connectMulti(f3.sizeResult, &app, &MyApplication::fileSize);
-    Thread *sizeJob = f1.size();
-    sizeJob->exec();
-    sizeJob = f2.size();
-    sizeJob->exec();
-    sizeJob = f3.size();
-    sizeJob->exec();
+    Object::connectMulti(f3.statResult, &app, &MyApplication::fileSize);
+    Thread *statJob = f1.stat();
+    statJob->exec();
+    statJob = f2.stat();
+    statJob->exec();
+    statJob = f3.stat();
+    statJob->exec();
 
     return app.exec();
 }

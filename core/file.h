@@ -115,69 +115,7 @@ public:
       */
     void trackEvents(Event events);
 
-    /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling
-      *         existsResult, or error, depending if the operation could be executed successfully.
-      *
-      * Example:
-      *
-      * @code
-      *      File f("ftp://ftp.myserver.com/path/to/my/file.txt", parent);
-      *      connectMulti(f.existsResult, myObject, &MyObject::existsResult);
-      *      connectMulti(f.error, myObject, &MyObject::error);
-      *      Thread *exists = f.exists();
-      *      exists->exec();
-      * @endcode
-      *
-      * If you want this same task to be executed synchronously (what is strongly discouraged in
-      * general):
-      *
-      * @code
-      *      File f("ftp://ftp.myserver.com/path/to/my/file.txt", parent);
-      *      connectMulti(f.existsResult, myObject, &MyObject::existsResult);
-      *      connectMulti(f.error, myObject, &MyObject::error);
-      *      Thread *exists = f.exists(Thread::Joinable);
-      *      exists->exec();
-      *      exists->join();
-      * @endcode
-      */
-    Thread *exists(Thread::Type type = Thread::NoJoinable) const;
-
-    /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling
-      *         typeResult, or error, depending if the operation could be executed successfully.
-      */
-    Thread *type(Thread::Type type = Thread::NoJoinable) const;
-
-    /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling
-      *         ownerUserResult, or error, depending if the operation could be executed successfully.
-      */
-    Thread *ownerUser(Thread::Type type = Thread::NoJoinable) const;
-
-    /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling
-      *         ownerGroupResult, or error, depending if the operation could be executed successfully.
-      */
-    Thread *ownerGroup(Thread::Type type = Thread::NoJoinable) const;
-
-    /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling
-      *         permissionsResult, or error, depending if the operation could be executed successfully.
-      */
-    Thread *permissions(Thread::Type type = Thread::NoJoinable) const;
-
-    /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling
-      *         sizeResult, or error, depending if the operation could be executed successfully.
-      */
-    Thread *size(Thread::Type type = Thread::NoJoinable) const;
-
-    /**
-      * @return A constructed thread object that will be able to run asynchronously, signaling
-      *         contentTypeResult, or error, depending if the operation could be executed successfully.
-      */
-    Thread *contentType(Thread::Type type = Thread::NoJoinable) const;
+    Thread *stat(Thread::Type type = Thread::NoJoinable) const;
 
     /**
       * @param maxBytes If set to ProtocolHandler::NoMaxBytes, it will be attempted to retrieve the full
@@ -198,43 +136,9 @@ public:
 
 public:
     /**
-      * Whether this file exists or not.
+      * The stat result.
       */
-    IDEAL_SIGNAL(existsResult, bool);
-
-    /**
-      * The type of this file.
-      *
-      * @see Type
-      */
-    IDEAL_SIGNAL(typeResult, Type);
-
-    /**
-      * The owner user of this file.
-      */
-    IDEAL_SIGNAL(ownerUserResult, String);
-
-    /**
-      * The owner group of this file.
-      */
-    IDEAL_SIGNAL(ownerGroupResult, String);
-
-    /**
-      * Permissions of this file.
-      *
-      * @see Permissions
-      */
-    IDEAL_SIGNAL(permissionsResult, Permissions);
-
-    /**
-      * Size of this file.
-      */
-    IDEAL_SIGNAL(sizeResult, double);
-
-    /**
-      * The content type of this file.
-      */
-    IDEAL_SIGNAL(contentTypeResult, String);
+    IDEAL_SIGNAL(statResult, ProtocolHandler::StatResult);
 
     /**
       * The data ready to be read.
@@ -255,10 +159,6 @@ public:
     IDEAL_SIGNAL(error, ProtocolHandler::ErrorCode);
 
 private:
-    void statResultSlot(ProtocolHandler::StatResult statResult);
-    void errorSlot(ProtocolHandler::ErrorCode errorCode);
-    void errorSlotForExists(ProtocolHandler::ErrorCode errorCode);
-
     class Private;
     Private *const d;
 };

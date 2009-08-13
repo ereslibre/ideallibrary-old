@@ -54,18 +54,18 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Ur
 {
     m_success = false;
     StatResult statRes;
+    statRes.exists = false;
+    statRes.type = File::UnknownType;
+    statRes.ownerUser = String();
+    statRes.ownerGroup = String();
+    statRes.permissions = File::UnknownPermissions;
+    statRes.size = 0;
+    statRes.lastAccessed = -1;
+    statRes.lastModified = -1;
+    statRes.contentType = String();
+    statRes.uri = uri;
     {
         struct stat statResult;
-        statRes.exists = false;
-        statRes.type = File::UnknownType;
-        statRes.ownerUser = String();
-        statRes.ownerGroup = String();
-        statRes.permissions = File::UnknownPermissions;
-        statRes.size = 0;
-        statRes.lastAccessed = -1;
-        statRes.lastModified = -1;
-        statRes.contentType = String();
-        statRes.uri = uri;
         if (!::stat(uri.path().data(), &statResult)) {
             statRes.exists = true;
             statRes.type = File::UnknownType;
@@ -127,15 +127,14 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Ur
             m_success = true;
         } else {
             switch (errno) {
-            case ENOENT:
-            case ENOTDIR:
-                emit(q->error, FileNotFound);
-                break;
-            case EACCES:
-                emit(q->error, InsufficientPermissions);
-                break;
-            default:
-                break;
+                case ENOENT:
+                case ENOTDIR:
+                    break;
+                case EACCES:
+                    emit(q->error, InsufficientPermissions);
+                    break;
+                default:
+                    break;
             }
         }
     }

@@ -33,9 +33,6 @@ namespace IdealCore {
 
 File::Private::Private(File *q)
     : m_stated(false)
-    , m_exists(false)
-    , m_type(UnknownType)
-    , m_permissions(UnknownPermissions)
     , q(q)
 {
 }
@@ -45,14 +42,8 @@ class File::Private::Job
 {
 public:
     enum Operation {
-        FileExists = 0,
-        FileType,
-        FileOwnerUser,
-        FileOwnerGroup,
-        FilePermissions,
-        FileSize,
-        FileContentType,
-        FileGet
+        Stat = 0,
+        Get
     };
 
     Job(File *file, Type type);
@@ -139,19 +130,11 @@ void File::Private::Job::fetchInfo()
 {
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
-        connect(m_protocolHandler->statResult, m_file, &File::statResultSlot);
-        if (m_operation == FileExists) {
-            connect(m_protocolHandler->error, m_file, &File::errorSlotForExists);
-        } else {
-            connect(m_protocolHandler->error, m_file, &File::errorSlot);
-        }
+        connect(m_protocolHandler->statResult, m_file->statResult);
+        connect(m_protocolHandler->error, m_file->error);
         m_protocolHandler->stat(m_file->d->m_uri);
-        disconnect(m_protocolHandler->statResult, m_file, &File::statResultSlot);
-        if (m_operation == FileExists) {
-            disconnect(m_protocolHandler->error, m_file, &File::errorSlotForExists);
-        } else {
-            disconnect(m_protocolHandler->error, m_file, &File::errorSlot);
-        }
+        disconnect(m_protocolHandler->statResult, m_file->statResult);
+        disconnect(m_protocolHandler->error, m_file->error);
     }
 }
 
@@ -191,7 +174,7 @@ bool File::Private::Job::ExtensionLoadDecider::loadExtension(const Module::Exten
 
 void File::Private::Job::run()
 {
-    if (m_operation == FileGet) {
+    if (m_operation == Get) {
         get();
         return;
     }
@@ -212,43 +195,11 @@ void File::Private::Job::run()
         cacheOrDiscard(m_protocolHandler);
         m_protocolHandler = 0;
     }
-    switch (m_operation) {
-        case FileExists:
-            m_file->emit(m_file->existsResult, m_file->d->m_exists);
-            break;
-        case FileType:
-            m_file->emit(m_file->typeResult, m_file->d->m_type);
-            break;
-        case FileOwnerUser:
-            m_file->emit(m_file->ownerUserResult, m_file->d->m_ownerUser);
-            break;
-        case FileOwnerGroup:
-            m_file->emit(m_file->ownerGroupResult, m_file->d->m_ownerGroup);
-            break;
-        case FilePermissions:
-            m_file->emit(m_file->permissionsResult, m_file->d->m_permissions);
-            break;
-        case FileSize:
-            m_file->emit(m_file->sizeResult, m_file->d->m_size);
-            break;
-        case FileContentType:
-            m_file->emit(m_file->contentTypeResult, m_file->d->m_contentType);
-            break;
-        default:
-            IDEAL_DEBUG_WARNING("invalid operation");
-            break;
-    }
 }
 
 File::File(const Uri &uri, Object *parent)
     : Object(parent)
-    , IDEAL_SIGNAL_INIT(existsResult, bool)
-    , IDEAL_SIGNAL_INIT(typeResult, Type)
-    , IDEAL_SIGNAL_INIT(ownerUserResult, String)
-    , IDEAL_SIGNAL_INIT(ownerGroupResult, String)
-    , IDEAL_SIGNAL_INIT(permissionsResult, Permissions)
-    , IDEAL_SIGNAL_INIT(sizeResult, double)
-    , IDEAL_SIGNAL_INIT(contentTypeResult, String)
+    , IDEAL_SIGNAL_INIT(statResult, ProtocolHandler::StatResult)
     , IDEAL_SIGNAL_INIT(dataRead, ByteStream)
     , IDEAL_SIGNAL_INIT(dirRead, List<Uri>)
     , IDEAL_SIGNAL_INIT(error, ProtocolHandler::ErrorCode)
@@ -268,59 +219,17 @@ void File::trackEvents(Event events)
     // TODO
 }
 
-Thread *File::exists(Thread::Type type) const
+Thread *File::stat(Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FileExists;
-    return job;
-}
-
-Thread *File::type(Thread::Type type) const
-{
-    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FileType;
-    return job;
-}
-
-Thread *File::ownerUser(Thread::Type type) const
-{
-    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FileOwnerUser;
-    return job;
-}
-
-Thread *File::ownerGroup(Thread::Type type) const
-{
-    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FileOwnerGroup;
-    return job;
-}
-
-Thread *File::permissions(Thread::Type type) const
-{
-    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FilePermissions;
-    return job;
-}
-
-Thread *File::size(Thread::Type type) const
-{
-    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FileSize;
-    return job;
-}
-
-Thread *File::contentType(Thread::Type type) const
-{
-    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FileContentType;
+    job->m_operation = Private::Job::Stat;
     return job;
 }
 
 Thread *File::get(double maxBytes, Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
-    job->m_operation = Private::Job::FileGet;
+    job->m_operation = Private::Job::Get;
     job->m_maxBytes = maxBytes;
     return job;
 }
@@ -328,34 +237,6 @@ Thread *File::get(double maxBytes, Thread::Type type) const
 Uri File::uri() const
 {
     return d->m_uri;
-}
-
-void File::statResultSlot(ProtocolHandler::StatResult statResult)
-{
-    d->m_errorCode = ProtocolHandler::NoError;
-    d->m_exists = statResult.exists;
-    d->m_type = (Type) statResult.type;
-    d->m_ownerUser = statResult.ownerUser;
-    d->m_ownerGroup = statResult.ownerGroup;
-    d->m_permissions = (Permissions) statResult.permissions;
-    d->m_size = statResult.size;
-    d->m_contentType = statResult.contentType;
-}
-
-void File::errorSlot(ProtocolHandler::ErrorCode errorCode)
-{
-    d->m_errorCode = errorCode;
-    emit(error, errorCode);
-}
-
-void File::errorSlotForExists(ProtocolHandler::ErrorCode errorCode)
-{
-    d->m_errorCode = errorCode;
-    if (errorCode == ProtocolHandler::FileNotFound) {
-        emit(existsResult, false);
-    } else {
-        emit(error, errorCode);
-    }
 }
 
 }

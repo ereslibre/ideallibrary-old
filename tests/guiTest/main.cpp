@@ -62,16 +62,16 @@ bool MyWidget::event(IdealCore::Event *event)
         p.drawRectangle(Point(10, 10), Size(200, 200));
     } else if (event->type() == IdealCore::Event::KeyPress) {
        IDEAL_SDEBUG("*** Retrieving size of file...");
-       IdealCore::Thread *size = myFile->size();
-       size->exec();
+       IdealCore::Thread *stat = myFile->stat();
+       stat->exec();
     }
     return false;
 }
 
-static void sizeResult(double size)
+static void statRes(const IdealCore::ProtocolHandler::StatResult &statResult)
 {
     IDEAL_SDEBUG("*** The size of the file \"ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz\" is:");
-    IDEAL_SDEBUG("\t" << (size / (1024 * 1024)) << " MiB");
+    IDEAL_SDEBUG("\t" << (statResult.size / (1024 * 1024)) << " MiB");
 }
 
 int main(int argc, char **argv)
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
     Application app(argc, argv);
 
     myFile = new IdealCore::File("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", &app);
-    IdealCore::Object::connectStatic(myFile->sizeResult, sizeResult);
+    IdealCore::Object::connectStatic(myFile->statResult, statRes);
 
     MyWidget *myWidget = new MyWidget(&app);
     myWidget->show(Point(0, 0));
