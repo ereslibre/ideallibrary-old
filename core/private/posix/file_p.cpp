@@ -75,8 +75,10 @@ void File::trackEvents(Event events)
                 inotifyMask |= IN_OPEN;
             }
             D_I->m_inotifyWatch = inotify_add_watch(app_d->m_inotify, uri().path().data(), inotifyMask);
+            app_d->m_inotifyMap[D_I->m_inotifyWatch] = this;
         } else {
             inotify_rm_watch(app_d->m_inotify, D_I->m_inotifyWatch);
+            app_d->m_inotifyMap.erase(D_I->m_inotifyWatch);
         }
     } else {
         IDEAL_DEBUG_WARNING("it was not possible to track events for file " << uri().uri());

@@ -172,6 +172,7 @@ int Application::exec()
     while (true) {
         d->processEvents();
         d->processDelayedDeletions();
+        d->checkFileWatches();
         d->unloadUnneededDynamicLibraries();
     }
     return 0;

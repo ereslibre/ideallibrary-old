@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <sys/inotify.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <locale.h>
@@ -25,6 +26,8 @@
 #include <fcntl.h>
 #include <dlfcn.h>
 #include <map>
+
+#include <core/file.h>
 
 #include <core/application.h>
 #include "application_p.h"
@@ -114,6 +117,13 @@ Application::PrivateImpl::PrivateImpl(Application *q)
         sa.sa_sigaction = signal_recv;
         sa.sa_flags = SA_SIGINFO;
         sigaction(SIGPIPE, &sa, NULL);
+    }
+}
+
+Application::PrivateImpl::~PrivateImpl()
+{
+    if (m_inotifyStarted) {
+        close(m_inotify);
     }
 }
 
@@ -256,6 +266,30 @@ String Application::getPath(Path path) const
 #endif
         default:
             return String();
+    }
+}
+
+#define EVENT_SIZE (sizeof (struct inotify_event))
+#define BUF_LEN    (1024 * (EVENT_SIZE + 16))
+
+void Application::Private::checkFileWatches()
+{
+    char buf[BUF_LEN];
+    int len = 0;
+    int i = 0;
+
+    PrivateImpl *d_i = static_cast<PrivateImpl*>(this);
+
+    len = read(d_i->m_inotify, buf, BUF_LEN);
+    if (len >= 0) {
+        while (i < len) {
+            struct inotify_event *event = (struct inotify_event*) &buf[i];
+            File *file = d_i->m_inotifyMap[event->wd];
+            IDEAL_SDEBUG("inotify noted something on file at " << file->uri().uri());
+            i += EVENT_SIZE + event->len;
+        }
+    } else {
+        IDEAL_DEBUG_WARNING("could not check inotify events");
     }
 }
 

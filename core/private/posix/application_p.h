@@ -21,16 +21,21 @@
 #ifndef APPLICATION_P_H_POSIX
 #define APPLICATION_P_H_POSIX
 
+#include <map>
 #include <getopt.h>
+
 #include <core/private/application_p.h>
 
 namespace IdealCore {
+
+class File;
 
 class Application::PrivateImpl
     : public Application::Private
 {
 public:
     PrivateImpl(Application *q);
+    ~PrivateImpl();
 
     struct OptionItem
     {
@@ -38,9 +43,10 @@ public:
         Option *option;
     };
 
-    List<OptionItem> m_optionList;
-    bool             m_inotifyStarted;
-    int              m_inotify;
+    List<OptionItem>     m_optionList;
+    bool                 m_inotifyStarted;
+    int                  m_inotify;
+    std::map<int, File*> m_inotifyMap;
 };
 
 }

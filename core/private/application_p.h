@@ -38,6 +38,7 @@ public:
 
     void processEvents();
     void processDelayedDeletions();
+    void checkFileWatches();
     void unloadUnneededDynamicLibraries();
 
     static bool timerSort(const Timer *left, const Timer *right);
