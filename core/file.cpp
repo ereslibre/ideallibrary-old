@@ -187,10 +187,6 @@ void File::Private::Job::run()
         wasStated = false;
         m_file->d->m_stated = true;
     }
-    if (m_file->d->m_errorCode != ProtocolHandler::NoError) {
-        delete m_protocolHandler;
-        return;
-    }
     if (!wasStated) {
         cacheOrDiscard(m_protocolHandler);
         m_protocolHandler = 0;

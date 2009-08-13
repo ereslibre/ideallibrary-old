@@ -30,8 +30,6 @@ class File::Private
 public:
     Private(File *q);
 
-    ProtocolHandler::ErrorCode  m_errorCode;
-    ProtocolHandler::StatResult m_statResult;
     bool                        m_stated;
     Uri                         m_uri;
     File                * const q;
