@@ -313,6 +313,8 @@ void Application::Private::checkFileWatches()
                 }
                 if (event->len) {
                     eventNotify.uri = Uri(file->uri().uri(), event->name);
+                } else {
+                    eventNotify.uri = file->uri();
                 }
                 emit(file->event, eventNotify);
                 i += EVENT_SIZE + event->len;
