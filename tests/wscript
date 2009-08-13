@@ -12,6 +12,7 @@ def build(bld):
                      'crossedDeletions',
                      'deleteAfterSignal',
                      'fileTest',
+                     'fileTest2',
                      'guiTest',
                      'guiTest2',
                      'idleTest',

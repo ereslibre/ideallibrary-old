@@ -274,22 +274,21 @@ String Application::getPath(Path path) const
 
 void Application::Private::checkFileWatches()
 {
-    char buf[BUF_LEN];
-    int len = 0;
-    int i = 0;
-
     PrivateImpl *const d_i = static_cast<PrivateImpl*>(this);
+    if (d_i->m_inotifyStarted) {
+        char buf[BUF_LEN];
+        int len = 0;
+        int i = 0;
 
-    len = read(d_i->m_inotify, buf, BUF_LEN);
-    if (len >= 0) {
-        while (i < len) {
-            struct inotify_event *const event = (struct inotify_event*) &buf[i];
-            File *const file = d_i->m_inotifyMap[event->wd];
-            IDEAL_SDEBUG("inotify noted something on file at " << file->uri().uri());
-            i += EVENT_SIZE + event->len;
+        len = read(d_i->m_inotify, buf, BUF_LEN);
+        if (len >= 0) {
+            while (i < len) {
+                struct inotify_event *const event = (struct inotify_event*) &buf[i];
+                File *const file = d_i->m_inotifyMap[event->wd];
+                IDEAL_SDEBUG("inotify noted something on file at " << file->uri().uri());
+                i += EVENT_SIZE + event->len;
+            }
         }
-    } else {
-        IDEAL_DEBUG_WARNING("could not check inotify events");
     }
 }
 
