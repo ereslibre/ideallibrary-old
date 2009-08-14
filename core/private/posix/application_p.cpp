@@ -279,9 +279,9 @@ void Application::Private::checkFileWatches()
         char buf[BUF_LEN];
         int len = 0;
         int i = 0;
-
         len = read(d_i->m_inotify, buf, BUF_LEN);
         if (len >= 0) {
+            List<PrivateImpl::InotifyEvent> inotifyEventList;
             while (i < len) {
                 struct inotify_event *const event = (struct inotify_event*) &buf[i];
                 File *const file = d_i->m_inotifyMap[event->wd];
@@ -316,8 +316,16 @@ void Application::Private::checkFileWatches()
                 } else {
                     eventNotify.uri = file->uri();
                 }
-                emit(file->event, eventNotify);
+                PrivateImpl::InotifyEvent inotifyEvent;
+                inotifyEvent.file = file;
+                inotifyEvent.eventNotify = eventNotify;
+                inotifyEventList.push_back(inotifyEvent);
                 i += EVENT_SIZE + event->len;
+            }
+            List<PrivateImpl::InotifyEvent>::const_iterator it;
+            for (it = inotifyEventList.begin(); it != inotifyEventList.end(); ++it) {
+                PrivateImpl::InotifyEvent inotifyEvent = *it;
+                emit(inotifyEvent.file->event, inotifyEvent.eventNotify);
             }
         }
     }

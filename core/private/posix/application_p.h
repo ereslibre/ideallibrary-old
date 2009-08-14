@@ -24,11 +24,11 @@
 #include <map>
 #include <getopt.h>
 
+#include <core/file.h>
+
 #include <core/private/application_p.h>
 
 namespace IdealCore {
-
-class File;
 
 class Application::PrivateImpl
     : public Application::Private
@@ -41,6 +41,11 @@ public:
     {
         struct option opt;
         Option *option;
+    };
+
+    struct InotifyEvent {
+        File             *file;
+        File::EventNotify eventNotify;
     };
 
     List<OptionItem>     m_optionList;
