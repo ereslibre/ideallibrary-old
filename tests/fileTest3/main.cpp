@@ -36,8 +36,16 @@ int main(int argc, char **argv)
     stat->join();
     ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
 
+    IDEAL_SDEBUG("exists is " << statResult.exists);
+    IDEAL_SDEBUG("type is " << statResult.type);
+    IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
+    IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
+    IDEAL_SDEBUG("permissions is " << statResult.permissions);
+    IDEAL_SDEBUG("size is " << statResult.size);
+    IDEAL_SDEBUG("last accessed is " << statResult.lastAccessed);
+    IDEAL_SDEBUG("last modified is " << statResult.lastModified);
+    IDEAL_SDEBUG("content type is " << statResult.contentType);
     IDEAL_SDEBUG("uri is " << statResult.uri.uri());
-    IDEAL_SDEBUG("owner is " << statResult.ownerUser);
 
     return 0;
 }
