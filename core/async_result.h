@@ -28,6 +28,38 @@
 
 namespace IdealCore {
 
+/**
+  * @class AsyncResult async_result.h core/async_result.h
+  *
+  * Capable of saving the response of an asynchronous event for being accessed later.
+  *
+  * @code
+  * File f("ftp://server/folder/folder/file", &app);
+  * AsyncResult result(&app);
+  * connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
+  * Thread *stat = f.stat(Thread::Joinable);
+  * stat->exec();
+  * stat->join();
+  * ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
+  * // work with statResult fields normally
+  * @endcode
+  *
+  * If the signal provides more than one parameter, the mechanism is the same:
+  *
+  * @code
+  * File f("ftp://server/folder/folder/file", &app);
+  * AsyncResult result(&app);
+  * connectMulti(f.statResult, &result, &AsyncResult::set<Object*, ProtocolHandler::StatResult>);
+  * Thread *stat = f.stat(Thread::Joinable);
+  * stat->exec();
+  * stat->join();
+  * Object *sender = result.get<Object*>(0);
+  * ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(1);
+  * // work with sender and statResult fields normally
+  * @endcode
+  *
+  * @author Rafael Fernández López <ereslibre@ereslibre.es>
+  */
 class IDEAL_EXPORT AsyncResult
     : public Object
 {
