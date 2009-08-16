@@ -86,7 +86,9 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
 
 Application::PrivateImpl::PrivateImpl(Application *q)
     : Private(q)
+#ifdef HAVE_INOTIFY
     , m_inotifyStarted(false)
+#endif
 {
     setlocale(LC_ALL, "");
     {
@@ -125,9 +127,11 @@ Application::PrivateImpl::PrivateImpl(Application *q)
 
 Application::PrivateImpl::~PrivateImpl()
 {
+#ifdef HAVE_INOTIFY
     if (m_inotifyStarted) {
         close(m_inotify);
     }
+#endif
 }
 
 void Application::addOptionWithoutArg(Option &option, char optChar, const char *longOpt)
