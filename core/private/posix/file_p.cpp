@@ -102,7 +102,9 @@ void File::setTrackEvents(Event events)
         IDEAL_DEBUG_WARNING("it was not possible to track events for file " << uri().uri());
     }
 #else
-    IDEAL_DEBUG_WARNING("it was not possible to track events for file " << uri().uri());
+    if (events != NoEvent) {
+        IDEAL_DEBUG_WARNING("it was not possible to track events for file " << uri().uri());
+    }
 #endif
 }
 

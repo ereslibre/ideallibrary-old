@@ -53,7 +53,7 @@ def configure(conf):
                msg = 'Checking whether ' + conf.env['COMPILER_CXX'] + ' supports C++0x',
                uselib = 'CONFTESTS',
                mandatory = 1)
-    conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name='HAVE_INOTIFY')
+    conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name = 'HAVE_INOTIFY')
     if Options.options.release:
         conf.sub_config(subdirs_r)
     else:
