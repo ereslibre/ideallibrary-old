@@ -18,12 +18,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <sys/inotify.h>
-
 #include <core/file.h>
 #include "file_p.h"
 #include <core/application.h>
 #include "application_p.h"
+
+#ifdef HAVE_INOTIFY
+#include <sys/inotify.h>
+#endif
 
 namespace IdealCore {
 
@@ -34,6 +36,7 @@ File::PrivateImpl::PrivateImpl(File *q)
 
 File::PrivateImpl::~PrivateImpl()
 {
+#ifdef HAVE_INOTIFY
     if (m_events != NoEvent) {
         Application::PrivateImpl *app_d = static_cast<Application::PrivateImpl*>(q->application()->d);
         inotify_rm_watch(app_d->m_inotify, m_inotifyWatch);
@@ -43,10 +46,12 @@ File::PrivateImpl::~PrivateImpl()
             close(app_d->m_inotify);
         }
     }
+#endif
 }
 
 void File::setTrackEvents(Event events)
 {
+#ifdef HAVE_INOTIFY
     if (events == d->m_events) {
         return;
     }
@@ -96,6 +101,9 @@ void File::setTrackEvents(Event events)
     } else {
         IDEAL_DEBUG_WARNING("it was not possible to track events for file " << uri().uri());
     }
+#else
+    IDEAL_DEBUG_WARNING("it was not possible to track events for file " << uri().uri());
+#endif
 }
 
 }

@@ -26,6 +26,12 @@ checkCompilerFeatures = '''struct A {}; struct B {};
                                return 0;
                            }'''
 
+checkInotify = '''#include <sys/inotify.h>
+                  int main(int argc, char **argv)
+                  {
+                      return 0;
+                  }'''
+
 def init():
     pass
 
@@ -47,6 +53,7 @@ def configure(conf):
                msg = 'Checking whether ' + conf.env['COMPILER_CXX'] + ' supports C++0x',
                uselib = 'CONFTESTS',
                mandatory = 1)
+    conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name='HAVE_INOTIFY')
     if Options.options.release:
         conf.sub_config(subdirs_r)
     else:

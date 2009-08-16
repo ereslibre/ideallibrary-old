@@ -49,9 +49,11 @@ public:
     };
 
     List<OptionItem>     m_optionList;
+#ifdef HAVE_INOTIFY
     bool                 m_inotifyStarted;
     int                  m_inotify;
     std::map<int, File*> m_inotifyMap;
+#endif
 };
 
 }

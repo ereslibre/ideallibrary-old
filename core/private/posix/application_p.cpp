@@ -18,7 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <sys/inotify.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <locale.h>
@@ -34,6 +33,10 @@
 
 #include <core/private/option_p.h>
 #include <core/private/module_p.h>
+
+#ifdef HAVE_INOTIFY
+#include <sys/inotify.h>
+#endif
 
 namespace IdealCore {
 
@@ -269,11 +272,14 @@ String Application::getPath(Path path) const
     }
 }
 
+#ifdef HAVE_INOTIFY
 #define EVENT_SIZE (sizeof (struct inotify_event))
 #define BUF_LEN    (1024 * (EVENT_SIZE + 16))
+#endif
 
 void Application::Private::checkFileWatches()
 {
+#ifdef HAVE_INOTIFY
     PrivateImpl *const d_i = static_cast<PrivateImpl*>(this);
     if (d_i->m_inotifyStarted) {
         char buf[BUF_LEN];
@@ -329,6 +335,7 @@ void Application::Private::checkFileWatches()
             }
         }
     }
+#endif
 }
 
 void Application::Private::unloadUnneededDynamicLibraries()
