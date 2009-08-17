@@ -31,9 +31,15 @@ int main(int argc, char **argv)
     File f(app.getPath(Application::Home), &app);
     AsyncResult result(&app);
     Object::connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
-    Thread *stat = f.stat(Thread::Joinable);
-    stat->exec();
-    stat->join();
+    f.stat(Thread::Joinable)->execAndJoin();
+
+    // it is possible that statResult wasn't emitted, (e.g. when not enough permissions to
+    // access the file)
+    if (!result.size()) {
+        IDEAL_DEBUG_WARNING("result is empty");
+        return 0;
+    }
+
     ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
 
     IDEAL_SDEBUG("exists is " << statResult.exists);
