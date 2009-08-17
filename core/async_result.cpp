@@ -24,6 +24,7 @@ namespace IdealCore {
 
 AsyncResult::AsyncResult(Object *parent)
     : Object(parent)
+    , IDEAL_SIGNAL_INIT(resultSet)
     , m_values(0)
     , m_size(0)
 {

@@ -75,6 +75,9 @@ public:
 
     int size() const;
 
+public:
+    IDEAL_SIGNAL(resultSet);
+
 private:
     boost::any *m_values;
     int         m_size;
@@ -92,6 +95,7 @@ void AsyncResult::set(const Values&... values)
     for (int i = 0; i < m_size; ++i) {
         m_values[i] = val[i];
     }
+    emit(resultSet);
 }
 
 template <typename T>
