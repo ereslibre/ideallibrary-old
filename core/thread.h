@@ -75,6 +75,11 @@ public:
     void join();
 
     /**
+      * Immediately call to join() after calling to exec()
+      */
+    void execAndJoin();
+
+    /**
       * @return The type of this thread.
       */
     Type type() const;

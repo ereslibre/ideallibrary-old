@@ -42,6 +42,12 @@ Thread::~Thread()
     delete d;
 }
 
+void Thread::execAndJoin()
+{
+    exec();
+    join();
+}
+
 Thread::Type Thread::type() const
 {
     return d->m_type;
