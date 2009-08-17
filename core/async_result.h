@@ -73,6 +73,8 @@ public:
     template <typename T>
     T get(int i) const;
 
+    int size() const;
+
 private:
     boost::any *m_values;
     int         m_size;
