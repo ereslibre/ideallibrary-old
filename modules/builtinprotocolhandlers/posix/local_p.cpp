@@ -129,11 +129,13 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Ur
             switch (errno) {
                 case ENOENT:
                 case ENOTDIR:
+                    m_success = true;
                     break;
                 case EACCES:
                     emit(q->error, InsufficientPermissions);
                     break;
                 default:
+                    IDEAL_DEBUG_WARNING("unknown error code: " << errno);
                     break;
             }
         }

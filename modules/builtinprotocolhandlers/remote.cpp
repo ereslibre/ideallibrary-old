@@ -126,6 +126,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::Private::stat(const U
             break;
         case CURLE_FTP_COULDNT_RETR_FILE:
         case CURLE_REMOTE_FILE_NOT_FOUND:
+            m_success = true;
             break;
         case CURLE_LOGIN_DENIED:
             emit(q->error, LoginFailed);
