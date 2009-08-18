@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
     // it is possible that statResult wasn't emitted, (e.g. when not enough permissions to
     // access the file)
-    if (!result.size()) {
+    if (!result.resultReceived()) {
         IDEAL_DEBUG_WARNING("result is empty");
         return 0;
     }

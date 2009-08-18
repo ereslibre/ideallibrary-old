@@ -27,6 +27,7 @@ AsyncResult::AsyncResult(Object *parent)
     , IDEAL_SIGNAL_INIT(resultSet)
     , m_values(0)
     , m_size(0)
+    , m_resultReceived(false)
 {
 }
 
@@ -38,6 +39,18 @@ AsyncResult::~AsyncResult()
 int AsyncResult::size() const
 {
     return m_size;
+}
+
+bool AsyncResult::resultReceived() const
+{
+    return m_resultReceived;
+}
+
+void AsyncResult::clear()
+{
+    delete[] m_values;
+    m_size = 0;
+    m_resultReceived = false;
 }
 
 }

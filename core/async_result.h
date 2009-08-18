@@ -37,11 +37,11 @@ namespace IdealCore {
   * File f("ftp://server/folder/folder/file", &app);
   * AsyncResult result(&app);
   * connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
-  * Thread *stat = f.stat(Thread::Joinable);
-  * stat->exec();
-  * stat->join();
-  * ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
-  * // work with statResult fields normally
+  * f.stat(Thread::Joinable)->execAndJoin();
+  * if (result.resultReceived()) {
+  *     ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
+  *     // work with statResult fields normally
+  * }
   * @endcode
   *
   * If the signal provides more than one parameter, the mechanism is the same:
@@ -50,12 +50,12 @@ namespace IdealCore {
   * File f("ftp://server/folder/folder/file", &app);
   * AsyncResult result(&app);
   * connectMulti(f.statResult, &result, &AsyncResult::set<Object*, ProtocolHandler::StatResult>);
-  * Thread *stat = f.stat(Thread::Joinable);
-  * stat->exec();
-  * stat->join();
-  * Object *sender = result.get<Object*>(0);
-  * ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(1);
-  * // work with sender and statResult fields normally
+  * f.stat(Thread::Joinable)->execAndJoin();
+  * if (result.resultReceived()) {
+  *     Object *sender = result.get<Object*>(0);
+  *     ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(1);
+  *     // work with sender and statResult fields normally
+  * }
   * @endcode
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
@@ -73,7 +73,24 @@ public:
     template <typename T>
     T get(int i) const;
 
+    /**
+      * @return How many parameters the signal returned.
+      *
+      * @note It is possible that size() returns 0 but the signal was received (but it had no
+      *       arguments). If you want to know if the signal was received, you can use resultReceived()
+      *       method.
+      */
     int size() const;
+
+    /**
+      * @return Whether this object set() method was called.
+      */
+    bool resultReceived() const;
+
+    /**
+      * Clears the current AsyncResult object state.
+      */
+    void clear();
 
 public:
     IDEAL_SIGNAL(resultSet);
@@ -81,20 +98,24 @@ public:
 private:
     boost::any *m_values;
     int         m_size;
+    bool        m_resultReceived;
 };
 
 template <typename... Values>
 void AsyncResult::set(const Values&... values)
 {
-    if (m_values) {
-        delete[] m_values;
-    }
+    delete[] m_values;
     m_size = sizeof...(Values);
-    m_values = new boost::any[m_size];
-    boost::any val[sizeof...(Values)] = {values...};
-    for (int i = 0; i < m_size; ++i) {
-        m_values[i] = val[i];
+    if (m_size) {
+        m_values = new boost::any[m_size];
+        boost::any val[sizeof...(Values)] = {values...};
+        for (int i = 0; i < m_size; ++i) {
+            m_values[i] = val[i];
+        }
+    } else {
+        m_values = 0;
     }
+    m_resultReceived = true;
     emit(resultSet);
 }
 
