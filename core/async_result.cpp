@@ -49,6 +49,7 @@ bool AsyncResult::resultReceived() const
 void AsyncResult::clear()
 {
     delete[] m_values;
+    m_values = 0;
     m_size = 0;
     m_resultReceived = false;
 }
