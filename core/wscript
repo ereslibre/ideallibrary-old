@@ -3,6 +3,12 @@
 
 import Options
 
+checkInotify = '''#include <sys/inotify.h>
+                  int main(int argc, char **argv)
+                  {
+                      return 0;
+                  }'''
+
 def configure(conf):
     if not Options.options.release:
         conf.sub_config('tests')
@@ -11,6 +17,7 @@ def configure(conf):
     if not conf.env['HAVE_LIBURIPARSER'] == 1:
         conf.fatal('Cannot continue without liburiparser. Please, install the development package and try again')
     conf.check_tool('misc')
+    conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name = 'HAVE_INOTIFY')
 
 def build(bld):
     bld.new_task_gen(

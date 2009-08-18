@@ -26,18 +26,17 @@ checkCompilerFeatures = '''struct A {}; struct B {};
                                return 0;
                            }'''
 
-checkInotify = '''#include <sys/inotify.h>
-                  int main(int argc, char **argv)
-                  {
-                      return 0;
-                  }'''
+checkBoostAny = '''#include <boost/any.hpp>
+                   int main(int argc, char **argv)
+                   {
+                       return 0;
+                   }'''
 
 def init():
     pass
 
 def set_options(opt):
     opt.tool_options('compiler_cxx')
-    opt.tool_options('boost')
     opt.add_option('--release', action = 'store_true', default = False,
                    help = 'Do not build unit tests. Compile without debug information')
 
@@ -45,7 +44,6 @@ def configure(conf):
     # check for basics
     conf.find_program('pkg-config')
     conf.check_tool('compiler_cxx')
-    conf.check_tool('boost')
     if conf.env['COMPILER_CXX'] == []:
         conf.fatal('A C++ compiler is needed. Please, install it and try again')
     conf.env['CXXFLAGS_CONFTESTS'] = ['-std=c++0x'];
@@ -53,7 +51,7 @@ def configure(conf):
                msg = 'Checking whether ' + conf.env['COMPILER_CXX'] + ' supports C++0x',
                uselib = 'CONFTESTS',
                mandatory = 1)
-    conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name = 'HAVE_INOTIFY')
+    conf.check(fragment = checkBoostAny, msg = 'Checking for boost::any', mandatory = 1)
     if Options.options.release:
         conf.sub_config(subdirs_r)
     else:
