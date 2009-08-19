@@ -140,7 +140,6 @@ public:
       *
       * @see ProtocolHandler::stat()
       */
-
     Thread *stat(Thread::Type type = Thread::NoJoinable) const;
 
     /**
