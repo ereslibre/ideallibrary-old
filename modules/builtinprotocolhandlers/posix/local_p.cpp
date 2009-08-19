@@ -118,15 +118,6 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
 {
     d->m_success = false;
     StatResult statRes;
-    statRes.exists = false;
-    statRes.type = File::UnknownType;
-    statRes.ownerUser = String();
-    statRes.ownerGroup = String();
-    statRes.permissions = File::UnknownPermissions;
-    statRes.size = 0;
-    statRes.lastAccessed = -1;
-    statRes.lastModified = -1;
-    statRes.contentType = String();
     statRes.uri = uri;
     {
         struct stat statResult;

@@ -126,15 +126,6 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)
     curl_easy_setopt(d->m_curl, CURLOPT_FILETIME, 1L);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::processAndDiscardOutput);
     StatResult statResult;
-    statResult.exists = false;
-    statResult.type = File::UnknownType;
-    statResult.ownerUser = String();
-    statResult.ownerGroup = String();
-    statResult.permissions = File::UnknownPermissions;
-    statResult.size = 0;
-    statResult.lastAccessed = -1;
-    statResult.lastModified = -1;
-    statResult.contentType = String();
     statResult.uri = uri;
     const CURLcode retCode = curl_easy_perform(d->m_curl);
     switch (retCode) {
