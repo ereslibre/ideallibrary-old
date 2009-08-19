@@ -131,10 +131,11 @@ void File::Private::Job::stat()
 {
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
-        connect(m_protocolHandler->statResult, m_file->statResult);
         connect(m_protocolHandler->error, m_file->error);
-        m_protocolHandler->stat(m_file->d->m_uri);
-        disconnect(m_protocolHandler->statResult, m_file->statResult);
+        ProtocolHandler::StatResult statResult = m_protocolHandler->stat(m_file->d->m_uri);
+        if (statResult.isValid) {
+            emit(m_file->statResult, statResult);
+        }
         disconnect(m_protocolHandler->error, m_file->error);
     }
 }

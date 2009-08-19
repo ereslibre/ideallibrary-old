@@ -41,8 +41,6 @@ public:
     {
     }
 
-    StatResult stat(const Uri &uri);
-
     void getDir(const Uri &uri);
     void getFile(const Uri &uri, double maxBytes);
 
@@ -50,9 +48,75 @@ public:
     BuiltinProtocolHandlersLocal *q;
 };
 
-ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Uri &uri)
+void BuiltinProtocolHandlersLocal::Private::getDir(const Uri &uri)
 {
-    m_success = false;
+    List<Uri> res;
+    DIR *const dir = opendir(uri.path().data());
+    struct dirent *dirEntry;
+    while ((dirEntry = readdir(dir))) {
+        res.push_back(Uri(uri.path(), dirEntry->d_name));
+    }
+    emit(q->dirRead, res);
+}
+
+void BuiltinProtocolHandlersLocal::Private::getFile(const Uri &uri, double maxBytes)
+{
+    double currentSize = 0;
+    const int fd = open(uri.path().data(), O_RDONLY);
+    ssize_t bytesRead;
+    char *buf = new char[BUFSIZ];
+    bzero(buf, BUFSIZ);
+    while ((bytesRead = read(fd, buf, BUFSIZ)) > 0) {
+        ByteStream res(buf);
+        currentSize += bytesRead;
+        emit(q->dataRead, res);
+        if (maxBytes && currentSize >= maxBytes) {
+            break;
+        }
+        bzero(buf, BUFSIZ);
+    }
+    close(fd);
+    delete buf;
+}
+
+BuiltinProtocolHandlersLocal::BuiltinProtocolHandlersLocal()
+    : d(new Private(this))
+{
+}
+
+BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
+{
+    delete d;
+}
+
+void BuiltinProtocolHandlersLocal::cd(const Uri &uri)
+{
+    if (chdir(uri.path().data())) {}
+}
+
+void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri)
+{
+    ::mkdir(uri.path().data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+}
+
+void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target)
+{
+}
+
+void BuiltinProtocolHandlersLocal::mv(const Uri &source, const Uri &target)
+{
+    link(source.path().data(), target.path().data());
+    unlink(source.path().data());
+}
+
+void BuiltinProtocolHandlersLocal::rm(const Uri &uri)
+{
+    unlink(uri.path().data());
+}
+
+ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
+{
+    d->m_success = false;
     StatResult statRes;
     statRes.exists = false;
     statRes.type = File::UnknownType;
@@ -124,15 +188,15 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Ur
             statRes.size = statResult.st_size;
             statRes.lastAccessed = statResult.st_atime;
             statRes.lastModified = statResult.st_mtime;
-            m_success = true;
+            d->m_success = true;
         } else {
             switch (errno) {
                 case ENOENT:
                 case ENOTDIR:
-                    m_success = true;
+                    d->m_success = true;
                     break;
                 case EACCES:
-                    emit(q->error, InsufficientPermissions);
+                    emit(error, InsufficientPermissions);
                     break;
                 default:
                     IDEAL_DEBUG_WARNING("unknown error code: " << errno);
@@ -140,81 +204,8 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::Private::stat(const Ur
             }
         }
     }
+    statRes.isValid = d->m_success;
     return statRes;
-}
-
-void BuiltinProtocolHandlersLocal::Private::getDir(const Uri &uri)
-{
-    List<Uri> res;
-    DIR *const dir = opendir(uri.path().data());
-    struct dirent *dirEntry;
-    while ((dirEntry = readdir(dir))) {
-        res.push_back(Uri(uri.path(), dirEntry->d_name));
-    }
-    emit(q->dirRead, res);
-}
-
-void BuiltinProtocolHandlersLocal::Private::getFile(const Uri &uri, double maxBytes)
-{
-    double currentSize = 0;
-    const int fd = open(uri.path().data(), O_RDONLY);
-    ssize_t bytesRead;
-    char *buf = new char[BUFSIZ];
-    bzero(buf, BUFSIZ);
-    while ((bytesRead = read(fd, buf, BUFSIZ)) > 0) {
-        ByteStream res(buf);
-        currentSize += bytesRead;
-        emit(q->dataRead, res);
-        if (maxBytes && currentSize >= maxBytes) {
-            break;
-        }
-        bzero(buf, BUFSIZ);
-    }
-    close(fd);
-    delete buf;
-}
-
-BuiltinProtocolHandlersLocal::BuiltinProtocolHandlersLocal()
-    : d(new Private(this))
-{
-}
-
-BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
-{
-    delete d;
-}
-
-void BuiltinProtocolHandlersLocal::cd(const Uri &uri)
-{
-    if (chdir(uri.path().data())) {}
-}
-
-void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri)
-{
-    ::mkdir(uri.path().data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-}
-
-void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target)
-{
-}
-
-void BuiltinProtocolHandlersLocal::mv(const Uri &source, const Uri &target)
-{
-    link(source.path().data(), target.path().data());
-    unlink(source.path().data());
-}
-
-void BuiltinProtocolHandlersLocal::rm(const Uri &uri)
-{
-    unlink(uri.path().data());
-}
-
-void BuiltinProtocolHandlersLocal::stat(const Uri &uri)
-{
-    const StatResult statRes = d->stat(uri);
-    if (d->m_success) {
-        emit(statResult, statRes);
-    }
 }
 
 void BuiltinProtocolHandlersLocal::get(const Uri &uri, double maxBytes)

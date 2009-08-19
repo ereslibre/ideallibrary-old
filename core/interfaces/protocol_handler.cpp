@@ -23,11 +23,21 @@
 namespace IdealCore {
 
 ProtocolHandler::ProtocolHandler()
-    : IDEAL_SIGNAL_INIT(statResult, StatResult)
-    , IDEAL_SIGNAL_INIT(dataRead, ByteStream)
+    : IDEAL_SIGNAL_INIT(dataRead, ByteStream)
     , IDEAL_SIGNAL_INIT(dirRead, List<Uri>)
     , IDEAL_SIGNAL_INIT(error, ErrorCode)
     , m_weight(0)
+{
+}
+
+ProtocolHandler::StatResult::StatResult()
+    : isValid(false)
+    , exists(false)
+    , type(0 /* File::UnknownType */)
+    , permissions(0 /* File::UnknownPermissions */)
+    , size(-1)
+    , lastAccessed(-1)
+    , lastModified(-1)
 {
 }
 

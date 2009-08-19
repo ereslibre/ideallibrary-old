@@ -62,16 +62,19 @@ public:
     };
 
     struct StatResult {
-        bool exists;         ///< Whether this file exists or not.
-        int type;            ///< The type of this file. Matches File::Type.
-        String ownerUser;    ///< The user owner of this file.
-        String ownerGroup;   ///< The group owner of this file.
-        int permissions;     ///< The permissions of this file. Matches File::Permissions.
-        double size;         ///< The size of this file.
-        long lastAccessed;   ///< The last access on this file.
-        long lastModified;   ///< When was this file last modified.
-        String contentType;  ///< The content type of this file.
-        Uri uri;             ///< The uri of this file.
+        StatResult();
+
+        bool isValid;       ///< Whether this stat result is valid or not.
+        bool exists;        ///< Whether this file exists or not.
+        int type;           ///< The type of this file. Matches File::Type.
+        String ownerUser;   ///< The user owner of this file.
+        String ownerGroup;  ///< The group owner of this file.
+        int permissions;    ///< The permissions of this file. Matches File::Permissions.
+        double size;        ///< The size of this file.
+        long lastAccessed;  ///< The last access on this file.
+        long lastModified;  ///< When was this file last modified.
+        String contentType; ///< The content type of this file.
+        Uri uri;            ///< The uri of this file.
     };
 
     static const double NoMaxBytes = 0;
@@ -117,8 +120,10 @@ public:
 
     /**
       * Stats path @p uri.
+      *
+      * @return The stat result of the stat operation.
       */
-    virtual void stat(const Uri &uri) = 0;
+    virtual StatResult stat(const Uri &uri) = 0;
 
     /**
       * Retrieves the file at @p uri. If @p maxBytes is NoMaxBytes, it will be attempted to retrieve the
@@ -148,7 +153,6 @@ public:
     ProtocolHandler();
 
 public:
-    IDEAL_SIGNAL(statResult, StatResult);
     IDEAL_SIGNAL(dataRead, ByteStream);
     IDEAL_SIGNAL(dirRead, List<Uri>);
     IDEAL_SIGNAL(error, ErrorCode);

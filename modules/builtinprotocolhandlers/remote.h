@@ -37,7 +37,7 @@ public:
     virtual void cp(const Uri &source, const Uri &target);
     virtual void mv(const Uri &source, const Uri &target);
     virtual void rm(const Uri &uri);
-    virtual void stat(const Uri &uri);
+    virtual StatResult stat(const Uri &uri);
     virtual void get(const Uri &uri, double maxBytes = NoMaxBytes);
     virtual bool canBeReusedWith(const Uri &uri) const;
 

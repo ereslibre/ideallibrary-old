@@ -26,10 +26,14 @@
 
 using namespace IdealCore;
 
-static void statResultSlot(ProtocolHandler::StatResult statResult)
+static void statResult(ProtocolHandler::StatResult statResult)
 {
     IDEAL_SDEBUG("\t*** Got a stat result");
-    IDEAL_SDEBUG("\t\t*** Is valid?\t\t" << (statResult.exists ? "yes" : "no"));
+    IDEAL_SDEBUG("\t\t*** Is Valid?\t\t" << (statResult.isValid ? "yes" : "no"));
+    if (!statResult.isValid) {
+        return;
+    }
+    IDEAL_SDEBUG("\t\t*** Exists?\t\t" << (statResult.exists ? "yes" : "no"));
     if (!statResult.exists) {
         return;
     }
@@ -57,13 +61,14 @@ int main(int argc, char **argv)
     ProtocolHandler *protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionLoadDecider, &app);
 
     if (protocolHandler) {
-        Object::connectStatic(protocolHandler->statResult, statResultSlot);
         IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home));
-        protocolHandler->stat(app.getPath(Application::Home));
+        statResult(protocolHandler->stat(app.getPath(Application::Home)));
         IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home) + "/.bashrc");
-        protocolHandler->stat(app.getPath(Application::Home) + "/.bashrc");
+        statResult(protocolHandler->stat(app.getPath(Application::Home) + "/.bashrc"));
         IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home) + "/.nonexistantfile");
-        protocolHandler->stat(app.getPath(Application::Home) + "/.nonexistantfile");
+        statResult(protocolHandler->stat(app.getPath(Application::Home) + "/.nonexistantfile"));
+        IDEAL_SDEBUG("*** Going to stat /root/foo");
+        statResult(protocolHandler->stat("/root/foo"));
     }
 
     delete protocolHandler;
