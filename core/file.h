@@ -100,30 +100,46 @@ public:
     };
 
     enum Event {
-        NoEvent              = 0,
-        AccessEvent          = 1,
-        AttributeChangeEvent = 2,
-        CloseEvent           = 4,
-        CreateEvent          = 8,
-        DeleteEvent          = 16,
-        ModifyEvent          = 32,
-        MoveEvent            = 64,
-        OpenEvent            = 128,
+        NoEvent              = 0,   ///< Do not track events for this file
+        AccessEvent          = 1,   ///< Track access events for this file
+        AttributeChangeEvent = 2,   ///< Track attribute change events for this file
+        CloseEvent           = 4,   ///< Track close events for this file
+        CreateEvent          = 8,   ///< Track create events for this file
+        DeleteEvent          = 16,  ///< Track delete events for this file
+        ModifyEvent          = 32,  ///< Track modify events for this file
+        MoveEvent            = 64,  ///< Track move events for this file
+        OpenEvent            = 128, ///< Track open events for this file
         AllEvent             = AccessEvent | AttributeChangeEvent | CloseEvent | CreateEvent |
-                               DeleteEvent | ModifyEvent | MoveEvent | OpenEvent
+                               DeleteEvent | ModifyEvent | MoveEvent | OpenEvent ///< Track all events
+                                                                                 ///< for this file
     };
 
     struct EventNotify {
-        int event;
-        Uri uri;
+        int event; ///< An OR bitfield with the events received. @see File::Event
+        Uri uri;   ///< The full URI of the file that did notify the event. Note that if you are tracking
+                   ///< a directory, all files under the directory are being tracked also, and this uri
+                   ///< would contain the full URI of the file or folder that notified the event.
     };
 
     /**
-      * Track events @p events on this file.
+      * Track events @p events on this file or directory.
+      *
+      * When an event has happened on this file, or on any file below this directory (if this file
+      * is a directory), the event signal will be emitted.
       */
     void setTrackEvents(Event events);
 
+    /**
+      * @return The events being tracked for this file or directory.
+      */
     Event trackEvents() const;
+
+    /**
+      * @return A constructed thread object that will be able to run asynchronously, signaling statResult
+      *         when the operation has finished.
+      *
+      * @see ProtocolHandler::stat()
+      */
 
     Thread *stat(Thread::Type type = Thread::NoJoinable) const;
 
@@ -160,6 +176,9 @@ public:
       */
     IDEAL_SIGNAL(dirRead, List<Uri>);
 
+    /**
+      * An event was notified.
+      */
     IDEAL_SIGNAL(event, EventNotify);
 
     /**
