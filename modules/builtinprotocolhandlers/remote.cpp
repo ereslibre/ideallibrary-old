@@ -171,7 +171,7 @@ void BuiltinProtocolHandlersRemote::get(const Uri &uri, double maxBytes)
     d->m_maxBytes = maxBytes;
     d->m_currentSize = 0;
     const StatResult statRes = stat(uri);
-    d->m_isDir = statRes.exists && statRes.type == File::Directory;
+    d->m_isDir = statRes.exists && statRes.type == ProtocolHandler::Directory;
     if (!d->m_curl) {
         d->m_curl = curl_easy_init();
         curl_easy_setopt(d->m_curl, CURLOPT_NOSIGNAL, 1L);

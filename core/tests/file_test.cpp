@@ -49,7 +49,7 @@ static void assertFileDoesNotExist(const ProtocolHandler::StatResult &statResult
 
 static void assertIsDirectory(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT(statResult.type & File::Directory);
+    CPPUNIT_ASSERT(statResult.type & ProtocolHandler::Directory);
     ++numCalls;
 }
 
@@ -61,20 +61,20 @@ static void assertIsRoot(const ProtocolHandler::StatResult &statResult)
 
 static void assertIsCharacterDevice(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT(statResult.type & File::CharacterDevice);
-    CPPUNIT_ASSERT(statResult.type & File::Device);
+    CPPUNIT_ASSERT(statResult.type & ProtocolHandler::CharacterDevice);
+    CPPUNIT_ASSERT(statResult.type & ProtocolHandler::Device);
     ++numCalls;
 }
 
 static void assertIsNotBlockDevice(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT(!(statResult.type & File::BlockDevice));
+    CPPUNIT_ASSERT(!(statResult.type & ProtocolHandler::BlockDevice));
     ++numCalls;
 }
 
 static void assertOthersCanWrite(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT(statResult.permissions & File::OthersCanWrite);
+    CPPUNIT_ASSERT(statResult.permissions & ProtocolHandler::OthersCanWrite);
     ++numCalls;
 }
 

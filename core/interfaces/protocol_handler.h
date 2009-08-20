@@ -51,6 +51,35 @@ public:
         List<String> handlesProtocols;
     };
 
+    enum Permissions {
+        NoPermissions      = 0,   ///< No permissions of any kind
+        OwnerCanRead       = 1,   ///< The owner of this file can read it
+        OwnerCanWrite      = 2,   ///< The owner of this file can write on it
+        OwnerCanExecute    = 4,   ///< The owner of this file can execute it
+        OwnerMask          = 7,   ///< Masks the Permissions flags on the owner only
+        GroupCanRead       = 8,   ///< The group of this file can read it
+        GroupCanWrite      = 16,  ///< The group of this file can write on it
+        GroupCanExecute    = 32,  ///< The group of this file can execute it
+        GroupMask          = 56,  ///< Masks the Permissions flags on the group only
+        OthersCanRead      = 64,  ///< Others can read this file
+        OthersCanWrite     = 128, ///< Others can write on this file
+        OthersCanExecute   = 256, ///< Others can execute this file
+        OthersMask         = 448, ///< Masks the Permissions flags on others only
+        UnknownPermissions = 512  ///< Unknown permissions
+    };
+
+    enum Type {
+        UnknownType     = 0,  ///< This is an unknown type of file
+        RegularFile     = 1,  ///< This is a regular file
+        Directory       = 2,  ///< This is a directory
+        CharacterDevice = 4,  ///< This is a character device
+        BlockDevice     = 8,  ///< This is a block device
+        Device          = 12, ///< This is a device, character or block one
+        SymbolicLink    = 16, ///< This is a symbolic link
+        Socket          = 32, ///< This is a socket
+        Pipe            = 64  ///< This is a pipe
+    };
+
     enum ErrorCode {
         NoError = 0,             ///< The operation finished successfully.
         FileNotFound,            ///< The stat of the file failed because the file does not exist.
@@ -66,10 +95,10 @@ public:
 
         bool isValid;       ///< Whether this stat result is valid or not.
         bool exists;        ///< Whether this file exists or not.
-        int type;           ///< The type of this file. Matches File::Type.
+        int type;           ///< The type of this file. Matches ProtocolHandler::Type.
         String ownerUser;   ///< The user owner of this file.
         String ownerGroup;  ///< The group owner of this file.
-        int permissions;    ///< The permissions of this file. Matches File::Permissions.
+        int permissions;    ///< The permissions of this file. Matches ProtocolHandler::Permissions.
         double size;        ///< The size of this file.
         long lastAccessed;  ///< The last access on this file.
         long lastModified;  ///< When was this file last modified.

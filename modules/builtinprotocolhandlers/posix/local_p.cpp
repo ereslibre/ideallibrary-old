@@ -123,21 +123,21 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
         struct stat statResult;
         if (!::stat(uri.path().data(), &statResult)) {
             statRes.exists = true;
-            statRes.type = File::UnknownType;
+            statRes.type = ProtocolHandler::UnknownType;
             if (S_ISREG(statResult.st_mode)) {
-                statRes.type |= File::RegularFile;
+                statRes.type |= ProtocolHandler::RegularFile;
             } else if (S_ISDIR(statResult.st_mode)) {
-                statRes.type |= File::Directory;
+                statRes.type |= ProtocolHandler::Directory;
             } else if (S_ISCHR(statResult.st_mode)) {
-                statRes.type |= File::CharacterDevice;
+                statRes.type |= ProtocolHandler::CharacterDevice;
             } else if (S_ISBLK(statResult.st_mode)) {
-                statRes.type |= File::BlockDevice;
+                statRes.type |= ProtocolHandler::BlockDevice;
             } else if (S_ISLNK(statResult.st_mode)) {
-                statRes.type |= File::SymbolicLink;
+                statRes.type |= ProtocolHandler::SymbolicLink;
             } else if (S_ISSOCK(statResult.st_mode)) {
-                statRes.type |= File::Socket;
+                statRes.type |= ProtocolHandler::Socket;
             } else if (S_ISFIFO(statResult.st_mode)) {
-                statRes.type |= File::Pipe;
+                statRes.type |= ProtocolHandler::Pipe;
             }
             const struct passwd *const password = getpwuid(statResult.st_uid);
             if (password) {
@@ -147,34 +147,34 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
             if (gr) {
                 statRes.ownerGroup = gr->gr_name;
             }
-            statRes.permissions = File::NoPermissions;
+            statRes.permissions = ProtocolHandler::NoPermissions;
             const mode_t mode = statResult.st_mode;
             if (mode & S_IRUSR) {
-                statRes.permissions |= File::OwnerCanRead;
+                statRes.permissions |= ProtocolHandler::OwnerCanRead;
             }
             if (mode & S_IWUSR) {
-                statRes.permissions |= File::OwnerCanWrite;
+                statRes.permissions |= ProtocolHandler::OwnerCanWrite;
             }
             if (mode & S_IXUSR) {
-                statRes.permissions |= File::OwnerCanExecute;
+                statRes.permissions |= ProtocolHandler::OwnerCanExecute;
             }
             if (mode & S_IRGRP) {
-                statRes.permissions |= File::GroupCanRead;
+                statRes.permissions |= ProtocolHandler::GroupCanRead;
             }
             if (mode & S_IWGRP) {
-                statRes.permissions |= File::GroupCanWrite;
+                statRes.permissions |= ProtocolHandler::GroupCanWrite;
             }
             if (mode & S_IXGRP) {
-                statRes.permissions |= File::GroupCanExecute;
+                statRes.permissions |= ProtocolHandler::GroupCanExecute;
             }
             if (mode & S_IROTH) {
-                statRes.permissions |= File::OthersCanRead;
+                statRes.permissions |= ProtocolHandler::OthersCanRead;
             }
             if (mode & S_IWOTH) {
-                statRes.permissions |= File::OthersCanWrite;
+                statRes.permissions |= ProtocolHandler::OthersCanWrite;
             }
             if (mode & S_IXOTH) {
-                statRes.permissions |= File::OthersCanExecute;
+                statRes.permissions |= ProtocolHandler::OthersCanExecute;
             }
             statRes.size = statResult.st_size;
             statRes.lastAccessed = statResult.st_atime;

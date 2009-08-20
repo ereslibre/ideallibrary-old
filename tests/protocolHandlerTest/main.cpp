@@ -37,7 +37,7 @@ static void statResult(ProtocolHandler::StatResult statResult)
     if (!statResult.exists) {
         return;
     }
-    IDEAL_SDEBUG("\t\t*** Is directory?\t" << ((statResult.type & File::Directory) ? "yes" : "no"));
+    IDEAL_SDEBUG("\t\t*** Is directory?\t" << ((statResult.type & ProtocolHandler::Directory) ? "yes" : "no"));
 }
 
 struct ExtensionLoadDecider
