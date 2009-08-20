@@ -28,8 +28,11 @@ int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    File f(app.getPath(Application::Home), &app);
     AsyncResult result(&app);
+
+    IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home));
+
+    File f(app.getPath(Application::Home), &app);
     Object::connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
     f.stat(Thread::Joinable)->execAndJoin();
 
@@ -52,6 +55,23 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("last modified is " << statResult.lastModified);
     IDEAL_SDEBUG("content type is " << statResult.contentType);
     IDEAL_SDEBUG("uri is " << statResult.uri.uri());
+
+    result.clear();
+    AsyncResult errorResult(&app);
+
+    IDEAL_SDEBUG("");
+    IDEAL_SDEBUG("*** Going to stat /root/foo");
+
+    File f2("/root/foo", &app);
+    Object::connect(f2.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
+    Object::connect(f2.error, &errorResult, &AsyncResult::set<ProtocolHandler::ErrorCode>);
+    f2.stat(Thread::Joinable)->execAndJoin();
+
+    if (errorResult.resultReceived()) {
+        // Here, result.resultReceived() is false too, but with the previous check is enough
+        ProtocolHandler::ErrorCode errorCode = errorResult.get<ProtocolHandler::ErrorCode>(0);
+        IDEAL_SDEBUG("an error has been received with code " << errorCode);
+    }
 
     return 0;
 }
