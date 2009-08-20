@@ -18,23 +18,19 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "mutex.h"
-#include "private/mutex_p.h"
+#include "context_mutex_locker.h"
 
 namespace IdealCore {
 
-Mutex::Private::~Private()
+ContextMutexLocker::ContextMutexLocker(Mutex &mutex)
+    : m_mutex(mutex)
 {
+    m_mutex.lock();
 }
 
-Mutex::Mutex(RecursionType recursionType)
-    : d(new PrivateImpl(recursionType))
+ContextMutexLocker::~ContextMutexLocker()
 {
-}
-
-Mutex::~Mutex()
-{
-    delete d;
+    m_mutex.unlock();
 }
 
 }

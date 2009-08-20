@@ -40,6 +40,7 @@
 #ifndef MUTEX_H
 
 #include <core/mutex.h>
+#include <core/context_mutex_locker.h>
 
 namespace IdealCore {
 
@@ -47,7 +48,7 @@ static Mutex outputMutex;
 
 }
 
-#endif
+#endif //MUTEX_H
 
 #define IDEAL_DEBUG_WARNING(message) do {                                                                                                          \
                                          IdealCore::ContextMutexLocker cml(IdealCore::outputMutex);                                                \

@@ -70,7 +70,24 @@ int main(int argc, char **argv)
     if (errorResult.resultReceived()) {
         // Here, result.resultReceived() is false too, but with the previous check is enough
         ProtocolHandler::ErrorCode errorCode = errorResult.get<ProtocolHandler::ErrorCode>(0);
-        IDEAL_SDEBUG("an error has been received with code " << errorCode);
+        if (errorCode == ProtocolHandler::InsufficientPermissions) {
+            IDEAL_SDEBUG("not enough permissions to stat /root/foo");
+        } else {
+            IDEAL_SDEBUG("unknown error while stating /root/foo");
+        }
+    } else {
+        ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
+
+        IDEAL_SDEBUG("exists is " << statResult.exists);
+        IDEAL_SDEBUG("type is " << statResult.type);
+        IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
+        IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
+        IDEAL_SDEBUG("permissions is " << statResult.permissions);
+        IDEAL_SDEBUG("size is " << statResult.size);
+        IDEAL_SDEBUG("last accessed is " << statResult.lastAccessed);
+        IDEAL_SDEBUG("last modified is " << statResult.lastModified);
+        IDEAL_SDEBUG("content type is " << statResult.contentType);
+        IDEAL_SDEBUG("uri is " << statResult.uri.uri());
     }
 
     return 0;
