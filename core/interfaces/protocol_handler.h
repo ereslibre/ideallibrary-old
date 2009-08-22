@@ -109,31 +109,17 @@ public:
     static const double NoMaxBytes = 0;
 
     /**
-      * Sets the working directory at @p uri.
-      */
-    virtual void cd(const Uri &uri) = 0;
-
-    /**
-      * Creates the directory @p uri. @p uri can be either an absolute or a relative path. It
-      * will success if the last directory before the one that you are creating existed before.
-      * Examples:
+      * Creates the directory @p uri.
       *
-      * @code
-      * // example of a relative path
-      * protocolHandler->cd("/home/testuser");
-      * protocolHandler->mkdir("test");
-      *
-      * // example of an absolute path (fail)
-      * protocolHandler->mkdir("/home/testuser/test/foo"); // will fail because "test" does not exist
-      *
-      * // example of an absolute path (success)
-      * protocolHandler->mkdir("/home/testuser/test"); // will succeed if "/home/testuser" does exist
-      * @endcode
+      * @param uri A full URI with absolute path
       */
     virtual void mkdir(const Uri &uri) = 0;
 
     /**
       * Copies @p source in @p target.
+      *
+      * @param source A full URI with absolute path
+      * @param target A full URI with absolute path
       */
     virtual void cp(const Uri &source, const Uri &target) = 0;
 
