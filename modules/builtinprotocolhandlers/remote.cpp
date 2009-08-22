@@ -127,42 +127,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::processAndDiscardOutput);
     StatResult statResult;
     statResult.uri = uri;
-    const CURLcode retCode = curl_easy_perform(d->m_curl);
-    switch (retCode) {
-        case CURLE_OK: {
-            long serverResponse;
-            curl_easy_getinfo(d->m_curl, CURLINFO_RESPONSE_CODE, &serverResponse);
-            if (serverResponse >= 200 && serverResponse < 400) {
-                statResult.exists = true;
-                curl_easy_getinfo(d->m_curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &statResult.size);
-                curl_easy_getinfo(d->m_curl, CURLINFO_FILETIME, &statResult.lastModified);
-                char *contentType = 0;
-                curl_easy_getinfo(d->m_curl, CURLINFO_CONTENT_TYPE, &contentType);
-                if (contentType) {
-                    statResult.contentType = contentType;
-                }
-                d->m_success = true;
-            }
-        }
-            break;
-        case CURLE_FTP_COULDNT_RETR_FILE:
-        case CURLE_REMOTE_FILE_NOT_FOUND:
-            d->m_success = true;
-            break;
-        case CURLE_LOGIN_DENIED:
-            emit(error, LoginFailed);
-            break;
-        case CURLE_COULDNT_RESOLVE_HOST:
-            emit(error, CouldNotResolveHost);
-            break;
-        case CURLE_COULDNT_CONNECT:
-            emit(error, CouldNotConnect);
-            break;
-        default:
-            IDEAL_DEBUG_WARNING("unknown error code: " << retCode);
-            break;
-    }
-    statResult.isValid = d->m_success;
+    // TODO
     return statResult;
 }
 
