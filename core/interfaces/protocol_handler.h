@@ -125,16 +125,23 @@ public:
 
     /**
       * Moves @p source to @p target.
+      *
+      * @param source A full URI with absolute path
+      * @param target A full URI with absolute path
       */
     virtual void mv(const Uri &source, const Uri &target) = 0;
 
     /**
       * Deletes @p uri.
+      *
+      * @param uri A full URI with absolute path
       */
     virtual void rm(const Uri &uri) = 0;
 
     /**
       * Stats path @p uri.
+      *
+      * @param uri A full URI with absolute path
       *
       * @return The stat result of the stat operation.
       */
@@ -143,6 +150,8 @@ public:
     /**
       * Retrieves the file at @p uri. If @p maxBytes is NoMaxBytes, it will be attempted to retrieve the
       * whole file. If @p maxBytes is greater than 0, then a maximum of @p maxBytes will be retrieved.
+      *
+      * @param uri A full URI with absolute path
       *
       * @note Please note that since data will usually come in data packets the implementation should
       *       stop when @p maxBytes has been reached. This does not mean that exactly @p maxBytes will
