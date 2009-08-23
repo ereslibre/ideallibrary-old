@@ -18,6 +18,7 @@ def build(bld):
                      'guiTest2',
                      'idleTest',
                      'leakTest',
+                     'mkdirTest',
                      'multiSlotTest',
                      'nonBlockingGUI',
                      'ownModulesTest',

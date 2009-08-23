@@ -89,9 +89,43 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
     delete d;
 }
 
-void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri)
+void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)
 {
-    ::mkdir(uri.path().data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    mode_t mode = 0;
+    if (permissions == SystemDefault) {
+        const mode_t mask = umask(0);
+        umask(mask);
+        mode = 0777 & ~mask;
+    } else {
+        if (permissions & OwnerCanRead) {
+            mode |= 0400;
+        }
+        if (permissions & OwnerCanWrite) {
+            mode |= 0200;
+        }
+        if (permissions & OwnerCanExecute) {
+            mode |= 0100;
+        }
+        if (permissions & GroupCanRead) {
+            mode |= 0040;
+        }
+        if (permissions & GroupCanWrite) {
+            mode |= 0020;
+        }
+        if (permissions & GroupCanExecute) {
+            mode |= 0010;
+        }
+        if (permissions & OthersCanRead) {
+            mode |= 0004;
+        }
+        if (permissions & OthersCanWrite) {
+            mode |= 0002;
+        }
+        if (permissions & OthersCanExecute) {
+            mode |= 0001;
+        }
+    }
+    ::mkdir(uri.path().data(), mode);
 }
 
 void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target)

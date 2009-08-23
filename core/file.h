@@ -126,6 +126,13 @@ public:
     Thread *get(double maxBytes = ProtocolHandler::NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
 
     /**
+      * @return A constructed thread object that will be able to run asynchronously.
+      *
+      * @see ProtocolHandler::mkdir()
+      */
+    Thread *mkdir(ProtocolHandler::Permissions permissions = ProtocolHandler::SystemDefault, Thread::Type type = Thread::NoJoinable) const;
+
+    /**
       * @return The URI of the file object.
       */
     Uri uri() const;

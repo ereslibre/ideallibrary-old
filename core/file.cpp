@@ -44,7 +44,8 @@ class File::Private::Job
 public:
     enum Operation {
         Stat = 0,
-        Get
+        Get,
+        Mkdir
     };
 
     Job(File *file, Type type);
@@ -54,6 +55,7 @@ public:
 
     void stat();
     void get();
+    void mkdir();
 
     struct LessThanProtocolHandler
     {
@@ -72,10 +74,11 @@ public:
         File *m_file;
     };
 
-    File            *m_file;
-    Operation        m_operation;
-    double           m_maxBytes;
-    ProtocolHandler *m_protocolHandler;
+    File                        *m_file;
+    Operation                    m_operation;
+    double                       m_maxBytes;
+    ProtocolHandler::Permissions m_permissions;
+    ProtocolHandler             *m_protocolHandler;
 
 protected:
     virtual void run();
@@ -129,14 +132,25 @@ void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
 
 void File::Private::Job::stat()
 {
+    bool wasStated = true;
+    if (!m_file->d->m_stated) {
     m_protocolHandler = findProtocolHandler();
-    if (m_protocolHandler) {
-        connect(m_protocolHandler->error, m_file->error);
-        ProtocolHandler::StatResult statResult = m_protocolHandler->stat(m_file->d->m_uri);
-        if (statResult.isValid) {
-            emit(m_file->statResult, statResult);
+        if (m_protocolHandler) {
+            connect(m_protocolHandler->error, m_file->error);
+            ProtocolHandler::StatResult statResult = m_protocolHandler->stat(m_file->d->m_uri);
+            if (statResult.isValid) {
+                emit(m_file->statResult, statResult);
+            }
+            disconnect(m_protocolHandler->error, m_file->error);
+        } else {
+            return;
         }
-        disconnect(m_protocolHandler->error, m_file->error);
+        wasStated = false;
+        m_file->d->m_stated = true;
+    }
+    if (!wasStated) {
+        cacheOrDiscard(m_protocolHandler);
+        m_protocolHandler = 0;
     }
 }
 
@@ -150,6 +164,16 @@ void File::Private::Job::get()
         m_protocolHandler->get(m_file->d->m_uri, m_maxBytes);
         disconnect(m_protocolHandler->dataRead, m_file->dataRead);
         disconnect(m_protocolHandler->dirRead, m_file->dirRead);
+        disconnect(m_protocolHandler->error, m_file->error);
+    }
+}
+
+void File::Private::Job::mkdir()
+{
+    m_protocolHandler = findProtocolHandler();
+    if (m_protocolHandler) {
+        connect(m_protocolHandler->error, m_file->error);
+        m_protocolHandler->mkdir(m_file->d->m_uri, m_permissions);
         disconnect(m_protocolHandler->error, m_file->error);
     }
 }
@@ -176,22 +200,19 @@ bool File::Private::Job::ExtensionLoadDecider::loadExtension(const Module::Exten
 
 void File::Private::Job::run()
 {
-    if (m_operation == Get) {
-        get();
-        return;
-    }
-    bool wasStated = true;
-    if (!m_file->d->m_stated) {
-        stat();
-        if (!m_protocolHandler) {
-            return;
-        }
-        wasStated = false;
-        m_file->d->m_stated = true;
-    }
-    if (!wasStated) {
-        cacheOrDiscard(m_protocolHandler);
-        m_protocolHandler = 0;
+    switch (m_operation) {
+        case Stat:
+            stat();
+            break;
+        case Get:
+            get();
+            break;
+        case Mkdir:
+            mkdir();
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown job operation");
+            break;
     }
 }
 
@@ -230,6 +251,14 @@ Thread *File::get(double maxBytes, Thread::Type type) const
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::Get;
     job->m_maxBytes = maxBytes;
+    return job;
+}
+
+Thread *File::mkdir(ProtocolHandler::Permissions permissions, Thread::Type type) const
+{
+    Private::Job *job = new Private::Job(const_cast<File*>(this), type);
+    job->m_operation = Private::Job::Mkdir;
+    job->m_permissions = permissions;
     return job;
 }
 

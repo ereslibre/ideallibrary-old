@@ -65,7 +65,12 @@ public:
         OthersCanWrite     = 128, ///< Others can write on this file
         OthersCanExecute   = 256, ///< Others can execute this file
         OthersMask         = 448, ///< Masks the Permissions flags on others only
-        UnknownPermissions = 512  ///< Unknown permissions
+        ReadMask           = 73,  ///< Everybody (owner, group and others) can read
+        WriteMask          = 146, ///< Everybody (owner, group and others) can write
+        ExecuteMask        = 292, ///< Everybody (owner, group and others) can execute
+        UnknownPermissions = 512, ///< Unknown permissions
+        SystemDefault      = 1024 ///< Valid only for file/directory creation. Applies the system
+                                  ///< default mask.
     };
 
     enum Type {
@@ -113,7 +118,7 @@ public:
       *
       * @param uri A full URI with absolute path
       */
-    virtual void mkdir(const Uri &uri) = 0;
+    virtual void mkdir(const Uri &uri, Permissions permissions = SystemDefault) = 0;
 
     /**
       * Copies @p source in @p target.

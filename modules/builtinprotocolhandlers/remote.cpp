@@ -137,7 +137,7 @@ BuiltinProtocolHandlersRemote::~BuiltinProtocolHandlersRemote()
     delete d;
 }
 
-void BuiltinProtocolHandlersRemote::mkdir(const Uri &uri)
+void BuiltinProtocolHandlersRemote::mkdir(const Uri &uri, Permissions permissions)
 {
 }
 

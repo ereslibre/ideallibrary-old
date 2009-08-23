@@ -18,38 +18,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef LOCAL_H
-#define LOCAL_H
+#include <core/application.h>
+#include <core/file.h>
 
-#include <core/interfaces/protocol_handler.h>
+using namespace IdealCore;
 
-namespace IdealCore {
-
-class BuiltinProtocolHandlersLocal
-    : public ProtocolHandler
+int main(int argc, char **argv)
 {
-public:
-    BuiltinProtocolHandlersLocal();
-    ~BuiltinProtocolHandlersLocal();
+    Application app(argc, argv);
+    
+    {
+        File f("systemDefaultFolder", &app);
+        Thread *create = f.mkdir(ProtocolHandler::SystemDefault, Thread::Joinable);
+        create->exec();
+        create->join();
+    }
 
-    virtual void mkdir(const Uri &uri, Permissions permissions = SystemDefault);
-    virtual void cp(const Uri &source, const Uri &target);
-    virtual void mv(const Uri &source, const Uri &target);
-    virtual void rm(const Uri &uri);
-    virtual StatResult stat(const Uri &uri);
-    virtual void get(const Uri &uri, double maxBytes = NoMaxBytes);
-    virtual bool canBeReusedWith(const Uri &uri) const;
+    {
+        File f("onlyReadFolder", &app);
+        Thread *create = f.mkdir(ProtocolHandler::ReadMask, Thread::Joinable);
+        create->exec();
+        create->join();
+    }
 
-    virtual String name() const;
-    virtual String description() const;
-    virtual String author() const;
-    virtual String version() const;
-
-private:
-    class Private;
-    Private *const d;
-};
-
+    return 0;
 }
-
-#endif //LOCAL_H
