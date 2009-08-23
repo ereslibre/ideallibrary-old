@@ -89,11 +89,6 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
     delete d;
 }
 
-void BuiltinProtocolHandlersLocal::cd(const Uri &uri)
-{
-    if (chdir(uri.path().data())) {}
-}
-
 void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri)
 {
     ::mkdir(uri.path().data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);

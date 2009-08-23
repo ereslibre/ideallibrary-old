@@ -137,10 +137,6 @@ BuiltinProtocolHandlersRemote::~BuiltinProtocolHandlersRemote()
     delete d;
 }
 
-void BuiltinProtocolHandlersRemote::cd(const Uri &uri)
-{
-}
-
 void BuiltinProtocolHandlersRemote::mkdir(const Uri &uri)
 {
 }

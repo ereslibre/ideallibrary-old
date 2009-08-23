@@ -32,7 +32,6 @@ public:
     BuiltinProtocolHandlersLocal();
     ~BuiltinProtocolHandlersLocal();
 
-    virtual void cd(const Uri &uri);
     virtual void mkdir(const Uri &uri);
     virtual void cp(const Uri &source, const Uri &target);
     virtual void mv(const Uri &source, const Uri &target);
