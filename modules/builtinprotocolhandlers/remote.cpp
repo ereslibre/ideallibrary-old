@@ -46,7 +46,15 @@ public:
     }
 
     static size_t processAndNotifyOutput(void *ptr, size_t size, size_t nmemb, void *stream);
-    static size_t processAndDiscardOutput(void*, size_t size, size_t nmemb, void*);
+
+    enum State {
+        Receiving = 0,
+        Sending
+    };
+
+    int waitOnSocket(State state);
+
+    void statFtp();
 
     CURL                          *m_curl;
     Uri                            m_uri;
@@ -76,10 +84,47 @@ size_t BuiltinProtocolHandlersRemote::Private::processAndNotifyOutput(void *ptr,
 
 }
 
-size_t BuiltinProtocolHandlersRemote::Private::processAndDiscardOutput(void*, size_t size, size_t nmemb, void*)
+int BuiltinProtocolHandlersRemote::Private::waitOnSocket(State state)
 {
-    // TODO: process timestamp
-    return size * nmemb;
+    int socket;
+    struct timeval tv;
+    fd_set infd;
+    fd_set outfd;
+    fd_set errfd;
+
+    tv.tv_sec = 60;
+    tv.tv_usec= 0;
+
+    FD_ZERO(&infd);
+    FD_ZERO(&outfd);
+    FD_ZERO(&errfd);
+
+    curl_easy_getinfo(m_curl, CURLINFO_LASTSOCKET, &socket);
+
+    FD_SET(socket, &errfd);
+
+    if (state == Receiving) {
+        FD_SET(socket, &infd);
+    } else {
+        FD_SET(socket, &outfd);
+    }
+
+    return select(socket + 1, &infd, &outfd, &errfd, &tv);
+}
+
+void BuiltinProtocolHandlersRemote::Private::statFtp()
+{
+    CURLcode res;
+    size_t n;
+    const char *lsCommand = "LIST\n";
+    curl_easy_send(m_curl, lsCommand, strlen(lsCommand), &n);
+    do {
+        char buf[1024];
+        bzero(buf, 1024);
+        waitOnSocket(Receiving);
+        res = curl_easy_recv(m_curl, buf, 1024, &n);
+        IDEAL_SDEBUG("have read " << buf);
+    } while (res != CURLE_OK);
 }
 
 BuiltinProtocolHandlersRemote::BuiltinProtocolHandlersRemote()
@@ -123,11 +168,21 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)
     }
     curl_easy_setopt(d->m_curl, CURLOPT_URL, uri.uri().data());
     curl_easy_setopt(d->m_curl, CURLOPT_NOBODY, 1L);
-    curl_easy_setopt(d->m_curl, CURLOPT_FILETIME, 1L);
-    curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::processAndDiscardOutput);
+    curl_easy_setopt(d->m_curl, CURLOPT_CONNECT_ONLY, 1L);
+    curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, 0L);
     StatResult statResult;
     statResult.uri = uri;
-    // TODO
+    if (curl_easy_perform(d->m_curl) == CURLE_OK) {
+        d->m_success = true;
+        d->waitOnSocket(Private::Sending);
+        if (!uri.scheme().compare("ftp")) {
+            d->statFtp();
+        } else {
+            // TODO
+        }
+    } else {
+        // TODO: handle different error cases
+    }
     return statResult;
 }
 
@@ -144,7 +199,7 @@ void BuiltinProtocolHandlersRemote::get(const Uri &uri, double maxBytes)
     }
     curl_easy_setopt(d->m_curl, CURLOPT_URL, uri.uri().data());
     curl_easy_setopt(d->m_curl, CURLOPT_NOBODY, 0L);
-    curl_easy_setopt(d->m_curl, CURLOPT_FILETIME, 0L);
+    curl_easy_setopt(d->m_curl, CURLOPT_CONNECT_ONLY, 0L);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::processAndNotifyOutput);
     curl_easy_perform(d->m_curl);
