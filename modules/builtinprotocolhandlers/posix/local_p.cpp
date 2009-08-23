@@ -125,7 +125,16 @@ void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions
             mode |= 0001;
         }
     }
-    ::mkdir(uri.path().data(), mode);
+    if (::mkdir(uri.path().data(), mode)) {
+        switch (errno) {
+            case EACCES:
+                emit(error, InsufficientPermissions);
+                break;
+            default:
+                IDEAL_DEBUG_WARNING("unknown error code: " << errno);
+                break;
+        }
+    }
 }
 
 void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target)
