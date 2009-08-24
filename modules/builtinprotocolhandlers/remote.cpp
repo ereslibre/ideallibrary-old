@@ -141,7 +141,7 @@ void BuiltinProtocolHandlersRemote::mkdir(const Uri &uri, Permissions permission
 {
 }
 
-void BuiltinProtocolHandlersRemote::cp(const Uri &source, const Uri &target)
+void BuiltinProtocolHandlersRemote::cp(const Uri &source, const Uri &target, Behavior behavior)
 {
 }
 

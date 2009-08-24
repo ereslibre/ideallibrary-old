@@ -88,6 +88,7 @@ public:
     enum ErrorCode {
         NoError = 0,             ///< The operation finished successfully.
         FileNotFound,            ///< The stat of the file failed because the file does not exist.
+        FileAlreadyExists,       ///< The target URI of the operation already exists.
         InsufficientPermissions, ///< Not enough permissions to stat the file.
         CouldNotResolveHost,     ///< Host could not be resolved.
         CouldNotConnect,         ///< Could not connect.
@@ -111,6 +112,11 @@ public:
         Uri uri;            ///< The uri of this file.
     };
 
+    enum Behavior {
+        DoNotOverwriteTarget = 0, ///< Do not overwrite target if it already exists. Emit error signal instead.
+        OverwriteTarget           ///< Overwrite target silently if it already exists.
+    };
+
     static const double NoMaxBytes = 0;
 
     /**
@@ -126,7 +132,7 @@ public:
       * @param source A full URI with absolute path
       * @param target A full URI with absolute path
       */
-    virtual void cp(const Uri &source, const Uri &target) = 0;
+    virtual void cp(const Uri &source, const Uri &target, Behavior behavior = DoNotOverwriteTarget) = 0;
 
     /**
       * Moves @p source to @p target.

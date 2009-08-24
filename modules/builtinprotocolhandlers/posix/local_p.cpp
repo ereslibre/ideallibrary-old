@@ -41,12 +41,23 @@ public:
     {
     }
 
+    void cpDir(const Uri &source, const Uri &target);
+    void cpFile(const Uri &source, const Uri &target);
+
     void getDir(const Uri &uri);
     void getFile(const Uri &uri, double maxBytes);
 
     bool                          m_success;
     BuiltinProtocolHandlersLocal *q;
 };
+
+void BuiltinProtocolHandlersLocal::Private::cpDir(const Uri &source, const Uri &target)
+{
+}
+
+void BuiltinProtocolHandlersLocal::Private::cpFile(const Uri &source, const Uri &target)
+{
+}
 
 void BuiltinProtocolHandlersLocal::Private::getDir(const Uri &uri)
 {
@@ -137,8 +148,38 @@ void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions
     }
 }
 
-void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target)
+void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target, Behavior behavior)
 {
+    struct stat statResultSource;
+    if (!::stat(source.path().data(), &statResultSource)) {
+        {
+            struct stat statResultTarget;
+            const bool targetExists = !::stat(target.path().data(), &statResultTarget);
+            if (!targetExists || S_ISDIR(statResultTarget.st_mode)) {
+              // TODO: check permissions
+            } else if (behavior == DoNotOverwriteTarget) {
+              emit(error, FileAlreadyExists);
+              return;
+            }
+        }
+        if (S_ISDIR(statResultSource.st_mode)) {
+            d->cpDir(source, target);
+        } else {
+            d->cpFile(source, target);
+        }
+    } else {
+        switch (errno) {
+            case ENOENT:
+            case ENOTDIR:
+                emit(error, FileNotFound);
+                break;
+            case EACCES:
+                emit(error, InsufficientPermissions);
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void BuiltinProtocolHandlersLocal::mv(const Uri &source, const Uri &target)
