@@ -142,7 +142,7 @@ void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions
                 emit(error, InsufficientPermissions);
                 break;
             default:
-                IDEAL_DEBUG_WARNING("unknown error code: " << errno);
+                emit(error, Unknown);
                 break;
         }
     }
@@ -156,10 +156,10 @@ void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target, Beha
             struct stat statResultTarget;
             const bool targetExists = !::stat(target.path().data(), &statResultTarget);
             if (!targetExists || S_ISDIR(statResultTarget.st_mode)) {
-              // TODO: check permissions
+                //TODO
             } else if (behavior == DoNotOverwriteTarget) {
-              emit(error, FileAlreadyExists);
-              return;
+                emit(error, FileAlreadyExists);
+                return;
             }
         }
         if (S_ISDIR(statResultSource.st_mode)) {
@@ -177,6 +177,7 @@ void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target, Beha
                 emit(error, InsufficientPermissions);
                 break;
             default:
+                emit(error, Unknown);
                 break;
         }
     }
@@ -269,7 +270,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
                     emit(error, InsufficientPermissions);
                     break;
                 default:
-                    IDEAL_DEBUG_WARNING("unknown error code: " << errno);
+                    emit(error, Unknown);
                     break;
             }
         }
@@ -297,6 +298,7 @@ void BuiltinProtocolHandlersLocal::get(const Uri &uri, double maxBytes)
                 emit(error, InsufficientPermissions);
                 break;
             default:
+                emit(error, Unknown);
                 break;
         }
     }
