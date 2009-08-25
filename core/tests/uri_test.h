@@ -28,6 +28,7 @@ class UriTest
 {
     CPPUNIT_TEST_SUITE(UriTest);
     CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testDirUp);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -35,6 +36,7 @@ public:
     void tearDown();
 
     void testConstructor();
+    void testDirUp();
 };
 
 #endif //URI_TEST_H

@@ -151,6 +151,43 @@ void UriTest::testConstructor()
     CPPUNIT_ASSERT_EQUAL(String("www.specialcháracter.com"), test23.host());
 }
 
+void UriTest::testDirUp()
+{
+    {
+        Uri uri("file:///home/user/folder1/folder2/test.txt");
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/"), uri.uri());
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/"), uri.uri());
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/"), uri.uri());
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("file:///"), uri.uri());
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("file:///"), uri.uri());
+    }
+    {
+        Uri uri("file:///home/user/folder1/folder2/");
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/"), uri.uri());
+    }
+    {
+        Uri uri("/home/user/folder1/folder2/");
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("/home/user/folder1/"), uri.uri());
+    }
+    {
+        Uri uri("test.txt");
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String(), uri.uri());
+    }
+    {
+      Uri uri;
+      uri.dirUp();
+      CPPUNIT_ASSERT_EQUAL(String(), uri.uri());
+    }
+}
+
 int main(int argc, char **argv)
 {
     Application app(argc, argv);

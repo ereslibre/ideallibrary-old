@@ -99,6 +99,12 @@ public:
       */
     bool isValid() const;
 
+    /**
+      * Goes up one directory. The filename is set to an empty string. If it is not possible to
+      * go up one directory because we are already on the root, it is kept unmodified.
+      */
+    void dirUp();
+
     Uri &operator=(const Uri &uri);
     bool operator==(const Uri &uri);
     bool operator!=(const Uri &uri);

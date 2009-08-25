@@ -321,6 +321,36 @@ bool Uri::isValid() const
     return d->m_isValidUri;
 }
 
+void Uri::dirUp()
+{
+    if (!d->m_filename.empty()) {
+        d->m_uri = d->m_uri.substr(0, d->m_uri.size() - d->m_filename.size());
+        d->m_path = d->m_path.substr(0, d->m_path.size() - d->m_filename.size());
+        d->m_filename.clear();
+    }
+    if (d->m_path.empty() || !d->m_path.compare("/")) {
+        return;
+    }
+    size_t size = d->m_uri.size();
+    if (d->m_uri[size - 1] == '/') {
+        d->m_uri = d->m_uri.substr(0, size - 1);
+    }
+    size = d->m_path.size();
+    if (d->m_path[size - 1] == '/') {
+        d->m_path = d->m_path.substr(0, size - 1);
+    }
+    size = d->m_filenameLessPath.size();
+    if (d->m_filenameLessPath[size - 1] == '/') {
+        d->m_filenameLessPath = d->m_filenameLessPath.substr(0, size - 1);
+    }
+    size_t pos = d->m_uri.rfind('/');
+    d->m_uri = d->m_uri.substr(0, d->m_uri.size() - (d->m_uri.size() - pos) + 1);
+    pos = d->m_path.rfind('/');
+    d->m_path = d->m_path.substr(0, d->m_path.size() - (d->m_path.size() - pos) + 1);
+    pos = d->m_filenameLessPath.rfind('/');
+    d->m_filenameLessPath = d->m_filenameLessPath.substr(0, d->m_filenameLessPath.size() - (d->m_filenameLessPath.size() - pos) + 1);
+}
+
 Uri &Uri::operator=(const Uri &uri)
 {
     if (this == &uri) {
