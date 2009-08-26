@@ -42,14 +42,12 @@ void UriTest::tearDown()
 void UriTest::testConstructor()
 {
     Uri test1("/non/existant/path/nor/file.txt");
-    CPPUNIT_ASSERT_EQUAL(String("file.txt"), test1.filename());
     CPPUNIT_ASSERT_EQUAL(String("/non/existant/path/nor/file.txt"), test1.path());
     CPPUNIT_ASSERT_EQUAL(String(), test1.host());
 
     Uri test2("ftp://username,project:password@ftp.server.com/path/to/project/file.html");
     CPPUNIT_ASSERT_EQUAL(String("ftp"), test2.scheme());
     CPPUNIT_ASSERT_EQUAL(String("ftp.server.com"), test2.host());
-    CPPUNIT_ASSERT_EQUAL(String("file.html"), test2.filename());
     CPPUNIT_ASSERT_EQUAL(String("/path/to/project/file.html"), test2.path());
     CPPUNIT_ASSERT_EQUAL(String("username,project"), test2.username());
     CPPUNIT_ASSERT_EQUAL(String("password"), test2.password());
@@ -65,12 +63,10 @@ void UriTest::testConstructor()
     CPPUNIT_ASSERT_EQUAL(String("ftp"), test4.scheme());
     CPPUNIT_ASSERT_EQUAL(String("ftp.is.co.za"), test4.host());
     CPPUNIT_ASSERT_EQUAL(String("/rfc/rfc1808.txt"), test4.path());
-    CPPUNIT_ASSERT_EQUAL(String("rfc1808.txt"), test4.filename());
     Uri test5("http://www.ietf.org/rfc/rfc2396.txt");
     CPPUNIT_ASSERT_EQUAL(String("http"), test5.scheme());
     CPPUNIT_ASSERT_EQUAL(String("www.ietf.org"), test5.host());
     CPPUNIT_ASSERT_EQUAL(String("/rfc/rfc2396.txt"), test5.path());
-    CPPUNIT_ASSERT_EQUAL(String("rfc2396.txt"), test5.filename());
     Uri test6("ldap://[2001:db8::7]/c=GB?objectClass?one");
     CPPUNIT_ASSERT_EQUAL(String("ldap"), test6.scheme());
     CPPUNIT_ASSERT_EQUAL(String("2001:db8::7"), test6.host());
@@ -107,43 +103,32 @@ void UriTest::testConstructor()
     // Other misc test cases
     Uri test17("file:///");
     CPPUNIT_ASSERT(test17.isValid());
-    CPPUNIT_ASSERT(test17.filename().empty());
     CPPUNIT_ASSERT_EQUAL(String("/"), test17.path());
     CPPUNIT_ASSERT_EQUAL(String(), test17.host());
 
     Uri test18("file:///home/user/file.txt");
     CPPUNIT_ASSERT(test18.isValid());
-    CPPUNIT_ASSERT_EQUAL(String("file.txt"), test18.filename());
     CPPUNIT_ASSERT_EQUAL(String("/home/user/file.txt"), test18.path());
-    CPPUNIT_ASSERT_EQUAL(String("/home/user/"), test18.filenameLessPath());
     CPPUNIT_ASSERT_EQUAL(String(), test18.host());
 
     Uri test19("file:///home/user/./file.png");
     CPPUNIT_ASSERT(test19.isValid());
-    CPPUNIT_ASSERT_EQUAL(String("file.png"), test19.filename());
     CPPUNIT_ASSERT_EQUAL(String("/home/user/file.png"), test19.path());
-    CPPUNIT_ASSERT_EQUAL(String("/home/user/"), test19.filenameLessPath());
     CPPUNIT_ASSERT_EQUAL(String(), test19.host());
 
     Uri test20("file:///home/user/../file.png");
     CPPUNIT_ASSERT(test20.isValid());
-    CPPUNIT_ASSERT_EQUAL(String("file.png"), test20.filename());
     CPPUNIT_ASSERT_EQUAL(String("/home/file.png"), test20.path());
-    CPPUNIT_ASSERT_EQUAL(String("/home/"), test20.filenameLessPath());
     CPPUNIT_ASSERT_EQUAL(String(), test20.host());
 
     Uri test21("file:///home/user/folder/");
     CPPUNIT_ASSERT(test21.isValid());
-    CPPUNIT_ASSERT_EQUAL(String(), test21.filename());
-    CPPUNIT_ASSERT_EQUAL(String("/home/user/folder/"), test21.path());
-    CPPUNIT_ASSERT_EQUAL(String("/home/user/folder/"), test21.filenameLessPath());
+    CPPUNIT_ASSERT_EQUAL(String("/home/user/folder"), test21.path());
     CPPUNIT_ASSERT_EQUAL(String(), test21.host());
 
     Uri test22("file:///home/user/imágenes/spécial.png");
     CPPUNIT_ASSERT(test22.isValid());
-    CPPUNIT_ASSERT_EQUAL(String("spécial.png"), test22.filename());
     CPPUNIT_ASSERT_EQUAL(String("/home/user/imágenes/spécial.png"), test22.path());
-    CPPUNIT_ASSERT_EQUAL(String("/home/user/imágenes/"), test22.filenameLessPath());
     CPPUNIT_ASSERT_EQUAL(String(), test22.host());
 
     Uri test23("http://www.specialcháracter.com");
@@ -156,11 +141,13 @@ void UriTest::testDirUp()
     {
         Uri uri("file:///home/user/folder1/folder2/test.txt");
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/folder2"), uri.uri());
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1"), uri.uri());
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user"), uri.uri());
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String("file:///home"), uri.uri());
         uri.dirUp();
         CPPUNIT_ASSERT_EQUAL(String("file:///"), uri.uri());
         uri.dirUp();
@@ -169,22 +156,72 @@ void UriTest::testDirUp()
     {
         Uri uri("file:///home/user/folder1/folder2/");
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1"), uri.uri());
     }
     {
         Uri uri("/home/user/folder1/folder2/");
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("/home/user/folder1/"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("/home/user/folder1"), uri.uri());
     }
     {
         Uri uri("test.txt");
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String(), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("test.txt"), uri.uri());
     }
     {
-      Uri uri;
-      uri.dirUp();
-      CPPUNIT_ASSERT_EQUAL(String(), uri.uri());
+        Uri uri;
+        uri.dirUp();
+        CPPUNIT_ASSERT_EQUAL(String(), uri.uri());
+    }
+}
+
+void UriTest::testContains()
+{
+    {
+        Uri uri("file:///home/foo/folder");
+        Uri uri2("file:///home/foo");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(!uri2.contains(uri));
+    }
+    {
+        Uri uri("file:///home/foo/");
+        Uri uri2("file:///home/foo");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(uri2.contains(uri));
+    }
+    {
+        Uri uri("file:///home/foo/");
+        Uri uri2("file:///home/foo/");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(uri2.contains(uri));
+    }
+    {
+        Uri uri("file:///home/foo/");
+        Uri uri2("file:///home/foo/..");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(!uri2.contains(uri));
+    }
+    {
+        Uri uri("file:///home/foo/");
+        Uri uri2("file:///home/foo/../");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(!uri2.contains(uri));
+    }
+    {
+        Uri uri("file:///home/foo/");
+        Uri uri2("file:///home/foo/.");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(uri2.contains(uri));
+        CPPUNIT_ASSERT_EQUAL(String("/home/foo"), uri2.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/foo"), uri2.uri());
+    }
+    {
+        Uri uri("file:///home/foo/");
+        Uri uri2("file:///home/foo/./");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(uri2.contains(uri));
+        CPPUNIT_ASSERT_EQUAL(String("/home/foo"), uri2.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/foo"), uri2.uri());
     }
 }
 

@@ -47,8 +47,6 @@ public:
     String m_host;
     int    m_port;
     String m_path;
-    String m_filenameLessPath;
-    String m_filename;
     String m_query;
     String m_fragment;
     bool   m_isValidUri;
@@ -77,8 +75,10 @@ String Uri::Private::encodeUri(const String &uri) const
         if (uri_unreserved.find(c) != std::string::npos ||
             uri_reserved.find(c) != std::string::npos) {
             res += c;
-        } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
+        } else if (!(c & (1 << 7))) {
             res += getHex(c);
+        } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
+            IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
         } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
             res += getHex(c);
             ++e;
@@ -88,6 +88,8 @@ String Uri::Private::encodeUri(const String &uri) const
         } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && (c & (1 << 4))) {
             res += getHex(c);
             e += 3;
+        } else {
+            IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
         }
         ++j;
     }
@@ -156,9 +158,7 @@ void Uri::Private::reconstructPath(int count, UriPathSegmentStructA *head, UriPa
 {
     const String currSegment = decodeUri(String(head->text.first, head->text.afterLast - head->text.first));
     if (head == tail) {
-        m_filenameLessPath = m_path;
         m_path += currSegment;
-        m_filename = currSegment;
     } else if (!count) {
         m_path = '/';
     }
@@ -177,8 +177,18 @@ void Uri::Private::initializeContents(const String &uriP_)
     parserState.uri = &uri;
     m_isValidUri = uriParseUriA(&parserState, uriP.data()) == URI_SUCCESS;
     if (m_isValidUri) {
-        const unsigned int dirty = uriNormalizeSyntaxMaskRequiredA(&uri);
-        uriNormalizeSyntaxExA(&uri, dirty);
+        uriNormalizeSyntaxA(&uri);
+        // Recomposite the full URI normalized
+        {
+            char *uriString;
+            int charsRequired;
+            uriToStringCharsRequiredA(&uri, &charsRequired);
+            ++charsRequired;
+            uriString = new char[charsRequired];
+            uriToStringA(uriString, &uri, charsRequired, NULL);
+            m_uri = decodeUri(uriString);
+            delete uriString;
+        }
         if (uri.scheme.first && uri.scheme.afterLast) {
             m_scheme = String(uri.scheme.first, uri.scheme.afterLast - uri.scheme.first);
         }
@@ -203,6 +213,11 @@ void Uri::Private::initializeContents(const String &uriP_)
             reconstructPath(0, uri.pathHead, uri.pathTail);
             if (m_path.empty()) {
                 m_path = '/';
+            } else {
+                if (m_path[m_path.size() - 1] == '/') {
+                    m_path = m_path.substr(0, m_path.size() - 1);
+                    m_uri = m_uri.substr(0, m_uri.size() - 1);
+                }
             }
         } else {
             m_path = '/';
@@ -254,8 +269,6 @@ Uri::Uri(const Uri &uri)
     d->m_host = uri.d->m_host;
     d->m_port = uri.d->m_port;
     d->m_path = uri.d->m_path;
-    d->m_filenameLessPath = uri.d->m_filenameLessPath;
-    d->m_filename = uri.d->m_filename;
     d->m_query = uri.d->m_query;
     d->m_fragment = uri.d->m_fragment;
     d->m_isValidUri = uri.d->m_isValidUri;
@@ -296,19 +309,13 @@ String Uri::path() const
     return d->m_path;
 }
 
-String Uri::filenameLessPath() const
-{
-    return d->m_filenameLessPath;
-}
-
-void Uri::setFilename(const String &filename)
-{
-    d->initializeContents(d->m_filenameLessPath + filename);
-}
-
 String Uri::filename() const
 {
-    return d->m_filename;
+    const size_t sepPos = d->m_path.rfind('/');
+    if (sepPos != String::npos && sepPos < d->m_path.size() - 1) {
+        return d->m_path.substr(sepPos + 1);
+    }
+    return String();
 }
 
 String Uri::uri() const
@@ -321,15 +328,15 @@ bool Uri::isValid() const
     return d->m_isValidUri;
 }
 
-void Uri::dirUp()
+bool Uri::contains(const Uri &uri) const
 {
-    if (!d->m_filename.empty()) {
-        d->m_uri = d->m_uri.substr(0, d->m_uri.size() - d->m_filename.size());
-        d->m_path = d->m_path.substr(0, d->m_path.size() - d->m_filename.size());
-        d->m_filename.clear();
-    }
+    return d->m_path.find(uri.d->m_path) == 0;
+}
+
+Uri &Uri::dirUp()
+{
     if (d->m_path.empty() || !d->m_path.compare("/")) {
-        return;
+        return *this;
     }
     size_t size = d->m_uri.size();
     if (d->m_uri[size - 1] == '/') {
@@ -339,16 +346,15 @@ void Uri::dirUp()
     if (d->m_path[size - 1] == '/') {
         d->m_path = d->m_path.substr(0, size - 1);
     }
-    size = d->m_filenameLessPath.size();
-    if (d->m_filenameLessPath[size - 1] == '/') {
-        d->m_filenameLessPath = d->m_filenameLessPath.substr(0, size - 1);
-    }
     size_t pos = d->m_uri.rfind('/');
-    d->m_uri = d->m_uri.substr(0, d->m_uri.size() - (d->m_uri.size() - pos) + 1);
+    d->m_uri = d->m_uri.substr(0, d->m_uri.size() - (d->m_uri.size() - pos));
     pos = d->m_path.rfind('/');
-    d->m_path = d->m_path.substr(0, d->m_path.size() - (d->m_path.size() - pos) + 1);
-    pos = d->m_filenameLessPath.rfind('/');
-    d->m_filenameLessPath = d->m_filenameLessPath.substr(0, d->m_filenameLessPath.size() - (d->m_filenameLessPath.size() - pos) + 1);
+    d->m_path = d->m_path.substr(0, d->m_path.size() - (d->m_path.size() - pos));
+    if (d->m_path.empty()) {
+        d->m_uri += '/';
+        d->m_path = '/';
+    }
+    return *this;
 }
 
 Uri &Uri::operator=(const Uri &uri)
@@ -363,15 +369,13 @@ Uri &Uri::operator=(const Uri &uri)
     d->m_host = uri.d->m_host;
     d->m_port = uri.d->m_port;
     d->m_path = uri.d->m_path;
-    d->m_filenameLessPath = uri.d->m_filenameLessPath;
-    d->m_filename = uri.d->m_filename;
     d->m_query = uri.d->m_query;
     d->m_fragment = uri.d->m_fragment;
     d->m_isValidUri = uri.d->m_isValidUri;
     return *this;
 }
 
-bool Uri::operator==(const Uri &uri)
+bool Uri::operator==(const Uri &uri) const
 {
     if (this == &uri) {
         return true;
@@ -383,15 +387,13 @@ bool Uri::operator==(const Uri &uri)
            d->m_host == uri.d->m_host &&
            d->m_port == uri.d->m_port &&
            d->m_path == uri.d->m_path &&
-           d->m_filenameLessPath == uri.d->m_filenameLessPath &&
-           d->m_filename == uri.d->m_filename &&
            d->m_query == uri.d->m_query &&
            d->m_fragment == uri.d->m_fragment &&
            d->m_isValidUri == uri.d->m_isValidUri;
 
 }
 
-bool Uri::operator!=(const Uri &uri)
+bool Uri::operator!=(const Uri &uri) const
 {
     return !(*this == uri);
 }

@@ -150,8 +150,9 @@ String::~String()
 void String::clear()
 {
     if (d->refCount() > 1) {
-        d->deref();
+        Private *const old_d = d;
         d = d->copy();
+        old_d->deref();
     }
     d->m_str.clear();
 }
@@ -179,6 +180,11 @@ size_t String::find(char c) const
 size_t String::rfind(char c) const
 {
     return d->m_str.rfind(c);
+}
+
+size_t String::find(const String &str) const
+{
+    return d->m_str.find(str.d->m_str);
 }
 
 const char *String::data() const
@@ -233,9 +239,13 @@ String &String::operator=(const String &str)
 
 String &String::operator=(const char *str)
 {
+    if (!str) {
+        return *this;
+    }
     if (d->refCount() > 1) {
-        d->deref();
+        Private *const old_d = d;
         d = d->copy();
+        old_d->deref();
     }
     d->m_str = str;
     d->calculateSize();
@@ -245,8 +255,9 @@ String &String::operator=(const char *str)
 String &String::operator=(char c)
 {
     if (d->refCount() > 1) {
-        d->deref();
+        Private *const old_d = d;
         d = d->copy();
+        old_d->deref();
     }
     d->m_str = c;
     d->m_size = 1;
@@ -256,8 +267,9 @@ String &String::operator=(char c)
 String &String::operator+=(const String &str)
 {
     if (d->refCount() > 1) {
-        d->deref();
+        Private *const old_d = d;
         d = d->copy();
+        old_d->deref();
     }
     d->m_str += str.d->m_str;
     d->m_size += str.d->m_size;
@@ -267,8 +279,9 @@ String &String::operator+=(const String &str)
 String &String::operator+=(const char *str)
 {
     if (d->refCount() > 1) {
-        d->deref();
+        Private *const old_d = d;
         d = d->copy();
+        old_d->deref();
     }
     d->m_str += str;
     d->calculateSize();
@@ -278,8 +291,9 @@ String &String::operator+=(const char *str)
 String &String::operator+=(char c)
 {
     if (d->refCount() > 1) {
-        d->deref();
+        Private *const old_d = d;
         d = d->copy();
+        old_d->deref();
     }
     d->m_str += c;
     ++d->m_size;

@@ -55,6 +55,13 @@ void StringTest::testConstructor()
     CPPUNIT_ASSERT(test5_1 <= test5_2);
     CPPUNIT_ASSERT(test5_2 >= test5_1);
     CPPUNIT_ASSERT(test5_2 > test5_1);
+    String test6;
+    const char *test6_1 = "file:///home/test";
+    const size_t size = strlen(test6_1);
+    char *test6_2 = new char[size];
+    strcpy(test6_2, test6_1);
+    test6 = test6_2;
+    CPPUNIT_ASSERT_EQUAL(size, test6.size());
 }
 
 void StringTest::testSplit()

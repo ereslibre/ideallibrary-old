@@ -93,6 +93,8 @@ public:
       */
     size_t rfind(char c) const;
 
+    size_t find(const String &str) const;
+
     /**
       * Returns a substring of this string starting at @p pos with @p n characters maximum.
       */

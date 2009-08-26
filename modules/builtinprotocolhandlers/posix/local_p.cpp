@@ -41,33 +41,58 @@ public:
     {
     }
 
-    void cpDir(const Uri &source, const Uri &target);
-    void cpFile(const Uri &source, const Uri &target);
+    void cp(const Uri &source, const Uri &target);
 
     void getDir(const Uri &uri);
+    List<Uri> getDirEntries(const String &path);
     void getFile(const Uri &uri, double maxBytes);
 
     bool                          m_success;
     BuiltinProtocolHandlersLocal *q;
 };
 
-void BuiltinProtocolHandlersLocal::Private::cpDir(const Uri &source, const Uri &target)
+void BuiltinProtocolHandlersLocal::Private::cp(const Uri &source, const Uri &target)
 {
+    struct stat sourceStat;
+    ::stat(source.path().data(), &sourceStat);
+    const bool sourceIsDir = S_ISDIR(sourceStat.st_mode);
+
+    IDEAL_SDEBUG("is dir " << sourceIsDir);
+
+    if (sourceIsDir) {
+        List<Uri> children = getDirEntries(source.path());
+        List<Uri>::const_iterator it;
+        const Uri newTarget(target.path(), source.filename());
+        //q->mkdir(newTarget);
+        IDEAL_SDEBUG("===");
+        IDEAL_SDEBUG("creating dir " << newTarget.uri());
+        for (it = children.begin(); it != children.end(); ++it) {
+            const Uri uri = *it;
+            if (source.contains(uri)) {
+                continue;
+            }
+            IDEAL_SDEBUG("copying " << uri.uri() << " to " << newTarget.uri());
+            cp(uri, newTarget);
+        }
+    } else {
+    }
 }
 
-void BuiltinProtocolHandlersLocal::Private::cpFile(const Uri &source, const Uri &target)
+List<Uri> BuiltinProtocolHandlersLocal::Private::getDirEntries(const String &path)
 {
+    List<Uri> res;
+    DIR *const dir = opendir(path.data());
+    struct dirent *dirEntry;
+    while ((dirEntry = readdir(dir))) {
+        res.push_back(Uri(path, dirEntry->d_name));
+    }
+    closedir(dir);
+    return res;
 }
 
 void BuiltinProtocolHandlersLocal::Private::getDir(const Uri &uri)
 {
-    List<Uri> res;
-    DIR *const dir = opendir(uri.path().data());
-    struct dirent *dirEntry;
-    while ((dirEntry = readdir(dir))) {
-        res.push_back(Uri(uri.path(), dirEntry->d_name));
-    }
-    emit(q->dirRead, res);
+    emit(q->dirRead, getDirEntries(uri.path()));
 }
 
 void BuiltinProtocolHandlersLocal::Private::getFile(const Uri &uri, double maxBytes)
@@ -152,21 +177,19 @@ void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target, Beha
 {
     struct stat statResultSource;
     if (!::stat(source.path().data(), &statResultSource)) {
-        {
-            struct stat statResultTarget;
-            const bool targetExists = !::stat(target.path().data(), &statResultTarget);
-            if (!targetExists || S_ISDIR(statResultTarget.st_mode)) {
-                //TODO
-            } else if (behavior == DoNotOverwriteTarget) {
-                emit(error, FileAlreadyExists);
-                return;
-            }
+        const bool sourceIsDir = S_ISDIR(statResultSource.st_mode);
+        //BEGIN: check problematic cases
+        struct stat statResultTarget;
+        const bool targetExists = !::stat(target.path().data(), &statResultTarget);
+        if (targetExists && !S_ISDIR(statResultTarget.st_mode) && behavior == DoNotOverwriteTarget) {
+            emit(error, FileAlreadyExists);
+            return;
+        } else if (!targetExists && sourceIsDir) {
+            emit(error, FileNotFound);
+            return;
         }
-        if (S_ISDIR(statResultSource.st_mode)) {
-            d->cpDir(source, target);
-        } else {
-            d->cpFile(source, target);
-        }
+        //END: check problematic cases
+        d->cp(source, target);
     } else {
         switch (errno) {
             case ENOENT:

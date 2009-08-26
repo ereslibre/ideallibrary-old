@@ -74,19 +74,6 @@ public:
       */
     String path() const;
 
-    /**
-     * @return The path specified on the URI without the filename. An empty string if no path specified.
-     */
-    String filenameLessPath() const;
-
-    /**
-      * Sets the filename of this URI. If this URI object contains a filename, it will be overriden.
-      */
-    void setFilename(const String &filename);
-
-    /**
-      * @return The filename specified on the URI. An empty string if no filename specified.
-      */
     String filename() const;
 
     /**
@@ -100,14 +87,17 @@ public:
     bool isValid() const;
 
     /**
-      * Goes up one directory. The filename is set to an empty string. If it is not possible to
-      * go up one directory because we are already on the root, it is kept unmodified.
+      * @return Whether this URI contains @p uri in the sense of the path.
+      *
+      * @note "file:///home/user" contains "file:///home", but "text.txt" does not contain "xt"
       */
-    void dirUp();
+    bool contains(const Uri &uri) const;
+
+    Uri &dirUp();
 
     Uri &operator=(const Uri &uri);
-    bool operator==(const Uri &uri);
-    bool operator!=(const Uri &uri);
+    bool operator==(const Uri &uri) const;
+    bool operator!=(const Uri &uri) const;
 
 private:
     class Private;

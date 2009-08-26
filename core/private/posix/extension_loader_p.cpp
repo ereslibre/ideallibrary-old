@@ -87,8 +87,7 @@ List<Extension*> ExtensionLoader::Private::findExtensions(ExtensionLoadDecider *
             if (!filename.compare(".") || !filename.compare("..")) {
                 continue;
             }
-            Uri uri(currPath);
-            uri.setFilename(filename);
+            Uri uri(currPath, filename);
             Module *const module = loadModule(uri.path(), parent);
             if (!module) {
                 continue;
@@ -129,8 +128,7 @@ List<Module::ExtensionInfo> ExtensionLoader::findExtensionsInfo(ExtensionLoadDec
             if (!filename.compare(".") || !filename.compare("..")) {
                 continue;
             }
-            Uri uri(currPath);
-            uri.setFilename(filename);
+            Uri uri(currPath, filename);
             Module *const module = Private::loadModule(uri.path(), parent);
             if (!module) {
                 continue;
