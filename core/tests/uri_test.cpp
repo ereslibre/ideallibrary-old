@@ -134,6 +134,9 @@ void UriTest::testConstructor()
     Uri test23("http://www.specialcháracter.com");
     CPPUNIT_ASSERT(test23.isValid());
     CPPUNIT_ASSERT_EQUAL(String("www.specialcháracter.com"), test23.host());
+
+    Uri test24("file:///home/user/imágenes/..");
+    CPPUNIT_ASSERT_EQUAL(String("/home/user"), test24.path());
 }
 
 void UriTest::testDirUp()
@@ -222,6 +225,18 @@ void UriTest::testContains()
         CPPUNIT_ASSERT(uri2.contains(uri));
         CPPUNIT_ASSERT_EQUAL(String("/home/foo"), uri2.path());
         CPPUNIT_ASSERT_EQUAL(String("file:///home/foo"), uri2.uri());
+    }
+    {
+        Uri uri("file:///home/foo/imágenes/..");
+        Uri uri2("file:///home/foo");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(uri2.contains(uri));
+    }
+    {
+        Uri uri("file:///home/foo/imágenes", "..");
+        Uri uri2("file:///home/foo");
+        CPPUNIT_ASSERT(uri.contains(uri2));
+        CPPUNIT_ASSERT(uri2.contains(uri));
     }
 }
 

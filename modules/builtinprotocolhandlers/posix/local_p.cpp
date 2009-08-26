@@ -57,15 +57,11 @@ void BuiltinProtocolHandlersLocal::Private::cp(const Uri &source, const Uri &tar
     ::stat(source.path().data(), &sourceStat);
     const bool sourceIsDir = S_ISDIR(sourceStat.st_mode);
 
-    IDEAL_SDEBUG("is dir " << sourceIsDir);
-
     if (sourceIsDir) {
         List<Uri> children = getDirEntries(source.path());
         List<Uri>::const_iterator it;
         const Uri newTarget(target.path(), source.filename());
         //q->mkdir(newTarget);
-        IDEAL_SDEBUG("===");
-        IDEAL_SDEBUG("creating dir " << newTarget.uri());
         for (it = children.begin(); it != children.end(); ++it) {
             const Uri uri = *it;
             if (source.contains(uri)) {
@@ -179,17 +175,17 @@ void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target, Beha
     struct stat statResultSource;
     if (!::stat(source.path().data(), &statResultSource)) {
         const bool sourceIsDir = S_ISDIR(statResultSource.st_mode);
-        //BEGIN: check problematic cases
-        struct stat statResultTarget;
-        const bool targetExists = !::stat(target.path().data(), &statResultTarget);
-        if (targetExists && !S_ISDIR(statResultTarget.st_mode) && behavior == DoNotOverwriteTarget) {
-            emit(error, FileAlreadyExists);
-            return;
-        } else if (!targetExists && sourceIsDir) {
-            emit(error, FileNotFound);
-            return;
+        {
+            struct stat statResultTarget;
+            const bool targetExists = !::stat(target.path().data(), &statResultTarget);
+            if (targetExists && !S_ISDIR(statResultTarget.st_mode) && behavior == DoNotOverwriteTarget) {
+                emit(error, FileAlreadyExists);
+                return;
+            } else if (!targetExists && sourceIsDir) {
+                emit(error, FileNotFound);
+                return;
+            }
         }
-        //END: check problematic cases
         d->cp(source, target);
     } else {
         switch (errno) {
@@ -209,8 +205,13 @@ void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target, Beha
 
 void BuiltinProtocolHandlersLocal::mv(const Uri &source, const Uri &target)
 {
-    link(source.path().data(), target.path().data());
-    unlink(source.path().data());
+    if (rename(source.path().data(), target.path().data())) {
+        switch (errno) {
+          default:
+            emit(error, Unknown);
+            break;
+        }
+    }
 }
 
 void BuiltinProtocolHandlersLocal::rm(const Uri &uri)

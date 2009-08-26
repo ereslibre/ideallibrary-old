@@ -69,8 +69,6 @@ int main(int argc, char **argv)
         statResult(protocolHandler->stat(app.getPath(Application::Home) + "/.nonexistantfile"));
         IDEAL_SDEBUG("*** Going to stat /root/foo");
         statResult(protocolHandler->stat("/root/foo"));
-
-        protocolHandler->cp("/home/kdevel/Descargas", "/home/kdevel/proyectos");
     }
 
     delete protocolHandler;

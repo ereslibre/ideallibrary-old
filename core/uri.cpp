@@ -178,7 +178,6 @@ void Uri::Private::initializeContents(const String &uriP_)
     m_isValidUri = uriParseUriA(&parserState, uriP.data()) == URI_SUCCESS;
     if (m_isValidUri) {
         uriNormalizeSyntaxA(&uri);
-        // Recomposite the full URI normalized
         {
             char *uriString;
             int charsRequired;
@@ -249,7 +248,7 @@ Uri::Uri(const String &path, const String &filename)
     if (path[path.size() - 1] == '/') {
         d->initializeContents(path + filename);
     } else {
-        d->initializeContents(path + '/' + filename);
+        d->initializeContents(path + "/" + filename);
     }
 }
 
