@@ -71,10 +71,11 @@ void BuiltinProtocolHandlersLocal::Private::cp(const Uri &source, const Uri &tar
             if (source.contains(uri)) {
                 continue;
             }
-            IDEAL_SDEBUG("copying " << uri.uri() << " to " << newTarget.uri());
             cp(uri, newTarget);
         }
     } else {
+        const Uri newTarget(target.path(), source.filename());
+        IDEAL_SDEBUG("copying " << source.uri() << " to " << newTarget.uri());
     }
 }
 

@@ -78,7 +78,7 @@ String Uri::Private::encodeUri(const String &uri) const
         } else if (!(c & (1 << 7))) {
             res += getHex(c);
         } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
-            IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
+            res += getHex(c);
         } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
             res += getHex(c);
             ++e;
