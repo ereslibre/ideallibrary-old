@@ -161,7 +161,7 @@ void File::Private::Job::get()
         connect(m_protocolHandler->dataRead, m_file->dataRead);
         connect(m_protocolHandler->dirRead, m_file->dirRead);
         connect(m_protocolHandler->error, m_file->error);
-        m_protocolHandler->get(m_file->d->m_uri, m_maxBytes);
+        // TODO
         disconnect(m_protocolHandler->dataRead, m_file->dataRead);
         disconnect(m_protocolHandler->dirRead, m_file->dirRead);
         disconnect(m_protocolHandler->error, m_file->error);

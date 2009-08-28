@@ -41,76 +41,9 @@ public:
     {
     }
 
-    void cp(const Uri &source, const Uri &target);
-
-    void getDir(const Uri &uri);
-    List<Uri> getDirEntries(const String &path);
-    void getFile(const Uri &uri, double maxBytes);
-
     bool                          m_success;
     BuiltinProtocolHandlersLocal *q;
 };
-
-void BuiltinProtocolHandlersLocal::Private::cp(const Uri &source, const Uri &target)
-{
-    struct stat sourceStat;
-    ::stat(source.path().data(), &sourceStat);
-    const bool sourceIsDir = S_ISDIR(sourceStat.st_mode);
-
-    if (sourceIsDir) {
-        List<Uri> children = getDirEntries(source.path());
-        List<Uri>::const_iterator it;
-        const Uri newTarget(target.path(), source.filename());
-        //q->mkdir(newTarget);
-        for (it = children.begin(); it != children.end(); ++it) {
-            const Uri uri = *it;
-            if (source.contains(uri)) {
-                continue;
-            }
-            cp(uri, newTarget);
-        }
-    } else {
-        const Uri newTarget(target.path(), source.filename());
-        IDEAL_SDEBUG("copying " << source.uri() << " to " << newTarget.uri());
-    }
-}
-
-List<Uri> BuiltinProtocolHandlersLocal::Private::getDirEntries(const String &path)
-{
-    List<Uri> res;
-    DIR *const dir = opendir(path.data());
-    struct dirent *dirEntry;
-    while ((dirEntry = readdir(dir))) {
-        res.push_back(Uri(path, dirEntry->d_name));
-    }
-    closedir(dir);
-    return res;
-}
-
-void BuiltinProtocolHandlersLocal::Private::getDir(const Uri &uri)
-{
-    emit(q->dirRead, getDirEntries(uri.path()));
-}
-
-void BuiltinProtocolHandlersLocal::Private::getFile(const Uri &uri, double maxBytes)
-{
-    double currentSize = 0;
-    const int fd = open(uri.path().data(), O_RDONLY);
-    ssize_t bytesRead;
-    char *buf = new char[BUFSIZ];
-    bzero(buf, BUFSIZ);
-    while ((bytesRead = read(fd, buf, BUFSIZ)) > 0) {
-        ByteStream res(buf);
-        currentSize += bytesRead;
-        emit(q->dataRead, res);
-        if (maxBytes && currentSize >= maxBytes) {
-            break;
-        }
-        bzero(buf, BUFSIZ);
-    }
-    close(fd);
-    delete buf;
-}
 
 BuiltinProtocolHandlersLocal::BuiltinProtocolHandlersLocal()
     : d(new Private(this))
@@ -166,50 +99,6 @@ void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions
             default:
                 emit(error, Unknown);
                 break;
-        }
-    }
-}
-
-void BuiltinProtocolHandlersLocal::cp(const Uri &source, const Uri &target, Behavior behavior)
-{
-    struct stat statResultSource;
-    if (!::stat(source.path().data(), &statResultSource)) {
-        const bool sourceIsDir = S_ISDIR(statResultSource.st_mode);
-        {
-            struct stat statResultTarget;
-            const bool targetExists = !::stat(target.path().data(), &statResultTarget);
-            if (targetExists && !S_ISDIR(statResultTarget.st_mode) && behavior == DoNotOverwriteTarget) {
-                emit(error, FileAlreadyExists);
-                return;
-            } else if (!targetExists && sourceIsDir) {
-                emit(error, FileNotFound);
-                return;
-            }
-        }
-        d->cp(source, target);
-    } else {
-        switch (errno) {
-            case ENOENT:
-            case ENOTDIR:
-                emit(error, FileNotFound);
-                break;
-            case EACCES:
-                emit(error, InsufficientPermissions);
-                break;
-            default:
-                emit(error, Unknown);
-                break;
-        }
-    }
-}
-
-void BuiltinProtocolHandlersLocal::mv(const Uri &source, const Uri &target)
-{
-    if (rename(source.path().data(), target.path().data())) {
-        switch (errno) {
-          default:
-            emit(error, Unknown);
-            break;
         }
     }
 }
@@ -302,31 +191,6 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
     }
     statRes.isValid = d->m_success;
     return statRes;
-}
-
-void BuiltinProtocolHandlersLocal::get(const Uri &uri, double maxBytes)
-{
-    struct stat statResult;
-    if (!::stat(uri.path().data(), &statResult)) {
-        if (S_ISDIR(statResult.st_mode)) {
-            d->getDir(uri);
-        } else {
-            d->getFile(uri, maxBytes);
-        }
-    } else {
-        switch (errno) {
-            case ENOENT:
-            case ENOTDIR:
-                emit(error, FileNotFound);
-                break;
-            case EACCES:
-                emit(error, InsufficientPermissions);
-                break;
-            default:
-                emit(error, Unknown);
-                break;
-        }
-    }
 }
 
 bool BuiltinProtocolHandlersLocal::canBeReusedWith(const Uri &uri) const

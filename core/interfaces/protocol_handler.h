@@ -127,22 +127,6 @@ public:
     virtual void mkdir(const Uri &uri, Permissions permissions = SystemDefault) = 0;
 
     /**
-      * Copies @p source in @p target.
-      *
-      * @param source A full URI with absolute path
-      * @param target A full URI with absolute path
-      */
-    virtual void cp(const Uri &source, const Uri &target, Behavior behavior = DoNotOverwriteTarget) = 0;
-
-    /**
-      * Moves @p source to @p target.
-      *
-      * @param source A full URI with absolute path
-      * @param target A full URI with absolute path
-      */
-    virtual void mv(const Uri &source, const Uri &target) = 0;
-
-    /**
       * Deletes @p uri.
       *
       * @param uri A full URI with absolute path
@@ -157,24 +141,6 @@ public:
       * @return The stat result of the stat operation.
       */
     virtual StatResult stat(const Uri &uri) = 0;
-
-    /**
-      * Retrieves the file at @p uri. If @p maxBytes is NoMaxBytes, it will be attempted to retrieve the
-      * whole file. If @p maxBytes is greater than 0, then a maximum of @p maxBytes will be retrieved.
-      *
-      * @param uri A full URI with absolute path
-      *
-      * @note Please note that since data will usually come in data packets the implementation should
-      *       stop when @p maxBytes has been reached. This does not mean that exactly @p maxBytes will
-      *       be read. It is possible that a situation like the next happens (and actually, will be the
-      *       normal case):
-      *       - @p maxBytes has been set to 1 KB (1024 bytes).
-      *       - We have already read 900 bytes of a file.
-      *       - A data packet of 300 bytes is coming (dataRead is emitted).
-      *       - You end up with 1200 bytes, what is more than 1 KB, but the transmission is stopped,
-      *         so dataRead will not be emitted again for this transmission.
-      */
-    virtual void get(const Uri &uri, double maxBytes = NoMaxBytes) = 0;
 
     /**
       * @return Whether this protocol handler can be reused with @p uri. For example, if you have
