@@ -31,7 +31,7 @@ class BuiltinProtocolHandlersRemote::Private
 public:
     Private(BuiltinProtocolHandlersRemote *q)
         : m_curl(0)
-        , m_maxBytes(NoMaxBytes)
+        , m_maxBytes(File::NoMaxBytes)
         , m_currentSize(0)
         , m_isDir(false)
         , q(q)
@@ -69,12 +69,14 @@ BuiltinProtocolHandlersRemote::~BuiltinProtocolHandlersRemote()
     delete d;
 }
 
-void BuiltinProtocolHandlersRemote::mkdir(const Uri &uri, Permissions permissions)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::mkdir(const Uri &uri, Permissions permissions)
 {
+    return ProtocolHandler::Unknown;
 }
 
-void BuiltinProtocolHandlersRemote::rm(const Uri &uri)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::rm(const Uri &uri)
 {
+    return ProtocolHandler::Unknown;
 }
 
 ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)

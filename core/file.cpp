@@ -87,7 +87,7 @@ protected:
 File::Private::Job::Job(File *file, Type type)
     : Thread(type)
     , m_file(file)
-    , m_maxBytes(ProtocolHandler::NoMaxBytes)
+    , m_maxBytes(NoMaxBytes)
     , m_protocolHandler(0)
 {
 }
@@ -136,12 +136,10 @@ void File::Private::Job::stat()
     if (!m_file->d->m_stated) {
     m_protocolHandler = findProtocolHandler();
         if (m_protocolHandler) {
-            connect(m_protocolHandler->error, m_file->error);
             ProtocolHandler::StatResult statResult = m_protocolHandler->stat(m_file->d->m_uri);
-            if (statResult.isValid) {
+            if (statResult.errorCode == ProtocolHandler::NoError) {
                 emit(m_file->statResult, statResult);
             }
-            disconnect(m_protocolHandler->error, m_file->error);
         } else {
             return;
         }
@@ -160,11 +158,9 @@ void File::Private::Job::get()
     if (m_protocolHandler) {
         connect(m_protocolHandler->dataRead, m_file->dataRead);
         connect(m_protocolHandler->dirRead, m_file->dirRead);
-        connect(m_protocolHandler->error, m_file->error);
         // TODO
         disconnect(m_protocolHandler->dataRead, m_file->dataRead);
         disconnect(m_protocolHandler->dirRead, m_file->dirRead);
-        disconnect(m_protocolHandler->error, m_file->error);
     }
 }
 
@@ -172,9 +168,7 @@ void File::Private::Job::mkdir()
 {
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
-        connect(m_protocolHandler->error, m_file->error);
         m_protocolHandler->mkdir(m_file->d->m_uri, m_permissions);
-        disconnect(m_protocolHandler->error, m_file->error);
     }
 }
 

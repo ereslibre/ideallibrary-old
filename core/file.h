@@ -70,6 +70,8 @@ public:
     File(const Uri &uri, Object *parent);
     virtual ~File();
 
+    static const int NoMaxBytes = 0;
+
     enum Event {
         NoEvent              = 0,   ///< Do not track events for this file
         AccessEvent          = 1,   ///< Track access events for this file
@@ -114,7 +116,7 @@ public:
     Thread *stat(Thread::Type type = Thread::NoJoinable) const;
 
     /**
-      * @param maxBytes If set to ProtocolHandler::NoMaxBytes, it will be attempted to retrieve the full
+      * @param maxBytes If set to File::NoMaxBytes, it will be attempted to retrieve the full
       *        file. Otherwise when @p maxBytes bytes are reached, no more chunks will be requested.
       *
       * @return A constructed thread object that will be able to run asynchronously, signaling dataRead
@@ -123,7 +125,7 @@ public:
       *
       * @see ProtocolHandler::get()
       */
-    Thread *get(double maxBytes = ProtocolHandler::NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
+    Thread *get(double maxBytes = File::NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
 
     /**
       * @return A constructed thread object that will be able to run asynchronously.

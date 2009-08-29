@@ -172,7 +172,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** Retrieving the full README now by ftp");
         IDEAL_SDEBUG("");
 
-        Thread *contentsJob = kernelReadmeFtp.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
+        Thread *contentsJob = kernelReadmeFtp.get(File::NoMaxBytes, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
 
@@ -183,7 +183,7 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** Retrieving /usr/include/stdio.h");
         IDEAL_SDEBUG("");
 
-        contentsJob = stdio.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
+        contentsJob = stdio.get(File::NoMaxBytes, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
     }
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
 
     File listDir("ftp://ftp.kernel.org/pub/", &app);
     Object::connect(listDir.dataRead, &app, &MyApplication::fileData);
-    Thread *listDirStat = listDir.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
+    Thread *listDirStat = listDir.get(File::NoMaxBytes, Thread::Joinable);
     listDirStat->exec();
     listDirStat->join();
 
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 
     File listLocalDir(app.getPath(Application::Home), &app);
     Object::connect(listLocalDir.dirRead, &app, &MyApplication::dirData);
-    Thread *listLocalDirStat = listLocalDir.get(ProtocolHandler::NoMaxBytes, Thread::Joinable);
+    Thread *listLocalDirStat = listLocalDir.get(File::NoMaxBytes, Thread::Joinable);
     listLocalDirStat->exec();
     listLocalDirStat->join();
 

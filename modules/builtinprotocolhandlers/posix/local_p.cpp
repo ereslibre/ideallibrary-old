@@ -55,7 +55,7 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
     delete d;
 }
 
-void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)
 {
     mode_t mode = 0;
     if (permissions == SystemDefault) {
@@ -94,18 +94,29 @@ void BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions
     if (::mkdir(uri.path().data(), mode)) {
         switch (errno) {
             case EACCES:
-                emit(error, InsufficientPermissions);
+                return InsufficientPermissions;
                 break;
             default:
-                emit(error, Unknown);
+                return Unknown;
                 break;
         }
     }
+    return NoError;
 }
 
-void BuiltinProtocolHandlersLocal::rm(const Uri &uri)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::rm(const Uri &uri)
 {
-    unlink(uri.path().data());
+    if (::unlink(uri.path().data())) {
+        switch (errno) {
+            case EACCES:
+                return InsufficientPermissions;
+                break;
+            default:
+                return Unknown;
+                break;
+        }
+    }
+    return NoError;
 }
 
 ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
@@ -113,6 +124,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
     d->m_success = false;
     StatResult statRes;
     statRes.uri = uri;
+    statRes.errorCode = NoError;
     {
         struct stat statResult;
         if (!::stat(uri.path().data(), &statResult)) {
@@ -178,18 +190,16 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
             switch (errno) {
                 case ENOENT:
                 case ENOTDIR:
-                    d->m_success = true;
                     break;
                 case EACCES:
-                    emit(error, InsufficientPermissions);
+                    statRes.errorCode = InsufficientPermissions;
                     break;
                 default:
-                    emit(error, Unknown);
+                    statRes.errorCode = Unknown;
                     break;
             }
         }
     }
-    statRes.isValid = d->m_success;
     return statRes;
 }
 

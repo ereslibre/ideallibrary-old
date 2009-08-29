@@ -32,8 +32,8 @@ public:
     BuiltinProtocolHandlersLocal();
     ~BuiltinProtocolHandlersLocal();
 
-    virtual void mkdir(const Uri &uri, Permissions permissions = SystemDefault);
-    virtual void rm(const Uri &uri);
+    virtual ErrorCode mkdir(const Uri &uri, Permissions permissions);
+    virtual ErrorCode rm(const Uri &uri);
     virtual StatResult stat(const Uri &uri);
     virtual bool canBeReusedWith(const Uri &uri) const;
 

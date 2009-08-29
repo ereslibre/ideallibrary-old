@@ -29,8 +29,8 @@ using namespace IdealCore;
 static void statResult(ProtocolHandler::StatResult statResult)
 {
     IDEAL_SDEBUG("\t*** Got a stat result");
-    IDEAL_SDEBUG("\t\t*** Is Valid?\t\t" << (statResult.isValid ? "yes" : "no"));
-    if (!statResult.isValid) {
+    IDEAL_SDEBUG("\t\t*** Is Valid?\t\t" << (statResult.errorCode == ProtocolHandler::NoError ? "yes" : "no"));
+    if (statResult.errorCode != ProtocolHandler::NoError) {
         return;
     }
     IDEAL_SDEBUG("\t\t*** Exists?\t\t" << (statResult.exists ? "yes" : "no"));
