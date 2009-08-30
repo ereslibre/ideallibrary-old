@@ -55,6 +55,16 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
     delete d;
 }
 
+ByteStream BuiltinProtocolHandlersLocal::read(const Uri &uri, unsigned int nbytes)
+{
+    return ByteStream();
+}
+
+unsigned int BuiltinProtocolHandlersLocal::write(const Uri &uri, const ByteStream &byteStream)
+{
+    return 0;
+}
+
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)
 {
     mode_t mode = 0;

@@ -69,6 +69,16 @@ BuiltinProtocolHandlersRemote::~BuiltinProtocolHandlersRemote()
     delete d;
 }
 
+ByteStream BuiltinProtocolHandlersRemote::read(const Uri &uri, unsigned int nbytes)
+{
+    return ByteStream();
+}
+
+unsigned int BuiltinProtocolHandlersRemote::write(const Uri &uri, const ByteStream &byteStream)
+{
+    return 0;
+}
+
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::mkdir(const Uri &uri, Permissions permissions)
 {
     return ProtocolHandler::Unknown;
