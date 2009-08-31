@@ -55,14 +55,23 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
     delete d;
 }
 
-ByteStream BuiltinProtocolHandlersLocal::read(const Uri &uri, unsigned int nbytes)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, int openMode)
+{
+    return Unknown;
+}
+
+ByteStream BuiltinProtocolHandlersLocal::read(unsigned int nbytes)
 {
     return ByteStream();
 }
 
-unsigned int BuiltinProtocolHandlersLocal::write(const Uri &uri, const ByteStream &byteStream)
+unsigned int BuiltinProtocolHandlersLocal::write(const ByteStream &byteStream)
 {
     return 0;
+}
+
+void BuiltinProtocolHandlersLocal::close()
+{
 }
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)

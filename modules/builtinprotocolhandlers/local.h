@@ -32,8 +32,10 @@ public:
     BuiltinProtocolHandlersLocal();
     ~BuiltinProtocolHandlersLocal();
 
-    virtual ByteStream read(const Uri &uri, unsigned int nbytes);
-    virtual unsigned int write(const Uri &uri, const ByteStream &byteStream);
+    virtual ErrorCode open(const Uri &uri, int openMode);
+    virtual ByteStream read(unsigned int nbytes);
+    virtual unsigned int write(const ByteStream &byteStream);
+    virtual void close();
     virtual ErrorCode mkdir(const Uri &uri, Permissions permissions);
     virtual ErrorCode rm(const Uri &uri);
     virtual StatResult stat(const Uri &uri);

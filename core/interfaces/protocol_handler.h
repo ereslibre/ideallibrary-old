@@ -51,6 +51,11 @@ public:
         List<String> handlesProtocols;
     };
 
+    enum OpenMode {
+        Read = 1, ///< The file is opened for reading
+        Write = 2 ///< The file is opened for writing
+    };
+
     enum Permissions {
         NoPermissions      = 0,   ///< No permissions of any kind
         OwnerCanRead       = 1,   ///< The owner of this file can read it
@@ -118,9 +123,13 @@ public:
         OverwriteTarget           ///< Overwrite target silently if it already exists.
     };
 
-    virtual ByteStream read(const Uri &uri, unsigned int nbytes) = 0;
+    virtual ErrorCode open(const Uri &uri, int openMode = Read | Write) = 0;
 
-    virtual unsigned int write(const Uri &uri, const ByteStream &byteStream) = 0;
+    virtual ByteStream read(unsigned int nbytes) = 0;
+
+    virtual unsigned int write(const ByteStream &byteStream) = 0;
+
+    virtual void close() = 0;
 
     /**
       * Creates the directory @p uri.
