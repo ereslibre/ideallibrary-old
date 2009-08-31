@@ -118,9 +118,19 @@ public:
         OverwriteTarget           ///< Overwrite target silently if it already exists.
     };
 
-    virtual ByteStream read(const Uri &uri, unsigned int nbytes) = 0;
+    struct ReadResult {
+        ByteStream byteStream;
+        ErrorCode errorCode;
+    };
 
-    virtual unsigned int write(const Uri &uri, const ByteStream &byteStream) = 0;
+    virtual ReadResult read(const Uri &uri, unsigned int nbytes) = 0;
+
+    struct WriteResult {
+        unsigned int bytesWritten;
+        ErrorCode errorCode;
+    };
+
+    virtual WriteResult write(const Uri &uri, const ByteStream &byteStream) = 0;
 
     /**
       * Creates the directory @p uri.

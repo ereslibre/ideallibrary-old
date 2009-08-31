@@ -31,6 +31,8 @@
 
 #include <core/file.h>
 
+#define BYTE_NUMBER (1024 * 32)
+
 namespace IdealCore {
 
 class BuiltinProtocolHandlersLocal::Private
@@ -55,14 +57,14 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
     delete d;
 }
 
-ByteStream BuiltinProtocolHandlersLocal::read(const Uri &uri, unsigned int nbytes)
+ProtocolHandler::ReadResult BuiltinProtocolHandlersLocal::read(const Uri &uri, unsigned int nbytes)
 {
-    return ByteStream();
+    return ReadResult();
 }
 
-unsigned int BuiltinProtocolHandlersLocal::write(const Uri &uri, const ByteStream &byteStream)
+ProtocolHandler::WriteResult BuiltinProtocolHandlersLocal::write(const Uri &uri, const ByteStream &byteStream)
 {
-    return 0;
+    return WriteResult();
 }
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)
