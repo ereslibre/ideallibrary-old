@@ -89,6 +89,9 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, in
 
 ByteStream BuiltinProtocolHandlersLocal::read(unsigned int nbytes)
 {
+    if (d->m_fd == -1) {
+        return ByteStream();
+    }
     char resBuffer[nbytes];
     const size_t bytesRead = ::read(d->m_fd, resBuffer, nbytes);
     if (bytesRead) {
@@ -99,7 +102,10 @@ ByteStream BuiltinProtocolHandlersLocal::read(unsigned int nbytes)
 
 unsigned int BuiltinProtocolHandlersLocal::write(const ByteStream &byteStream)
 {
-    return 0;
+    if (d->m_fd == -1) {
+        return 0;
+    }
+    return ::write(d->m_fd, byteStream.data(), byteStream.size());
 }
 
 void BuiltinProtocolHandlersLocal::close()
