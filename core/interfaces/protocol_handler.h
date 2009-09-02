@@ -52,8 +52,8 @@ public:
     };
 
     enum OpenMode {
-        Read = 1, ///< The file is opened for reading
-        Write = 2 ///< The file is opened for writing
+        Read  = 1, ///< The file is opened for reading
+        Write = 2  ///< The file is opened for writing
     };
 
     enum Permissions {
