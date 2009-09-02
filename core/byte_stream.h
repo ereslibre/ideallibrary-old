@@ -37,16 +37,21 @@ class IDEAL_EXPORT ByteStream
 {
 public:
     ByteStream();
+    ByteStream(const ByteStream &byteStream);
     ByteStream(const char *data);
+    ByteStream(const char *data, unsigned long long int nbytes);
     virtual ~ByteStream();
 
-    int size() const;
+    unsigned long long int size() const;
 
     const char *data() const;
 
+    ByteStream &operator=(const char *data);
+    ByteStream &operator=(const ByteStream &byteStream);
+
 private:
     class Private;
-    Private *const d;
+    Private *d;
 };
 
 }

@@ -98,24 +98,24 @@ public:
         CouldNotResolveHost,     ///< Host could not be resolved.
         CouldNotConnect,         ///< Could not connect.
         LoginFailed,             ///< Login failed.
-        Unknown,                 ///< An unknown error happened.
+        UnknownError             ///< An unknown error happened.
     };
 
     struct StatResult {
         StatResult();
 
-        ErrorCode errorCode; ///< The error code if an error happened. The stat result is only valid if this
-                             ///< field has the NoError value.
-        bool exists;         ///< Whether this file exists or not.
-        int type;            ///< The type of this file. Matches ProtocolHandler::Type.
-        String ownerUser;    ///< The user owner of this file.
-        String ownerGroup;   ///< The group owner of this file.
-        int permissions;     ///< The permissions of this file. Matches ProtocolHandler::Permissions.
-        double size;         ///< The size of this file.
-        long lastAccessed;   ///< The last access on this file.
-        long lastModified;   ///< When was this file last modified.
-        String contentType;  ///< The content type of this file.
-        Uri uri;             ///< The uri of this file.
+        ErrorCode errorCode;         ///< The error code if an error happened. The stat result is only valid if this
+                                     ///< field has the NoError value.
+        bool exists;                 ///< Whether this file exists or not.
+        int type;                    ///< The type of this file. Matches ProtocolHandler::Type.
+        String ownerUser;            ///< The user owner of this file.
+        String ownerGroup;           ///< The group owner of this file.
+        int permissions;             ///< The permissions of this file. Matches ProtocolHandler::Permissions.
+        unsigned long long int size; ///< The size of this file in bytes.
+        long lastAccessed;           ///< The last access on this file.
+        long lastModified;           ///< When was this file last modified.
+        String contentType;          ///< The content type of this file.
+        Uri uri;                     ///< The uri of this file.
     };
 
     enum Behavior {

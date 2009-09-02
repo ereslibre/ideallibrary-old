@@ -76,7 +76,7 @@ public:
 
     File                        *m_file;
     Operation                    m_operation;
-    double                       m_maxBytes;
+    unsigned long long int       m_maxBytes;
     ProtocolHandler::Permissions m_permissions;
     ProtocolHandler             *m_protocolHandler;
 
@@ -240,7 +240,7 @@ Thread *File::stat(Thread::Type type) const
     return job;
 }
 
-Thread *File::get(double maxBytes, Thread::Type type) const
+Thread *File::get(unsigned long long int maxBytes, Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::Get;

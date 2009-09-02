@@ -125,7 +125,7 @@ public:
       *
       * @see ProtocolHandler::get()
       */
-    Thread *get(double maxBytes = File::NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
+    Thread *get(unsigned long long int maxBytes = File::NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
 
     /**
       * @return A constructed thread object that will be able to run asynchronously.

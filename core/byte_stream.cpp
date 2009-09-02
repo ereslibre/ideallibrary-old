@@ -27,12 +27,16 @@ namespace IdealCore {
 class ByteStream::Private
 {
 public:
-    Private(const char *data)
+    Private(const char *data, unsigned long long int nbytes = 0)
         : m_data(0)
         , m_size(0)
     {
         if (data) {
-            m_size = strlen(data);
+            if (nbytes) {
+                m_size = nbytes;
+            } else {
+                m_size = strlen(data);
+            }
             m_data = new char[m_size + 1];
             memcpy(m_data, data, m_size);
             m_data[m_size] = '\0';
@@ -44,12 +48,17 @@ public:
         delete m_data;
     }
 
-    char *m_data;
-    int   m_size;
+    char                  *m_data;
+    unsigned long long int m_size;
 };
 
 ByteStream::ByteStream()
     : d(new Private(0))
+{
+}
+
+ByteStream::ByteStream(const ByteStream &byteStream)
+    : d(new Private(byteStream.d->m_data, byteStream.d->m_size))
 {
 }
 
@@ -58,12 +67,17 @@ ByteStream::ByteStream(const char *data)
 {
 }
 
+ByteStream::ByteStream(const char *data, unsigned long long int nbytes)
+    : d(new Private(data, nbytes))
+{
+}
+
 ByteStream::~ByteStream()
 {
     delete d;
 }
 
-int ByteStream::size() const
+unsigned long long int ByteStream::size() const
 {
     return d->m_size;
 }
@@ -71,6 +85,20 @@ int ByteStream::size() const
 const char *ByteStream::data() const
 {
     return d->m_data;
+}
+
+ByteStream &ByteStream::operator=(const char *data)
+{
+    delete d;
+    d = new Private(data);
+    return *this;
+}
+
+ByteStream &ByteStream::operator=(const ByteStream &byteStream)
+{
+    delete d;
+    d = new Private(byteStream.d->m_data, byteStream.d->m_size);
+    return *this;
 }
 
 }

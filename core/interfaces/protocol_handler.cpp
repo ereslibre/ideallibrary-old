@@ -30,7 +30,7 @@ ProtocolHandler::ProtocolHandler()
 }
 
 ProtocolHandler::StatResult::StatResult()
-    : errorCode(Unknown)
+    : errorCode(UnknownError)
     , exists(false)
     , type(UnknownType)
     , permissions(UnknownPermissions)

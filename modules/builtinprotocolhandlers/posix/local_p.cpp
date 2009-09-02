@@ -37,11 +37,14 @@ class BuiltinProtocolHandlersLocal::Private
 {
 public:
     Private(BuiltinProtocolHandlersLocal *q)
-        : q(q)
+        : m_fd(-1)
+        , q(q)
     {
     }
 
     bool                          m_success;
+    Uri                           m_opened;
+    int                           m_fd;
     BuiltinProtocolHandlersLocal *q;
 };
 
@@ -57,11 +60,40 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, int openMode)
 {
-    return Unknown;
+    if (d->m_opened.isValid()) {
+        IDEAL_DEBUG_WARNING("the uri " << d->m_opened.uri() << " was opened. Closing");
+        close();
+    }
+    d->m_opened = uri;
+    int oflag = 0;
+    if ((openMode & Read) && (openMode & Write)) {
+        oflag = O_RDWR;
+    } else if (openMode & Read) {
+        oflag = O_RDONLY;
+    } else {
+        oflag = O_WRONLY;
+    }
+    d->m_fd = ::open(uri.path().data(), oflag);
+    if (d->m_fd > -1) {
+        return NoError;
+    }
+    switch (errno) {
+        case EACCES:
+            return InsufficientPermissions;
+            break;
+        default:
+            return UnknownError;
+            break;
+    }
 }
 
 ByteStream BuiltinProtocolHandlersLocal::read(unsigned int nbytes)
 {
+    char resBuffer[nbytes];
+    const size_t bytesRead = ::read(d->m_fd, resBuffer, nbytes);
+    if (bytesRead) {
+        return ByteStream(resBuffer, bytesRead);
+    }
     return ByteStream();
 }
 
@@ -72,6 +104,10 @@ unsigned int BuiltinProtocolHandlersLocal::write(const ByteStream &byteStream)
 
 void BuiltinProtocolHandlersLocal::close()
 {
+    if (d->m_fd > 0) {
+        ::close(d->m_fd);
+        d->m_fd = -1;
+    }
 }
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)
@@ -116,7 +152,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, P
                 return InsufficientPermissions;
                 break;
             default:
-                return Unknown;
+                return UnknownError;
                 break;
         }
     }
@@ -131,7 +167,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::rm(const Uri &uri)
                 return InsufficientPermissions;
                 break;
             default:
-                return Unknown;
+                return UnknownError;
                 break;
         }
     }
@@ -214,7 +250,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
                     statRes.errorCode = InsufficientPermissions;
                     break;
                 default:
-                    statRes.errorCode = Unknown;
+                    statRes.errorCode = UnknownError;
                     break;
             }
         }

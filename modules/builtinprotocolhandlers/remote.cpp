@@ -53,8 +53,8 @@ public:
     CURL                          *m_curl;
     Uri                            m_uri;
     bool                           m_success;
-    double                         m_maxBytes;
-    double                         m_currentSize;
+    unsigned long long int         m_maxBytes;
+    unsigned long long int         m_currentSize;
     bool                           m_isDir;
     BuiltinProtocolHandlersRemote *q;
 };
@@ -71,7 +71,7 @@ BuiltinProtocolHandlersRemote::~BuiltinProtocolHandlersRemote()
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::open(const Uri &uri, int openMode)
 {
-    return Unknown;
+    return UnknownError;
 }
 
 ByteStream BuiltinProtocolHandlersRemote::read(unsigned int nbytes)
@@ -90,12 +90,12 @@ void BuiltinProtocolHandlersRemote::close()
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::mkdir(const Uri &uri, Permissions permissions)
 {
-    return ProtocolHandler::Unknown;
+    return UnknownError;
 }
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::rm(const Uri &uri)
 {
-    return ProtocolHandler::Unknown;
+    return UnknownError;
 }
 
 ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)

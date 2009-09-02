@@ -24,6 +24,8 @@
 #include <core/extension_loader.h>
 #include <core/interfaces/protocol_handler.h>
 
+#define BUFFER_SIZE (1024 * 32)
+
 using namespace IdealCore;
 
 static void statResult(ProtocolHandler::StatResult statResult)
@@ -61,6 +63,18 @@ int main(int argc, char **argv)
     ProtocolHandler *protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionLoadDecider, &app);
 
     if (protocolHandler) {
+        IDEAL_SDEBUG("*** Going to read /usr/include/stdio.h");
+        const ProtocolHandler::ErrorCode errorCode = protocolHandler->open("/usr/include/stdio.h", ProtocolHandler::Read);
+        if (errorCode == ProtocolHandler::NoError) {
+            ByteStream buffer;
+            while ((buffer = protocolHandler->read(BUFFER_SIZE)).size()) {
+                std::cout << buffer;
+            }
+            std::cout << std::endl;
+            protocolHandler->close();
+        } else {
+            IDEAL_SDEBUG("An error happened with code " << errorCode);
+        }
         IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home));
         statResult(protocolHandler->stat(app.getPath(Application::Home)));
         IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home) + "/.bashrc");
@@ -70,8 +84,6 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("*** Going to stat /root/foo");
         statResult(protocolHandler->stat("/root/foo"));
     }
-
-    delete protocolHandler;
 
     return 0;
 }
