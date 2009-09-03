@@ -45,11 +45,6 @@ public:
         }
     }
 
-    enum State {
-        Receiving = 0,
-        Sending
-    };
-
     CURL                          *m_curl;
     Uri                            m_uri;
     bool                           m_success;
