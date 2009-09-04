@@ -92,6 +92,7 @@ public:
 
     enum ErrorCode {
         NoError = 0,             ///< The operation finished successfully.
+        InvalidURI,              ///< The requested URI is invalid.
         FileNotFound,            ///< The stat of the file failed because the file does not exist.
         FileAlreadyExists,       ///< The target URI of the operation already exists.
         InsufficientPermissions, ///< Not enough permissions to stat the file.

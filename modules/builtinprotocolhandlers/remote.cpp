@@ -31,9 +31,6 @@ class BuiltinProtocolHandlersRemote::Private
 public:
     Private(BuiltinProtocolHandlersRemote *q)
         : m_curl(0)
-        , m_maxBytes(File::NoMaxBytes)
-        , m_currentSize(0)
-        , m_isDir(false)
         , q(q)
     {
     }
@@ -46,7 +43,7 @@ public:
     }
 
     CURL                          *m_curl;
-    Uri                            m_opened;
+    Uri                            m_uri;
     BuiltinProtocolHandlersRemote *q;
 };
 
@@ -92,7 +89,6 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::rm(const Uri &uri)
 ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)
 {
     d->m_uri = uri;
-    d->m_success = false;
     if (!d->m_curl) {
         d->m_curl = curl_easy_init();
         curl_easy_setopt(d->m_curl, CURLOPT_NOSIGNAL, 1L);
@@ -105,7 +101,6 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)
     StatResult statResult;
     statResult.uri = uri;
     if (curl_easy_perform(d->m_curl) == CURLE_OK) {
-        d->m_success = true;
         // wait on socket
         if (!uri.scheme().compare("ftp")) {
             // TODO

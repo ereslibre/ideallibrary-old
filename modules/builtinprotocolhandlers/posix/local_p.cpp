@@ -65,7 +65,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, in
     }
     d->m_opened = uri;
     if (!uri.isValid()) {
-        return;
+        return InvalidURI;
     }
     int oflag = 0;
     if ((openMode & Read) && (openMode & Write)) {
