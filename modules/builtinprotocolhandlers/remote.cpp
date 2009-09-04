@@ -46,11 +46,7 @@ public:
     }
 
     CURL                          *m_curl;
-    Uri                            m_uri;
-    bool                           m_success;
-    unsigned long long int         m_maxBytes;
-    unsigned long long int         m_currentSize;
-    bool                           m_isDir;
+    Uri                            m_opened;
     BuiltinProtocolHandlersRemote *q;
 };
 

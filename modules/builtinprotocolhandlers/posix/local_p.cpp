@@ -42,7 +42,6 @@ public:
     {
     }
 
-    bool                          m_success;
     Uri                           m_opened;
     int                           m_fd;
     BuiltinProtocolHandlersLocal *q;
@@ -65,6 +64,9 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, in
         close();
     }
     d->m_opened = uri;
+    if (!uri.isValid()) {
+        return;
+    }
     int oflag = 0;
     if ((openMode & Read) && (openMode & Write)) {
         oflag = O_RDWR;
@@ -182,7 +184,6 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::rm(const Uri &uri)
 
 ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
 {
-    d->m_success = false;
     StatResult statRes;
     statRes.uri = uri;
     statRes.errorCode = NoError;
@@ -246,7 +247,6 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
             statRes.size = statResult.st_size;
             statRes.lastAccessed = statResult.st_atime;
             statRes.lastModified = statResult.st_mtime;
-            d->m_success = true;
         } else {
             switch (errno) {
                 case ENOENT:
