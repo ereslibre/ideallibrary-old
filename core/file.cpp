@@ -134,7 +134,7 @@ void File::Private::Job::stat()
 {
     bool wasStated = true;
     if (!m_file->d->m_stated) {
-    m_protocolHandler = findProtocolHandler();
+        m_protocolHandler = findProtocolHandler();
         if (m_protocolHandler) {
             ProtocolHandler::StatResult statResult = m_protocolHandler->stat(m_file->d->m_uri);
             if (statResult.errorCode == ProtocolHandler::NoError) {

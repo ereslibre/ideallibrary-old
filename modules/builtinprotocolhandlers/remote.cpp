@@ -23,6 +23,8 @@
 #include <curl/curl.h>
 
 #include <core/file.h>
+#include "../../core/uri.h"
+#include "../../core/ideal_string.h"
 
 namespace IdealCore {
 
@@ -59,7 +61,11 @@ BuiltinProtocolHandlersRemote::~BuiltinProtocolHandlersRemote()
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::open(const Uri &uri, int openMode)
 {
-    return UnknownError;
+    if (!uri.isValid()) {
+        return InvalidURI;
+    }
+    d->m_uri = uri;
+    return NoError;
 }
 
 ByteStream BuiltinProtocolHandlersRemote::read(unsigned int nbytes)
@@ -101,7 +107,6 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)
     StatResult statResult;
     statResult.uri = uri;
     if (curl_easy_perform(d->m_curl) == CURLE_OK) {
-        // wait on socket
         if (!uri.scheme().compare("ftp")) {
             // TODO
         } else {
