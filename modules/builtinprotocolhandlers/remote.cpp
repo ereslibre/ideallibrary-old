@@ -44,10 +44,19 @@ public:
         }
     }
 
+    static size_t parseOutput(void *ptr, size_t size, size_t nmemb, void *stream);
+
     CURL                          *m_curl;
     Uri                            m_uri;
     BuiltinProtocolHandlersRemote *q;
 };
+
+size_t BuiltinProtocolHandlersRemote::Private::parseOutput(void *ptr, size_t size, size_t nmemb,
+                                                           void *stream)
+{
+    std::cout << (char *) ptr;
+    return nmemb * size;
+}
 
 BuiltinProtocolHandlersRemote::BuiltinProtocolHandlersRemote()
     : d(new Private(this))
@@ -82,7 +91,8 @@ void BuiltinProtocolHandlersRemote::close()
 {
 }
 
-ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::mkdir(const Uri &uri, Permissions permissions)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::mkdir(const Uri &uri,
+                                                                Permissions permissions)
 {
     return UnknownError;
 }
@@ -101,12 +111,12 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersRemote::stat(const Uri &uri)
         curl_easy_setopt(d->m_curl, CURLOPT_VERBOSE, 0L);
     }
     curl_easy_setopt(d->m_curl, CURLOPT_URL, uri.uri().data());
-    curl_easy_setopt(d->m_curl, CURLOPT_NOBODY, 1L);
-    curl_easy_setopt(d->m_curl, CURLOPT_CONNECT_ONLY, 1L);
-    curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, 0L);
+    curl_easy_setopt(d->m_curl, CURLOPT_WRITEFUNCTION, Private::parseOutput);
     StatResult statResult;
     statResult.uri = uri;
-    if (curl_easy_perform(d->m_curl) == CURLE_OK) {
+    CURLcode res;
+    if ((res = curl_easy_perform(d->m_curl)) == CURLE_OK) {
+        statResult.errorCode = ProtocolHandler::NoError;
         if (!uri.scheme().compare("ftp")) {
             // TODO
         } else {

@@ -30,64 +30,104 @@ int main(int argc, char **argv)
 
     AsyncResult result(&app);
 
-    IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home));
+    {
+        IDEAL_SDEBUG("*** Going to stat " << app.getPath(Application::Home));
 
-    File f(app.getPath(Application::Home), &app);
-    Object::connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
-    f.stat(Thread::Joinable)->execAndJoin();
+        File f(app.getPath(Application::Home), &app);
+        Object::connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
+        f.stat(Thread::Joinable)->execAndJoin();
 
-    // it is possible that statResult wasn't emitted, (e.g. when not enough permissions to
-    // access the file)
-    if (!result.resultReceived()) {
-        IDEAL_DEBUG_WARNING("result is empty");
-        return 0;
-    }
-
-    ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
-
-    IDEAL_SDEBUG("exists is " << statResult.exists);
-    IDEAL_SDEBUG("type is " << statResult.type);
-    IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
-    IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
-    IDEAL_SDEBUG("permissions is " << statResult.permissions);
-    IDEAL_SDEBUG("size is " << statResult.size);
-    IDEAL_SDEBUG("last accessed is " << statResult.lastAccessed);
-    IDEAL_SDEBUG("last modified is " << statResult.lastModified);
-    IDEAL_SDEBUG("content type is " << statResult.contentType);
-    IDEAL_SDEBUG("uri is " << statResult.uri.uri());
-
-    result.clear();
-    AsyncResult errorResult(&app);
-
-    IDEAL_SDEBUG("");
-    IDEAL_SDEBUG("*** Going to stat /root/foo");
-
-    File f2("/root/foo", &app);
-    Object::connect(f2.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
-    Object::connect(f2.error, &errorResult, &AsyncResult::set<ProtocolHandler::ErrorCode>);
-    f2.stat(Thread::Joinable)->execAndJoin();
-
-    if (errorResult.resultReceived()) {
-        // Here, result.resultReceived() is false too, but with the previous check is enough
-        ProtocolHandler::ErrorCode errorCode = errorResult.get<ProtocolHandler::ErrorCode>(0);
-        if (errorCode == ProtocolHandler::InsufficientPermissions) {
-            IDEAL_SDEBUG("not enough permissions to stat /root/foo");
-        } else {
-            IDEAL_SDEBUG("unknown error while stating /root/foo");
+        // it is possible that statResult wasn't emitted, (e.g. when not enough permissions to
+        // access the file)
+        if (!result.resultReceived()) {
+            IDEAL_DEBUG_WARNING("result is empty");
+            return 0;
         }
-    } else {
+
         ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
 
-        IDEAL_SDEBUG("exists is " << statResult.exists);
-        IDEAL_SDEBUG("type is " << statResult.type);
-        IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
-        IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
-        IDEAL_SDEBUG("permissions is " << statResult.permissions);
-        IDEAL_SDEBUG("size is " << statResult.size);
-        IDEAL_SDEBUG("last accessed is " << statResult.lastAccessed);
-        IDEAL_SDEBUG("last modified is " << statResult.lastModified);
-        IDEAL_SDEBUG("content type is " << statResult.contentType);
-        IDEAL_SDEBUG("uri is " << statResult.uri.uri());
+        if (statResult.errorCode != ProtocolHandler::NoError) {
+            if (statResult.errorCode == ProtocolHandler::InsufficientPermissions) {
+                IDEAL_SDEBUG("not enough permissions to stat " << f.uri().uri());
+            } else {
+                IDEAL_SDEBUG("unknown error while stating " << f.uri().uri() << ": " << statResult.errorCode);
+            }
+        } else {
+            IDEAL_SDEBUG("exists is " << statResult.exists);
+            IDEAL_SDEBUG("type is " << statResult.type);
+            IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
+            IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
+            IDEAL_SDEBUG("permissions is " << statResult.permissions);
+            IDEAL_SDEBUG("size is " << statResult.size);
+            IDEAL_SDEBUG("last accessed is " << statResult.lastAccessed);
+            IDEAL_SDEBUG("last modified is " << statResult.lastModified);
+            IDEAL_SDEBUG("content type is " << statResult.contentType);
+            IDEAL_SDEBUG("uri is " << statResult.uri.uri());
+        }
+    }
+
+    {
+        result.clear();
+
+        IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("*** Going to stat /root/foo");
+
+        File f("/root/foo", &app);
+        Object::connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
+        f.stat(Thread::Joinable)->execAndJoin();
+
+        const ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
+
+        if (statResult.errorCode != ProtocolHandler::NoError) {
+            if (statResult.errorCode == ProtocolHandler::InsufficientPermissions) {
+                IDEAL_SDEBUG("not enough permissions to stat " << f.uri().uri());
+            } else {
+                IDEAL_SDEBUG("unknown error while stating " << f.uri().uri() << ": " << statResult.errorCode);
+            }
+        } else {
+            IDEAL_SDEBUG("exists is " << statResult.exists);
+            IDEAL_SDEBUG("type is " << statResult.type);
+            IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
+            IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
+            IDEAL_SDEBUG("permissions is " << statResult.permissions);
+            IDEAL_SDEBUG("size is " << statResult.size);
+            IDEAL_SDEBUG("last accessed is " << statResult.lastAccessed);
+            IDEAL_SDEBUG("last modified is " << statResult.lastModified);
+            IDEAL_SDEBUG("content type is " << statResult.contentType);
+            IDEAL_SDEBUG("uri is " << statResult.uri.uri());
+        }
+    }
+
+    {
+        result.clear();
+
+        IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("*** Going to stat ftp://ftp.gnu.org");
+
+        File f("ftp://ftp.gnu.org", &app);
+        Object::connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
+        f.stat(Thread::Joinable)->execAndJoin();
+
+        ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
+
+        if (statResult.errorCode != ProtocolHandler::NoError) {
+            if (statResult.errorCode == ProtocolHandler::InsufficientPermissions) {
+                IDEAL_SDEBUG("not enough permissions to stat " << f.uri().uri());
+            } else {
+                IDEAL_SDEBUG("unknown error while stating " << f.uri().uri() << ": " << statResult.errorCode);
+            }
+        } else {
+            IDEAL_SDEBUG("exists is " << statResult.exists);
+            IDEAL_SDEBUG("type is " << statResult.type);
+            IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
+            IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
+            IDEAL_SDEBUG("permissions is " << statResult.permissions);
+            IDEAL_SDEBUG("size is " << statResult.size);
+            IDEAL_SDEBUG("last accessed is " << statResult.lastAccessed);
+            IDEAL_SDEBUG("last modified is " << statResult.lastModified);
+            IDEAL_SDEBUG("content type is " << statResult.contentType);
+            IDEAL_SDEBUG("uri is " << statResult.uri.uri());
+        }
     }
 
     return 0;

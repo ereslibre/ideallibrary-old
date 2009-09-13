@@ -111,6 +111,8 @@ public:
       * @return A constructed thread object that will be able to run asynchronously, signaling statResult
       *         when the operation has finished.
       *
+      * @note If something goes wrong, error signal will not be emitted. Check StatResult::errorCode.
+      *
       * @see ProtocolHandler::stat()
       */
     Thread *stat(Thread::Type type = Thread::NoJoinable) const;
