@@ -91,6 +91,11 @@ void BuiltinProtocolHandlersRemote::close()
 {
 }
 
+List<Uri> BuiltinProtocolHandlersRemote::listDir(const Uri &uri)
+{
+    return List<Uri>();
+}
+
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersRemote::mkdir(const Uri &uri,
                                                                 Permissions permissions)
 {

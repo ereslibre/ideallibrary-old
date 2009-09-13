@@ -35,10 +35,6 @@ static void statResult(ProtocolHandler::StatResult statResult)
     if (statResult.errorCode != ProtocolHandler::NoError) {
         return;
     }
-    IDEAL_SDEBUG("\t\t*** Exists?\t\t" << (statResult.exists ? "yes" : "no"));
-    if (!statResult.exists) {
-        return;
-    }
     IDEAL_SDEBUG("\t\t*** Is directory?\t" << ((statResult.type & ProtocolHandler::Directory) ? "yes" : "no"));
 }
 

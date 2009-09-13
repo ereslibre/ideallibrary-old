@@ -107,7 +107,6 @@ public:
 
         ErrorCode errorCode;         ///< The error code if an error happened. The stat result is only valid if this
                                      ///< field has the NoError value.
-        bool exists;                 ///< Whether this file exists or not.
         int type;                    ///< The type of this file. Matches ProtocolHandler::Type.
         String ownerUser;            ///< The user owner of this file.
         String ownerGroup;           ///< The group owner of this file.
@@ -131,6 +130,8 @@ public:
     virtual unsigned int write(const ByteStream &byteStream) = 0;
 
     virtual void close() = 0;
+
+    virtual List<Uri> listDir(const Uri &uri) = 0;
 
     /**
       * Creates the directory @p uri.
@@ -165,10 +166,6 @@ public:
 
 public:
     ProtocolHandler();
-
-public:
-    IDEAL_SIGNAL(dataRead, ByteStream);
-    IDEAL_SIGNAL(dirRead, List<Uri>);
 
 private:
     unsigned int m_weight;

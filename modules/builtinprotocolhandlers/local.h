@@ -36,6 +36,7 @@ public:
     virtual ByteStream read(unsigned int nbytes);
     virtual unsigned int write(const ByteStream &byteStream);
     virtual void close();
+    virtual List<Uri> listDir(const Uri &uri);
     virtual ErrorCode mkdir(const Uri &uri, Permissions permissions);
     virtual ErrorCode rm(const Uri &uri);
     virtual StatResult stat(const Uri &uri);

@@ -28,12 +28,12 @@
 #include <core/private/application_p.h>
 
 #define PH_CACHE_SIZE 10
+#define BUFFER_SIZE (1024 * 32)
 
 namespace IdealCore {
 
 File::Private::Private(File *q)
-    : m_stated(false)
-    , m_events(NoEvent)
+    : m_events(NoEvent)
     , q(q)
 {
 }
@@ -53,9 +53,14 @@ public:
     ProtocolHandler *findProtocolHandler();
     void cacheOrDiscard(ProtocolHandler *protocolHandler);
 
+    ProtocolHandler::StatResult statPrivate();
+
     void stat();
     void get();
     void mkdir();
+
+    void readDir();
+    void readFile();
 
     struct LessThanProtocolHandler
     {
@@ -130,34 +135,35 @@ void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
     }
 }
 
+ProtocolHandler::StatResult File::Private::Job::statPrivate()
+{
+    ProtocolHandler::StatResult res;
+    m_protocolHandler = findProtocolHandler();
+    if (m_protocolHandler) {
+        res = m_protocolHandler->stat(m_file->d->m_uri);
+    }
+    return res;
+}
+
 void File::Private::Job::stat()
 {
-    bool wasStated = true;
-    if (!m_file->d->m_stated) {
-        m_protocolHandler = findProtocolHandler();
-        if (m_protocolHandler) {
-            emit(m_file->statResult, m_protocolHandler->stat(m_file->d->m_uri));
-        } else {
-            return;
-        }
-        wasStated = false;
-        m_file->d->m_stated = true;
-    }
-    if (!wasStated) {
-        cacheOrDiscard(m_protocolHandler);
-        m_protocolHandler = 0;
-    }
+    emit(m_file->statResult, statPrivate());
 }
 
 void File::Private::Job::get()
 {
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
-        connect(m_protocolHandler->dataRead, m_file->dataRead);
-        connect(m_protocolHandler->dirRead, m_file->dirRead);
-        // TODO
-        disconnect(m_protocolHandler->dataRead, m_file->dataRead);
-        disconnect(m_protocolHandler->dirRead, m_file->dirRead);
+        const ProtocolHandler::StatResult statResult = statPrivate();
+        if (statResult.errorCode != ProtocolHandler::NoError) {
+            emit(m_file->error, statResult.errorCode);
+            return;
+        }
+        if (statResult.type == ProtocolHandler::Directory) {
+            readDir();
+        } else {
+            readFile();
+        }
     }
 }
 
@@ -167,6 +173,25 @@ void File::Private::Job::mkdir()
     if (m_protocolHandler) {
         m_protocolHandler->mkdir(m_file->d->m_uri, m_permissions);
     }
+}
+
+void File::Private::Job::readDir()
+{
+    emit(m_file->dirRead, m_protocolHandler->listDir(m_file->d->m_uri));
+}
+
+void File::Private::Job::readFile()
+{
+    m_protocolHandler->open(m_file->d->m_uri);
+    unsigned long long int bytesRead = 0;
+    while (m_maxBytes == NoMaxBytes || bytesRead < m_maxBytes) {
+        const ByteStream byteStream = m_protocolHandler->read(BUFFER_SIZE);
+        if (!byteStream.size()) {
+            break;
+        }
+        bytesRead += byteStream.size();
+    }
+    m_protocolHandler->close();
 }
 
 bool File::Private::Job::LessThanProtocolHandler::operator()(ProtocolHandler *&left, ProtocolHandler *&right)

@@ -53,7 +53,6 @@ int main(int argc, char **argv)
                 IDEAL_SDEBUG("unknown error while stating " << f.uri().uri() << ": " << statResult.errorCode);
             }
         } else {
-            IDEAL_SDEBUG("exists is " << statResult.exists);
             IDEAL_SDEBUG("type is " << statResult.type);
             IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
             IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
@@ -85,7 +84,6 @@ int main(int argc, char **argv)
                 IDEAL_SDEBUG("unknown error while stating " << f.uri().uri() << ": " << statResult.errorCode);
             }
         } else {
-            IDEAL_SDEBUG("exists is " << statResult.exists);
             IDEAL_SDEBUG("type is " << statResult.type);
             IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
             IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);
@@ -117,7 +115,6 @@ int main(int argc, char **argv)
                 IDEAL_SDEBUG("unknown error while stating " << f.uri().uri() << ": " << statResult.errorCode);
             }
         } else {
-            IDEAL_SDEBUG("exists is " << statResult.exists);
             IDEAL_SDEBUG("type is " << statResult.type);
             IDEAL_SDEBUG("owner user is " << statResult.ownerUser);
             IDEAL_SDEBUG("owner group is " << statResult.ownerGroup);

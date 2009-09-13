@@ -30,7 +30,6 @@ class File::Private
 public:
     Private(File *q);
 
-    bool         m_stated;
     Uri          m_uri;
     Event        m_events;
     File * const q;

@@ -37,13 +37,13 @@ static bool disconnectedWarned = false;
 
 static void assertExists(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT(statResult.exists);
+    CPPUNIT_ASSERT(statResult.errorCode != ProtocolHandler::FileNotFound);
     ++numCalls;
 }
 
 static void assertFileDoesNotExist(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT(!statResult.exists);
+    CPPUNIT_ASSERT(!statResult.errorCode != ProtocolHandler::FileNotFound);
     ++numCalls;
 }
 

@@ -118,6 +118,19 @@ void BuiltinProtocolHandlersLocal::close()
     }
 }
 
+List<Uri> BuiltinProtocolHandlersLocal::listDir(const Uri &uri)
+{
+    List<Uri> res;
+    DIR *dir = ::opendir(uri.uri().data());
+    struct dirent *dirEntry;
+    while ((dirEntry = ::readdir(dir))) {
+        const Uri uriEnt(uri.uri(), dirEntry->d_name);
+        res.push_back(uriEnt);
+    }
+    ::closedir(dir);
+    return res;
+}
+
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::mkdir(const Uri &uri, Permissions permissions)
 {
     mode_t mode = 0;
@@ -190,7 +203,6 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
     {
         struct stat statResult;
         if (!::stat(uri.path().data(), &statResult)) {
-            statRes.exists = true;
             statRes.type = ProtocolHandler::UnknownType;
             if (S_ISREG(statResult.st_mode)) {
                 statRes.type |= ProtocolHandler::RegularFile;
@@ -250,6 +262,7 @@ ProtocolHandler::StatResult BuiltinProtocolHandlersLocal::stat(const Uri &uri)
         } else {
             switch (errno) {
                 case ENOENT:
+                    statRes.errorCode = FileNotFound;
                 case ENOTDIR:
                     break;
                 case EACCES:
