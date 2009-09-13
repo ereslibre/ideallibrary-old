@@ -182,7 +182,7 @@ void File::Private::Job::readDir()
 
 void File::Private::Job::readFile()
 {
-    m_protocolHandler->open(m_file->d->m_uri);
+    m_protocolHandler->open(m_file->d->m_uri, ProtocolHandler::Read);
     unsigned long long int bytesRead = 0;
     while (m_maxBytes == NoMaxBytes || bytesRead < m_maxBytes) {
         const ByteStream byteStream = m_protocolHandler->read(BUFFER_SIZE);
