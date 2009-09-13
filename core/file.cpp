@@ -190,6 +190,7 @@ void File::Private::Job::readFile()
             break;
         }
         bytesRead += byteStream.size();
+        emit(m_file->dataRead, byteStream);
     }
     m_protocolHandler->close();
 }
