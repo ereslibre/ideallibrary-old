@@ -48,15 +48,15 @@ class Thread;
   * List<File*>::iterator it;
   * for (it = fileList.begin(); it != fileList.end(); ++it) {
   *     File *const file = *it;
-  *     connectMulti(file->existsResult, this, &MyObject::existsResultSlot);
-  *     Thread *const size = file->size();
-  *     size->exec();
+  *     connectMulti(file->statResult, this, &MyObject::statResultSlot);
+  *     Thread *const stat = file->stat();
+  *     stat->exec();
   * }
   *
-  * void MyObject::existsResultSlot(Object *sender, bool exists)
+  * void MyObject::statResultSlot(Object *sender, const ProtocolHandler::StatResult &statResult)
   * {
   *     File *const sdr = static_cast<File*>(sender);
-  *     IDEAL_SDEBUG("*** File " << sdr->uri().uri() << " exists? " << (exists ? "yes" : "no"));
+  *     IDEAL_SDEBUG("*** File " << sdr->uri().uri() << " exists? " << (statResult.errorCode == ProtocolHandler::NoError ? "yes" : "no"));
   *     // or do something interesting using 'sender' (or 'sdr') and 'exists'
   * }
   * @endcode

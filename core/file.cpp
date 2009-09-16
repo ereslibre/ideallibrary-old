@@ -141,6 +141,7 @@ ProtocolHandler::StatResult File::Private::Job::statPrivate()
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
         res = m_protocolHandler->stat(m_file->d->m_uri);
+        cacheOrDiscard(m_protocolHandler);
     }
     return res;
 }
@@ -152,18 +153,15 @@ void File::Private::Job::stat()
 
 void File::Private::Job::get()
 {
-    m_protocolHandler = findProtocolHandler();
-    if (m_protocolHandler) {
-        const ProtocolHandler::StatResult statResult = statPrivate();
-        if (statResult.errorCode != ProtocolHandler::NoError) {
-            emit(m_file->error, statResult.errorCode);
-            return;
-        }
-        if (statResult.type == ProtocolHandler::Directory) {
-            readDir();
-        } else {
-            readFile();
-        }
+    const ProtocolHandler::StatResult statResult = statPrivate();
+    if (statResult.errorCode != ProtocolHandler::NoError) {
+        emit(m_file->error, statResult.errorCode);
+        return;
+    }
+    if (statResult.type == ProtocolHandler::Directory) {
+        readDir();
+    } else {
+        readFile();
     }
 }
 
