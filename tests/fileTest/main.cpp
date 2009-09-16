@@ -152,41 +152,41 @@ int main(int argc, char **argv)
     // IDEAL_SDEBUG("*** Retrieving a Linux Kernel README synchronously");
     // IDEAL_SDEBUG("");
 
-    // {
-    //     File kernelReadme("http://www.kernel.org/pub/linux/kernel/README", &app);
-    //     Object::connect(kernelReadme.dataRead, &app, &MyApplication::fileData);
+    {
+        File kernelReadme("http://www.kernel.org/pub/linux/kernel/README", &app);
+        Object::connect(kernelReadme.dataRead, &app, &MyApplication::fileData);
 
-    //     IDEAL_SDEBUG("");
-    //     IDEAL_SDEBUG("*** Retrieving only 1 KB of the README by http");
-    //     IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("");
+        IDEAL_SDEBUG("*** Retrieving only 1 KB of the README by http");
+        IDEAL_SDEBUG("");
 
-    //     Thread *contentsJob1KB = kernelReadme.get(1024, Thread::Joinable);
-    //     contentsJob1KB->exec();
-    //     contentsJob1KB->join();
+        Thread *contentsJob1KB = kernelReadme.get(1024, Thread::Joinable);
+        contentsJob1KB->exec();
+        contentsJob1KB->join();
 
-    //     File kernelReadmeFtp("ftp://ftp.kernel.org/pub/linux/kernel/README", &app);
-    //     Object::connect(kernelReadmeFtp.dataRead, &app, &MyApplication::fileData);
+        // File kernelReadmeFtp("ftp://ftp.kernel.org/pub/linux/kernel/README", &app);
+        // Object::connect(kernelReadmeFtp.dataRead, &app, &MyApplication::fileData);
 
-    //     IDEAL_SDEBUG("");
-    //     IDEAL_SDEBUG("");
-    //     IDEAL_SDEBUG("*** Retrieving the full README now by ftp");
-    //     IDEAL_SDEBUG("");
+        // IDEAL_SDEBUG("");
+        // IDEAL_SDEBUG("");
+        // IDEAL_SDEBUG("*** Retrieving the full README now by ftp");
+        // IDEAL_SDEBUG("");
 
-    //     Thread *contentsJob = kernelReadmeFtp.get(File::NoMaxBytes, Thread::Joinable);
-    //     contentsJob->exec();
-    //     contentsJob->join();
+        // Thread *contentsJob = kernelReadmeFtp.get(File::NoMaxBytes, Thread::Joinable);
+        // contentsJob->exec();
+        // contentsJob->join();
 
-    //     File stdio("file:///usr/include/stdio.h", &app);
-    //     Object::connect(stdio.dataRead, &app, &MyApplication::fileData);
+        // File stdio("file:///usr/include/stdio.h", &app);
+        // Object::connect(stdio.dataRead, &app, &MyApplication::fileData);
 
-    //     IDEAL_SDEBUG("");
-    //     IDEAL_SDEBUG("*** Retrieving /usr/include/stdio.h");
-    //     IDEAL_SDEBUG("");
+        // IDEAL_SDEBUG("");
+        // IDEAL_SDEBUG("*** Retrieving /usr/include/stdio.h");
+        // IDEAL_SDEBUG("");
 
-    //     contentsJob = stdio.get(File::NoMaxBytes, Thread::Joinable);
-    //     contentsJob->exec();
-    //     contentsJob->join();
-    // }
+        // contentsJob = stdio.get(File::NoMaxBytes, Thread::Joinable);
+        // contentsJob->exec();
+        // contentsJob->join();
+    }
 
     // IDEAL_SDEBUG("");
     // IDEAL_SDEBUG("*** Listing ftp://ftp.kernel.org/pub/");

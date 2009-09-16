@@ -20,13 +20,19 @@
 
 #include "../http.h"
 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
 namespace IdealCore {
 
 class BuiltinProtocolHandlersHttp::Private
 {
 public:
     Private(BuiltinProtocolHandlersHttp *q)
-        : q(q)
+        : m_sockfd(-1)
+        , q(q)
     {
     }
 
@@ -35,6 +41,7 @@ public:
     }
 
     Uri                          m_uri;
+    int                          m_sockfd;
     BuiltinProtocolHandlersHttp *q;
 };
 
@@ -54,7 +61,54 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, int
         return InvalidURI;
     }
     d->m_uri = uri;
-    return NoError;
+    d->m_sockfd = ::socket(AF_INET, SOCK_STREAM, 0);
+    if (d->m_sockfd == -1) {
+        switch(errno) {
+            case EACCES:
+                return InsufficientPermissions;
+                break;
+            default:
+                return UnknownError;
+                break;
+        }
+    }
+    struct hostent *const host = ::gethostbyname(uri.host().data());
+    if (!host) {
+        switch (h_errno) {
+            case HOST_NOT_FOUND:
+                return CouldNotResolveHost;
+                break;
+            default:
+                return UnknownError;
+                break;
+        }
+    }
+    struct sockaddr_in destAddr;
+    destAddr.sin_family = AF_INET;
+    destAddr.sin_port = htons(uri.port() == -1 ? 80 : uri.port());
+    destAddr.sin_addr.s_addr = ::inet_addr(inet_ntoa(*((struct in_addr*) host->h_addr)));
+    memset(&(destAddr.sin_zero), '\0', 8);
+
+    if (!::connect(d->m_sockfd, (struct sockaddr*) &destAddr, sizeof(struct sockaddr))) {
+        const char *commandLength = "GET \r\n";
+        const int commandSize = strlen(commandLength) + uri.path().size();
+        char *command = new char[commandSize];
+        bzero(command, commandSize);
+        sprintf(command, "GET %s\r\n", uri.path().data());
+        const int bytesSent = send(d->m_sockfd, command, commandSize, 0);
+        return bytesSent == commandSize ? NoError : UnknownError;
+    }
+    switch(errno) {
+        case EADDRNOTAVAIL:
+        case ECONNREFUSED:
+        case ENETUNREACH:
+        case ETIMEDOUT:
+            return CouldNotConnect;
+            break;
+        default:
+            return UnknownError;
+            break;
+    }
 }
 
 ByteStream BuiltinProtocolHandlersHttp::read(unsigned int nbytes)
@@ -69,6 +123,10 @@ unsigned int BuiltinProtocolHandlersHttp::write(const ByteStream &byteStream)
 
 void BuiltinProtocolHandlersHttp::close()
 {
+    if (d->m_sockfd > 0) {
+        ::close(d->m_sockfd);
+        d->m_sockfd = -1;
+    }
 }
 
 List<Uri> BuiltinProtocolHandlersHttp::listDir(const Uri &uri)
@@ -89,7 +147,6 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::rm(const Uri &uri)
 
 ProtocolHandler::StatResult BuiltinProtocolHandlersHttp::stat(const Uri &uri)
 {
-    d->m_uri = uri;
     return StatResult();
 }
 
