@@ -19,7 +19,7 @@
  */
 
 #include "local.h"
-#include "remote.h"
+#include "http.h"
 
 #include <core/module.h>
 #include <core/extension.h>
@@ -33,14 +33,11 @@ public:
     ModuleImpl()
     {
         List<String> l1;
-        l1.push_back("http");
-        l1.push_back("https");
-        l1.push_back("ftp");
-        l1.push_back("sftp");
+        l1.push_back(String());
+        l1.push_back("file");
         additionalInfol1.handlesProtocols = l1;
         List<String> l2;
-        l2.push_back(String());
-        l2.push_back("file");
+        l2.push_back("http");
         additionalInfol2.handlesProtocols = l2;
     }
 
@@ -49,13 +46,13 @@ public:
             List<Module::ExtensionInfo> res;
 
             Module::ExtensionInfo l1;
-            l1.entryPoint = "builtinProtocolHandlersRemote";
+            l1.entryPoint = "builtinProtocolHandlersLocal";
             l1.extensionType = Module::ProtocolHandler;
             l1.additionalInfo = &additionalInfol1;
             l1.componentOwner = "ideallibrary";
 
             Module::ExtensionInfo l2;
-            l2.entryPoint = "builtinProtocolHandlersLocal";
+            l2.entryPoint = "builtinProtocolHandlersHttp";
             l2.extensionType = Module::ProtocolHandler;
             l2.additionalInfo = &additionalInfol2;
             l2.componentOwner = "ideallibrary";

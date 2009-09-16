@@ -25,12 +25,12 @@
 
 namespace IdealCore {
 
-class BuiltinProtocolHandlersRemote
+class BuiltinProtocolHandlersHttp
     : public ProtocolHandler
 {
 public:
-    BuiltinProtocolHandlersRemote();
-    ~BuiltinProtocolHandlersRemote();
+    BuiltinProtocolHandlersHttp();
+    ~BuiltinProtocolHandlersHttp();
 
     virtual ErrorCode open(const Uri &uri, int openMode);
     virtual ByteStream read(unsigned int nbytes);
