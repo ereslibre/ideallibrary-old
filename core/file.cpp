@@ -121,6 +121,9 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
 
 void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
 {
+    if (!protocolHandler) {
+        return;
+    }
     Application::Private *const app_d = m_file->application()->d;
     ContextMutexLocker cml(app_d->m_protocolHandlerCacheMutex);
     if (app_d->m_protocolHandlerCache.size() < PH_CACHE_SIZE) {
@@ -148,9 +151,7 @@ ProtocolHandler::StatResult File::Private::Job::statPrivate()
 void File::Private::Job::stat()
 {
     emit(m_file->statResult, statPrivate());
-    if (m_protocolHandler) {
-        cacheOrDiscard(m_protocolHandler);
-    }
+    cacheOrDiscard(m_protocolHandler);
 }
 
 void File::Private::Job::get()
@@ -165,9 +166,7 @@ void File::Private::Job::get()
     } else {
         readFile();
     }
-    if (m_protocolHandler) {
-        cacheOrDiscard(m_protocolHandler);
-    }
+    cacheOrDiscard(m_protocolHandler);
 }
 
 void File::Private::Job::mkdir()
