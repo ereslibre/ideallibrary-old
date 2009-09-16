@@ -141,7 +141,6 @@ ProtocolHandler::StatResult File::Private::Job::statPrivate()
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
         res = m_protocolHandler->stat(m_file->d->m_uri);
-        cacheOrDiscard(m_protocolHandler);
     }
     return res;
 }
@@ -149,6 +148,9 @@ ProtocolHandler::StatResult File::Private::Job::statPrivate()
 void File::Private::Job::stat()
 {
     emit(m_file->statResult, statPrivate());
+    if (m_protocolHandler) {
+        cacheOrDiscard(m_protocolHandler);
+    }
 }
 
 void File::Private::Job::get()
@@ -163,6 +165,9 @@ void File::Private::Job::get()
     } else {
         readFile();
     }
+    if (m_protocolHandler) {
+        cacheOrDiscard(m_protocolHandler);
+    }
 }
 
 void File::Private::Job::mkdir()
@@ -170,6 +175,7 @@ void File::Private::Job::mkdir()
     m_protocolHandler = findProtocolHandler();
     if (m_protocolHandler) {
         m_protocolHandler->mkdir(m_file->d->m_uri, m_permissions);
+        cacheOrDiscard(m_protocolHandler);
     }
 }
 
