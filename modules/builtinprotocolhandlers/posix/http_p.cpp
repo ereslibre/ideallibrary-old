@@ -88,7 +88,6 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, int
     destAddr.sin_port = htons(uri.port() == -1 ? 80 : uri.port());
     destAddr.sin_addr.s_addr = ::inet_addr(inet_ntoa(*((struct in_addr*) host->h_addr)));
     memset(&(destAddr.sin_zero), '\0', 8);
-
     if (!::connect(d->m_sockfd, (struct sockaddr*) &destAddr, sizeof(struct sockaddr))) {
         const char *commandLength = "GET \r\n";
         const int commandSize = strlen(commandLength) + uri.path().size();
