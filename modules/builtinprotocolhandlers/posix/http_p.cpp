@@ -32,6 +32,8 @@ class BuiltinProtocolHandlersHttp::Private
 public:
     Private(BuiltinProtocolHandlersHttp *q)
         : m_sockfd(-1)
+        , m_commandGet("GET \r\n")
+        , m_commandHead("HEAD \r\n")
         , q(q)
     {
     }
@@ -40,10 +42,46 @@ public:
     {
     }
 
+    enum CommandType {
+        Get = 0,
+        Head
+    };
+
+    bool sendCommand(CommandType commandType, const String &path);
+
     Uri                          m_uri;
     int                          m_sockfd;
+    const char                  *m_commandGet;
+    const char                  *m_commandHead;
     BuiltinProtocolHandlersHttp *q;
 };
+
+bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const String &path)
+{
+    int commandSize;
+    switch (commandType) {
+        case Get:
+            commandSize = strlen(m_commandGet);
+            break;
+        case Head:
+            commandSize = strlen(m_commandHead);
+            break;
+    }
+    commandSize += path.size();
+    char *command = new char[commandSize];
+    bzero(command, commandSize);
+    switch (commandType) {
+        case Get:
+            sprintf(command, "GET %s\r\n", path.data());
+            break;
+        case Head:
+            sprintf(command, "HEAD %s\r\n", path.data());
+            break;
+    }
+    const int bytesSent = send(m_sockfd, command, commandSize, 0);
+    delete command;
+    return bytesSent == commandSize;
+}
 
 BuiltinProtocolHandlersHttp::BuiltinProtocolHandlersHttp()
     : d(new Private(this))
@@ -89,13 +127,6 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, int
     destAddr.sin_addr.s_addr = ::inet_addr(inet_ntoa(*((struct in_addr*) host->h_addr)));
     memset(&(destAddr.sin_zero), '\0', 8);
     if (!::connect(d->m_sockfd, (struct sockaddr*) &destAddr, sizeof(struct sockaddr))) {
-        const char *commandLength = "GET \r\n";
-        const int commandSize = strlen(commandLength) + uri.path().size();
-        char *command = new char[commandSize];
-        bzero(command, commandSize);
-        sprintf(command, "GET %s\r\n", uri.path().data());
-        const int bytesSent = send(d->m_sockfd, command, commandSize, 0);
-        return bytesSent == commandSize ? NoError : UnknownError;
     }
     switch(errno) {
         case EADDRNOTAVAIL:
