@@ -150,6 +150,7 @@ ByteStream BuiltinProtocolHandlersHttp::read(unsigned int nbytes)
         return ByteStream();
     }
     char *buf = new char[d->m_bufferSize];
+    bzero(buf, d->m_bufferSize);
     const ssize_t bytesRead = recv(d->m_sockfd, buf, d->m_bufferSize, 0);
     if (bytesRead > 0) {
         ByteStream res(buf, bytesRead);
