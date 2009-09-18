@@ -198,15 +198,15 @@ int main(int argc, char **argv)
     // listDirStat->exec();
     // listDirStat->join();
 
-    IDEAL_SDEBUG("");
-    IDEAL_SDEBUG("*** Listing " << app.getPath(Application::Home));
-    IDEAL_SDEBUG("");
+    // IDEAL_SDEBUG("");
+    // IDEAL_SDEBUG("*** Listing " << app.getPath(Application::Home));
+    // IDEAL_SDEBUG("");
 
-    File listLocalDir(app.getPath(Application::Home), &app);
-    Object::connect(listLocalDir.dirRead, &app, &MyApplication::dirData);
-    Thread *listLocalDirStat = listLocalDir.get(File::NoMaxBytes, Thread::Joinable);
-    listLocalDirStat->exec();
-    listLocalDirStat->join();
+    // File listLocalDir(app.getPath(Application::Home), &app);
+    // Object::connect(listLocalDir.dirRead, &app, &MyApplication::dirData);
+    // Thread *listLocalDirStat = listLocalDir.get(File::NoMaxBytes, Thread::Joinable);
+    // listLocalDirStat->exec();
+    // listLocalDirStat->join();
 
     // IDEAL_SDEBUG("");
     // IDEAL_SDEBUG("*** Completely asynchronous way coming");

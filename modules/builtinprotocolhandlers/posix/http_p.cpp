@@ -32,8 +32,6 @@ class BuiltinProtocolHandlersHttp::Private
 public:
     Private(BuiltinProtocolHandlersHttp *q)
         : m_sockfd(-1)
-        , m_commandGet("GET \r\n")
-        , m_commandHead("HEAD \r\n")
         , q(q)
     {
     }
@@ -51,10 +49,15 @@ public:
 
     Uri                          m_uri;
     int                          m_sockfd;
-    const char                  *m_commandGet;
-    const char                  *m_commandHead;
+    static const char           *m_commandGet;
+    static const char           *m_commandHead;
+    static const int             m_bufferSize;
     BuiltinProtocolHandlersHttp *q;
 };
+
+const char *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET \r\n";
+const char *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD \r\n";
+const int   BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
 
 bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const String &path)
 {
@@ -79,7 +82,6 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             break;
     }
     const int bytesSent = send(m_sockfd, command, commandSize, 0);
-    delete command;
     return bytesSent == commandSize;
 }
 
@@ -127,6 +129,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, int
     destAddr.sin_addr.s_addr = ::inet_addr(inet_ntoa(*((struct in_addr*) host->h_addr)));
     memset(&(destAddr.sin_zero), '\0', 8);
     if (!::connect(d->m_sockfd, (struct sockaddr*) &destAddr, sizeof(struct sockaddr))) {
+        d->sendCommand(Private::Get, uri.path());
     }
     switch(errno) {
         case EADDRNOTAVAIL:
@@ -143,6 +146,17 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, int
 
 ByteStream BuiltinProtocolHandlersHttp::read(unsigned int nbytes)
 {
+    if (d->m_sockfd == -1) {
+        return ByteStream();
+    }
+    char *buf = new char[d->m_bufferSize];
+    const ssize_t bytesRead = recv(d->m_sockfd, buf, d->m_bufferSize, 0);
+    if (bytesRead > 0) {
+        ByteStream res(buf, bytesRead);
+        delete buf;
+        return res;
+    }
+    delete buf;
     return ByteStream();
 }
 
@@ -177,7 +191,11 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::rm(const Uri &uri)
 
 ProtocolHandler::StatResult BuiltinProtocolHandlersHttp::stat(const Uri &uri)
 {
-    return StatResult();
+    StatResult statRes;
+    statRes.errorCode = NoError;
+    statRes.type = RegularFile;
+    statRes.uri = uri;
+    return statRes;
 }
 
 bool BuiltinProtocolHandlersHttp::canBeReusedWith(const Uri &uri) const
