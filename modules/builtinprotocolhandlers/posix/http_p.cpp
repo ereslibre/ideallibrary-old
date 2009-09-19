@@ -45,7 +45,7 @@ public:
         Head
     };
 
-    bool sendCommand(CommandType commandType, const String &path);
+    bool sendCommand(CommandType commandType, const Uri &uri);
 
     Uri                          m_uri;
     int                          m_sockfd;
@@ -55,11 +55,11 @@ public:
     BuiltinProtocolHandlersHttp *q;
 };
 
-const char *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET \r\n";
-const char *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD \r\n";
+const char *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\nAccept: */*\r\nConnection: close\r\n\r\n";
+const char *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\nAccept: */*\r\nConnection: close\r\n\r\n";
 const int   BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
 
-bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const String &path)
+bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const Uri &uri)
 {
     int commandSize;
     switch (commandType) {
@@ -70,15 +70,15 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             commandSize = strlen(m_commandHead);
             break;
     }
-    commandSize += path.size();
+    commandSize += uri.host().size() + uri.path().size();
     char *command = new char[commandSize];
     bzero(command, commandSize);
     switch (commandType) {
         case Get:
-            sprintf(command, "GET %s\r\n", path.data());
+            sprintf(command, "GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n", uri.path().data(), uri.host().data());
             break;
         case Head:
-            sprintf(command, "HEAD %s\r\n", path.data());
+            sprintf(command, "HEAD %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n", uri.path().data(), uri.host().data());
             break;
     }
     const int bytesSent = send(m_sockfd, command, commandSize, 0);
@@ -129,7 +129,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, int
     destAddr.sin_addr.s_addr = ::inet_addr(inet_ntoa(*((struct in_addr*) host->h_addr)));
     memset(&(destAddr.sin_zero), '\0', 8);
     if (!::connect(d->m_sockfd, (struct sockaddr*) &destAddr, sizeof(struct sockaddr))) {
-        d->sendCommand(Private::Get, uri.path());
+        d->sendCommand(Private::Get, uri);
     }
     switch(errno) {
         case EADDRNOTAVAIL:
