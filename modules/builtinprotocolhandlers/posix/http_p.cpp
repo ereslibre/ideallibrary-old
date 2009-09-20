@@ -55,8 +55,8 @@ public:
     BuiltinProtocolHandlersHttp *q;
 };
 
-const char *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\nAccept: */*\r\nConnection: close\r\n\r\n";
-const char *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\nAccept: */*\r\nConnection: close\r\n\r\n";
+const char *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\n\r\n";
+const char *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\n\r\n";
 const int   BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
 
 bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const Uri &uri)
@@ -75,10 +75,10 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
     bzero(command, commandSize);
     switch (commandType) {
         case Get:
-            sprintf(command, "GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n", uri.path().data(), uri.host().data());
+            sprintf(command, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", uri.path().data(), uri.host().data());
             break;
         case Head:
-            sprintf(command, "HEAD %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n", uri.path().data(), uri.host().data());
+            sprintf(command, "HEAD %s HTTP/1.1\r\nHost: %s\r\n\r\n", uri.path().data(), uri.host().data());
             break;
     }
     const int bytesSent = send(m_sockfd, command, commandSize, 0);
