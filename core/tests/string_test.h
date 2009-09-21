@@ -29,8 +29,10 @@ class StringTest
 {
     CPPUNIT_TEST_SUITE(StringTest);
     CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testContains);
     CPPUNIT_TEST(testSplit);
     CPPUNIT_TEST(miscTests);
+    CPPUNIT_TEST(testOperators);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,8 +40,10 @@ public:
     void tearDown();
 
     void testConstructor();
+    void testContains();
     void testSplit();
     void miscTests();
+    void testOperators();
 
 private:
     IdealCore::String returnSpecialChars();

@@ -64,6 +64,18 @@ void StringTest::testConstructor()
     CPPUNIT_ASSERT_EQUAL(size, test6.size());
 }
 
+void StringTest::testContains()
+{
+    {
+        String str("Hello");
+        CPPUNIT_ASSERT(str.contains('H'));
+        CPPUNIT_ASSERT(!str.contains('h'));
+        CPPUNIT_ASSERT(str.contains('e'));
+        CPPUNIT_ASSERT(!str.contains('u'));
+        CPPUNIT_ASSERT(str.contains('o'));
+    }
+}
+
 void StringTest::testSplit()
 {
     {
@@ -176,6 +188,64 @@ void StringTest::miscTests()
     {
         String specialChars("ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃ");
         CPPUNIT_ASSERT_EQUAL((size_t) 19, specialChars.size());
+    }
+}
+
+void StringTest::testOperators()
+{
+    {
+        String str("This is a string");
+        const int strInitialSize = str.size();
+        String str2;
+        str2 = str;
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        str += 'a';
+        str2 += 'a';
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        str = str + 'b';
+        str2 = str2 + 'b';
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        String add("Hello");
+        str += add;
+        str2 += add;
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        str = str + add;
+        str2 = str2 + add;
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        const char *addStr = "Test";
+        str += addStr;
+        str2 += addStr;
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        str = str + addStr;
+        str2 = str2 + addStr;
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        char c = 'c';
+        str += c;
+        str2 += c;
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        str = str + c;
+        str2 = str2 + c;
+        CPPUNIT_ASSERT_EQUAL(str, str2);
+        CPPUNIT_ASSERT_EQUAL('T', str[0]);
+        CPPUNIT_ASSERT_EQUAL('a', str[strInitialSize]);
+        CPPUNIT_ASSERT_EQUAL('b', str[strInitialSize + 1]);
+        CPPUNIT_ASSERT_EQUAL('H', str[strInitialSize + 2]);
+        CPPUNIT_ASSERT_EQUAL('T', str[strInitialSize + 12]);
+    }
+    {
+        String str("Hello");
+        String str2("How are you ?");
+        CPPUNIT_ASSERT(str < str2);
+    }
+    {
+        String str("ñ");
+        String str2("z");
+        CPPUNIT_ASSERT(str < str2);
+    }
+    {
+        String str("é");
+        String str2("j");
+        CPPUNIT_ASSERT(str < str2);
     }
 }
 

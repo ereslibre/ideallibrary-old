@@ -326,7 +326,7 @@ String String::operator+(char c) const
 
 bool String::operator==(const String &str) const
 {
-    if (this == &str) {
+    if (this == &str || d == str.d) {
         return true;
     }
     return !strcoll(d->m_str.data(), str.d->m_str.data());
