@@ -176,14 +176,15 @@ int main(int argc, char **argv)
         contentsJob->exec();
         contentsJob->join();
 
-        File stdio("file:///usr/include/stdio.h", &app);
-        Object::connect(stdio.dataRead, &app, &MyApplication::fileData);
+        Uri bashrcUri(app.getPath(Application::Home), ".bashrc");
+        File bashrc(bashrcUri, &app);
+        Object::connect(bashrc.dataRead, &app, &MyApplication::fileData);
 
         IDEAL_SDEBUG("");
-        IDEAL_SDEBUG("*** Retrieving /usr/include/stdio.h");
+        IDEAL_SDEBUG("*** Retrieving " << bashrcUri.uri());
         IDEAL_SDEBUG("");
 
-        contentsJob = stdio.get(File::NoMaxBytes, Thread::Joinable);
+        contentsJob = bashrc.get(File::NoMaxBytes, Thread::Joinable);
         contentsJob->exec();
         contentsJob->join();
     }
