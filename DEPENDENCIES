@@ -2,10 +2,6 @@
 
     - liburiparser - http://uriparser.sourceforge.net/
 
-- Networking
-
-    - libcurl - http://curl.haxx.se/
-
 - GUI
 
     - libcairo - http://www.cairographics.org/

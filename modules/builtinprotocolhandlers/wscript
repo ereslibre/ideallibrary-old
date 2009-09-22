@@ -20,9 +20,7 @@
 #
 
 def configure(conf):
-    conf.check_cfg(package = 'libcurl', args = '--cflags --libs')
-    if not conf.env['HAVE_LIBCURL'] == 1:
-        conf.fatal('Cannot continue without libcurl. Please, install the development package and try again')
+    pass
 
 def build(bld):
     bld.new_task_gen(
@@ -31,7 +29,6 @@ def build(bld):
                        bld.glob('posix/*.cpp'),
         target       = 'builtinprotocolhandlers',
         includes     = '../..',
-        uselib       = 'LIBCURL',
         uselib_local = 'idealcore',
         install_path = '${PREFIX}/lib/ideal/modules'
     )
