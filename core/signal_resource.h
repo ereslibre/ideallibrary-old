@@ -22,7 +22,7 @@
 #define SIGNAL_RESOURCE_H
 
 #include <ideal_export.h>
-#include <core/ideal_list.h>
+#include <core/list.h>
 #include <core/mutex.h>
 
 namespace IdealCore {

@@ -96,7 +96,7 @@
  *
  * @code
  * #include <core/object.h>
- * #include <core/ideal_list.h>
+ * #include <core/list.h>
  *
  * class MyObject
  *     : public IdealCore::Object
@@ -126,7 +126,7 @@
  *
  * @code
  * #include <core/object.h>
- * #include <core/ideal_list.h>
+ * #include <core/list.h>
  *
  * class MyObject
  *     : public IdealCore::Object
@@ -223,7 +223,7 @@
  *
  * @code
  * #include <core/object.h>
- * #include <core/ideal_list.h>
+ * #include <core/list.h>
  *
  * class MyObject
  *     : public IdealCore::Object

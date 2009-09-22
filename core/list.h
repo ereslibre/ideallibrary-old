@@ -26,7 +26,7 @@
 namespace IdealCore {
 
 /**
-  * @class List ideal_list.h core/ideal_list.h
+  * @class List list.h core/list.h
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */

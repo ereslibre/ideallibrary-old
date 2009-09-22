@@ -23,7 +23,7 @@
 
 #include <iostream>
 #include <ideal_export.h>
-#include <core/ideal_list.h>
+#include <core/list.h>
 
 namespace IdealCore {
 

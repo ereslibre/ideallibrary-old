@@ -24,7 +24,7 @@
 #include <string.h>
 #include <core/mutex.h>
 #include <core/signal_resource.h>
-#include <core/ideal_list.h>
+#include <core/list.h>
 
 namespace IdealCore {
 

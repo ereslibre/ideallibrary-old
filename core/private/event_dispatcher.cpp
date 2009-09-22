@@ -20,7 +20,7 @@
 
 #include "event_dispatcher_p.h"
 
-#include <core/ideal_list.h>
+#include <core/list.h>
 #include <core/cond_var.h>
 #include <core/timer.h>
 #include <core/event.h>
