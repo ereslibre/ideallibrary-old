@@ -108,14 +108,14 @@ String Uri::Private::decodeUri(const String &uri) const
         if (currChar == '%') {
             String byte1(uri[i + 1]);
             byte1 += uri[i + 2];
-            unsigned long byte1Val = strtoul(byte1.data(), 0, 16);
+            unsigned int byte1Val = strtoul(byte1.data(), 0, 16);
             if (!(byte1Val & (1 << 7))) {
                 res += byte1Val;
                 i += 3;
             } else if (((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && !(byte1Val & (1 << 5)))) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
-                unsigned long byte2Val = strtoul(byte2.data(), 0, 16);
+                unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
                 res += byte1Val;
                 res += byte2Val;
                 i += 6;
@@ -124,8 +124,8 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
                 byte3 += uri[i + 8];
-                unsigned long byte2Val = strtoul(byte2.data(), 0, 16);
-                unsigned long byte3Val = strtoul(byte3.data(), 0, 16);
+                unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
+                unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
                 res += byte1Val;
                 res += byte2Val;
                 res += byte3Val;
@@ -137,9 +137,9 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte3 += uri[i + 8];
                 String byte4(uri[i + 10]);
                 byte4 += uri[i + 11];
-                unsigned long byte2Val = strtoul(byte2.data(), 0, 16);
-                unsigned long byte3Val = strtoul(byte3.data(), 0, 16);
-                unsigned long byte4Val = strtoul(byte4.data(), 0, 16);
+                unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
+                unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
+                unsigned int byte4Val = strtoul(byte4.data(), 0, 16);
                 res += byte1Val;
                 res += byte2Val;
                 res += byte3Val;

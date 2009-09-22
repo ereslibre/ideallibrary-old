@@ -135,7 +135,7 @@ String::String(const char *str, size_t n)
     }
 }
 
-String::String(char c)
+String::String(Char c)
     : d(new Private)
 {
     d->m_str = c;
@@ -167,17 +167,17 @@ size_t String::size() const
     return d->m_size;
 }
 
-bool String::contains(char c) const
+bool String::contains(Char c) const
 {
     return d->m_str.find(c) != std::string::npos;
 }
 
-size_t String::find(char c) const
+size_t String::find(Char c) const
 {
     return d->m_str.find(c);
 }
 
-size_t String::rfind(char c) const
+size_t String::rfind(Char c) const
 {
     return d->m_str.rfind(c);
 }
@@ -203,12 +203,12 @@ int String::compare(const char *s) const
     return strcoll(d->m_str.data(), s);
 }
 
-List<String> String::split(char separator) const
+List<String> String::split(Char separator) const
 {
     List<String> res;
     size_t pos = 0;
     size_t oldPos = 0;
-    while((pos = d->m_str.find(separator, pos)) != String::npos) {
+    while ((pos = d->m_str.find(separator, pos)) != String::npos) {
         if (pos > 0 && pos <= d->m_str.size() - 1) {
             res.push_back(d->m_str.substr(oldPos, pos - oldPos));
         }
@@ -221,7 +221,7 @@ List<String> String::split(char separator) const
     return res;
 }
 
-char String::operator[](int pos) const
+Char String::operator[](int pos) const
 {
     return d->m_str[pos];
 }
@@ -252,7 +252,7 @@ String &String::operator=(const char *str)
     return *this;
 }
 
-String &String::operator=(char c)
+String &String::operator=(Char c)
 {
     if (d->refCount() > 1) {
         Private *const old_d = d;
@@ -288,7 +288,7 @@ String &String::operator+=(const char *str)
     return *this;
 }
 
-String &String::operator+=(char c)
+String &String::operator+=(Char c)
 {
     if (d->refCount() > 1) {
         Private *const old_d = d;
@@ -316,10 +316,10 @@ String String::operator+(const char *str) const
     return res;
 }
 
-String String::operator+(char c) const
+String String::operator+(Char c) const
 {
     String res;
-    res.d->m_str = d->m_str + c;
+    res.d->m_str = d->m_str + (char) c; // FIXME
     res.d->m_size = d->m_size + 1;
     return res;
 }

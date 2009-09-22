@@ -226,11 +226,11 @@ void StringTest::testOperators()
         str = str + c;
         str2 = str2 + c;
         CPPUNIT_ASSERT_EQUAL(str, str2);
-        CPPUNIT_ASSERT_EQUAL('T', str[0]);
-        CPPUNIT_ASSERT_EQUAL('a', str[strInitialSize]);
-        CPPUNIT_ASSERT_EQUAL('b', str[strInitialSize + 1]);
-        CPPUNIT_ASSERT_EQUAL('H', str[strInitialSize + 2]);
-        CPPUNIT_ASSERT_EQUAL('T', str[strInitialSize + 12]);
+        CPPUNIT_ASSERT_EQUAL((Char) 'T', str[0]);
+        CPPUNIT_ASSERT_EQUAL((Char) 'a', str[strInitialSize]);
+        CPPUNIT_ASSERT_EQUAL((Char) 'b', str[strInitialSize + 1]);
+        CPPUNIT_ASSERT_EQUAL((Char) 'H', str[strInitialSize + 2]);
+        CPPUNIT_ASSERT_EQUAL((Char) 'T', str[strInitialSize + 12]);
     }
     {
         String str("Hello");

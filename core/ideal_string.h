@@ -24,6 +24,7 @@
 #include <iostream>
 #include <ideal_export.h>
 #include <core/list.h>
+#include <core/char.h>
 
 namespace IdealCore {
 
@@ -47,7 +48,7 @@ public:
     String(const std::string &str);
     String(const char *str);
     String(const char *str, size_t n);
-    String(char c);
+    String(Char c);
     virtual ~String();
 
     /**
@@ -79,19 +80,19 @@ public:
     /**
       * @return True if the string contains @p c. False otherwise.
       */
-    bool contains(char c) const;
+    bool contains(Char c) const;
 
     /**
       * @return The first position in which character @p c is found. If @p c is not found, npos is
       *         returned instead.
       */
-    size_t find(char c) const;
+    size_t find(Char c) const;
 
     /**
       * @return The first position in which character @p c is found starting to search from the right.
       *         If @p c is not found, npos is returned instead.
       */
-    size_t rfind(char c) const;
+    size_t rfind(Char c) const;
 
     size_t find(const String &str) const;
 
@@ -119,19 +120,19 @@ public:
       *
       * @return a list of strings, separated by @p separator.
       */
-    List<String> split(char separator) const;
+    List<String> split(Char separator) const;
 
-    char operator[](int pos) const;
+    Char operator[](int pos) const;
 
     String &operator=(const String &str);
     String &operator=(const char *str);
-    String &operator=(char c);
+    String &operator=(Char c);
     String &operator+=(const String &str);
     String &operator+=(const char *str);
-    String &operator+=(char c);
+    String &operator+=(Char c);
     String operator+(const String &str) const;
     String operator+(const char *str) const;
-    String operator+(char c) const;
+    String operator+(Char c) const;
     bool operator==(const String &str) const;
     bool operator!=(const String &str) const;
     bool operator<(const String &str) const;
