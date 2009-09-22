@@ -156,6 +156,10 @@ int main(int argc, char **argv)
         File kernelReadme("http://www.kernel.org/pub/linux/kernel/README", &app);
         Object::connect(kernelReadme.dataRead, &app, &MyApplication::fileData);
 
+        Thread *readmeContentsJob = kernelReadme.get(File::NoMaxBytes, Thread::Joinable);
+        readmeContentsJob->exec();
+        readmeContentsJob->join();
+
         IDEAL_SDEBUG("");
         IDEAL_SDEBUG("*** Retrieving only 1 KB of the README by http");
         IDEAL_SDEBUG("");
