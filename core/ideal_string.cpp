@@ -29,7 +29,9 @@ class String::Private
 {
 public:
     Private()
-        : m_size(0)
+        : m_str(0)
+        , m_charMap(0)
+        , m_size(0)
         , m_refs(1)
     {
     }
@@ -40,32 +42,44 @@ public:
 
     Private *copy()
     {
+        const unsigned int rawLen = strlen(m_str);
         Private *privateCopy = new Private;
-        privateCopy->m_str = m_str;
+        privateCopy->m_str = new char[rawLen];
+        memcpy(privateCopy->m_str, m_str, rawLen);
+        privateCopy->m_charMap = new unsigned int[m_size];
+        memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(unsigned int));
         privateCopy->m_size = m_size;
         return privateCopy;
     }
 
     void calculateSize()
     {
+        const unsigned int rawLen = strlen(m_str);
+        m_charMap = new unsigned int[rawLen];
+        bzero(m_charMap, rawLen);
         size_t i = 0;
+        m_size = 0;
         while (true) {
             const char c = m_str[i];
             if (c == '\0') {
                 break;
             }
             if (!(c & (1 << 7))) {
+                m_charMap[m_size] = i;
                 ++m_size;
             } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
                 IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
                 return;
             } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
+                m_charMap[m_size] = i;
                 ++i;
                 ++m_size;
             } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && !(c & (1 << 4))) {
+                m_charMap[m_size] = i;
                 i += 2;
                 ++m_size;
             } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && (c & (1 << 4))) {
+                m_charMap[m_size] = i;
                 i += 3;
                 ++m_size;
             } else {
@@ -74,6 +88,7 @@ public:
             }
             ++i;
         }
+        m_charMap = (unsigned int*) realloc(m_charMap, m_size);
     }
 
     void ref()
@@ -94,9 +109,10 @@ public:
         return m_refs;
     }
 
-    std::string m_str;
-    int         m_size;
-    int         m_refs;
+    char         *m_str;
+    unsigned int *m_charMap;
+    unsigned int  m_size;
+    unsigned int  m_refs;
 };
 
 String::String()
@@ -110,18 +126,13 @@ String::String(const String &str)
     d = str.d;
 }
 
-String::String(const std::string &str)
-    : d(new Private)
-{
-    d->m_str = str;
-    d->calculateSize();
-}
-
 String::String(const char *str)
     : d(new Private)
 {
     if (str) {
-        d->m_str = str;
+        const unsigned int rawLen = strlen(str);
+        d->m_str = new char[rawLen];
+        memcpy(d->m_str, str, rawLen);
         d->calculateSize();
     }
 }
@@ -130,15 +141,29 @@ String::String(const char *str, size_t n)
     : d(new Private)
 {
     if (str) {
-        d->m_str = std::string(str, n);
+        const unsigned int rawLen = strlen(str);
+        d->m_str = new char[rawLen];
+        memcpy(d->m_str, str, rawLen);
         d->calculateSize();
+        if (n < rawLen) {
+            // TODO
+        }
     }
 }
 
 String::String(Char c)
     : d(new Private)
 {
-    d->m_str = c;
+    switch (c.octetsRequired()) {
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        default:
+            break;
+    }
     d->m_size = 1;
 }
 
@@ -154,12 +179,11 @@ void String::clear()
         d = d->copy();
         old_d->deref();
     }
-    d->m_str.clear();
 }
 
 bool String::empty() const
 {
-    return d->m_str.empty();
+    return false;
 }
 
 size_t String::size() const
@@ -169,61 +193,47 @@ size_t String::size() const
 
 bool String::contains(Char c) const
 {
-    return d->m_str.find(c) != std::string::npos;
+    return false;
 }
 
 size_t String::find(Char c) const
 {
-    return d->m_str.find(c);
+    return false;
 }
 
 size_t String::rfind(Char c) const
 {
-    return d->m_str.rfind(c);
+    return false;
 }
 
 size_t String::find(const String &str) const
 {
-    return d->m_str.find(str.d->m_str);
+    return false;
 }
 
 const char *String::data() const
 {
-    return d->m_str.data();
+    return d->m_str;
 }
 
 String String::substr(size_t pos, size_t n) const
 {
-    String res(d->m_str.substr(pos, n));
-    return res;
+    return String();
 }
 
 int String::compare(const char *s) const
 {
-    return strcoll(d->m_str.data(), s);
+    return 0;
 }
 
 List<String> String::split(Char separator) const
 {
-    List<String> res;
-    size_t pos = 0;
-    size_t oldPos = 0;
-    while ((pos = d->m_str.find(separator, pos)) != String::npos) {
-        if (pos > 0 && pos <= d->m_str.size() - 1) {
-            res.push_back(d->m_str.substr(oldPos, pos - oldPos));
-        }
-        ++pos;
-        oldPos = pos;
-    }
-    if (oldPos <= d->m_str.size() - 1) {
-        res.push_back(d->m_str.substr(oldPos));
-    }
-    return res;
+    return List<String>();
 }
 
 Char String::operator[](int pos) const
 {
-    return d->m_str[pos];
+    return 'a';
 }
 
 String &String::operator=(const String &str)
@@ -247,7 +257,6 @@ String &String::operator=(const char *str)
         d = d->copy();
         old_d->deref();
     }
-    d->m_str = str;
     d->calculateSize();
     return *this;
 }
@@ -259,7 +268,6 @@ String &String::operator=(Char c)
         d = d->copy();
         old_d->deref();
     }
-    d->m_str = c;
     d->m_size = 1;
     return *this;
 }
@@ -271,7 +279,6 @@ String &String::operator+=(const String &str)
         d = d->copy();
         old_d->deref();
     }
-    d->m_str += str.d->m_str;
     d->m_size += str.d->m_size;
     return *this;
 }
@@ -283,7 +290,6 @@ String &String::operator+=(const char *str)
         d = d->copy();
         old_d->deref();
     }
-    d->m_str += str;
     d->calculateSize();
     return *this;
 }
@@ -295,7 +301,6 @@ String &String::operator+=(Char c)
         d = d->copy();
         old_d->deref();
     }
-    d->m_str += c;
     ++d->m_size;
     return *this;
 }
@@ -303,7 +308,6 @@ String &String::operator+=(Char c)
 String String::operator+(const String &str) const
 {
     String res;
-    res.d->m_str = d->m_str + str.d->m_str;
     res.d->m_size = d->m_size + str.d->m_size;
     return res;
 }
@@ -311,7 +315,6 @@ String String::operator+(const String &str) const
 String String::operator+(const char *str) const
 {
     String res;
-    res.d->m_str = d->m_str + str;
     res.d->calculateSize();
     return res;
 }
@@ -319,7 +322,6 @@ String String::operator+(const char *str) const
 String String::operator+(Char c) const
 {
     String res;
-    res.d->m_str = d->m_str + (char) c; // FIXME
     res.d->m_size = d->m_size + 1;
     return res;
 }
@@ -329,7 +331,7 @@ bool String::operator==(const String &str) const
     if (this == &str || d == str.d) {
         return true;
     }
-    return !strcoll(d->m_str.data(), str.d->m_str.data());
+    return false;
 }
 
 bool String::operator!=(const String &str) const
@@ -342,7 +344,7 @@ bool String::operator<(const String &str) const
     if (this == &str) {
         return false;
     }
-    return strcoll(d->m_str.data(), str.d->m_str.data()) < 0;
+    return false;
 }
 
 bool String::operator>(const String &str) const

@@ -31,9 +31,7 @@ namespace IdealCore {
 /**
   * @class String ideal_string.h core/ideal_string.h
   *
-  * This class represents a string. Its contents can be retrieved as
-  * localized (depending on the current locale settings on the system) or not,
-  * depending on the needs and convenience of the user.
+  * This class represents a UTF-8 string.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */
@@ -41,11 +39,10 @@ class IDEAL_EXPORT String
 {
 public:
     /// Returned when a char or a substring has not been found.
-    static const size_t npos = std::string::npos;
+    static const size_t npos = -1;
 
     String();
     String(const String &str);
-    String(const std::string &str);
     String(const char *str);
     String(const char *str, size_t n);
     String(Char c);

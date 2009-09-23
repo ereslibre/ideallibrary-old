@@ -22,66 +22,91 @@
 
 namespace IdealCore {
 
-    Char::Char(char c)
-        : c(c)
-    {
-    }
+Char::Char(char c)
+    : c(c)
+{
+}
 
-    Char::Char(unsigned short c)
-        : c(c)
-    {
-    }
+Char::Char(unsigned short c)
+    : c(c)
+{
+}
 
-    Char::Char(unsigned int c)
-        : c(c)
-    {
-    }
+Char::Char(unsigned int c)
+    : c(c)
+{
+}
 
-    Char::operator char()
-    {
-        if (c & 0xffffff00) {
-            IDEAL_DEBUG_WARNING("the character will be corrupted on conversion");
-        }
-        return c;
+int Char::octetsRequired() const
+{
+    if (!(c & 0xffffff80)) {
+        return 1;
     }
-
-    Char::operator unsigned short()
-    {
-        if (c & 0xffff0000) {
-            IDEAL_DEBUG_WARNING("the character will be corrupted on conversion");
-        }
-        return c;
+    if (!(c & 0xfffff800)) {
+        return 2;
     }
-
-    Char::operator unsigned int()
-    {
-        return c;
+    if (!(c & 0xffff0000)) {
+        return 3;
     }
+    return 4;
+}
 
-    bool Char::operator==(Char c) const
-    {
-        return c.c == this->c;
+unsigned int Char::utf32Char() const
+{
+    return c;
+}
+
+Char::operator char()
+{
+    if (c & 0xffffff80) {
+        IDEAL_DEBUG_WARNING("the character will be corrupted on conversion");
     }
+    return (c & 0x0000007f);
+}
 
-    bool Char::operator==(char c) const
-    {
-        return (unsigned char) c == this->c;
+Char::operator unsigned short()
+{
+    if (c & 0xffff0000) {
+        IDEAL_DEBUG_WARNING("the character will be corrupted on conversion");
     }
+    return (c & 0x0000ffff);
+}
 
-    bool Char::operator==(unsigned short c) const
-    {
-        return c == this->c;
+Char::operator unsigned int()
+{
+    return c;
+}
+
+bool Char::operator==(Char c) const
+{
+    return c.c == this->c;
+}
+
+bool Char::operator==(char c) const
+{
+    if (this->c & 0xffffff80) {
+        IDEAL_DEBUG_WARNING("comparison between characters is not possible");
     }
+    return (unsigned char) c == this->c;
+}
 
-    bool Char::operator==(unsigned int c) const
-    {
-        return c == this->c;
+bool Char::operator==(unsigned short c) const
+{
+    if (c & 0xffff0000) {
+        IDEAL_DEBUG_WARNING("comparison between characters is not possible");
     }
+    return c == this->c;
+}
 
-    std::ostream &Char::operator<<(std::ostream &stream)
-    {
-        stream << this->c;
-        return stream;
-    }
+bool Char::operator==(unsigned int c) const
+{
+    return c == this->c;
+}
 
+}
+
+std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
+{
+    stream << c.utf32Char();
+    return stream;
 }
