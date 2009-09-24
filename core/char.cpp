@@ -92,7 +92,7 @@ bool Char::operator==(char c) const
 
 bool Char::operator==(unsigned short c) const
 {
-    if (c & 0xffff0000) {
+    if (this->c & 0xffff0000) {
         IDEAL_DEBUG_WARNING("comparison between characters is not possible");
     }
     return c == this->c;
