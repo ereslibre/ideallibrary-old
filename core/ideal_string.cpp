@@ -42,6 +42,15 @@ public:
         delete[] m_charMap;
     }
 
+    void init(const char *str)
+    {
+        const unsigned int rawLen = strlen(str);
+        m_str = new char[rawLen + 1];
+        memcpy(m_str, str, rawLen);
+        m_str[rawLen] = '\0';
+        calculateSize();
+    }
+
     Private *copy()
     {
         const unsigned int rawLen = strlen(m_str);
@@ -132,11 +141,7 @@ String::String(const char *str)
     : d(new Private)
 {
     if (str) {
-        const unsigned int rawLen = strlen(str);
-        d->m_str = new char[rawLen + 1];
-        memcpy(d->m_str, str, rawLen);
-        d->m_str[rawLen] = '\0';
-        d->calculateSize();
+        d->init(str);
     }
 }
 
@@ -144,17 +149,7 @@ String::String(const char *str, size_t n)
     : d(new Private)
 {
     if (str) {
-        const unsigned int rawLen = strlen(str);
-        d->m_str = new char[rawLen];
-        bzero(d->m_str, rawLen);
-        memcpy(d->m_str, str, rawLen);
-#if 0
-        d->m_str[rawLen] = '\0';
-        d->calculateSize();
-#endif
-        if (n < rawLen) {
-            // TODO
-        }
+        // TODO
     }
 }
 
@@ -319,7 +314,7 @@ String &String::operator=(const char *str)
         d = d->copy();
         old_d->deref();
     }
-    d->calculateSize();
+    d->init(str);
     return *this;
 }
 
@@ -330,6 +325,7 @@ String &String::operator=(Char c)
         d = d->copy();
         old_d->deref();
     }
+    // TODO
     d->m_size = 1;
     return *this;
 }
@@ -341,6 +337,7 @@ String &String::operator+=(const String &str)
         d = d->copy();
         old_d->deref();
     }
+    // TODO
     d->m_size += str.d->m_size;
     return *this;
 }
@@ -352,7 +349,7 @@ String &String::operator+=(const char *str)
         d = d->copy();
         old_d->deref();
     }
-    d->calculateSize();
+    // TODO
     return *this;
 }
 
@@ -363,13 +360,14 @@ String &String::operator+=(Char c)
         d = d->copy();
         old_d->deref();
     }
-    ++d->m_size;
+    // TODO
     return *this;
 }
 
 String String::operator+(const String &str) const
 {
     String res;
+    // TODO
     res.d->m_size = d->m_size + str.d->m_size;
     return res;
 }
@@ -377,14 +375,14 @@ String String::operator+(const String &str) const
 String String::operator+(const char *str) const
 {
     String res;
-    res.d->calculateSize();
+    // TODO
     return res;
 }
 
 String String::operator+(Char c) const
 {
     String res;
-    res.d->m_size = d->m_size + 1;
+    // TODO
     return res;
 }
 
@@ -393,6 +391,7 @@ bool String::operator==(const String &str) const
     if (this == &str || d == str.d) {
         return true;
     }
+    // TODO
     return false;
 }
 
@@ -406,6 +405,7 @@ bool String::operator<(const String &str) const
     if (this == &str) {
         return false;
     }
+    // TODO
     return false;
 }
 
