@@ -154,17 +154,32 @@ String::String(const char *str, size_t n)
 String::String(Char c)
     : d(new Private)
 {
-    switch (c.octetsRequired()) {
+    const int octetsRequired = c.octetsRequired();
+    d->m_str = new char[octetsRequired];
+    bzero(d->m_str, octetsRequired);
+    d->m_size = 1;
+    unsigned int utf32Char = c.utf32Char();
+    switch (octetsRequired) {
         case 1:
-            break;
+            d->m_str[0] = utf32Char & 0x0000007f;
+            return;
         case 2:
+            d->m_str[0] = (utf32Char & 0x0000001f) | 0x000000c0;
+            utf32Char = utf32Char << 5;
             break;
         case 3:
+            d->m_str[0] = (utf32Char & 0x0000000f) | 0x000000e0;
+            utf32Char = utf32Char << 4;
             break;
-        default:
+        case 4:
+            d->m_str[0] = (utf32Char & 0x00000007) | 0x000000f0;
+            utf32Char = utf32Char << 3;
             break;
     }
-    d->m_size = 1;
+    for (int i = 1; i < octetsRequired; ++i) {
+        d->m_str[i] = (utf32Char & 0x0000003f) | 0x00000080;
+        utf32Char = utf32Char << 6;
+    }
 }
 
 String::~String()
