@@ -22,6 +22,11 @@
 
 namespace IdealCore {
 
+Char::Char()
+    : c(c)
+{
+}
+
 Char::Char(char c)
     : c(c)
 {
@@ -101,6 +106,35 @@ bool Char::operator==(unsigned short c) const
 bool Char::operator==(unsigned int c) const
 {
     return c == this->c;
+}
+
+Char Char::operator&=(Char c)
+{
+    this->c &= c.c;
+    return *this;
+}
+
+Char Char::operator&=(unsigned int c)
+{
+    this->c &= c;
+    return *this;
+}
+
+Char Char::operator|=(Char c)
+{
+    this->c |= c.c;
+    return *this;
+}
+
+Char Char::operator|=(unsigned int c)
+{
+    this->c |= c;
+    return *this;
+}
+
+Char Char::operator<<(int b) const
+{
+    return c << b;
 }
 
 }

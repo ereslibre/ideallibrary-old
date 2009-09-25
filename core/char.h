@@ -35,6 +35,7 @@ namespace IdealCore {
 class IDEAL_EXPORT Char
 {
 public:
+    Char();
     Char(char c);
     Char(unsigned short c);
     Char(unsigned int c);
@@ -58,6 +59,12 @@ public:
     bool operator==(char c) const;
     bool operator==(unsigned short c) const;
     bool operator==(unsigned int c) const;
+
+    Char operator&=(Char c);
+    Char operator&=(unsigned int c);
+    Char operator|=(Char c);
+    Char operator|=(unsigned int c);
+    Char operator<<(int b) const;
     
 private:
     unsigned int c;

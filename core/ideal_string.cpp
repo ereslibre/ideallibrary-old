@@ -38,6 +38,8 @@ public:
 
     ~Private()
     {
+        delete[] m_str;
+        delete[] m_charMap;
     }
 
     Private *copy()
@@ -131,8 +133,9 @@ String::String(const char *str)
 {
     if (str) {
         const unsigned int rawLen = strlen(str);
-        d->m_str = new char[rawLen];
+        d->m_str = new char[rawLen + 1];
         memcpy(d->m_str, str, rawLen);
+        d->m_str[rawLen] = '\0';
         d->calculateSize();
     }
 }
@@ -143,8 +146,12 @@ String::String(const char *str, size_t n)
     if (str) {
         const unsigned int rawLen = strlen(str);
         d->m_str = new char[rawLen];
+        bzero(d->m_str, rawLen);
         memcpy(d->m_str, str, rawLen);
+#if 0
+        d->m_str[rawLen] = '\0';
         d->calculateSize();
+#endif
         if (n < rawLen) {
             // TODO
         }
@@ -194,11 +201,16 @@ void String::clear()
         d = d->copy();
         old_d->deref();
     }
+    delete[] d->m_str;
+    d->m_str = 0;
+    delete[] d->m_charMap;
+    d->m_charMap = 0;
+    d->m_size = 0;
 }
 
 bool String::empty() const
 {
-    return false;
+    return d->m_size == 0;
 }
 
 size_t String::size() const
@@ -208,21 +220,25 @@ size_t String::size() const
 
 bool String::contains(Char c) const
 {
+    // TODO
     return false;
 }
 
 size_t String::find(Char c) const
 {
+    // TODO
     return false;
 }
 
 size_t String::rfind(Char c) const
 {
+    // TODO
     return false;
 }
 
 size_t String::find(const String &str) const
 {
+    // TODO
     return false;
 }
 
@@ -233,22 +249,53 @@ const char *String::data() const
 
 String String::substr(size_t pos, size_t n) const
 {
+    // TODO
     return String();
 }
 
 int String::compare(const char *s) const
 {
-    return 0;
+    return strcoll(d->m_str, s);
 }
 
 List<String> String::split(Char separator) const
 {
+    // TODO
     return List<String>();
 }
 
-Char String::operator[](int pos) const
+Char String::operator[](unsigned int pos) const
 {
-    return 'a';
+    if (pos >= d->m_size) {
+        IDEAL_DEBUG_WARNING("requested char is out of bounds");
+        return Char();
+    }
+    int cpos = d->m_charMap[pos];
+    const char requestedChar = d->m_str[cpos];
+    if (!(requestedChar & 0x80)) {
+        return requestedChar;
+    }
+    Char res;
+    int octets;
+    if (!(requestedChar & 0x20)) {
+        octets = 2;
+        res |= (requestedChar & 0x0000001f);
+        res = res << 5;
+    } else if (!(requestedChar & 0x10)) {
+        octets = 3;
+        res |= (requestedChar & 0x0000000f);
+        res = res << 4;
+    } else {
+        octets = 4;
+        res |= (requestedChar & 0x00000007);
+        res = res << 3;
+    }
+    for (int i = 1; i < octets; ++i) {
+        const char c = d->m_str[++cpos];
+        res |= (c & 0x0000003f);
+        res = res << 6;
+    }
+    return res;
 }
 
 String &String::operator=(const String &str)
