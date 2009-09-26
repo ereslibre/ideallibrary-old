@@ -82,6 +82,7 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             break;
     }
     const int bytesSent = send(m_sockfd, command, commandSize, 0);
+    delete[] command;
     return bytesSent == commandSize;
 }
 
@@ -157,7 +158,7 @@ ByteStream BuiltinProtocolHandlersHttp::read(unsigned int nbytes)
         delete buf;
         return res;
     }
-    delete buf;
+    delete[] buf;
     return ByteStream();
 }
 

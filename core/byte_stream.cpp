@@ -45,7 +45,7 @@ public:
 
     ~Private()
     {
-        delete m_data;
+        delete[] m_data;
     }
 
     char                  *m_data;

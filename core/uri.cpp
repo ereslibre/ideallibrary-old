@@ -186,7 +186,7 @@ void Uri::Private::initializeContents(const String &uriP_)
             uriString = new char[charsRequired];
             uriToStringA(uriString, &uri, charsRequired, NULL);
             m_uri = decodeUri(uriString);
-            delete uriString;
+            delete[] uriString;
         }
         if (uri.scheme.first && uri.scheme.afterLast) {
             m_scheme = String(uri.scheme.first, uri.scheme.afterLast - uri.scheme.first);

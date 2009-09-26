@@ -62,6 +62,7 @@ void StringTest::testConstructor()
     strcpy(test6_2, test6_1);
     test6 = test6_2;
     CPPUNIT_ASSERT_EQUAL(size, test6.size());
+    delete[] test6_2;
 }
 
 void StringTest::testContains()

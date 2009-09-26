@@ -43,5 +43,7 @@ int main(int argc, char **argv)
 
     recursiveFunction(0);
 
+    delete[] numbers;
+
     return 0;
 }

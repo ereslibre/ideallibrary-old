@@ -51,7 +51,7 @@ void ByteStreamTest::testConstructor()
         char *myString = new char[strlen("Testing") + 1];
         strcpy(myString, "Testing");
         byteStream = new ByteStream(myString);
-        delete myString;
+        delete[] myString;
         CPPUNIT_ASSERT_EQUAL(String("Testing"), String(byteStream->data()));
         delete byteStream;
     }
