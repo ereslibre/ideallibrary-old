@@ -36,8 +36,6 @@ class IDEAL_EXPORT Char
 {
 public:
     Char();
-    Char(char c);
-    Char(unsigned short c);
     Char(unsigned int c);
 
     /**
@@ -46,10 +44,7 @@ public:
       */
     int octetsRequired() const;
 
-    /**
-      * @return The 21 bit wide character.
-      */
-    unsigned int utf32Char() const;
+    unsigned int value() const;
 
     operator char();
     operator unsigned short();

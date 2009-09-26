@@ -29,9 +29,8 @@ int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "");
 
-    for (int i = 0; i < 1000; ++i) {
-        String str("Test");
-        String str2("Teñt");
-        IDEAL_SDEBUG("Is Teñt < Test ? " << (bool) (str2 < str));
-    }
+    Char c(L'𝛏');
+    std::cout << "Character is: " << c << std::endl;
+
+    return 0;
 }
