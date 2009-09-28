@@ -68,7 +68,8 @@ int Char::octetsRequired() const
 Char::operator char() const
 {
     if (c & 0xffffff00) {
-        IDEAL_DEBUG_WARNING("char '" << *this << "' will be corrupted on conversion");
+        IDEAL_DEBUG_WARNING("char '" << *this << "' would have been corrupted on conversion. returning 0");
+        return 0;
     }
     return c;
 }
@@ -76,7 +77,8 @@ Char::operator char() const
 Char::operator unsigned short() const
 {
     if (c & 0xff000000) {
-        IDEAL_DEBUG_WARNING("char '" << *this << "' will be corrupted on conversion");
+        IDEAL_DEBUG_WARNING("char '" << *this << "' would have been be corrupted on conversion. returning 0");
+        return 0;
     }
     unsigned short res = 0;
     if (!(c & 0xffffff00)) {

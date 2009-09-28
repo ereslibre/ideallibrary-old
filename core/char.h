@@ -26,9 +26,9 @@
 namespace IdealCore {
 
 /**
-  * @class Char
+  * @class Char char.h core/char.h
   *
-  * Represents a 21 bit wide character.
+  * Represents a 32 bit wide character in UTF-8 encoding.
   *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */
@@ -39,7 +39,7 @@ public:
     Char(unsigned int c);
 
     /**
-      * @return The 32 bit wide character UTF-8 encoded.
+      * @return The character encoded in UTF-8.
       */
     unsigned int value() const;
 
@@ -49,8 +49,22 @@ public:
       */
     int octetsRequired() const;
 
+    /**
+      * @return This character mapped to a char type if the conversion can be done. Otherwise, 0
+      *         is returned.
+      */
     operator char() const;
+
+    /**
+      * @return This character mapped to an unsigned short type if the conversion can be done.
+      *         Otherwise, 0 is returned.
+      */
     operator unsigned short() const;
+
+    /**
+      * @return This character mapped to an unsigned int type if the conversion can be done.
+      *         Otherwise, 0 is returned.
+      */
     operator unsigned int() const;
 
     bool operator==(Char c) const;
