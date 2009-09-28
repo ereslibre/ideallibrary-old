@@ -36,7 +36,7 @@ class IDEAL_EXPORT Char
 {
 public:
     Char();
-    Char(unsigned int c);
+    Char(wchar_t c);
 
     /**
       * @return The required number of octets to properly encode this character in UTF-8.
@@ -44,25 +44,22 @@ public:
       */
     int octetsRequired() const;
 
-    unsigned int value() const;
+    wchar_t value() const;
 
-    operator char();
-    operator unsigned short();
-    operator unsigned int();
+    operator wchar_t();
 
     bool operator==(Char c) const;
     bool operator==(char c) const;
-    bool operator==(unsigned short c) const;
-    bool operator==(unsigned int c) const;
+    bool operator==(wchar_t c) const;
 
     Char operator&=(Char c);
-    Char operator&=(unsigned int c);
+    Char operator&=(wchar_t c);
     Char operator|=(Char c);
-    Char operator|=(unsigned int c);
+    Char operator|=(wchar_t c);
     Char operator<<(int b) const;
     
 private:
-    unsigned int c;
+    wchar_t c;
 };
 
 }

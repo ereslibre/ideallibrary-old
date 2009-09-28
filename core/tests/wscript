@@ -49,6 +49,17 @@ def build(bld):
     )
     bld.new_task_gen(
         features     = 'cxx cprogram',
+        source       = 'char_test.cpp',
+        target       = 'charTest',
+        includes     = '.. ../..',
+        uselib       = ['CPPUNIT',
+                        'IDEAL'],
+        uselib_local = 'idealcore',
+        install_path = None,
+        unit_test    = 1
+    )
+    bld.new_task_gen(
+        features     = 'cxx cprogram',
         source       = 'connection_test.cpp',
         target       = 'connectionTest',
         includes     = '.. ../..',

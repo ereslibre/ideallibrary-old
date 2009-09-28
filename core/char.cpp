@@ -27,7 +27,7 @@ Char::Char()
 {
 }
 
-Char::Char(unsigned int c)
+Char::Char(wchar_t c)
 {
     if (!(c & 0x1fff80)) {
         this->c = c & 0x7f;
@@ -60,44 +60,60 @@ int Char::octetsRequired() const
     return 4;
 }
 
-unsigned int Char::value() const
+wchar_t Char::value() const
 {
     return c;
 }
 
-Char::operator char()
+Char::operator wchar_t()
 {
-    return c;
-}
-
-Char::operator unsigned short()
-{
-    return c;
-}
-
-Char::operator unsigned int()
-{
-    return c;
+    wchar_t res = 0;
+    if (!(c & 0xffffff00)) {
+        res = c;
+    } else if (!(c & 0xffff0000)) {
+        res = (c & 0x1f00) >> 2;
+        res |= (c & 0x3f);
+    } else if (!(c & 0xff000000)) {
+        res = (c & 0xf0000) >> 4;
+        res |= (c & 0x3f00) >> 2;
+        res |= (c & 0x3f);
+    } else {
+        res = (c & 0x7000000) >> 6;
+        res |= (c & 0x3f0000) >> 4;
+        res |= (c & 0x3f00) >> 2;
+        res |= (c & 0x3f);
+    }
+    return res;    
 }
 
 bool Char::operator==(Char c) const
 {
-    return c.c == this->c;
+    return this->c == c.c;
 }
 
 bool Char::operator==(char c) const
 {
-    return false;
+    if (this->c & 0xffffff00) {
+        IDEAL_DEBUG_WARNING("cannot compare to char");
+    }
+    return this->c == (unsigned char) c;
 }
 
-bool Char::operator==(unsigned short c) const
+bool Char::operator==(wchar_t c) const
 {
-    return false;
-}
-
-bool Char::operator==(unsigned int c) const
-{
-    return c == this->c;
+    if ((c & 0x3f) != (this->c & 0x3f)) {
+        return false;
+    }
+    if ((c & 0xfc0) != ((this->c & 0x3f00) >> 2)) {
+        return false;
+    }
+    if ((c & 0x3f000) != ((this->c & 0x3f0000) >> 4)) {
+        return false;
+    }
+    if ((c & 0x1c00000) != ((this->c & 0x7000000) >> 6)) {
+        return false;
+    }
+    return true;
 }
 
 Char Char::operator&=(Char c)
@@ -106,7 +122,7 @@ Char Char::operator&=(Char c)
     return *this;
 }
 
-Char Char::operator&=(unsigned int c)
+Char Char::operator&=(wchar_t c)
 {
     this->c &= c;
     return *this;
@@ -118,7 +134,7 @@ Char Char::operator|=(Char c)
     return *this;
 }
 
-Char Char::operator|=(unsigned int c)
+Char Char::operator|=(wchar_t c)
 {
     this->c |= c;
     return *this;
@@ -133,7 +149,7 @@ Char Char::operator<<(int b) const
 
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
 {
-    const unsigned int value = c.value();
+    const wchar_t value = c.value();
     if (value & 0xf0000000) {
         stream << (char) ((value & 0xff000000) >> 24);
         stream << (char) ((value & 0xff0000) >> 16);
