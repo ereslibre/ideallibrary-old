@@ -64,58 +64,72 @@ void CharTest::operatorChar()
 {
     {
         Char c('a');
-        char c1 = (char) c;
+        char c1 = c;
         CPPUNIT_ASSERT_EQUAL('a', c1);
     }
     {
         Char c(L'ñ');
-        char c1 = (char) c;
-        CPPUNIT_ASSERT(L'ñ' != (wchar_t) c1);
-    }
-}
-
-void CharTest::operatorWchar_t()
-{
-    {
-        Char c('a');
-        wchar_t c1 = (wchar_t) c;
-        CPPUNIT_ASSERT_EQUAL(L'a', c1);
-    }
-    {
-        Char c(L'ñ');
-        wchar_t c1 = (wchar_t) c;
-        CPPUNIT_ASSERT_EQUAL(L'ñ', c1);
+        char c1 = c;
+        CPPUNIT_ASSERT(((unsigned int) L'ñ') != (unsigned int) c1);
     }
     {
         Char c(L'€');
-        wchar_t c1 = (wchar_t) c;
-        CPPUNIT_ASSERT_EQUAL(L'€', c1);
+        char c1 = c;
+        CPPUNIT_ASSERT(((unsigned int) L'€') != (unsigned int) c1);
     }
     {
         Char c(L'𝚿');
-        wchar_t c1 = (wchar_t) c;
-        CPPUNIT_ASSERT_EQUAL(L'𝚿', c1);
+        char c1 = c;
+        CPPUNIT_ASSERT(((unsigned int) L'𝚿') != (unsigned int) c1);
     }
 }
 
-void CharTest::operatorAndEqualsChar()
+void CharTest::operatorUnsignedShort()
 {
+    {
+        Char c('a');
+        unsigned short c1 = c;
+        CPPUNIT_ASSERT_EQUAL((unsigned short) L'a', c1);
+    }
+    {
+        Char c(L'ñ');
+        unsigned short c1 = c;
+        CPPUNIT_ASSERT_EQUAL((unsigned short) L'ñ', c1);
+    }
+    {
+        Char c(L'€');
+        unsigned short c1 = c;
+        CPPUNIT_ASSERT_EQUAL((unsigned short) L'€', c1);
+    }
+    {
+        Char c(L'𝚿');
+        unsigned short c1 = c;
+        CPPUNIT_ASSERT(((unsigned int) L'𝚿') != (unsigned int) c1);
+    }
 }
 
-void CharTest::operatorAndEqualsWchar_t()
+void CharTest::operatorUnsignedInt()
 {
-}
-
-void CharTest::operatorOrEqualsChar()
-{
-}
-
-void CharTest::operatorOrEqualsWchar_t()
-{
-}
-
-void CharTest::operatorShiftLeftInt()
-{
+    {
+        Char c('a');
+        unsigned int c1 = c;
+        CPPUNIT_ASSERT_EQUAL((unsigned int) L'a', c1);
+    }
+    {
+        Char c(L'ñ');
+        unsigned int c1 = c;
+        CPPUNIT_ASSERT_EQUAL((unsigned int) L'ñ', c1);
+    }
+    {
+        Char c(L'€');
+        unsigned int c1 = c;
+        CPPUNIT_ASSERT_EQUAL((unsigned int) L'€', c1);
+    }
+    {
+        Char c(L'𝚿');
+        unsigned int c1 = c;
+        CPPUNIT_ASSERT_EQUAL((unsigned int) L'𝚿', c1);
+    }
 }
 
 int main(int argc, char **argv)

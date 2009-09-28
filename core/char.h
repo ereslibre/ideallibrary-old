@@ -39,12 +39,19 @@ public:
     Char(unsigned int c);
 
     /**
+      * @return The 32 bit wide character UTF-8 encoded.
+      */
+    unsigned int value() const;
+
+    /**
       * @return The required number of octets to properly encode this character in UTF-8.
       *         The required number of octets can be 1, 2, 3 or 4.
       */
     int octetsRequired() const;
 
-    operator unsigned int();
+    operator char() const;
+    operator unsigned short() const;
+    operator unsigned int() const;
 
     bool operator==(Char c) const;
     bool operator==(char c) const;

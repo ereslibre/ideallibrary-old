@@ -30,12 +30,8 @@ class CharTest
     CPPUNIT_TEST_SUITE(CharTest);
     CPPUNIT_TEST(octetsRequired);
     CPPUNIT_TEST(operatorChar);
-    CPPUNIT_TEST(operatorWchar_t);
-    CPPUNIT_TEST(operatorAndEqualsChar);
-    CPPUNIT_TEST(operatorAndEqualsWchar_t);
-    CPPUNIT_TEST(operatorOrEqualsChar);
-    CPPUNIT_TEST(operatorOrEqualsWchar_t);
-    CPPUNIT_TEST(operatorShiftLeftInt);
+    CPPUNIT_TEST(operatorUnsignedShort);
+    CPPUNIT_TEST(operatorUnsignedInt);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,12 +40,8 @@ public:
 
     void octetsRequired();
     void operatorChar();
-    void operatorWchar_t();
-    void operatorAndEqualsChar();
-    void operatorAndEqualsWchar_t();
-    void operatorOrEqualsChar();
-    void operatorOrEqualsWchar_t();
-    void operatorShiftLeftInt();
+    void operatorUnsignedShort();
+    void operatorUnsignedInt();
 };
 
 #endif //CHAR_TEST_H

@@ -46,6 +46,11 @@ Char::Char(unsigned int c)
     }
 }
 
+unsigned int Char::value() const
+{
+    return c;
+}
+
 int Char::octetsRequired() const
 {
     if (!(c & 0xffffff00)) {
@@ -60,7 +65,34 @@ int Char::octetsRequired() const
     return 4;
 }
 
-Char::operator unsigned int()
+Char::operator char() const
+{
+    if (c & 0xffffff00) {
+        IDEAL_DEBUG_WARNING("char '" << *this << "' will be corrupted on conversion");
+    }
+    return c;
+}
+
+Char::operator unsigned short() const
+{
+    if (c & 0xff000000) {
+        IDEAL_DEBUG_WARNING("char '" << *this << "' will be corrupted on conversion");
+    }
+    unsigned short res = 0;
+    if (!(c & 0xffffff00)) {
+        res = c;
+    } else if (!(c & 0xffff0000)) {
+        res = (c & 0x1f00) >> 2;
+        res |= (c & 0x3f);
+    } else {
+        res = (c & 0xf0000) >> 4;
+        res |= (c & 0x3f00) >> 2;
+        res |= (c & 0x3f);
+    }
+    return res;        
+}
+
+Char::operator unsigned int() const
 {
     unsigned int res = 0;
     if (!(c & 0xffffff00)) {
@@ -115,21 +147,26 @@ bool Char::operator==(unsigned int c) const
 
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
 {
-    const unsigned int value = c;
-    if (value & 0xf0000000) {
-        stream << (char) ((value & 0xff000000) >> 24);
-        stream << (char) ((value & 0xff0000) >> 16);
-        stream << (char) ((value & 0xff00) >> 8);
-        stream << (char) (value & 0xff);
-    } else if (value & 0xf00000) {
-        stream << (char) ((value & 0xff0000) >> 16);
-        stream << (char) ((value & 0xff00) >> 8);
-        stream << (char) (value & 0xff);
-    } else if (value & 0xf000) {
-        stream << (char) ((value & 0xff00) >> 8);
-        stream << (char) (value & 0xff);
-    } else {
-        stream << (char) (value & 0xff);
+    const unsigned int value = c.value();
+    switch (c.octetsRequired()) {
+        case 4:
+            stream << (char) ((value & 0xff000000) >> 24);
+            stream << (char) ((value & 0xff0000) >> 16);
+            stream << (char) ((value & 0xff00) >> 8);
+            stream << (char) (value & 0xff);
+            break;
+        case 3:
+            stream << (char) ((value & 0xff0000) >> 16);
+            stream << (char) ((value & 0xff00) >> 8);
+            stream << (char) (value & 0xff);
+            break;
+        case 2:
+            stream << (char) ((value & 0xff00) >> 8);
+            stream << (char) (value & 0xff);
+            break;
+        default:
+            stream << (char) (value & 0xff);
+            break;
     }
     return stream;
 }
