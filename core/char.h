@@ -44,20 +44,12 @@ public:
       */
     int octetsRequired() const;
 
-    wchar_t value() const;
-
     operator wchar_t();
 
     bool operator==(Char c) const;
     bool operator==(char c) const;
     bool operator==(wchar_t c) const;
 
-    Char operator&=(Char c);
-    Char operator&=(wchar_t c);
-    Char operator|=(Char c);
-    Char operator|=(wchar_t c);
-    Char operator<<(int b) const;
-    
 private:
     wchar_t c;
 };

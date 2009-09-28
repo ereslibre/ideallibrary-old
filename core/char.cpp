@@ -60,11 +60,6 @@ int Char::octetsRequired() const
     return 4;
 }
 
-wchar_t Char::value() const
-{
-    return c;
-}
-
 Char::operator wchar_t()
 {
     wchar_t res = 0;
@@ -116,40 +111,11 @@ bool Char::operator==(wchar_t c) const
     return true;
 }
 
-Char Char::operator&=(Char c)
-{
-    this->c &= c.c;
-    return *this;
-}
-
-Char Char::operator&=(wchar_t c)
-{
-    this->c &= c;
-    return *this;
-}
-
-Char Char::operator|=(Char c)
-{
-    this->c |= c.c;
-    return *this;
-}
-
-Char Char::operator|=(wchar_t c)
-{
-    this->c |= c;
-    return *this;
-}
-
-Char Char::operator<<(int b) const
-{
-    return c << b;
-}
-
 }
 
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
 {
-    const wchar_t value = c.value();
+    const wchar_t value = c;
     if (value & 0xf0000000) {
         stream << (char) ((value & 0xff000000) >> 24);
         stream << (char) ((value & 0xff0000) >> 16);
