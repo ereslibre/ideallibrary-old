@@ -27,7 +27,7 @@ Char::Char()
 {
 }
 
-Char::Char(wchar_t c)
+Char::Char(unsigned int c)
 {
     if (!(c & 0x1fff80)) {
         this->c = c & 0x7f;
@@ -60,9 +60,9 @@ int Char::octetsRequired() const
     return 4;
 }
 
-Char::operator wchar_t()
+Char::operator unsigned int()
 {
-    wchar_t res = 0;
+    unsigned int res = 0;
     if (!(c & 0xffffff00)) {
         res = c;
     } else if (!(c & 0xffff0000)) {
@@ -94,7 +94,7 @@ bool Char::operator==(char c) const
     return this->c == (unsigned char) c;
 }
 
-bool Char::operator==(wchar_t c) const
+bool Char::operator==(unsigned int c) const
 {
     if ((c & 0x3f) != (this->c & 0x3f)) {
         return false;
@@ -115,7 +115,7 @@ bool Char::operator==(wchar_t c) const
 
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
 {
-    const wchar_t value = c;
+    const unsigned int value = c;
     if (value & 0xf0000000) {
         stream << (char) ((value & 0xff000000) >> 24);
         stream << (char) ((value & 0xff0000) >> 16);
