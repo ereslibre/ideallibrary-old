@@ -55,6 +55,7 @@ public:
 
     bool operator==(Char c) const;
     bool operator==(char c) const;
+    bool operator==(unsigned short c) const;
     bool operator==(unsigned int c) const;
 
 private:

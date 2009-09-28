@@ -132,6 +132,82 @@ void CharTest::operatorUnsignedInt()
     }
 }
 
+void CharTest::operatorEqualsChar()
+{
+    {
+        Char c('a');
+        Char c1('a');
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'ñ');
+        Char c1(L'ñ');
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'€');
+        Char c1(L'€');
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'𝚿');
+        Char c1(L'𝚿');
+        CPPUNIT_ASSERT(c == c1);
+    }
+}
+
+void CharTest::operatorEqualsCharNative()
+{
+    {
+        Char c('a');
+        char c1 = 'a';
+        CPPUNIT_ASSERT(c == c1);
+    }
+}
+
+void CharTest::operatorEqualsUnsignedShort()
+{
+    {
+        Char c('a');
+        unsigned short c1 = 'a';
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'ñ');
+        unsigned short c1 = L'ñ';
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'€');
+        unsigned short c1 = L'€';
+        CPPUNIT_ASSERT(c == c1);
+    }
+}
+
+void CharTest::operatorEqualsUnsignedInt()
+{
+    {
+        Char c('a');
+        unsigned int c1 = 'a';
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'ñ');
+        unsigned int c1 = L'ñ';
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'€');
+        unsigned int c1 = L'€';
+        CPPUNIT_ASSERT(c == c1);
+    }
+    {
+        Char c(L'𝚿');
+        unsigned int c1 = L'𝚿';
+        CPPUNIT_ASSERT(c == c1);
+    }
+}
+
 int main(int argc, char **argv)
 {
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();

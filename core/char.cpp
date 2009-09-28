@@ -121,24 +121,98 @@ bool Char::operator==(Char c) const
 bool Char::operator==(char c) const
 {
     if (this->c & 0xffffff00) {
-        IDEAL_DEBUG_WARNING("cannot compare to char");
+        return false;
     }
     return this->c == (unsigned char) c;
 }
 
+bool Char::operator==(unsigned short c) const
+{
+    if (this->c & 0xff000000) {
+        return false;
+    }
+    switch (octetsRequired()) {
+        case 3:
+            if (c & 0xffff0000) {
+                return false;
+            }
+            if ((c & 0x3f) != (this->c & 0x3f)) {
+                return false;
+            }
+            if ((c & 0xfc0) != ((this->c & 0x3f00) >> 2)) {
+                return false;
+            }
+            if ((c & 0xf000) != ((this->c & 0xf0000) >> 4)) {
+                return false;
+            }
+            break;
+        case 2:
+            if (c & 0xfffff800) {
+                return false;
+            }
+            if ((c & 0x3f) != (this->c & 0x3f)) {
+                return false;
+            }
+            if ((c & 0x7c0) != ((this->c & 0x1f00) >> 2)) {
+                return false;
+            }
+            break;
+        default:
+            if (c & 0xffffff00) {
+                return false;
+            }
+            return this->c == c;
+    }
+    return true;
+}
+
 bool Char::operator==(unsigned int c) const
 {
-    if ((c & 0x3f) != (this->c & 0x3f)) {
-        return false;
-    }
-    if ((c & 0xfc0) != ((this->c & 0x3f00) >> 2)) {
-        return false;
-    }
-    if ((c & 0x3f000) != ((this->c & 0x3f0000) >> 4)) {
-        return false;
-    }
-    if ((c & 0x1c00000) != ((this->c & 0x7000000) >> 6)) {
-        return false;
+    switch (octetsRequired()) {
+        case 4:
+            if ((c & 0x3f) != (this->c & 0x3f)) {
+                return false;
+            }
+            if ((c & 0xfc0) != ((this->c & 0x3f00) >> 2)) {
+                return false;
+            }
+            if ((c & 0x3f000) != ((this->c & 0x3f0000) >> 4)) {
+                return false;
+            }
+            if ((c & 0x1c0000) != ((this->c & 0x7000000) >> 6)) {
+                return false;
+            }
+            break;
+        case 3:
+            if (c & 0xffff0000) {
+                return false;
+            }
+            if ((c & 0x3f) != (this->c & 0x3f)) {
+                return false;
+            }
+            if ((c & 0xfc0) != ((this->c & 0x3f00) >> 2)) {
+                return false;
+            }
+            if ((c & 0xf000) != ((this->c & 0xf0000) >> 4)) {
+                return false;
+            }
+            break;
+        case 2:
+            if (c & 0xfffff800) {
+                return false;
+            }
+            if ((c & 0x3f) != (this->c & 0x3f)) {
+                return false;
+            }
+            if ((c & 0x7c0) != ((this->c & 0x1f00) >> 2)) {
+                return false;
+            }
+            break;
+        default:
+            if (c & 0xffffff00) {
+                return false;
+            }
+            return this->c == c;
     }
     return true;
 }
