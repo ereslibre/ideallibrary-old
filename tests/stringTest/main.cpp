@@ -29,8 +29,23 @@ int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "");
 
-    Char c(L'𝛏');
-    std::cout << "Character is: " << c << std::endl;
+    {
+        Char c(L'𝛏');
+        std::cout << "Character is: " << c << std::endl;
+    }
+    {
+        String str("This is a tést with spécial cháracters");
+        Char c(L'é');
+        std::cout << "String contains 'é'? " << (str.contains(c) ? "yes" : "no") << std::endl;
+    }
+    {
+        String str("What special char ?ñ");
+        std::cout << "String contains 'ñ'? " << (str.contains(L'ñ') ? "yes" : "no") << std::endl;
+    }
+    {
+        String str("What special char ?");
+        std::cout << "String contains 'ñ'? " << (str.contains(L'ñ') ? "yes" : "no") << std::endl;
+    }
 
     return 0;
 }

@@ -45,6 +45,7 @@ public:
     void init(const char *str)
     {
         const unsigned int rawLen = strlen(str);
+        delete[] m_str;
         m_str = new char[rawLen + 1];
         memcpy(m_str, str, rawLen);
         m_str[rawLen] = '\0';
@@ -66,6 +67,7 @@ public:
     void calculateSize()
     {
         const unsigned int rawLen = strlen(m_str);
+        delete[] m_charMap;
         m_charMap = new unsigned int[rawLen];
         bzero(m_charMap, rawLen);
         size_t i = 0;
@@ -99,7 +101,7 @@ public:
             }
             ++i;
         }
-        m_charMap = (unsigned int*) realloc(m_charMap, m_size);
+        m_charMap = (unsigned int*) realloc(m_charMap, m_size * sizeof(unsigned int));
     }
 
     void ref()
@@ -118,6 +120,27 @@ public:
     int refCount()
     {
         return m_refs;
+    }
+
+    Char getCharAt(unsigned int pos)
+    {
+        Char res;
+        const unsigned int mappedPos = m_charMap[pos];
+        const char c = m_str[mappedPos];
+        unsigned int numberOfOctets;
+        if (!(c & 0x80)) {
+            numberOfOctets = 1;
+        } else if (!(c & 0x20)) {
+            numberOfOctets = 2;
+        } else if (!(c & 0x10)) {
+            numberOfOctets = 3;
+        } else {
+            numberOfOctets = 4;
+        }
+        for (unsigned int i = 0; i < numberOfOctets; ++i) {
+            res.c |= (m_str[mappedPos + i] & 0xff) << 8 * (numberOfOctets - i - 1);
+        }
+        return res;
     }
 
     char         *m_str;
@@ -189,7 +212,11 @@ size_t String::size() const
 
 bool String::contains(Char c) const
 {
-    // TODO
+    for (unsigned int i = 0; i < d->m_size; ++i) {
+        if (d->getCharAt(i) == c) {
+            return true;
+        }
+    }
     return false;
 }
 

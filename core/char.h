@@ -34,6 +34,8 @@ namespace IdealCore {
   */
 class IDEAL_EXPORT Char
 {
+    friend class String;
+
 public:
     Char();
     Char(unsigned int c);
