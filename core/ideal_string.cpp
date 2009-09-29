@@ -400,7 +400,6 @@ String &String::operator+=(const String &str)
         d = d->copy();
         old_d->deref();
     }
-    const unsigned int newLength = d->m_size + str.d->m_size;
     const unsigned int newRawLength = strlen(d->m_str) + strlen(str.d->m_str);
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     union FragmentedValue {
@@ -408,18 +407,18 @@ String &String::operator+=(const String &str)
         char v[4];
     };
     FragmentedValue fragmentedValue;
-    unsigned int pos = 0;
-    for (unsigned int i = d->m_size; i < newLength; ++i) {
-        const Char currChar = str[pos];
+    unsigned int pos = d->m_size;
+    for (unsigned int i = 0; i < str.d->m_size; ++i) {
+        const Char currChar = str[i];
         fragmentedValue.value = currChar.value();
         const int octetsRequired = currChar.octetsRequired();
         for (int j = 0; j < octetsRequired; ++j) {
-            d->m_str[i] = fragmentedValue.v[octetsRequired - j - 1];
+            d->m_str[pos] = fragmentedValue.v[octetsRequired - j - 1];
+            ++pos;
         }
-        ++pos;
     }
     d->m_str[newRawLength] = '\0';
-    d->m_size = newLength;
+    d->m_size += str.d->m_size;
     return *this;
 }
 
