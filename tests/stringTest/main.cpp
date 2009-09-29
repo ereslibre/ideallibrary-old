@@ -56,7 +56,7 @@ int main(int argc, char **argv)
         std::cout << "Should print \"Hi, how\": " << str << std::endl;
     }
     {
-        String str("Hí, hów", 7);
+        String str("Hí, hów are you?", 7);
         std::cout << "Should print \"Hí, hów\": " << str << std::endl;
     }
 
