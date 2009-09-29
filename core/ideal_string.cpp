@@ -177,11 +177,15 @@ String::String(const char *str, size_t n)
         const size_t length = strlen(str);
         size_t count = 0;
         size_t b = 0;
+        bool breakNext = false;
         for (size_t i = 0; i < length; ++i) {
             if (count == n) {
-                break;
+                breakNext = true;
             }
             if ((str[i] & 0xc0) != 0x80) {
+                if (breakNext) {
+                    break;
+                }
                 d->m_charMap[count] = i;
                 ++count;
             }
@@ -190,8 +194,12 @@ String::String(const char *str, size_t n)
         }
         d->m_str[b] = '\0';
         d->m_size = count;
-        d->m_str = (char*) realloc(d->m_str, length + 1);
-        d->m_charMap = (unsigned int*) realloc(d->m_charMap, d->m_size * sizeof(unsigned int));
+        if (length < n * 4) {
+            d->m_str = (char*) realloc(d->m_str, length + 1);
+        }
+        if (count < n) {
+            d->m_charMap = (unsigned int*) realloc(d->m_charMap, count * sizeof(unsigned int));
+        }
     }
 }
 

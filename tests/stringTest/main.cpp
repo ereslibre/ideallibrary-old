@@ -59,6 +59,15 @@ int main(int argc, char **argv)
         String str("Hí, hów are you?", 7);
         std::cout << "Should print \"Hí, hów\": " << str << std::endl;
     }
+    {
+        String str("𝛏𝛏𝛏𝛏𝛏", 3);
+        std::cout << "Should print \"𝛏𝛏𝛏\": " << str << std::endl;
+    }
+    {
+        String str("𝛏𝛏𝛏𝛏𝛏", 10);
+        std::cout << "Should print \"𝛏𝛏𝛏𝛏𝛏\": " << str << std::endl;
+    }
+
 
     return 0;
 }
