@@ -184,7 +184,7 @@ String::String(Char c)
     const unsigned int value = c.value();
     for (int i = 0; i < numberOfOctets; ++i) {
         const int offset = 8 * (numberOfOctets - i - 1);
-        d->m_str[i] = (value & (0xff << offset)) >> offset;
+        d->m_str[i] = (value >> offset) & 0xff;
     }
     d->m_str[numberOfOctets] = '\0';
     d->m_charMap = new unsigned int[1];
