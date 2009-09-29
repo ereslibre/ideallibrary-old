@@ -82,6 +82,18 @@ int main(int argc, char **argv)
         str1 += str2;
         std::cout << "\"" << str1 << "\"" << std::endl;
     }
+    {
+        String str1("First part");
+        const char *str2 = "; Second part";
+        str1 += str2;
+        std::cout << "\"" << str1 << "\"" << std::endl;
+    }
+    {
+        String str1("First part; ");
+        Char c(L'𝛏');
+        str1 += c;
+        std::cout << "\"" << str1 << "\"" << std::endl;
+    }
 
     return 0;
 }

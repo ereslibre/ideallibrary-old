@@ -56,8 +56,9 @@ public:
     {
         const unsigned int rawLen = strlen(m_str);
         Private *privateCopy = new Private;
-        privateCopy->m_str = new char[rawLen];
+        privateCopy->m_str = new char[rawLen + 1];
         memcpy(privateCopy->m_str, m_str, rawLen);
+        privateCopy->m_str[rawLen] = '\0';
         privateCopy->m_charMap = new unsigned int[m_size];
         memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(unsigned int));
         privateCopy->m_size = m_size;
@@ -418,7 +419,7 @@ String &String::operator+=(const String &str)
         }
     }
     d->m_str[newRawLength] = '\0';
-    d->m_size += str.d->m_size;
+    d->calculateSize();
     return *this;
 }
 
@@ -429,7 +430,13 @@ String &String::operator+=(const char *str)
         d = d->copy();
         old_d->deref();
     }
-    // TODO
+    const unsigned int rawLength = strlen(str);
+    const unsigned int oldRawLength = strlen(d->m_str);
+    const unsigned int newRawLength = oldRawLength + rawLength;
+    d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
+    memcpy(&d->m_str[oldRawLength], str, rawLength);
+    d->m_str[newRawLength] = '\0';
+    d->calculateSize();
     return *this;
 }
 
@@ -440,29 +447,42 @@ String &String::operator+=(Char c)
         d = d->copy();
         old_d->deref();
     }
-    // TODO
+    const int numberOfOctets = c.octetsRequired();
+    const int rawLength = strlen(d->m_str);
+    const int newRawLength = rawLength + numberOfOctets;
+    const unsigned int value = c.value();
+    d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
+    int pos = 0;
+    for (int i = rawLength; i < newRawLength; ++i) {
+        const int offset = 8 * (numberOfOctets - pos - 1);
+        d->m_str[i] = (value >> offset) & 0xff;
+        ++pos;
+    }
+    d->m_str[newRawLength] = '\0';
+    d->m_charMap = (unsigned int*) realloc(d->m_charMap, (d->m_size + 1) * sizeof(unsigned int));
+    d->m_charMap[d->m_size] = rawLength;
+    d->m_size += 1;
     return *this;
 }
 
 String String::operator+(const String &str) const
 {
-    String res;
-    // TODO
-    res.d->m_size = d->m_size + str.d->m_size;
+    String res(d->m_str);
+    res += str;
     return res;
 }
 
 String String::operator+(const char *str) const
 {
-    String res;
-    // TODO
+    String res(d->m_str);
+    res += str;
     return res;
 }
 
 String String::operator+(Char c) const
 {
-    String res;
-    // TODO
+    String res(d->m_str);
+    res += c;
     return res;
 }
 
