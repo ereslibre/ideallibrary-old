@@ -67,7 +67,15 @@ int main(int argc, char **argv)
         String str("𝛏𝛏𝛏𝛏𝛏", 10);
         std::cout << "Should print \"𝛏𝛏𝛏𝛏𝛏\": " << str << std::endl;
     }
-
+    {
+        String str("one𝛏two𝛏three𝛏four𝛏five");
+        List<String> split = str.split(L'𝛏');
+        List<String>::iterator it;
+        for (it = split.begin(); it != split.end(); ++it) {
+            String str = *it;
+            std::cout << "element: " << str << std::endl;
+        }
+    }
 
     return 0;
 }

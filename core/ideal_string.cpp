@@ -260,14 +260,25 @@ bool String::contains(Char c) const
 
 size_t String::find(Char c) const
 {
-    // TODO
-    return false;
+    for (unsigned int i = 0; i < d->m_size; ++i) {
+        if (d->getCharAt(i) == c) {
+            return i;
+        }
+    }
+    return npos;
 }
 
 size_t String::rfind(Char c) const
 {
-    // TODO
-    return false;
+    for (unsigned int i = d->m_size - 1; i > 0; --i) {
+        if (d->getCharAt(i) == c) {
+            return i;
+        }
+    }
+    if (d->m_size && d->getCharAt(0) == c) {
+        return 0;
+    }
+    return npos;
 }
 
 size_t String::find(const String &str) const
@@ -294,8 +305,36 @@ int String::compare(const char *s) const
 
 List<String> String::split(Char separator) const
 {
-    // TODO
-    return List<String>();
+    List<String> res;
+    const int length = strlen(d->m_str);
+    char *curr = new char[length];
+    bzero(curr, length);
+    unsigned int pos = 0;
+    for (unsigned int i = 0; i < d->m_size; ++i) {
+        const Char currChar = d->getCharAt(i);
+        if (pos && currChar == separator) {
+            res.push_back(String(curr));
+            pos = 0;
+            bzero(curr, length);
+        } else if (currChar != separator) {
+            union FragmentedValue {
+                unsigned int value;
+                char v[4];
+            };
+            FragmentedValue fragmentedValue;
+            fragmentedValue.value = currChar.value();
+            const int octetsRequired = currChar.octetsRequired();
+            for (int i = 0; i < octetsRequired; ++i) {
+                curr[pos] = fragmentedValue.v[octetsRequired - i - 1];
+                ++pos;
+            }
+        }
+    }
+    if (strlen(curr)) {
+        res.push_back(String(curr));
+    }
+    delete[] curr;
+    return res;
 }
 
 Char String::operator[](unsigned int pos) const
