@@ -46,6 +46,11 @@ int main(int argc, char **argv)
         String str("What special char ?");
         std::cout << "String contains 'ñ'? " << (str.contains(L'ñ') ? "yes" : "no") << std::endl;
     }
+    {
+        Char c(L'𝛏');
+        String str(c);
+        std::cout << "String with a char (𝛏) contains: " << str << std::endl;
+    }
 
     return 0;
 }

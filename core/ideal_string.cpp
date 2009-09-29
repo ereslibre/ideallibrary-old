@@ -179,6 +179,17 @@ String::String(const char *str, size_t n)
 String::String(Char c)
     : d(new Private)
 {
+    const int numberOfOctets = c.octetsRequired();
+    d->m_str = new char[numberOfOctets + 1];
+    const unsigned int value = c.value();
+    for (int i = 0; i < numberOfOctets; ++i) {
+        const int offset = 8 * (numberOfOctets - i - 1);
+        d->m_str[i] = (value & (0xff << offset)) >> offset;
+    }
+    d->m_str[numberOfOctets] = '\0';
+    d->m_charMap = new unsigned int[1];
+    d->m_charMap[0] = 0;
+    d->m_size = 1;
 }
 
 String::~String()
