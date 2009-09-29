@@ -307,6 +307,9 @@ int String::compare(const char *s) const
 List<String> String::split(Char separator) const
 {
     List<String> res;
+    if (!d->m_size) {
+        return res;
+    }
     const int length = strlen(d->m_str);
     char *curr = new char[length];
     bzero(curr, length);
@@ -401,7 +404,8 @@ String &String::operator+=(const String &str)
         d = d->copy();
         old_d->deref();
     }
-    const unsigned int newRawLength = strlen(d->m_str) + strlen(str.d->m_str);
+    const unsigned int newRawLength = (d->m_str ? strlen(d->m_str) : 0) +
+                                      (str.d->m_str ? strlen(str.d->m_str) : 0);
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     union FragmentedValue {
         unsigned int value;
@@ -431,7 +435,7 @@ String &String::operator+=(const char *str)
         old_d->deref();
     }
     const unsigned int rawLength = strlen(str);
-    const unsigned int oldRawLength = strlen(d->m_str);
+    const unsigned int oldRawLength = d->m_str ? strlen(d->m_str) : 0;
     const unsigned int newRawLength = oldRawLength + rawLength;
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     memcpy(&d->m_str[oldRawLength], str, rawLength);
@@ -448,7 +452,7 @@ String &String::operator+=(Char c)
         old_d->deref();
     }
     const int numberOfOctets = c.octetsRequired();
-    const int rawLength = strlen(d->m_str);
+    const int rawLength = d->m_str ? strlen(d->m_str) : 0;
     const int newRawLength = rawLength + numberOfOctets;
     const unsigned int value = c.value();
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
