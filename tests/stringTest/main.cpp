@@ -51,6 +51,14 @@ int main(int argc, char **argv)
         String str(c);
         std::cout << "String with a char (𝛏) contains: " << str << std::endl;
     }
+    {
+        String str("Hi, how are you?", 7);
+        std::cout << "Should print \"Hi, how\": " << str << std::endl;
+    }
+    {
+        String str("Hí, hów", 7);
+        std::cout << "Should print \"Hí, hów\": " << str << std::endl;
+    }
 
     return 0;
 }
