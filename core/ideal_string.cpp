@@ -189,7 +189,7 @@ String::String(const char *str, size_t n)
                 d->m_charMap[count] = i;
                 ++count;
             }
-            memcpy(&d->m_str[i], &str[i], 1);
+            d->m_str[i] = str[i];
             ++b;
         }
         d->m_str[b] = '\0';
@@ -339,6 +339,9 @@ List<String> String::split(Char separator) const
 
 Char String::operator[](unsigned int pos) const
 {
+    if (pos < d->m_size) {
+        return d->getCharAt(pos);
+    }
     return Char();
 }
 
@@ -374,7 +377,18 @@ String &String::operator=(Char c)
         d = d->copy();
         old_d->deref();
     }
-    // TODO
+    const int numberOfOctets = c.octetsRequired();
+    delete[] d->m_str;
+    d->m_str = new char[numberOfOctets + 1];
+    const unsigned int value = c.value();
+    for (int i = 0; i < numberOfOctets; ++i) {
+        const int offset = 8 * (numberOfOctets - i - 1);
+        d->m_str[i] = (value >> offset) & 0xff;
+    }
+    d->m_str[numberOfOctets] = '\0';
+    delete[] d->m_charMap;
+    d->m_charMap = new unsigned int[1];
+    d->m_charMap[0] = 0;
     d->m_size = 1;
     return *this;
 }
@@ -386,8 +400,26 @@ String &String::operator+=(const String &str)
         d = d->copy();
         old_d->deref();
     }
-    // TODO
-    d->m_size += str.d->m_size;
+    const unsigned int newLength = d->m_size + str.d->m_size;
+    const unsigned int newRawLength = strlen(d->m_str) + strlen(str.d->m_str);
+    d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
+    union FragmentedValue {
+        unsigned int value;
+        char v[4];
+    };
+    FragmentedValue fragmentedValue;
+    unsigned int pos = 0;
+    for (unsigned int i = d->m_size; i < newLength; ++i) {
+        const Char currChar = str[pos];
+        fragmentedValue.value = currChar.value();
+        const int octetsRequired = currChar.octetsRequired();
+        for (int j = 0; j < octetsRequired; ++j) {
+            d->m_str[i] = fragmentedValue.v[octetsRequired - j - 1];
+        }
+        ++pos;
+    }
+    d->m_str[newRawLength] = '\0';
+    d->m_size = newLength;
     return *this;
 }
 
@@ -440,8 +472,10 @@ bool String::operator==(const String &str) const
     if (this == &str || d == str.d) {
         return true;
     }
-    // TODO
-    return false;
+    if (!d->m_str || !str.d->m_str) {
+        return false;
+    }
+    return !strcoll(d->m_str, str.d->m_str);
 }
 
 bool String::operator!=(const String &str) const
@@ -451,11 +485,13 @@ bool String::operator!=(const String &str) const
 
 bool String::operator<(const String &str) const
 {
-    if (this == &str) {
+    if (this == &str || d == str.d) {
         return false;
     }
-    // TODO
-    return false;
+    if (!d->m_str || !str.d->m_str) {
+        return false;
+    }
+    return strcoll(d->m_str, str.d->m_str) < 0;
 }
 
 bool String::operator>(const String &str) const

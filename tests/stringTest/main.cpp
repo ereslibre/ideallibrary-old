@@ -76,6 +76,12 @@ int main(int argc, char **argv)
             std::cout << "element: " << str << std::endl;
         }
     }
+    {
+        String str1("First part");
+        String str2("; Second part");
+        str1 += str2;
+        std::cout << "\"" << str1 << "\"" << std::endl;
+    }
 
     return 0;
 }
