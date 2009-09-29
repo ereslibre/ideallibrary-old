@@ -219,6 +219,26 @@ bool Char::operator==(unsigned int c) const
     return true;
 }
 
+bool Char::operator!=(Char c) const
+{
+    return !(*this == c);
+}
+
+bool Char::operator!=(char c) const
+{
+    return !(*this == c);
+}
+
+bool Char::operator!=(unsigned short c) const
+{
+    return !(*this == c);
+}
+
+bool Char::operator!=(unsigned int c) const
+{
+    return !(*this == c);
+}
+
 }
 
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
