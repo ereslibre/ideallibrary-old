@@ -77,6 +77,21 @@ void StringTest::testContains()
     }
 }
 
+void StringTest::testSubstr()
+{
+    {
+        String str("Hello");
+        CPPUNIT_ASSERT(!str.substr(0, 0).size());
+        CPPUNIT_ASSERT_EQUAL(String("ll"), str.substr(2, 2));
+        CPPUNIT_ASSERT_EQUAL(String("Hello"), str.substr(0, 5));
+        CPPUNIT_ASSERT_EQUAL(String("Hello"), str.substr(0, 10));
+        CPPUNIT_ASSERT_EQUAL(String("ello"), str.substr(1, 4));
+        CPPUNIT_ASSERT_EQUAL(String("ello"), str.substr(1, 10));
+        CPPUNIT_ASSERT_EQUAL(String("ell"), str.substr(1, 3));
+        CPPUNIT_ASSERT_EQUAL(String("o"), str.substr(4, 1));
+    }
+}
+
 void StringTest::testSplit()
 {
     {

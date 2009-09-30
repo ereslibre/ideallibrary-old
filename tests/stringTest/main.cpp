@@ -94,6 +94,14 @@ int main(int argc, char **argv)
         str1 += c;
         std::cout << "\"" << str1 << "\"" << std::endl;
     }
+    {
+        String str1("Hello world !");
+        std::cout << "\"" << str1.substr(6, 5) << "\"" << std::endl;
+    }
+    {
+        String str1("Hello world !");
+        std::cout << "\"" << str1.substr(0, str1.size()) << "\"" << std::endl;
+    }
 
     return 0;
 }

@@ -172,31 +172,31 @@ String::String(const char *str)
 String::String(const char *str, size_t n)
     : d(new Private)
 {
-    if (str) {
+    if (str && n) {
         d->m_str = new char[n * 4 + 1];
         d->m_charMap = new unsigned int[n];
-        const size_t length = strlen(str);
+        const size_t rawLength = strlen(str);
         size_t count = 0;
-        size_t b = 0;
         bool breakNext = false;
-        for (size_t i = 0; i < length; ++i) {
-            if (count == n) {
-                breakNext = true;
-            }
+        size_t curr = 0;
+        for (size_t i = 0; i < rawLength; ++i) {
             if ((str[i] & 0xc0) != 0x80) {
                 if (breakNext) {
                     break;
                 }
                 d->m_charMap[count] = i;
                 ++count;
+                if (count == n) {
+                    breakNext = true;
+                }
             }
             d->m_str[i] = str[i];
-            ++b;
+            ++curr;
         }
-        d->m_str[b] = '\0';
+        d->m_str[curr] = '\0';
         d->m_size = count;
-        if (length < n * 4) {
-            d->m_str = (char*) realloc(d->m_str, length + 1);
+        if (curr < n * 4) {
+            d->m_str = (char*) realloc(d->m_str, curr + 1);
         }
         if (count < n) {
             d->m_charMap = (unsigned int*) realloc(d->m_charMap, count * sizeof(unsigned int));
@@ -295,7 +295,9 @@ const char *String::data() const
 
 String String::substr(size_t pos, size_t n) const
 {
-    // TODO
+    if (pos < d->m_size) {
+        return String(&d->m_str[d->m_charMap[pos]], n);
+    }
     return String();
 }
 
