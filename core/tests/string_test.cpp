@@ -90,6 +90,10 @@ void StringTest::testSubstr()
         CPPUNIT_ASSERT_EQUAL(String("ell"), str.substr(1, 3));
         CPPUNIT_ASSERT_EQUAL(String("o"), str.substr(4, 1));
     }
+    {
+        String str("áéíóú𝛏Test𝛏áéíóú");
+        CPPUNIT_ASSERT_EQUAL(String("𝛏Test𝛏"), str.substr(5, 6));
+    }
 }
 
 void StringTest::testSplit()
@@ -97,6 +101,7 @@ void StringTest::testSplit()
     {
         String test1("No split at all");
         CPPUNIT_ASSERT_EQUAL((size_t) 1, test1.split('w').size());
+        CPPUNIT_ASSERT_EQUAL(String("No split at all"), test1.split('w').front());
     }
     {
         String test2("Option 1;Option 2");

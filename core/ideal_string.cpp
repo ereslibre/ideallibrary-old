@@ -70,7 +70,7 @@ public:
         const unsigned int rawLen = strlen(m_str);
         delete[] m_charMap;
         m_charMap = new unsigned int[rawLen];
-        bzero(m_charMap, rawLen);
+        bzero(m_charMap, rawLen * sizeof(unsigned int));
         size_t i = 0;
         m_size = 0;
         while (true) {
@@ -314,20 +314,19 @@ List<String> String::split(Char separator) const
     }
     const int length = strlen(d->m_str);
     char *curr = new char[length];
-    bzero(curr, length);
     unsigned int pos = 0;
     for (unsigned int i = 0; i < d->m_size; ++i) {
         const Char currChar = d->getCharAt(i);
         if (pos && currChar == separator) {
+            curr[pos] = '\0';
             res.push_back(String(curr));
             pos = 0;
             bzero(curr, length);
         } else if (currChar != separator) {
-            union FragmentedValue {
+            union {
                 unsigned int value;
                 char v[4];
-            };
-            FragmentedValue fragmentedValue;
+            } fragmentedValue;
             fragmentedValue.value = currChar.value();
             const int octetsRequired = currChar.octetsRequired();
             for (int i = 0; i < octetsRequired; ++i) {
@@ -337,6 +336,7 @@ List<String> String::split(Char separator) const
         }
     }
     if (strlen(curr)) {
+        curr[pos] = '\0';
         res.push_back(String(curr));
     }
     delete[] curr;
