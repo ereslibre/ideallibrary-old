@@ -52,17 +52,17 @@ public:
     bool   m_isValidUri;
 };
 
-const std::string uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                   "abcdefghijklmnopqrstuvwxyz-_.~";
+const String uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                              "abcdefghijklmnopqrstuvwxyz-_.~";
 
-const std::string uri_reserved = "!*'();:@&=+$,/?%#[]";
+const String uri_reserved = "!*'();:@&=+$,/?%#[]";
 
 const char uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                          'A', 'B', 'C', 'D', 'E', 'F' };
 
 String Uri::Private::getHex(char ch) const
 {
-    return String('%') + uri_hex[(ch >> 4) & 0xF] + uri_hex[ch & 0xF];
+    return String('%') + uri_hex[(ch >> 4) & 0xf] + uri_hex[ch & 0xf];
 }
 
 String Uri::Private::encodeUri(const String &uri) const
@@ -72,8 +72,8 @@ String Uri::Private::encodeUri(const String &uri) const
     size_t e = 0;
     for (size_t i = 0; i < uri.size() + e; ++i) {
         const char c = uri[j];
-        if (uri_unreserved.find(c) != std::string::npos ||
-            uri_reserved.find(c) != std::string::npos) {
+        if (uri_unreserved.find(c) != String::npos ||
+            uri_reserved.find(c) != String::npos) {
             res += c;
         } else if (!(c & (1 << 7))) {
             res += getHex(c);
@@ -184,7 +184,7 @@ void Uri::Private::initializeContents(const String &uriP_)
             uriToStringCharsRequiredA(&uri, &charsRequired);
             ++charsRequired;
             uriString = new char[charsRequired];
-            uriToStringA(uriString, &uri, charsRequired, NULL);
+            uriToStringA(uriString, &uri, charsRequired, 0);
             m_uri = decodeUri(uriString);
             delete[] uriString;
         }

@@ -173,9 +173,9 @@ String::String(const char *str, size_t n)
     : d(new Private)
 {
     if (str && n) {
-        d->m_str = new char[n * 4 + 1];
-        d->m_charMap = new unsigned int[n];
         const size_t rawLength = strlen(str);
+        d->m_str = new char[(n == npos ? rawLength : n) * 4 + 1];
+        d->m_charMap = new unsigned int[(n == npos ? rawLength : n)];
         size_t count = 0;
         bool breakNext = false;
         size_t curr = 0;
@@ -195,10 +195,10 @@ String::String(const char *str, size_t n)
         }
         d->m_str[curr] = '\0';
         d->m_size = count;
-        if (curr < n * 4) {
+        if (curr < (n == npos ? rawLength * 4 : n * 4)) {
             d->m_str = (char*) realloc(d->m_str, curr + 1);
         }
-        if (count < n) {
+        if (count < (n == npos ? rawLength : n)) {
             d->m_charMap = (unsigned int*) realloc(d->m_charMap, count * sizeof(unsigned int));
         }
     }
