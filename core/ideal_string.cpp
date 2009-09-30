@@ -495,8 +495,11 @@ bool String::operator==(const String &str) const
     if (this == &str || d == str.d) {
         return true;
     }
-    if (!d->m_str || !str.d->m_str) {
+    if ((!d->m_str && str.d->m_str) || (d->m_str && !str.d->m_str)) {
         return false;
+    }
+    if (!d->m_str && !str.d->m_str) {
+        return true;
     }
     return !strcoll(d->m_str, str.d->m_str);
 }
