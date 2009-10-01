@@ -104,14 +104,14 @@ String Uri::Private::decodeUri(const String &uri) const
             Char newChar;
             String byte1(uri[i + 1]);
             byte1 += uri[i + 2];
-            unsigned int byte1Val = strtoul(byte1.data(), 0, 16);
+            const unsigned int byte1Val = strtoul(byte1.data(), 0, 16);
             if (!(byte1Val & (1 << 7))) {
                 newChar.c = byte1Val;
                 i += 3;
             } else if (((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && !(byte1Val & (1 << 5)))) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
-                unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
+                const unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
                 newChar.c |= (byte1Val << 8);
                 newChar.c |= byte2Val;
                 i += 6;
@@ -120,8 +120,8 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
                 byte3 += uri[i + 8];
-                unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
-                unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
+                const unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
+                const unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
                 newChar.c |= (byte1Val << 16);
                 newChar.c |= (byte2Val << 8);
                 newChar.c |= byte3Val;
@@ -133,9 +133,9 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte3 += uri[i + 8];
                 String byte4(uri[i + 10]);
                 byte4 += uri[i + 11];
-                unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
-                unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
-                unsigned int byte4Val = strtoul(byte4.data(), 0, 16);
+                const unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
+                const unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
+                const unsigned int byte4Val = strtoul(byte4.data(), 0, 16);
                 newChar.c |= (byte1Val << 24);
                 newChar.c |= (byte2Val << 16);
                 newChar.c |= (byte3Val << 8);
