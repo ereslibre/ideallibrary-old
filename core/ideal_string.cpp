@@ -284,8 +284,31 @@ size_t String::rfind(Char c) const
 
 size_t String::find(const String &str) const
 {
-    // TODO
-    return true;
+    if (!d->m_size || !str.d->m_size || str.d->m_size > d->m_size) {
+        return npos;
+    }
+    const unsigned int offset = str.d->m_size - 1;
+    unsigned int i = offset;
+    Char hint = str.d->getCharAt(offset);
+    while (i < d->m_size) {
+        if (d->getCharAt(i) == hint) {
+            bool fullMatch = true;
+            unsigned int k = i - 1;
+            for (unsigned int j = offset - 1; j > 0; --j) {
+                if (d->getCharAt(k) != str.d->getCharAt(j)) {
+                    fullMatch = false;
+                    break;
+                }
+                --k;
+            }
+            fullMatch = fullMatch && d->getCharAt(k) == str.d->getCharAt(0);
+            if (fullMatch) {
+                return k;
+            }
+        }
+        ++i;
+    }
+    return npos;
 }
 
 const char *String::data() const

@@ -286,6 +286,26 @@ void StringTest::testOperators()
         String str2("/sómething.txt");
         CPPUNIT_ASSERT_EQUAL(String("/páth/sómething.txt"), str + str2);
     }
+    {
+        String str("Test");
+        String str2("Test");
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, str.find(str2));
+    }
+    {
+        String str("TéstTest");
+        String str2("Test");
+        CPPUNIT_ASSERT_EQUAL((size_t) 4, str.find(str2));
+    }
+    {
+        String str("TéstTest");
+        String str2("Kest");
+        CPPUNIT_ASSERT_EQUAL((size_t) -1, str.find(str2));
+    }
+    {
+        String str("Thisisalongtestwithspécialchársinside");
+        String str2("spécialchárs");
+        CPPUNIT_ASSERT_EQUAL((size_t) 19, str.find(str2));
+    }
 }
 
 String StringTest::returnSpecialChars()
