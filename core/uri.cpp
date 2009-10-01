@@ -153,7 +153,12 @@ String Uri::Private::decodeUri(const String &uri) const
 
 void Uri::Private::reconstructPath(int count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail)
 {
-    const String currSegment = decodeUri(String(head->text.first, head->text.afterLast - head->text.first));
+    String encodedUri;
+    const char *curr = head->text.first;
+    while (curr != head->text.afterLast) {
+        encodedUri += *(curr++);
+    }
+    const String currSegment = decodeUri(encodedUri);
     if (head == tail) {
         m_path += currSegment;
     } else if (!count) {
