@@ -268,6 +268,24 @@ void StringTest::testOperators()
         String str2("j");
         CPPUNIT_ASSERT(str < str2);
     }
+    {
+        String str("This is á test");
+        String str2("é");
+        CPPUNIT_ASSERT_EQUAL(String("This is á testé"), str + L'é');
+        CPPUNIT_ASSERT_EQUAL(String("This is á testé"), str + "é");
+        CPPUNIT_ASSERT_EQUAL(String("This is á testéé"), str + str2 + L'é');
+        CPPUNIT_ASSERT_EQUAL(String("This is á testéé"), str + str2 + "é");
+    }
+    {
+        String str("/páth/");
+        String str2("sómething.txt");
+        CPPUNIT_ASSERT_EQUAL(String("/páth/sómething.txt"), str + str2);
+    }
+    {
+        String str("/páth");
+        String str2("/sómething.txt");
+        CPPUNIT_ASSERT_EQUAL(String("/páth/sómething.txt"), str + str2);
+    }
 }
 
 String StringTest::returnSpecialChars()

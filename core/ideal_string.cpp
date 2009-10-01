@@ -285,7 +285,7 @@ size_t String::rfind(Char c) const
 size_t String::find(const String &str) const
 {
     // TODO
-    return false;
+    return true;
 }
 
 const char *String::data() const
@@ -406,22 +406,22 @@ String &String::operator+=(const String &str)
         d = d->copy();
         old_d->deref();
     }
-    const unsigned int newRawLength = (d->m_str ? strlen(d->m_str) : 0) +
-                                      (str.d->m_str ? strlen(str.d->m_str) : 0);
+    const unsigned int oldRawLength = (d->m_str ? strlen(d->m_str) : 0);
+    const unsigned int newRawLength = oldRawLength + (str.d->m_str ? strlen(str.d->m_str) : 0);
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     union FragmentedValue {
         unsigned int value;
         char v[4];
     };
     FragmentedValue fragmentedValue;
-    unsigned int pos = d->m_size;
+    unsigned int pos = oldRawLength;
     for (unsigned int i = 0; i < str.d->m_size; ++i) {
         const Char currChar = str[i];
         fragmentedValue.value = currChar.value();
         const int octetsRequired = currChar.octetsRequired();
         for (int j = 0; j < octetsRequired; ++j) {
             d->m_str[pos] = fragmentedValue.v[octetsRequired - j - 1];
-            ++pos;
+            pos++;
         }
     }
     d->m_str[newRawLength] = '\0';

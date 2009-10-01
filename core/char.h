@@ -35,6 +35,7 @@ namespace IdealCore {
 class IDEAL_EXPORT Char
 {
     friend class String;
+    friend class Uri;
 
 public:
     Char();
