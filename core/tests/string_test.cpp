@@ -306,6 +306,22 @@ void StringTest::testOperators()
         String str2("spécialchárs");
         CPPUNIT_ASSERT_EQUAL((size_t) 19, str.find(str2));
     }
+    {
+        String str;
+        Char a('a');
+        for (int i = 0; i < 10; ++i) {
+            str += a;
+        }
+        CPPUNIT_ASSERT_EQUAL(String("aaaaaaaaaa"), str);
+    }
+    {
+        String str;
+        Char a(L'á');
+        for (int i = 0; i < 10; ++i) {
+            str += a;
+        }
+        CPPUNIT_ASSERT_EQUAL(String("áááááááááá"), str);
+    }
 }
 
 String StringTest::returnSpecialChars()

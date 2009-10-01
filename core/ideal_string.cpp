@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 namespace IdealCore {
 
@@ -82,7 +83,8 @@ public:
                 m_charMap[m_size] = i;
                 ++m_size;
             } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
-                IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
+                IDEAL_DEBUG_WARNING("unexpected result when reading utf8 (" << m_str << ")");
+                assert(false);
                 return;
             } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
                 m_charMap[m_size] = i;
@@ -97,7 +99,8 @@ public:
                 i += 3;
                 ++m_size;
             } else {
-                IDEAL_DEBUG_WARNING("unexpected result when reading utf8");
+                IDEAL_DEBUG_WARNING("unexpected result when reading utf8 (" << m_str << ")");
+                assert(false);
                 return;
             }
             ++i;
