@@ -33,6 +33,7 @@ public:
         : m_str(0)
         , m_charMap(0)
         , m_size(0)
+        , m_sizeCalculated(false)
         , m_refs(1)
     {
     }
@@ -50,7 +51,7 @@ public:
         m_str = new char[rawLen + 1];
         memcpy(m_str, str, rawLen);
         m_str[rawLen] = '\0';
-        calculateSize();
+        m_sizeCalculated = false;
     }
 
     Private *copy()
@@ -60,14 +61,21 @@ public:
         privateCopy->m_str = new char[rawLen + 1];
         memcpy(privateCopy->m_str, m_str, rawLen);
         privateCopy->m_str[rawLen] = '\0';
-        privateCopy->m_charMap = new unsigned int[m_size];
+        privateCopy->m_charMap = new unsigned int[calculateSize()];
         memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(unsigned int));
         privateCopy->m_size = m_size;
         return privateCopy;
     }
 
-    void calculateSize()
+    unsigned int calculateSize()
     {
+        if (m_sizeCalculated) {
+            return m_size;
+        }
+        m_sizeCalculated = true;
+        if (!m_str) {
+            return 0;
+        }
         const unsigned int rawLen = strlen(m_str);
         delete[] m_charMap;
         m_charMap = new unsigned int[rawLen];
@@ -85,7 +93,7 @@ public:
             } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
                 IDEAL_DEBUG_WARNING("unexpected result when reading utf8 (" << m_str << ")");
                 assert(false);
-                return;
+                return 0;
             } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
                 m_charMap[m_size] = i;
                 ++i;
@@ -101,11 +109,12 @@ public:
             } else {
                 IDEAL_DEBUG_WARNING("unexpected result when reading utf8 (" << m_str << ")");
                 assert(false);
-                return;
+                return 0;
             }
             ++i;
         }
         m_charMap = (unsigned int*) realloc(m_charMap, m_size * sizeof(unsigned int));
+        return m_size;
     }
 
     void ref()
@@ -150,6 +159,7 @@ public:
     char         *m_str;
     unsigned int *m_charMap;
     unsigned int  m_size;
+    bool          m_sizeCalculated;
     unsigned int  m_refs;
 };
 
@@ -198,6 +208,7 @@ String::String(const char *str, size_t n)
         }
         d->m_str[curr] = '\0';
         d->m_size = count;
+        d->m_sizeCalculated = true;
         if (curr < (n == npos ? rawLength * 4 : n * 4)) {
             d->m_str = (char*) realloc(d->m_str, curr + 1);
         }
@@ -221,6 +232,7 @@ String::String(Char c)
     d->m_charMap = new unsigned int[1];
     d->m_charMap[0] = 0;
     d->m_size = 1;
+    d->m_sizeCalculated = true;
 }
 
 String::~String()
@@ -240,21 +252,22 @@ void String::clear()
     delete[] d->m_charMap;
     d->m_charMap = 0;
     d->m_size = 0;
+    d->m_sizeCalculated = true;
 }
 
 bool String::empty() const
 {
-    return d->m_size == 0;
+    return d->calculateSize() == 0;
 }
 
 size_t String::size() const
 {
-    return d->m_size;
+    return d->calculateSize();
 }
 
 bool String::contains(Char c) const
 {
-    for (unsigned int i = 0; i < d->m_size; ++i) {
+    for (unsigned int i = 0; i < d->calculateSize(); ++i) {
         if (d->getCharAt(i) == c) {
             return true;
         }
@@ -264,7 +277,7 @@ bool String::contains(Char c) const
 
 size_t String::find(Char c) const
 {
-    for (unsigned int i = 0; i < d->m_size; ++i) {
+    for (unsigned int i = 0; i < d->calculateSize(); ++i) {
         if (d->getCharAt(i) == c) {
             return i;
         }
@@ -274,12 +287,12 @@ size_t String::find(Char c) const
 
 size_t String::rfind(Char c) const
 {
-    for (unsigned int i = d->m_size - 1; i > 0; --i) {
+    for (unsigned int i = d->calculateSize() - 1; i > 0; --i) {
         if (d->getCharAt(i) == c) {
             return i;
         }
     }
-    if (d->m_size && d->getCharAt(0) == c) {
+    if (d->calculateSize() && d->getCharAt(0) == c) {
         return 0;
     }
     return npos;
@@ -287,7 +300,7 @@ size_t String::rfind(Char c) const
 
 size_t String::find(const String &str) const
 {
-    if (!d->m_size || !str.d->m_size || str.d->m_size > d->m_size) {
+    if (!d->calculateSize() || !str.d->calculateSize() || str.d->m_size > d->m_size) {
         return npos;
     }
     const unsigned int offset = str.d->m_size - 1;
@@ -321,7 +334,7 @@ const char *String::data() const
 
 String String::substr(size_t pos, size_t n) const
 {
-    if (pos < d->m_size) {
+    if (pos < d->calculateSize()) {
         return String(&d->m_str[d->m_charMap[pos]], n);
     }
     return String();
@@ -335,7 +348,7 @@ int String::compare(const char *s) const
 List<String> String::split(Char separator) const
 {
     List<String> res;
-    if (!d->m_size) {
+    if (!d->calculateSize()) {
         return res;
     }
     const int length = strlen(d->m_str);
@@ -371,7 +384,7 @@ List<String> String::split(Char separator) const
 
 Char String::operator[](unsigned int pos) const
 {
-    if (pos < d->m_size) {
+    if (pos < d->calculateSize()) {
         return d->getCharAt(pos);
     }
     return Char();
@@ -422,6 +435,7 @@ String &String::operator=(Char c)
     d->m_charMap = new unsigned int[1];
     d->m_charMap[0] = 0;
     d->m_size = 1;
+    d->m_sizeCalculated = true;
     return *this;
 }
 
@@ -441,7 +455,7 @@ String &String::operator+=(const String &str)
     };
     FragmentedValue fragmentedValue;
     unsigned int pos = oldRawLength;
-    for (unsigned int i = 0; i < str.d->m_size; ++i) {
+    for (unsigned int i = 0; i < str.d->calculateSize(); ++i) {
         const Char currChar = str[i];
         fragmentedValue.value = currChar.value();
         const int octetsRequired = currChar.octetsRequired();
@@ -451,7 +465,7 @@ String &String::operator+=(const String &str)
         }
     }
     d->m_str[newRawLength] = '\0';
-    d->calculateSize();
+    d->m_sizeCalculated = false;
     return *this;
 }
 
@@ -468,7 +482,7 @@ String &String::operator+=(const char *str)
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     memcpy(&d->m_str[oldRawLength], str, rawLength);
     d->m_str[newRawLength] = '\0';
-    d->calculateSize();
+    d->m_sizeCalculated = false;
     return *this;
 }
 
@@ -491,9 +505,10 @@ String &String::operator+=(Char c)
         ++pos;
     }
     d->m_str[newRawLength] = '\0';
-    d->m_charMap = (unsigned int*) realloc(d->m_charMap, (d->m_size + 1) * sizeof(unsigned int));
+    d->m_charMap = (unsigned int*) realloc(d->m_charMap, (d->calculateSize() + 1) * sizeof(unsigned int));
     d->m_charMap[d->m_size] = rawLength;
     d->m_size += 1;
+    d->m_sizeCalculated = true;
     return *this;
 }
 
