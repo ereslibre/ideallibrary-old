@@ -73,11 +73,13 @@ public:
             return m_size;
         }
         m_sizeCalculated = true;
+        delete[] m_charMap;
         if (!m_str) {
+            m_charMap = 0;
+            m_size = 0;
             return 0;
         }
         const unsigned int rawLen = strlen(m_str);
-        delete[] m_charMap;
         m_charMap = new unsigned int[rawLen];
         bzero(m_charMap, rawLen * sizeof(unsigned int));
         size_t i = 0;
