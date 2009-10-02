@@ -137,6 +137,9 @@ void UriTest::testConstructor()
 
     Uri test24("file:///home/user/imágenes/..");
     CPPUNIT_ASSERT_EQUAL(String("/home/user"), test24.path());
+
+    Uri test25("file:///home/ﭧﭪﭷﮎ/ﮕﮒ.txt");
+    CPPUNIT_ASSERT_EQUAL(String("/home/ﭧﭪﭷﮎ/ﮕﮒ.txt"), test25.path());
 }
 
 void UriTest::testDirUp()

@@ -105,17 +105,17 @@ String Uri::Private::decodeUri(const String &uri) const
             String byte1(uri[i + 1]);
             byte1 += uri[i + 2];
             const unsigned int byte1Val = strtoul(byte1.data(), 0, 16);
-            if (!(byte1Val & (1 << 7))) {
+            if (!(byte1Val & 0x80)) {
                 newChar.c = byte1Val;
                 i += 3;
-            } else if (((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && !(byte1Val & (1 << 5)))) {
+            } else if (!(byte1Val & 0x20)) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
                 const unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
                 newChar.c |= (byte1Val << 8);
                 newChar.c |= byte2Val;
                 i += 6;
-            } else if ((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && (byte1Val & (1 << 5)) && !(byte1Val & (1 << 4))) {
+            } else if (!(byte1Val & 0x10)) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
@@ -126,7 +126,7 @@ String Uri::Private::decodeUri(const String &uri) const
                 newChar.c |= (byte2Val << 8);
                 newChar.c |= byte3Val;
                 i += 9;
-            } else if ((byte1Val & (1 << 7)) && (byte1Val & (1 << 6)) && (byte1Val & (1 << 5)) && (byte1Val & (1 << 4))) {
+            } else if (!(byte1Val & 0x8)) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
