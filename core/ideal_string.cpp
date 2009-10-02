@@ -64,6 +64,7 @@ public:
         privateCopy->m_charMap = new unsigned int[calculateSize()];
         memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(unsigned int));
         privateCopy->m_size = m_size;
+        privateCopy->m_sizeCalculated = true;
         return privateCopy;
     }
 
