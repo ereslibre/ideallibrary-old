@@ -91,6 +91,9 @@ public:
       */
     size_t rfind(Char c) const;
 
+    /**
+      * @return The first occurrence of @p str. npos is returned if @p str is not found.
+      */
     size_t find(const String &str) const;
 
     /**
@@ -124,12 +127,15 @@ public:
     String &operator=(const String &str);
     String &operator=(const char *str);
     String &operator=(Char c);
+
     String &operator+=(const String &str);
     String &operator+=(const char *str);
     String &operator+=(Char c);
+
     String operator+(const String &str) const;
     String operator+(const char *str) const;
     String operator+(Char c) const;
+
     bool operator==(const String &str) const;
     bool operator!=(const String &str) const;
     bool operator<(const String &str) const;

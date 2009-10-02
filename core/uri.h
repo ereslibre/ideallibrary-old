@@ -74,6 +74,9 @@ public:
       */
     String path() const;
 
+    /**
+      * @return The filename of the URI. An empty string if no filename specified.
+      */
     String filename() const;
 
     /**
@@ -93,9 +96,16 @@ public:
       */
     bool contains(const Uri &uri) const;
 
+    /**
+      * Goes up one directory if no filename specified, or clears filename otherwise. This object
+      * is modified, and afterwards it is returned.
+      *
+      * @return This object after having being modified.
+      */
     Uri &dirUp();
 
     Uri &operator=(const Uri &uri);
+
     bool operator==(const Uri &uri) const;
     bool operator!=(const Uri &uri) const;
 
