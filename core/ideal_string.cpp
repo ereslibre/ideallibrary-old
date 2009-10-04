@@ -90,29 +90,21 @@ public:
             if (c == '\0') {
                 break;
             }
-            if (!(c & (1 << 7))) {
+            if (!(c & 0x80)) {
                 m_charMap[m_size] = i;
                 ++m_size;
-            } else if ((c & (1 << 7)) && !(c & (1 << 6))) {
-                IDEAL_DEBUG_WARNING("unexpected result when reading utf8 (" << m_str << ")");
-                assert(false);
-                return 0;
-            } else if (((c & (1 << 7)) && (c & (1 << 6)) && !(c & (1 << 5)))) {
+            } else if (!(c & 0x20)) {
                 m_charMap[m_size] = i;
                 ++i;
                 ++m_size;
-            } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && !(c & (1 << 4))) {
+            } else if (!(c & 0x10)) {
                 m_charMap[m_size] = i;
                 i += 2;
                 ++m_size;
-            } else if ((c & (1 << 7)) && (c & (1 << 6)) && (c & (1 << 5)) && (c & (1 << 4))) {
+            } else if (!(c & 0x8)) {
                 m_charMap[m_size] = i;
                 i += 3;
                 ++m_size;
-            } else {
-                IDEAL_DEBUG_WARNING("unexpected result when reading utf8 (" << m_str << ")");
-                assert(false);
-                return 0;
             }
             ++i;
         }
@@ -464,7 +456,7 @@ String &String::operator+=(const String &str)
         const int octetsRequired = currChar.octetsRequired();
         for (int j = 0; j < octetsRequired; ++j) {
             d->m_str[pos] = fragmentedValue.v[octetsRequired - j - 1];
-            pos++;
+            ++pos;
         }
     }
     d->m_str[newRawLength] = '\0';
@@ -497,21 +489,18 @@ String &String::operator+=(Char c)
         old_d->deref();
     }
     const int numberOfOctets = c.octetsRequired();
-    const int rawLength = d->m_str ? strlen(d->m_str) : 0;
-    const int newRawLength = rawLength + numberOfOctets;
+    const unsigned int rawLength = d->m_str ? strlen(d->m_str) : 0;
+    const unsigned int newRawLength = rawLength + numberOfOctets;
     const unsigned int value = c.value();
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     int pos = 0;
-    for (int i = rawLength; i < newRawLength; ++i) {
+    for (unsigned int i = rawLength; i < newRawLength; ++i) {
         const int offset = 8 * (numberOfOctets - pos - 1);
         d->m_str[i] = (value >> offset) & 0xff;
         ++pos;
     }
     d->m_str[newRawLength] = '\0';
-    d->m_charMap = (unsigned int*) realloc(d->m_charMap, (d->calculateSize() + 1) * sizeof(unsigned int));
-    d->m_charMap[d->m_size] = rawLength;
-    d->m_size += 1;
-    d->m_sizeCalculated = true;
+    d->m_sizeCalculated = false;
     return *this;
 }
 

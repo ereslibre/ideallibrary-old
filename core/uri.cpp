@@ -38,6 +38,7 @@ public:
     String decodeUri(const String &uri) const;
 
     void reconstructPath(int count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail);
+    String reconstructString(const UriTextRangeA &uriTextRange);
     void initializeContents(const String &uri);
 
     String m_uri;
@@ -156,7 +157,8 @@ void Uri::Private::reconstructPath(int count, UriPathSegmentStructA *head, UriPa
     String encodedUri;
     const char *curr = head->text.first;
     while (curr != head->text.afterLast) {
-        encodedUri += *(curr++);
+        encodedUri += *(curr);
+        ++curr;
     }
     const String currSegment = decodeUri(encodedUri);
     if (head == tail) {
@@ -168,6 +170,17 @@ void Uri::Private::reconstructPath(int count, UriPathSegmentStructA *head, UriPa
         m_path += currSegment + '/';
         reconstructPath(count + 1, head->next, tail);
     }
+}
+
+String Uri::Private::reconstructString(const UriTextRangeA &uriTextRange)
+{
+    String res;
+    const char *curr = uriTextRange.first;
+    while (curr != uriTextRange.afterLast) {
+        res += *(curr);
+        ++curr;
+    }
+    return res;
 }
 
 void Uri::Private::initializeContents(const String &uriP_)
@@ -191,10 +204,10 @@ void Uri::Private::initializeContents(const String &uriP_)
             delete[] uriString;
         }
         if (uri.scheme.first && uri.scheme.afterLast) {
-            m_scheme = String(uri.scheme.first, uri.scheme.afterLast - uri.scheme.first);
+            m_scheme = reconstructString(uri.scheme);
         }
         if (uri.userInfo.first && uri.userInfo.afterLast) {
-            const String userInfo = String(uri.userInfo.first, uri.userInfo.afterLast - uri.userInfo.first);
+            const String userInfo = reconstructString(uri.userInfo);
             const size_t sepPos = userInfo.find(':');
             if (sepPos != String::npos) {
                 m_username = userInfo.substr(0, sepPos);
@@ -204,11 +217,10 @@ void Uri::Private::initializeContents(const String &uriP_)
             }
         }
         if (uri.hostText.first && uri.hostText.afterLast) {
-            m_host = decodeUri(String(uri.hostText.first, uri.hostText.afterLast - uri.hostText.first));
+            m_host = decodeUri(reconstructString(uri.hostText));
         }
         if (uri.portText.first && uri.portText.afterLast) {
-            String port(uri.portText.first, uri.portText.afterLast - uri.portText.first);
-            m_port = atoi(port.data());
+            m_port = atoi(reconstructString(uri.portText).data());
         }
         if (uri.pathHead) {
             reconstructPath(0, uri.pathHead, uri.pathTail);
@@ -224,10 +236,10 @@ void Uri::Private::initializeContents(const String &uriP_)
             m_path = '/';
         }
         if (uri.query.first && uri.query.afterLast) {
-            m_query = String(uri.query.first, uri.query.afterLast - uri.query.first);
+            m_query = reconstructString(uri.query);
         }
         if (uri.fragment.first && uri.fragment.afterLast) {
-            m_fragment = String(uri.fragment.first, uri.fragment.afterLast - uri.fragment.afterLast);
+            m_fragment = reconstructString(uri.fragment);
         }
     }
     uriFreeUriMembersA(&uri);
