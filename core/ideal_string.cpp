@@ -30,12 +30,13 @@ class String::Private
 {
 public:
     Private()
-        : m_str(0)
+        : m_str(new char[1])
         , m_charMap(0)
         , m_size(0)
         , m_sizeCalculated(false)
         , m_refs(1)
     {
+        *m_str = '\0';
     }
 
     ~Private()

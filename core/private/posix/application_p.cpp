@@ -184,7 +184,7 @@ List<char*> Application::parseOptions(ParsingStrictness parsingStrictness, FailV
     if (failVerbosity == FailSilently) {
         opterr = 0;
     }
-    std::string shortopts;
+    String shortopts;
     struct option longopts[D_I->m_optionList.size() + 1];
     std::map<char, PrivateImpl::OptionItem> optionMap;
     List<PrivateImpl::OptionItem>::iterator it;
