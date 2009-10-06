@@ -76,11 +76,6 @@ public:
         }
         m_sizeCalculated = true;
         delete[] m_charMap;
-        if (!m_str) {
-            m_charMap = 0;
-            m_size = 0;
-            return 0;
-        }
         const unsigned int rawLen = strlen(m_str);
         m_charMap = new unsigned int[rawLen];
         bzero(m_charMap, rawLen * sizeof(unsigned int));
@@ -442,8 +437,8 @@ String &String::operator+=(const String &str)
         d = d->copy();
         old_d->deref();
     }
-    const unsigned int oldRawLength = (d->m_str ? strlen(d->m_str) : 0);
-    const unsigned int newRawLength = oldRawLength + (str.d->m_str ? strlen(str.d->m_str) : 0);
+    const unsigned int oldRawLength = strlen(d->m_str);
+    const unsigned int newRawLength = oldRawLength + strlen(str.d->m_str);
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     union FragmentedValue {
         unsigned int value;
@@ -473,7 +468,7 @@ String &String::operator+=(const char *str)
         old_d->deref();
     }
     const unsigned int rawLength = strlen(str);
-    const unsigned int oldRawLength = d->m_str ? strlen(d->m_str) : 0;
+    const unsigned int oldRawLength = strlen(d->m_str);
     const unsigned int newRawLength = oldRawLength + rawLength;
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
     memcpy(&d->m_str[oldRawLength], str, rawLength);
@@ -490,7 +485,7 @@ String &String::operator+=(Char c)
         old_d->deref();
     }
     const int numberOfOctets = c.octetsRequired();
-    const unsigned int rawLength = d->m_str ? strlen(d->m_str) : 0;
+    const unsigned int rawLength = strlen(d->m_str);
     const unsigned int newRawLength = rawLength + numberOfOctets;
     const unsigned int value = c.value();
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
@@ -531,12 +526,6 @@ bool String::operator==(const String &str) const
     if (this == &str || d == str.d) {
         return true;
     }
-    if ((!d->m_str && str.d->m_str) || (d->m_str && !str.d->m_str)) {
-        return false;
-    }
-    if (!d->m_str && !str.d->m_str) {
-        return true;
-    }
     return !strcoll(d->m_str, str.d->m_str);
 }
 
@@ -548,9 +537,6 @@ bool String::operator!=(const String &str) const
 bool String::operator<(const String &str) const
 {
     if (this == &str || d == str.d) {
-        return false;
-    }
-    if (!d->m_str || !str.d->m_str) {
         return false;
     }
     return strcoll(d->m_str, str.d->m_str) < 0;
