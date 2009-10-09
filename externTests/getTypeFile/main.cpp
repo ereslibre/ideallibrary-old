@@ -24,14 +24,13 @@
 
 using namespace IdealCore;
 
-static void printResult(File::Type type)
+static void statResult(ProtocolHandler::StatResult statResult)
 {
-    IDEAL_SDEBUG("*** Success - The type is " << type);
-}
-
-static void printError(ProtocolHandler::ErrorCode errorCode)
-{
-    IDEAL_SDEBUG("*** Error - The error code is " << errorCode);
+    if (statResult.errorCode == ProtocolHandler::NoError) {
+        IDEAL_SDEBUG("*** Success - The type is " << statResult.type);
+    } else {
+        IDEAL_SDEBUG("*** Error");
+    }
 }
 
 int main(int argc, char **argv)
@@ -39,11 +38,10 @@ int main(int argc, char **argv)
     Application app(argc, argv);
 
     File f(app.getPath(Application::Home), &app);
-    Object::connectStatic(f.typeResult, printResult);
-    Object::connectStatic(f.error, printError);
-    Thread *type = f.type(Thread::Joinable);
-    type->exec();
-    type->join();
+    Object::connectStatic(f.statResult, statResult);
+    Thread *stat = f.stat(Thread::Joinable);
+    stat->exec();
+    stat->join();
 
     return 0;
 }
