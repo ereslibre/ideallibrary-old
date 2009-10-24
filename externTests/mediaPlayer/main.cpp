@@ -27,7 +27,7 @@ class MediaButton
 public:
     MediaButton(Object *parent);
 
-     IDEAL_SIGNAL(clicked);
+    IDEAL_SIGNAL(clicked);
 };
 
 MediaButton::MediaButton(Object *parent)
