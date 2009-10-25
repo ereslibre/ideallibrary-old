@@ -19,45 +19,12 @@
 # Boston, MA 02110-1301, USA.
 #
 
+import os
+
 def configure(conf):
     conf.sub_config(['ownModulesTest',
                      'pathTest'])
 
 def build(bld):
-    bld.add_subdirs(['basicApp',
-                     'callAfterTest',
-                     'connectionTest',
-                     'crossedDeletions',
-                     'deleteAfterSignal',
-                     'fileTest',
-                     'fileTest2',
-                     'fileTest3',
-                     'guiTest',
-                     'guiTest2',
-                     'idleTest',
-                     'leakTest',
-                     'mkdirTest',
-                     'multiSlotTest',
-                     'nonBlockingGUI',
-                     'ownModulesTest',
-                     'pathTest',
-                     'processTest',
-                     'protocolHandlerTest',
-                     'reparentTest',
-                     'sigpipeTest',
-                     'sigsegvTest',
-                     'stringTest',
-                     'threadTest',
-                     'threadTest2',
-                     'threadTest3',
-                     'threadTest4',
-                     'threadTest5',
-                     'threadTest6',
-                     'threadTest7',
-                     'threadTest8',
-                     'threadTest9',
-                     'threadTest10',
-                     'timerTest',
-                     'timerTest2',
-                     'uriTest',
-                     'virtualTest'])
+    bld.add_subdirs([name for name in os.listdir(bld.curdir)
+                     if os.path.isdir(os.path.join(bld.curdir, name))])
