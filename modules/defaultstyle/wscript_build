@@ -19,9 +19,12 @@
 # Boston, MA 02110-1301, USA.
 #
 
-def configure(conf):
-    pass
-
-def build(bld):
-    bld.add_subdirs('builtinprotocolhandlers')
-    bld.add_subdirs('defaultstyle')
+bld.new_task_gen(
+    features     = 'cxx cshlib',
+    source       = bld.glob('*.cpp'),
+    target       = 'defaultstyle',
+    includes     = '../..',
+    uselib_local = ['idealcore',
+                    'idealgui'],
+    install_path = '${PREFIX}/lib/ideal/modules'
+)

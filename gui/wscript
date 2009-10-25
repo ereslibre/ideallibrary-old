@@ -28,19 +28,19 @@ def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
         source       = bld.glob('*.cpp') +
-                       bld.glob('private/xorg/*.cpp'),
+        bld.glob('private/xorg/*.cpp'),
         target       = 'idealgui',
         includes     = ['..',
                         '../core'],
         uselib       = 'CAIRO-XLIB-XRENDER',
         uselib_local = 'idealcore',
         vnum         = bld.env['LIBVERSION']
-    )
+        )
     bld.new_task_gen('subst',
-        source = 'idealgui.pc.in',
-        target = 'idealgui.pc',
-        dict   = {'PREFIX' : bld.env['PREFIX'], 'LIBS' : '-lidealgui', 'VERSION' : bld.env['LIBVERSION']}
-    )
+                     source = 'idealgui.pc.in',
+                     target = 'idealgui.pc',
+                     dict   = {'PREFIX' : bld.env['PREFIX'], 'LIBS' : '-lidealgui', 'VERSION' : bld.env['LIBVERSION']}
+                     )
     bld.install_files('${PREFIX}/lib/pkgconfig', 'idealgui.pc')
     bld.install_files('${PREFIX}/include/ideal/gui', '*.h')
     bld.install_files('${PREFIX}/include/ideal/gui/interfaces', 'interfaces/*.h')

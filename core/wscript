@@ -41,22 +41,22 @@ def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
         source       = bld.glob('*.cpp') +
-                       bld.glob('interfaces/*.cpp') +
-                       bld.glob('private/*.cpp') +
-                       bld.glob('private/posix/*.cpp'),
+        bld.glob('interfaces/*.cpp') +
+        bld.glob('private/*.cpp') +
+        bld.glob('private/posix/*.cpp'),
         target       = 'idealcore',
         includes     = '..',
         uselib       = ['CORE',
                         'LIBURIPARSER'],
         vnum         = bld.env['LIBVERSION']
-    )
+        )
     bld.new_task_gen('subst',
-        source = 'idealcore.pc.in',
-        target = 'idealcore.pc',
-        dict   = {'PREFIX' : bld.env['PREFIX'],
-                  'LIBS' : '-lidealcore',
-                  'VERSION' : bld.env['LIBVERSION']}
-    )
+                     source = 'idealcore.pc.in',
+                     target = 'idealcore.pc',
+                     dict   = {'PREFIX' : bld.env['PREFIX'],
+                               'LIBS' : '-lidealcore',
+                               'VERSION' : bld.env['LIBVERSION']}
+                     )
     if not bld.env['RELEASE']:
         bld.add_subdirs('tests')
     bld.install_files('${PREFIX}/lib/pkgconfig', 'idealcore.pc')

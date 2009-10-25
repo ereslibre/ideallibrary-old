@@ -19,9 +19,12 @@
 # Boston, MA 02110-1301, USA.
 #
 
-def configure(conf):
-    pass
-
-def build(bld):
-    bld.add_subdirs('builtinprotocolhandlers')
-    bld.add_subdirs('defaultstyle')
+bld.new_task_gen(
+    features     = 'cxx cprogram',
+    source       = 'main.cpp',
+    target       = 'sigpipeTest',
+    includes     = '../..',
+    uselib       = 'IDEAL',
+    uselib_local = 'idealcore',
+    install_path = None
+    )
