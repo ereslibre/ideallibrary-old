@@ -121,12 +121,12 @@ public:
         }
     }
 
-    int refCount()
+    int refCount() const
     {
         return m_refs;
     }
 
-    Char getCharAt(unsigned int pos)
+    Char getCharAt(unsigned int pos) const
     {
         Char res;
         const unsigned int mappedPos = m_charMap[pos];

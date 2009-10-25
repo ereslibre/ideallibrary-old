@@ -30,7 +30,42 @@ public:
     Private()
         : m_port(-1)
         , m_isValidUri(false)
+        , m_refs(1)
     {
+    }
+
+    Private *copy()
+    {
+        Private *privateCopy = new Private;
+        privateCopy->m_uri = m_uri;
+        privateCopy->m_scheme = m_scheme;
+        privateCopy->m_username = m_username;
+        privateCopy->m_password = m_password;
+        privateCopy->m_host = m_host;
+        privateCopy->m_port = m_port;
+        privateCopy->m_path = m_path;
+        privateCopy->m_query = m_query;
+        privateCopy->m_fragment = m_fragment;
+        privateCopy->m_isValidUri = m_isValidUri;
+        return privateCopy;
+    }
+
+    void ref()
+    {
+        ++m_refs;
+    }
+
+    void deref()
+    {
+        --m_refs;
+        if (!m_refs) {
+            delete this;
+        }
+    }
+
+    int refCount() const
+    {
+        return m_refs;
     }
 
     String getHex(Char ch) const;
@@ -41,16 +76,17 @@ public:
     String reconstructString(const UriTextRangeA &uriTextRange);
     void initializeContents(const String &uri);
 
-    String m_uri;
-    String m_scheme;
-    String m_username;
-    String m_password;
-    String m_host;
-    int    m_port;
-    String m_path;
-    String m_query;
-    String m_fragment;
-    bool   m_isValidUri;
+    String       m_uri;
+    String       m_scheme;
+    String       m_username;
+    String       m_password;
+    String       m_host;
+    int          m_port;
+    String       m_path;
+    String       m_query;
+    String       m_fragment;
+    bool         m_isValidUri;
+    unsigned int m_refs;
 };
 
 const String uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -250,6 +286,12 @@ Uri::Uri()
 {
 }
 
+Uri::Uri(const Uri &uri)
+{
+    uri.d->ref();
+    d = uri.d;
+}
+
 Uri::Uri(const String &uri)
     : d(new Private)
 {
@@ -270,21 +312,6 @@ Uri::Uri(const char *uri)
     : d(new Private)
 {
     d->initializeContents(uri);
-}
-
-Uri::Uri(const Uri &uri)
-    : d(new Private)
-{
-    d->m_uri = uri.d->m_uri;
-    d->m_scheme = uri.d->m_scheme;
-    d->m_username = uri.d->m_username;
-    d->m_password = uri.d->m_password;
-    d->m_host = uri.d->m_host;
-    d->m_port = uri.d->m_port;
-    d->m_path = uri.d->m_path;
-    d->m_query = uri.d->m_query;
-    d->m_fragment = uri.d->m_fragment;
-    d->m_isValidUri = uri.d->m_isValidUri;
 }
 
 Uri::~Uri()
@@ -351,6 +378,11 @@ Uri &Uri::dirUp()
     if (d->m_path.empty() || !d->m_path.compare("/")) {
         return *this;
     }
+    if (d->refCount() > 1) {
+        Private *const old_d = d;
+        d = d->copy();
+        old_d->deref();
+    }
     size_t size = d->m_uri.size();
     if (d->m_uri[size - 1] == '/') {
         d->m_uri = d->m_uri.substr(0, size - 1);
@@ -375,35 +407,32 @@ Uri &Uri::operator=(const Uri &uri)
     if (this == &uri) {
         return *this;
     }
-    d->m_uri = uri.d->m_uri;
-    d->m_scheme = uri.d->m_scheme;
-    d->m_username = uri.d->m_username;
-    d->m_password = uri.d->m_password;
-    d->m_host = uri.d->m_host;
-    d->m_port = uri.d->m_port;
-    d->m_path = uri.d->m_path;
-    d->m_query = uri.d->m_query;
-    d->m_fragment = uri.d->m_fragment;
-    d->m_isValidUri = uri.d->m_isValidUri;
+    d->deref();
+    uri.d->ref();
+    d = uri.d;
+    return *this;
+}
+
+Uri &Uri::operator=(const char *uri)
+{
+    if (!uri) {
+        return *this;
+    }
+    if (d->refCount() > 1) {
+        Private *const old_d = d;
+        d = d->copy();
+        old_d->deref();
+    }
+    d->initializeContents(uri);
     return *this;
 }
 
 bool Uri::operator==(const Uri &uri) const
 {
-    if (this == &uri) {
+    if (this == &uri || d == uri.d) {
         return true;
     }
-    return d->m_uri == uri.d->m_uri &&
-           d->m_scheme == uri.d->m_scheme &&
-           d->m_username == uri.d->m_username &&
-           d->m_password == uri.d->m_password &&
-           d->m_host == uri.d->m_host &&
-           d->m_port == uri.d->m_port &&
-           d->m_path == uri.d->m_path &&
-           d->m_query == uri.d->m_query &&
-           d->m_fragment == uri.d->m_fragment &&
-           d->m_isValidUri == uri.d->m_isValidUri;
-
+    return d->m_uri == uri.d->m_uri;
 }
 
 bool Uri::operator!=(const Uri &uri) const

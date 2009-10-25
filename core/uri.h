@@ -38,10 +38,10 @@ class IDEAL_EXPORT Uri
 {
 public:
     Uri();
+    Uri(const Uri &uri);
     Uri(const String &uri);
     Uri(const String &path, const String &filename);
     Uri(const char *uri);
-    Uri(const Uri &uri);
     virtual ~Uri();
 
     /**
@@ -105,13 +105,14 @@ public:
     Uri &dirUp();
 
     Uri &operator=(const Uri &uri);
+    Uri &operator=(const char *uri);
 
     bool operator==(const Uri &uri) const;
     bool operator!=(const Uri &uri) const;
 
 private:
     class Private;
-    Private *const d;
+    Private *d;
 };
 
 }
