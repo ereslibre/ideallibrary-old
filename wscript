@@ -28,8 +28,8 @@ APPNAME    = 'ideallibrary'
 srcdir     = '.'
 blddir     = 'build'
 
-subdirs_d  = 'src modules tests'
-subdirs_r  = 'src gui modules'
+subdirs_d  = 'src/core src/gui modules tests'
+subdirs_r  = 'src/core src/gui modules'
 
 checkCompilerFeatures = '''struct A {}; struct B {};
                            template <typename... Type>
@@ -70,6 +70,10 @@ def configure(conf):
                uselib = 'CONFTESTS',
                mandatory = 1)
     conf.check(fragment = checkBoostAny, msg = 'Checking for boost::any', mandatory = 1)
+    if Options.options.release:
+        conf.sub_config(subdirs_r)
+    else:
+        conf.sub_config(subdirs_d)
     # set environment
     conf.env['RELEASE'] = Options.options.release
     conf.env['CXXFLAGS'] += ['-std=c++0x', '-fvisibility=hidden']
@@ -83,19 +87,18 @@ def configure(conf):
     # uselib stuff
     conf.env['RPATH_IDEAL'] = conf.env['PREFIX'] + '/lib'
     if Options.options.release:
-        conf.sub_config(subdirs_r)
-    else:
-        conf.sub_config(subdirs_d)
-    if Options.options.release:
         print '*** Going to compile in RELEASE mode'
         conf.env['CXXFLAGS'] += ['-O2', '-w']
     else:
         print '*** Going to compile in DEBUG mode (default)'
         print '*** To compile in RELEASE mode call "waf configure --release [more-options]"'
         conf.env['CXXFLAGS'] += ['-O', '-g', '-Wall', '-Werror']
+    conf.write_config_header('src/ideal_conf.h')
 
 def build(bld):
     bld.env['LIBVERSION'] = LIBVERSION
+    bld.install_files('${PREFIX}/include/ideal', 'src/ideal_conf.h')
+    bld.install_files('${PREFIX}/include/ideal', 'src/ideal_export.h')
     if bld.env['RELEASE']:
         bld.add_subdirs(subdirs_r)
     else:
