@@ -41,9 +41,9 @@ def build(bld):
     bld.new_task_gen(
         features     = 'cxx cshlib',
         source       = bld.glob('*.cpp') +
-        bld.glob('interfaces/*.cpp') +
-        bld.glob('private/*.cpp') +
-        bld.glob('private/posix/*.cpp'),
+                       bld.glob('interfaces/*.cpp') +
+                       bld.glob('private/*.cpp') +
+                       bld.glob('private/posix/*.cpp'),
         target       = 'idealcore',
         includes     = '..',
         uselib       = ['CORE',
