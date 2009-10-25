@@ -24,7 +24,7 @@ bld.new_task_gen(
     source       = 'main.cpp',
     target       = 'virtualTest',
     includes     = ['.',
-                    '../..'],
+                    '../../src'],
     uselib       = 'IDEAL',
     uselib_local = 'idealcore',
     install_path = None

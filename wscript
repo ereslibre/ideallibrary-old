@@ -28,8 +28,8 @@ APPNAME    = 'ideallibrary'
 srcdir     = '.'
 blddir     = 'build'
 
-subdirs_d  = 'core gui modules tests'
-subdirs_r  = 'core gui modules'
+subdirs_d  = 'src modules tests'
+subdirs_r  = 'src gui modules'
 
 checkCompilerFeatures = '''struct A {}; struct B {};
                            template <typename... Type>
@@ -70,20 +70,9 @@ def configure(conf):
                uselib = 'CONFTESTS',
                mandatory = 1)
     conf.check(fragment = checkBoostAny, msg = 'Checking for boost::any', mandatory = 1)
-    if Options.options.release:
-        conf.sub_config(subdirs_r)
-    else:
-        conf.sub_config(subdirs_d)
     # set environment
     conf.env['RELEASE'] = Options.options.release
     conf.env['CXXFLAGS'] += ['-std=c++0x', '-fvisibility=hidden']
-    if Options.options.release:
-        print '*** Going to compile in RELEASE mode'
-        conf.env['CXXFLAGS'] += ['-O2', '-w']
-    else:
-        print '*** Going to compile in DEBUG mode (default)'
-        print '*** To compile in RELEASE mode call "waf configure --release [more-options]"'
-        conf.env['CXXFLAGS'] += ['-O', '-g', '-Wall', '-Werror']
     # write config file
     conf.define('IDEALLIBRARY_PREFIX', conf.env['PREFIX'])
     conf.define('IDEALLIBRARY_VERSION', VERSION)
@@ -91,9 +80,19 @@ def configure(conf):
         conf.define('NDEBUG', 1)
     else:
         conf.undefine('NDEBUG')
-    conf.write_config_header('ideal_conf.h')
     # uselib stuff
     conf.env['RPATH_IDEAL'] = conf.env['PREFIX'] + '/lib'
+    if Options.options.release:
+        conf.sub_config(subdirs_r)
+    else:
+        conf.sub_config(subdirs_d)
+    if Options.options.release:
+        print '*** Going to compile in RELEASE mode'
+        conf.env['CXXFLAGS'] += ['-O2', '-w']
+    else:
+        print '*** Going to compile in DEBUG mode (default)'
+        print '*** To compile in RELEASE mode call "waf configure --release [more-options]"'
+        conf.env['CXXFLAGS'] += ['-O', '-g', '-Wall', '-Werror']
 
 def build(bld):
     bld.env['LIBVERSION'] = LIBVERSION
@@ -101,8 +100,6 @@ def build(bld):
         bld.add_subdirs(subdirs_r)
     else:
         bld.add_subdirs(subdirs_d)
-    bld.install_files('${PREFIX}/include/ideal', 'ideal_conf.h')
-    bld.install_files('${PREFIX}/include/ideal', 'ideal_export.h')
 
 def check(context):
     ut = UnitTest.unit_test()

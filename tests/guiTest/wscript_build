@@ -23,7 +23,7 @@ bld.new_task_gen(
     features     = 'cxx cprogram',
     source       = 'main.cpp',
     target       = 'guiTest',
-    includes     = '../..',
+    includes     = '../../src',
     uselib       = 'IDEAL',
     uselib_local = 'idealcore idealgui',
     install_path = None

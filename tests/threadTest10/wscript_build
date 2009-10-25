@@ -23,7 +23,7 @@ bld.new_task_gen(
     features     = 'cxx cprogram',
     source       = 'main.cpp',
     target       = 'threadTest10',
-    includes     = '../..',
+    includes     = '../../src',
     uselib       = 'IDEAL',
     uselib_local = 'idealcore',
     install_path = None
