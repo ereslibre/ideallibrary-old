@@ -18,17 +18,18 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/uri.h>
+#include <core/reg_exp.h>
 
 using namespace IdealCore;
 
 int main(int argc, char **argv)
 {
     {
-        Uri uri("http://www.google.com");
-        IDEAL_SDEBUG("Uri is: " << uri.uri());
-        IDEAL_SDEBUG("Scheme is: " << uri.scheme());
-        IDEAL_SDEBUG("Host is: " << uri.host());
+        RegExp regExp("^abc$");
+
+        IDEAL_SDEBUG("regexp is: ^abc$");
+        IDEAL_SDEBUG("abc matches? " << (regExp.match("abc") ? "yes" : "no"));
+        IDEAL_SDEBUG("aabc matches? " << (regExp.match("aabc") ? "yes" : "no"));
     }
     return 0;
 }

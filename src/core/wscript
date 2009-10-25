@@ -27,10 +27,25 @@ checkInotify = '''#include <sys/inotify.h>
                       return 0;
                   }'''
 
+checkBoostAny = '''#include <boost/any.hpp>
+                   int main(int argc, char **argv)
+                   {
+                       return 0;
+                   }'''
+
+checkBoostRegex = '''#include <boost/regex.hpp>
+                    int main(int argc, char **argv)
+                    {
+                        return 0;
+                    }'''
+
 def configure(conf):
+    conf.check(fragment = checkBoostAny, msg = 'Checking for boost::any', mandatory = 1)
+    conf.check(fragment = checkBoostRegex, msg = 'Checking for boost::regex', mandatory = 1)
     if not Options.options.release:
         conf.sub_config('tests')
     conf.env['LIB_CORE'] = ['dl', 'pthread']
+    conf.env['LIB_BOOST'] = ['boost_regex']
     conf.check_cfg(package = 'liburiparser', args = '--cflags --libs')
     if not conf.env['HAVE_LIBURIPARSER'] == 1:
         conf.fatal('Cannot continue without liburiparser. Please, install the development package and try again')
@@ -47,7 +62,8 @@ def build(bld):
         target       = 'idealcore',
         includes     = '..',
         uselib       = ['CORE',
-                        'LIBURIPARSER'],
+                        'LIBURIPARSER',
+                        'BOOST'],
         vnum         = bld.env['LIBVERSION']
         )
     bld.new_task_gen('subst',

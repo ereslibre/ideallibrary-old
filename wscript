@@ -44,12 +44,6 @@ checkCompilerFeatures = '''struct A {}; struct B {};
                                return 0;
                            }'''
 
-checkBoostAny = '''#include <boost/any.hpp>
-                   int main(int argc, char **argv)
-                   {
-                       return 0;
-                   }'''
-
 def init():
     pass
 
@@ -69,7 +63,6 @@ def configure(conf):
                msg = 'Checking whether ' + conf.env['COMPILER_CXX'] + ' supports C++0x',
                uselib = 'CONFTESTS',
                mandatory = 1)
-    conf.check(fragment = checkBoostAny, msg = 'Checking for boost::any', mandatory = 1)
     if Options.options.release:
         conf.sub_config(subdirs_r)
     else:

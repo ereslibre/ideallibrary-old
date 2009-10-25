@@ -18,17 +18,36 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/uri.h>
+#ifndef REG_EXP_H
+#define REG_EXP_H
 
-using namespace IdealCore;
+#include <ideal_export.h>
+#include <core/ideal_string.h>
 
-int main(int argc, char **argv)
+namespace IdealCore {
+
+/**
+  * @class RegExp reg_exp.h core/reg_exp.h
+  *
+  * This class represents a regular expression.
+  *
+  * @author Rafael Fernández López <ereslibre@ereslibre.es>
+  */
+class IDEAL_EXPORT RegExp
 {
-    {
-        Uri uri("http://www.google.com");
-        IDEAL_SDEBUG("Uri is: " << uri.uri());
-        IDEAL_SDEBUG("Scheme is: " << uri.scheme());
-        IDEAL_SDEBUG("Host is: " << uri.host());
-    }
-    return 0;
+public:
+    RegExp();
+    RegExp(const RegExp &regExp);
+    RegExp(const String &regExp);
+    virtual ~RegExp();
+
+    bool match(const String &str) const;
+
+private:
+    class Private;
+    Private *d;
+};
+
 }
+
+#endif //REG_EXP_H

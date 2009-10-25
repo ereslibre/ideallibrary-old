@@ -18,17 +18,45 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <core/uri.h>
+#include "reg_exp.h"
 
-using namespace IdealCore;
+#include <boost/regex.hpp>
 
-int main(int argc, char **argv)
+namespace IdealCore {
+
+class RegExp::Private
 {
-    {
-        Uri uri("http://www.google.com");
-        IDEAL_SDEBUG("Uri is: " << uri.uri());
-        IDEAL_SDEBUG("Scheme is: " << uri.scheme());
-        IDEAL_SDEBUG("Host is: " << uri.host());
-    }
-    return 0;
+public:
+    String regExp;
+};
+
+RegExp::RegExp()
+    : d(new Private)
+{
+}
+
+RegExp::RegExp(const RegExp &regExp)
+    : d(new Private)
+{
+    d->regExp = regExp.d->regExp;
+}
+
+RegExp::RegExp(const String &regExp)
+    : d(new Private)
+{
+    d->regExp = regExp;
+}
+
+RegExp::~RegExp()
+{
+    delete d;
+}
+
+bool RegExp::match(const String &str) const
+{
+    boost::regex regExp(d->regExp.data());
+    boost::cmatch what;
+    return boost::regex_match(str.data(), what, regExp);
+}
+
 }
