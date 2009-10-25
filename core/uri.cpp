@@ -316,7 +316,7 @@ Uri::Uri(const char *uri)
 
 Uri::~Uri()
 {
-    delete d;
+    d->deref();
 }
 
 String Uri::scheme() const
