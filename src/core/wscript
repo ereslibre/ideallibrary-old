@@ -33,12 +33,6 @@ checkBoostAny = '''#include <boost/any.hpp>
                        return 0;
                    }'''
 
-checkBoostRegex = '''#include <boost/regex.hpp>
-                    int main(int argc, char **argv)
-                    {
-                        return 0;
-                    }'''
-
 def configure(conf):
     conf.check(fragment = checkBoostAny, msg = 'Checking for boost::any', mandatory = 1)
     if not Options.options.release:
