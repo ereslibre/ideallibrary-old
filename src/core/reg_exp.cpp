@@ -20,7 +20,7 @@
 
 #include "reg_exp.h"
 
-#include <boost/regex.hpp>
+#include <pcrecpp.h>
 
 namespace IdealCore {
 
@@ -54,9 +54,8 @@ RegExp::~RegExp()
 
 bool RegExp::match(const String &str) const
 {
-    boost::regex regExp(d->regExp.data());
-    boost::cmatch what;
-    return boost::regex_match(str.data(), what, regExp);
+    pcrecpp::RE regexp(d->regExp.data(), pcrecpp::UTF8());
+    return regexp.FullMatch(str.data());
 }
 
 }

@@ -40,8 +40,32 @@ int main(int argc, char **argv)
     }
     IDEAL_SDEBUG("");
     {
+        RegExp regExp("^á*$");
+        IDEAL_SDEBUG("regexp is: ^á*$");
+        IDEAL_SDEBUG("á matches? " << (regExp.match("á") ? "yes" : "no"));
+        IDEAL_SDEBUG("áá matches? " << (regExp.match("áá") ? "yes" : "no"));
+        IDEAL_SDEBUG("ááb matches? " << (regExp.match("ááb") ? "yes" : "no"));
+    }
+    IDEAL_SDEBUG("");
+    {
         RegExp regExp("(á)*(ñ)*b*");
-        IDEAL_SDEBUG("regexp is: a*(ñ)*b*");
+        IDEAL_SDEBUG("regexp is: (á)*(ñ)*b*");
+        IDEAL_SDEBUG("áb matches? " << (regExp.match("áb") ? "yes" : "no"));
+        IDEAL_SDEBUG("áñb matches? " << (regExp.match("áñb") ? "yes" : "no"));
+        IDEAL_SDEBUG("áñ matches? " << (regExp.match("áñ") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñb matches? " << (regExp.match("ñb") ? "yes" : "no"));
+        IDEAL_SDEBUG("á matches? " << (regExp.match("á") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñ matches? " << (regExp.match("ñ") ? "yes" : "no"));
+        IDEAL_SDEBUG("b matches? " << (regExp.match("b") ? "yes" : "no"));
+        IDEAL_SDEBUG("ááááá matches? " << (regExp.match("ááááá") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñññññ matches? " << (regExp.match("ñññññ") ? "yes" : "no"));
+        IDEAL_SDEBUG("áááááñññññ matches? " << (regExp.match("áááááñññññ") ? "yes" : "no"));
+        IDEAL_SDEBUG("áááááñññññbbbbb matches? " << (regExp.match("áááááñññññbbbbb") ? "yes" : "no"));
+    }
+    IDEAL_SDEBUG("");
+    {
+        RegExp regExp("á*ñ*b*");
+        IDEAL_SDEBUG("regexp is: á*ñ*b*");
         IDEAL_SDEBUG("áb matches? " << (regExp.match("áb") ? "yes" : "no"));
         IDEAL_SDEBUG("áñb matches? " << (regExp.match("áñb") ? "yes" : "no"));
         IDEAL_SDEBUG("áñ matches? " << (regExp.match("áñ") ? "yes" : "no"));
