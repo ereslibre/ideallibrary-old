@@ -90,9 +90,8 @@ void RegExp::setRegExp(const String &regExp)
         return;
     }
     if (d->refCount() > 1) {
-        Private *const old_d = d;
-        d = d->copy();
-        old_d->deref();
+        d->deref();
+        d = new Private;
     }
     d->m_regExp = pcrecpp::RE(regExp.data());
 }
