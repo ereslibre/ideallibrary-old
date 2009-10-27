@@ -44,6 +44,7 @@ public:
     void setRegExp(const String &regExp);
     String regExp() const;
 
+    bool partialMatch(const String &str) const;
     bool fullMatch(const String &str) const;
 
     RegExp &operator=(const RegExp &regExp);
@@ -51,6 +52,7 @@ public:
 
     bool operator==(const RegExp &regExp) const;
     bool operator!=(const RegExp &regExp) const;
+
 private:
     class Private;
     Private *d;

@@ -101,6 +101,11 @@ String RegExp::regExp() const
     return d->m_regExp.pattern();
 }
 
+bool RegExp::partialMatch(const String &str) const
+{
+    return d->m_regExp.PartialMatch(str.data());
+}
+
 bool RegExp::fullMatch(const String &str) const
 {
     return d->m_regExp.FullMatch(str.data());
