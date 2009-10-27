@@ -419,9 +419,8 @@ Uri &Uri::operator=(const char *uri)
         return *this;
     }
     if (d->refCount() > 1) {
-        Private *const old_d = d;
-        d = d->copy();
-        old_d->deref();
+        d->deref();
+        d = new Private;
     }
     d->initializeContents(uri);
     return *this;
