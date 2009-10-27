@@ -33,7 +33,7 @@ public:
         : m_str(new char[1])
         , m_charMap(0)
         , m_size(0)
-        , m_sizeCalculated(false)
+        , m_sizeCalculated(true)
         , m_refs(1)
     {
         *m_str = '\0';
@@ -239,16 +239,17 @@ String::~String()
 void String::clear()
 {
     if (d->refCount() > 1) {
-        Private *const old_d = d;
-        d = d->copy();
-        old_d->deref();
+        d->deref();
+        d = new Private;
+    } else {
+        delete[] d->m_str;
+        d->m_str = new char[1];
+        *d->m_str = '\0';
+        delete[] d->m_charMap;
+        d->m_charMap = 0;
+        d->m_size = 0;
+        d->m_sizeCalculated = true;
     }
-    delete[] d->m_str;
-    d->m_str = 0;
-    delete[] d->m_charMap;
-    d->m_charMap = 0;
-    d->m_size = 0;
-    d->m_sizeCalculated = true;
 }
 
 bool String::empty() const
@@ -403,9 +404,8 @@ String &String::operator=(const char *str)
         return *this;
     }
     if (d->refCount() > 1) {
-        Private *const old_d = d;
-        d = d->copy();
-        old_d->deref();
+        d->deref();
+        d = new Private;
     }
     d->init(str);
     return *this;
@@ -414,9 +414,8 @@ String &String::operator=(const char *str)
 String &String::operator=(Char c)
 {
     if (d->refCount() > 1) {
-        Private *const old_d = d;
-        d = d->copy();
-        old_d->deref();
+        d->deref();
+        d = new Private;
     }
     const int numberOfOctets = c.octetsRequired();
     delete[] d->m_str;
