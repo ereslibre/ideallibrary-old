@@ -23,7 +23,7 @@ bld.new_task_gen(
     features     = 'cxx cprogram',
     source       = 'main.cpp',
     target       = 'callAfterTest',
-    includes     = '../../src',
+    includes     = '../..',
     uselib       = 'IDEAL',
     uselib_local = 'idealcore',
     install_path = None

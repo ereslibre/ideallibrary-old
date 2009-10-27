@@ -29,7 +29,7 @@ def build(bld):
         source       = 'main.cpp',
         target       = 'pathTest',
         includes     = ['.',
-                        '../../src'],
+                        '../..'],
         uselib       = 'IDEAL',
         uselib_local = 'idealcore',
         install_path = None

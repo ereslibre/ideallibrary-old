@@ -24,7 +24,7 @@ bld.new_task_gen(
     source       = bld.glob('*.cpp') +
                    bld.glob('posix/*.cpp'),
     target       = 'builtinprotocolhandlers',
-    includes     = '../../src',
+    includes     = '../..',
     uselib_local = 'idealcore',
     install_path = '${PREFIX}/lib/ideal/modules'
 )

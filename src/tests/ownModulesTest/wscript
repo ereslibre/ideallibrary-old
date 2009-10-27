@@ -29,7 +29,7 @@ def build(bld):
         source       = 'main.cpp',
         target       = 'ownModulesTest',
         includes     = ['.',
-                        '../../src'],
+                        '../..'],
         uselib       = 'IDEAL',
         uselib_local = 'idealcore',
         install_path = None
@@ -38,7 +38,7 @@ def build(bld):
         features     = 'cxx cshlib',
         source       = 'module.cpp',
         target       = 'ownModulesTestModule',
-        includes     = '../../src',
+        includes     = '../..',
         uselib       = 'IDEAL',
         uselib_local = 'idealcore',
         install_path = '${PREFIX}/lib/ownModulesTest/modules'
