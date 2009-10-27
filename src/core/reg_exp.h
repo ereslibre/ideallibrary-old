@@ -41,8 +41,16 @@ public:
     RegExp(const String &regExp);
     virtual ~RegExp();
 
-    bool match(const String &str) const;
+    void setRegExp(const String &regExp);
+    String regExp() const;
 
+    bool fullMatch(const String &str) const;
+
+    RegExp &operator=(const RegExp &regExp);
+    RegExp &operator=(const String &regExp);
+
+    bool operator==(const RegExp &regExp) const;
+    bool operator!=(const RegExp &regExp) const;
 private:
     class Private;
     Private *d;

@@ -63,7 +63,7 @@ public:
         }
     }
 
-    int refCount() const
+    unsigned int refCount() const
     {
         return m_refs;
     }
@@ -404,7 +404,7 @@ Uri &Uri::dirUp()
 
 Uri &Uri::operator=(const Uri &uri)
 {
-    if (this == &uri) {
+    if (this == &uri || d == uri.d) {
         return *this;
     }
     d->deref();

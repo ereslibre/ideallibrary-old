@@ -121,7 +121,7 @@ public:
         }
     }
 
-    int refCount() const
+    unsigned int refCount() const
     {
         return m_refs;
     }
@@ -163,6 +163,11 @@ String::String(const String &str)
 {
     str.d->ref();
     d = str.d;
+}
+
+String::String(const std::string &str)
+{
+    d->init(str.data());
 }
 
 String::String(const char *str)
@@ -383,7 +388,7 @@ Char String::operator[](unsigned int pos) const
 
 String &String::operator=(const String &str)
 {
-    if (this == &str) {
+    if (this == &str || d == str.d) {
         return *this;
     }
     d->deref();

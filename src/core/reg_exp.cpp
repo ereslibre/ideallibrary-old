@@ -27,7 +27,39 @@ namespace IdealCore {
 class RegExp::Private
 {
 public:
-    String regExp;
+    Private()
+        : m_regExp("", pcrecpp::UTF8())
+        , m_refs(1)
+    {
+    }
+
+    Private *copy()
+    {
+        Private *privateCopy = new Private;
+        privateCopy->m_regExp = m_regExp;
+        return privateCopy;
+    }
+
+    void ref()
+    {
+        ++m_refs;
+    }
+
+    void deref()
+    {
+        --m_refs;
+        if (!m_refs) {
+            delete this;
+        }
+    }
+
+    unsigned int refCount() const
+    {
+        return m_refs;
+    }
+
+    pcrecpp::RE  m_regExp;
+    unsigned int m_refs;
 };
 
 RegExp::RegExp()
@@ -36,26 +68,78 @@ RegExp::RegExp()
 }
 
 RegExp::RegExp(const RegExp &regExp)
-    : d(new Private)
 {
-    d->regExp = regExp.d->regExp;
+    regExp.d->ref();
+    d = regExp.d;
 }
 
 RegExp::RegExp(const String &regExp)
     : d(new Private)
 {
-    d->regExp = regExp;
+    d->m_regExp = pcrecpp::RE(regExp.data(), pcrecpp::UTF8());
 }
 
 RegExp::~RegExp()
 {
-    delete d;
+    d->deref();
 }
 
-bool RegExp::match(const String &str) const
+void RegExp::setRegExp(const String &regExp)
 {
-    pcrecpp::RE regexp(d->regExp.data(), pcrecpp::UTF8());
-    return regexp.FullMatch(str.data());
+    if (regExp == d->m_regExp.pattern()) {
+        return;
+    }
+    if (d->refCount() > 1) {
+        Private *const old_d = d;
+        d = d->copy();
+        old_d->deref();
+    }
+    d->m_regExp = pcrecpp::RE(regExp.data());
+}
+
+String RegExp::regExp() const
+{
+    return d->m_regExp.pattern();
+}
+
+bool RegExp::fullMatch(const String &str) const
+{
+    return d->m_regExp.FullMatch(str.data());
+}
+
+RegExp &RegExp::operator=(const RegExp &regExp)
+{
+    if (this == &regExp || d == regExp.d) {
+        return *this;
+    }
+    d->deref();
+    regExp.d->ref();
+    d = regExp.d;
+    return *this;
+}
+
+RegExp &RegExp::operator=(const String &regExp)
+{
+    if (d->refCount() > 1) {
+        Private *const old_d = d;
+        d = d->copy();
+        old_d->deref();
+    }
+    d->m_regExp = pcrecpp::RE(regExp.data(), pcrecpp::UTF8());
+    return *this;
+}
+
+bool RegExp::operator==(const RegExp &regExp) const
+{
+    if (this == &regExp || d == regExp.d) {
+        return true;
+    }
+    return d->m_regExp.pattern() == regExp.d->m_regExp.pattern();
+}
+
+bool RegExp::operator!=(const RegExp &regExp) const
+{
+    return !(*this == regExp);
 }
 
 }

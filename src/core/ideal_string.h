@@ -43,6 +43,7 @@ public:
 
     String();
     String(const String &str);
+    String(const std::string &str);
     String(const char *str);
     String(const char *str, size_t n);
     String(Char c);
