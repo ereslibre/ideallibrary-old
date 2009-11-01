@@ -165,6 +165,7 @@ String::String(const String &str)
 }
 
 String::String(const std::string &str)
+    : d(new Private)
 {
     d->init(str.data());
 }
