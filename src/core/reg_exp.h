@@ -22,6 +22,7 @@
 #define REG_EXP_H
 
 #include <ideal_export.h>
+#include <core/any.h>
 #include <core/ideal_string.h>
 
 namespace IdealCore {
@@ -44,8 +45,8 @@ public:
     void setRegExp(const String &regExp);
     String regExp() const;
 
-    bool partialMatch(const String &str) const;
-    bool fullMatch(const String &str) const;
+    bool match(const String &str, unsigned int numCaptures = 0) const;
+    String getCapture(unsigned int i) const;
 
     RegExp &operator=(const RegExp &regExp);
     RegExp &operator=(const String &regExp);

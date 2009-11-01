@@ -26,57 +26,90 @@ int main(int argc, char **argv)
 {
     {
         RegExp regExp("^abc$");
-        IDEAL_SDEBUG("regexp is: ^abc$");
-        IDEAL_SDEBUG("abc matches? " << (regExp.fullMatch("abc") ? "yes" : "no"));
-        IDEAL_SDEBUG("aabc matches? " << (regExp.fullMatch("aabc") ? "yes" : "no"));
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        IDEAL_SDEBUG("abc matches? " << (regExp.match("abc") ? "yes" : "no"));
+        IDEAL_SDEBUG("aabc matches? " << (regExp.match("aabc") ? "yes" : "no"));
     }
     IDEAL_SDEBUG("");
     {
         RegExp regExp("^(á)*$");
-        IDEAL_SDEBUG("regexp is: ^(á)*$");
-        IDEAL_SDEBUG("á matches? " << (regExp.fullMatch("á") ? "yes" : "no"));
-        IDEAL_SDEBUG("áá matches? " << (regExp.fullMatch("áá") ? "yes" : "no"));
-        IDEAL_SDEBUG("ááb matches? " << (regExp.fullMatch("ááb") ? "yes" : "no"));
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        IDEAL_SDEBUG("á matches? " << (regExp.match("á") ? "yes" : "no"));
+        IDEAL_SDEBUG("áá matches? " << (regExp.match("áá") ? "yes" : "no"));
+        IDEAL_SDEBUG("ááb matches? " << (regExp.match("ááb") ? "yes" : "no"));
     }
     IDEAL_SDEBUG("");
     {
         RegExp regExp("^á*$");
-        IDEAL_SDEBUG("regexp is: ^á*$");
-        IDEAL_SDEBUG("á matches? " << (regExp.fullMatch("á") ? "yes" : "no"));
-        IDEAL_SDEBUG("áá matches? " << (regExp.fullMatch("áá") ? "yes" : "no"));
-        IDEAL_SDEBUG("ááb matches? " << (regExp.fullMatch("ááb") ? "yes" : "no"));
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        IDEAL_SDEBUG("á matches? " << (regExp.match("á") ? "yes" : "no"));
+        IDEAL_SDEBUG("áá matches? " << (regExp.match("áá") ? "yes" : "no"));
+        IDEAL_SDEBUG("ááb matches? " << (regExp.match("ááb") ? "yes" : "no"));
     }
     IDEAL_SDEBUG("");
     {
         RegExp regExp("(á)*(ñ)*b*");
-        IDEAL_SDEBUG("regexp is: (á)*(ñ)*b*");
-        IDEAL_SDEBUG("áb matches? " << (regExp.fullMatch("áb") ? "yes" : "no"));
-        IDEAL_SDEBUG("áñb matches? " << (regExp.fullMatch("áñb") ? "yes" : "no"));
-        IDEAL_SDEBUG("áñ matches? " << (regExp.fullMatch("áñ") ? "yes" : "no"));
-        IDEAL_SDEBUG("ñb matches? " << (regExp.fullMatch("ñb") ? "yes" : "no"));
-        IDEAL_SDEBUG("á matches? " << (regExp.fullMatch("á") ? "yes" : "no"));
-        IDEAL_SDEBUG("ñ matches? " << (regExp.fullMatch("ñ") ? "yes" : "no"));
-        IDEAL_SDEBUG("b matches? " << (regExp.fullMatch("b") ? "yes" : "no"));
-        IDEAL_SDEBUG("ááááá matches? " << (regExp.fullMatch("ááááá") ? "yes" : "no"));
-        IDEAL_SDEBUG("ñññññ matches? " << (regExp.fullMatch("ñññññ") ? "yes" : "no"));
-        IDEAL_SDEBUG("áááááñññññ matches? " << (regExp.fullMatch("áááááñññññ") ? "yes" : "no"));
-        IDEAL_SDEBUG("áááááñññññbbbbb matches? " << (regExp.fullMatch("áááááñññññbbbbb") ? "yes" : "no"));
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        IDEAL_SDEBUG("áb matches? " << (regExp.match("áb") ? "yes" : "no"));
+        IDEAL_SDEBUG("áñb matches? " << (regExp.match("áñb") ? "yes" : "no"));
+        IDEAL_SDEBUG("áñ matches? " << (regExp.match("áñ") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñb matches? " << (regExp.match("ñb") ? "yes" : "no"));
+        IDEAL_SDEBUG("á matches? " << (regExp.match("á") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñ matches? " << (regExp.match("ñ") ? "yes" : "no"));
+        IDEAL_SDEBUG("b matches? " << (regExp.match("b") ? "yes" : "no"));
+        IDEAL_SDEBUG("ááááá matches? " << (regExp.match("ááááá") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñññññ matches? " << (regExp.match("ñññññ") ? "yes" : "no"));
+        IDEAL_SDEBUG("áááááñññññ matches? " << (regExp.match("áááááñññññ") ? "yes" : "no"));
+        IDEAL_SDEBUG("áááááñññññbbbbb matches? " << (regExp.match("áááááñññññbbbbb") ? "yes" : "no"));
     }
     IDEAL_SDEBUG("");
     {
         RegExp regExp("á*ñ*b*");
-        IDEAL_SDEBUG("regexp is: á*ñ*b*");
-        IDEAL_SDEBUG("áb matches? " << (regExp.fullMatch("áb") ? "yes" : "no"));
-        IDEAL_SDEBUG("áñb matches? " << (regExp.fullMatch("áñb") ? "yes" : "no"));
-        IDEAL_SDEBUG("áñ matches? " << (regExp.fullMatch("áñ") ? "yes" : "no"));
-        IDEAL_SDEBUG("ñb matches? " << (regExp.fullMatch("ñb") ? "yes" : "no"));
-        IDEAL_SDEBUG("á matches? " << (regExp.fullMatch("á") ? "yes" : "no"));
-        IDEAL_SDEBUG("ñ matches? " << (regExp.fullMatch("ñ") ? "yes" : "no"));
-        IDEAL_SDEBUG("b matches? " << (regExp.fullMatch("b") ? "yes" : "no"));
-        IDEAL_SDEBUG("ááááá matches? " << (regExp.fullMatch("ááááá") ? "yes" : "no"));
-        IDEAL_SDEBUG("ñññññ matches? " << (regExp.fullMatch("ñññññ") ? "yes" : "no"));
-        IDEAL_SDEBUG("áááááñññññ matches? " << (regExp.fullMatch("áááááñññññ") ? "yes" : "no"));
-        IDEAL_SDEBUG("áááááñññññbbbbb matches? " << (regExp.fullMatch("áááááñññññbbbbb") ? "yes" : "no"));
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        IDEAL_SDEBUG("áb matches? " << (regExp.match("áb") ? "yes" : "no"));
+        IDEAL_SDEBUG("áñb matches? " << (regExp.match("áñb") ? "yes" : "no"));
+        IDEAL_SDEBUG("áñ matches? " << (regExp.match("áñ") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñb matches? " << (regExp.match("ñb") ? "yes" : "no"));
+        IDEAL_SDEBUG("á matches? " << (regExp.match("á") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñ matches? " << (regExp.match("ñ") ? "yes" : "no"));
+        IDEAL_SDEBUG("b matches? " << (regExp.match("b") ? "yes" : "no"));
+        IDEAL_SDEBUG("ááááá matches? " << (regExp.match("ááááá") ? "yes" : "no"));
+        IDEAL_SDEBUG("ñññññ matches? " << (regExp.match("ñññññ") ? "yes" : "no"));
+        IDEAL_SDEBUG("áááááñññññ matches? " << (regExp.match("áááááñññññ") ? "yes" : "no"));
+        IDEAL_SDEBUG("áááááñññññbbbbb matches? " << (regExp.match("áááááñññññbbbbb") ? "yes" : "no"));
+    }
+    IDEAL_SDEBUG("");
+    {
+        RegExp regExp("(\\w*):(\\d*)");
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        const bool matches = regExp.match("test:1234", 2);
+        IDEAL_SDEBUG("test:1234 matches ? " << (matches ? "yes" : "no"));
+        if (matches) {
+            IDEAL_SDEBUG("text is: " << regExp.getCapture(0));
+            IDEAL_SDEBUG("number is: " << regExp.getCapture(1));
+        }
+    }
+    IDEAL_SDEBUG("");
+    {
+        RegExp regExp("(\\w*):(\\d*)");
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        const bool matches = regExp.match("test:", 2);
+        IDEAL_SDEBUG("test: matches ? " << (matches ? "yes" : "no"));
+        if (matches) {
+            IDEAL_SDEBUG("text is: " << regExp.getCapture(0));
+            IDEAL_SDEBUG("number is: " << regExp.getCapture(1));
+        }
+    }
+    IDEAL_SDEBUG("");
+    {
+        RegExp regExp("(\\w*):(\\d*)");
+        IDEAL_SDEBUG("regexp is: " << regExp.regExp());
+        const bool matches = regExp.match(":1234", 2);
+        IDEAL_SDEBUG(":1234 matches ? " << (matches ? "yes" : "no"));
+        if (matches) {
+            IDEAL_SDEBUG("text is: " << regExp.getCapture(0));
+            IDEAL_SDEBUG("number is: " << regExp.getCapture(1));
+        }
     }
     return 0;
 }

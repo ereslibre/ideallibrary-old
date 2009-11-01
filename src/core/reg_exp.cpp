@@ -29,6 +29,9 @@ class RegExp::Private
 public:
     Private()
         : m_regExp("", pcrecpp::UTF8())
+        , m_args(0)
+        , m_argsString(0)
+        , m_numCaptures(0)
         , m_refs(1)
     {
     }
@@ -49,6 +52,11 @@ public:
     {
         --m_refs;
         if (!m_refs) {
+            for (unsigned int i = 0; i < m_numCaptures; ++i) {
+                delete m_args[i];
+            }
+            delete[] m_args;
+            delete[] m_argsString;
             delete this;
         }
     }
@@ -58,8 +66,11 @@ public:
         return m_refs;
     }
 
-    pcrecpp::RE  m_regExp;
-    unsigned int m_refs;
+    pcrecpp::RE    m_regExp;
+    pcrecpp::Arg **m_args;
+    std::string   *m_argsString;
+    unsigned int   m_numCaptures;
+    unsigned int   m_refs;
 };
 
 RegExp::RegExp()
@@ -93,7 +104,7 @@ void RegExp::setRegExp(const String &regExp)
         d->deref();
         d = new Private;
     }
-    d->m_regExp = pcrecpp::RE(regExp.data());
+    d->m_regExp = pcrecpp::RE(regExp.data(), pcrecpp::UTF8());
 }
 
 String RegExp::regExp() const
@@ -101,14 +112,30 @@ String RegExp::regExp() const
     return d->m_regExp.pattern();
 }
 
-bool RegExp::partialMatch(const String &str) const
+bool RegExp::match(const String &str, unsigned int numCaptures) const
 {
-    return d->m_regExp.PartialMatch(str.data());
+    for (unsigned int i = 0; i < d->m_numCaptures; ++i) {
+        delete d->m_args[i];
+    }
+    delete[] d->m_args;
+    delete[] d->m_argsString;
+    d->m_numCaptures = numCaptures;
+    d->m_args = new pcrecpp::Arg*[numCaptures];
+    d->m_argsString = new std::string[numCaptures];
+    for (unsigned int i = 0; i < numCaptures; ++i) {
+        d->m_args[i] = new pcrecpp::Arg;
+        *d->m_args[i] = &d->m_argsString[i];
+    }
+    int consumed;
+    return d->m_regExp.DoMatch(str.data(), pcrecpp::RE::ANCHOR_BOTH, &consumed, d->m_args, numCaptures);
 }
 
-bool RegExp::fullMatch(const String &str) const
+String RegExp::getCapture(unsigned int i) const
 {
-    return d->m_regExp.FullMatch(str.data());
+    if (i >= d->m_numCaptures) {
+        return String();
+    }
+    return d->m_argsString[i];
 }
 
 RegExp &RegExp::operator=(const RegExp &regExp)
