@@ -42,6 +42,8 @@ public:
     template <typename T>
     T get() const;
 
+    template <typename T>
+    Any &operator=(const T &t);
     Any &operator=(const Any &any);
 
 private:
@@ -72,8 +74,6 @@ public:
         }
     }
 
-    virtual void *get() const = 0;
-
 private:
     unsigned int m_refs;
 };
@@ -84,16 +84,12 @@ class Any::Storage
 {
 public:
     Storage(T &t)
-        : m_t(&t)
+        : m_t(t)
     {
     }
 
-    virtual void *get() const
-    {
-        return (void*) m_t;
-    }
-
-    T *const m_t;
+public:
+    T m_t;
 };
 
 template <typename T>
@@ -106,9 +102,19 @@ template <typename T>
 T Any::get() const
 {
     if (!m_s) {
-        return T();
+        IDEAL_DEBUG_WARNING("get() on an empty Any class");
     }
-    return *static_cast<T*>(m_s->get());
+    return static_cast<Storage<T>*>(m_s)->m_t;
+}
+
+template <typename T>
+Any &Any::operator=(const T &t)
+{
+    if (m_s) {
+        m_s->deref();
+    }
+    m_s = new Storage<T>(t);
+    return *this;
 }
 
 }

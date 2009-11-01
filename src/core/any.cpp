@@ -29,13 +29,17 @@ Any::Any()
 
 Any::Any(const Any &any)
 {
-    any.m_s->ref();
+    if (any.m_s) {
+        any.m_s->ref();
+    }
     m_s = any.m_s;
 }
 
 Any::~Any()
 {
-    m_s->deref();
+    if (m_s) {
+        m_s->deref();
+    }
 }
 
 Any &Any::operator=(const Any &any)
@@ -43,8 +47,12 @@ Any &Any::operator=(const Any &any)
     if (this == &any || m_s == any.m_s) {
         return *this;
     }
-    m_s->deref();
-    any.m_s->ref();
+    if (m_s) {
+        m_s->deref();
+    }
+    if (any.m_s) {
+        any.m_s->ref();
+    }
     m_s = any.m_s;
     return *this;
 }
