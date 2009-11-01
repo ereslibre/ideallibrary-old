@@ -21,10 +21,9 @@
 #ifndef ASYNC_RESULT_H
 #define ASYNC_RESULT_H
 
-#include <boost/any.hpp>
-
 #include <ideal_export.h>
 #include <core/object.h>
+#include <core/any.h>
 
 namespace IdealCore {
 
@@ -96,9 +95,9 @@ public:
     IDEAL_SIGNAL(resultSet);
 
 private:
-    boost::any *m_values;
-    int         m_size;
-    bool        m_resultReceived;
+    Any *m_values;
+    int  m_size;
+    bool m_resultReceived;
 };
 
 template <typename... Values>
@@ -107,8 +106,8 @@ void AsyncResult::set(const Values&... values)
     delete[] m_values;
     m_size = sizeof...(Values);
     if (m_size) {
-        m_values = new boost::any[m_size];
-        boost::any val[sizeof...(Values)] = {values...};
+        m_values = new Any[m_size];
+        Any val[sizeof...(Values)] = { values... };
         for (int i = 0; i < m_size; ++i) {
             m_values[i] = val[i];
         }
@@ -123,7 +122,7 @@ template <typename T>
 T AsyncResult::get(int i) const
 {
     if (i >= 0 && i < m_size) {
-        return boost::any_cast<T>(m_values[i]);
+        return m_values[i].get<T>();
     }
     IDEAL_DEBUG_WARNING("the requested parameter is out of range");
     return T();
