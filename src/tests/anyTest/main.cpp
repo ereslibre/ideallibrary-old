@@ -29,23 +29,30 @@ int main(int argc, char **argv)
         int a = 100;
         Any b(a);
         IDEAL_SDEBUG("Number is: " << b.get<int>());
+        IDEAL_SDEBUG("Type is: " << b.typeName());
     }
     {
         int *a = new int;
         *a = 100;
         Any b(a);
         IDEAL_SDEBUG("Number is: " << *b.get<int*>());
+        IDEAL_SDEBUG("Type is: " << b.typeName());
         delete a;
     }
     {
         String a("This is a test");
+        String other("This is a test");
         Any b(a);
+        Any otherb(other);
         IDEAL_SDEBUG("String is: " << b.get<String>());
+        IDEAL_SDEBUG("Are they the same ? " << (b == otherb ? "yes" : "no"));
+        IDEAL_SDEBUG("Type is: " << b.typeName());
     }
     {
         Uri a("http://www.google.com");
         Any b(a);
         IDEAL_SDEBUG("Host is: " << b.get<Uri>().host());
+        IDEAL_SDEBUG("Type is: " << b.typeName());
     }
     return 0;
 }

@@ -37,4 +37,18 @@ ProtocolHandler::StatResult::StatResult()
 {
 }
 
+bool ProtocolHandler::StatResult::operator==(const StatResult &statResult) const
+{
+    return errorCode == statResult.errorCode && type == statResult.type &&
+            ownerUser == statResult.ownerUser && ownerGroup == statResult.ownerGroup &&
+            permissions == statResult.permissions && size == statResult.size &&
+            lastAccessed == statResult.lastAccessed && lastModified == statResult.lastModified &&
+            contentType == statResult.contentType && uri == statResult.uri;
+}
+
+bool ProtocolHandler::StatResult::operator!=(const StatResult &statResult) const
+{
+    return !(*this == statResult);
+}
+
 }

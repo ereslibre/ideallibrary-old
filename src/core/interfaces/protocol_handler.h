@@ -104,6 +104,8 @@ public:
 
     struct StatResult {
         StatResult();
+        bool operator==(const StatResult &statResult) const;
+        bool operator!=(const StatResult &statResult) const;
 
         ErrorCode errorCode;         ///< The error code if an error happened. The stat result is only valid if this
                                      ///< field has the NoError value.

@@ -22,6 +22,9 @@
 #define ANY_H
 
 #include <ideal_export.h>
+#include <core/ideal_string.h>
+
+#include <typeinfo>
 
 namespace IdealCore {
 
@@ -42,9 +45,15 @@ public:
     template <typename T>
     T get() const;
 
+    String typeName() const;
+    const std::type_info &type() const;
+
     template <typename T>
     Any &operator=(const T &t);
     Any &operator=(const Any &any);
+
+    bool operator==(const Any &any) const;
+    bool operator!=(const Any &any) const;
 
 private:
     class GenericStorage;
@@ -74,6 +83,9 @@ public:
         }
     }
 
+    virtual const std::type_info &type() const = 0;
+    virtual bool equals(const Any &any) const = 0;
+
 private:
     unsigned int m_refs;
 };
@@ -86,6 +98,19 @@ public:
     Storage(T &t)
         : m_t(t)
     {
+    }
+
+    const std::type_info &type() const
+    {
+        return typeid(T);
+    }
+
+    bool equals(const Any &any) const
+    {
+        if (type() != any.m_s->type()) {
+            return false;
+        }
+        return m_t == static_cast<Storage<T>*>(any.m_s)->m_t;
     }
 
 public:

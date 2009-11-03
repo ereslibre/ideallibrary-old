@@ -20,6 +20,8 @@
 
 #include "any.h"
 
+#include <cxxabi.h>
+
 namespace IdealCore {
 
 Any::Any()
@@ -42,6 +44,16 @@ Any::~Any()
     }
 }
 
+const std::type_info &Any::type() const
+{
+    return m_s->type();
+}
+
+String Any::typeName() const
+{
+    return abi::__cxa_demangle(m_s->type().name(), 0, 0, 0);
+}
+
 Any &Any::operator=(const Any &any)
 {
     if (this == &any || m_s == any.m_s) {
@@ -55,6 +67,19 @@ Any &Any::operator=(const Any &any)
     }
     m_s = any.m_s;
     return *this;
+}
+
+bool Any::operator==(const Any &any) const
+{
+    if (this == &any || m_s == any.m_s) {
+        return true;
+    }
+    return m_s->equals(any);
+}
+
+bool Any::operator!=(const Any &any) const
+{
+    return !(*this == any);
 }
 
 }
