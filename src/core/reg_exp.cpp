@@ -174,3 +174,9 @@ bool RegExp::operator!=(const RegExp &regExp) const
 }
 
 }
+
+std::ostream &operator<<(std::ostream &stream, const IdealCore::RegExp &regExp)
+{
+    stream << regExp.regExp().data();
+    return stream;
+}

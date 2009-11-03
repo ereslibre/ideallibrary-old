@@ -61,4 +61,6 @@ private:
 
 }
 
+IDEAL_EXPORT std::ostream &operator<<(std::ostream &stream, const IdealCore::RegExp &regExp);
+
 #endif //REG_EXP_H

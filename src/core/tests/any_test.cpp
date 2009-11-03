@@ -22,6 +22,7 @@
 
 #include <core/any.h>
 #include <core/uri.h>
+#include <core/reg_exp.h>
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -103,6 +104,36 @@ void AnyTest::typeName()
 
 void AnyTest::operatorEquals()
 {
+    {
+        int a = 100;
+        Any aa;
+        aa = a;
+        CPPUNIT_ASSERT_EQUAL(100, aa.get<int>());
+    }
+    {
+        float a = 50.55;
+        Any aa;
+        aa = a;
+        CPPUNIT_ASSERT_EQUAL((float) 50.55, aa.get<float>());
+    }
+    {
+        String a("This is a test");
+        Any aa;
+        aa = a;
+        CPPUNIT_ASSERT_EQUAL(String("This is a test"), aa.get<String>());
+    }
+    {
+        Uri a("http://www.google.com");
+        Any aa;
+        aa = a;
+        CPPUNIT_ASSERT_EQUAL(Uri("http://www.google.com"), aa.get<Uri>());
+    }
+    {
+        RegExp a("a*");
+        Any aa;
+        aa = a;
+        CPPUNIT_ASSERT_EQUAL(RegExp("a*"), aa.get<RegExp>());
+    }
 }
 
 void AnyTest::operatorEqualsEquals()
