@@ -29,6 +29,15 @@ Any::Any()
 {
 }
 
+template <>
+Any::Any(const Any &any)
+{
+    if (any.m_s) {
+        any.m_s->ref();
+    }
+    m_s = any.m_s;
+}
+
 Any::Any(const Any &any)
 {
     if (any.m_s) {
@@ -52,6 +61,22 @@ const std::type_info &Any::type() const
 String Any::typeName() const
 {
     return abi::__cxa_demangle(m_s->type().name(), 0, 0, 0);
+}
+
+template <>
+Any &Any::operator=(const Any &any)
+{
+    if (this == &any || m_s == any.m_s) {
+        return *this;
+    }
+    if (m_s) {
+        m_s->deref();
+    }
+    if (any.m_s) {
+        any.m_s->ref();
+    }
+    m_s = any.m_s;
+    return *this;
 }
 
 Any &Any::operator=(const Any &any)
