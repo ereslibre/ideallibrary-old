@@ -103,6 +103,10 @@ void AnyTest::typeName()
 
 void AnyTest::operatorEquals()
 {
+}
+
+void AnyTest::operatorEqualsEquals()
+{
     {
         int a = 100;
         int b = 50;
@@ -131,10 +135,26 @@ void AnyTest::operatorEquals()
         Any ab(b);
         CPPUNIT_ASSERT(aa == ab);
     }
-}
-
-void AnyTest::operatorEqualsEquals()
-{
+    {
+        String a = "Hello";
+        Any aa(a);
+        Any ab(aa);
+        CPPUNIT_ASSERT(aa == ab);
+    }
+    {
+        String a = "Hello";
+        Any aa(a);
+        Any ab = aa;
+        CPPUNIT_ASSERT(aa == ab);
+    }
+    {
+        String a = "Hello";
+        String b = "Bye";
+        Any aa(a);
+        Any ab(aa);
+        ab = b;
+        CPPUNIT_ASSERT(aa != ab);
+    }
 }
 
 int main(int argc, char **argv)

@@ -38,8 +38,7 @@ class IDEAL_EXPORT Any
 public:
     Any();
     template <typename T>
-    Any(T &t);
-    Any(const Any &any);
+    Any(const T &t);
     virtual ~Any();
 
     template <typename T>
@@ -50,7 +49,6 @@ public:
 
     template <typename T>
     Any &operator=(const T &t);
-    Any &operator=(const Any &any);
 
     bool operator==(const Any &any) const;
     bool operator!=(const Any &any) const;
@@ -95,7 +93,7 @@ class Any::Storage
     : public GenericStorage
 {
 public:
-    Storage(T &t)
+    Storage(const T &t)
         : m_t(t)
     {
     }
@@ -118,7 +116,7 @@ public:
 };
 
 template <typename T>
-Any::Any(T &t)
+Any::Any(const T &t)
     : m_s(new Storage<T>(t))
 {
 }

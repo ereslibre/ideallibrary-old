@@ -29,6 +29,7 @@ Any::Any()
 {
 }
 
+template <>
 Any::Any(const Any &any)
 {
     if (any.m_s) {
@@ -54,6 +55,7 @@ String Any::typeName() const
     return abi::__cxa_demangle(m_s->type().name(), 0, 0, 0);
 }
 
+template <>
 Any &Any::operator=(const Any &any)
 {
     if (this == &any || m_s == any.m_s) {
