@@ -151,6 +151,14 @@ void AnyTest::operatorEqualsEquals()
         String a = "Hello";
         String b = "Bye";
         Any aa(a);
+        Any ab(a);
+        ab = b;
+        CPPUNIT_ASSERT(aa != ab);
+    }
+    {
+        String a = "Hello";
+        String b = "Bye";
+        Any aa(a);
         Any ab(aa);
         ab = b;
         CPPUNIT_ASSERT(aa != ab);

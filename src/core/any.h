@@ -39,6 +39,7 @@ public:
     Any();
     template <typename T>
     Any(const T &t);
+    Any(const Any &any);
     virtual ~Any();
 
     template <typename T>
@@ -49,6 +50,7 @@ public:
 
     template <typename T>
     Any &operator=(const T &t);
+    Any &operator=(const Any &any);
 
     bool operator==(const Any &any) const;
     bool operator!=(const Any &any) const;
