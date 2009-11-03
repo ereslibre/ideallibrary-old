@@ -163,6 +163,15 @@ void AnyTest::operatorEqualsEquals()
         ab = b;
         CPPUNIT_ASSERT(aa != ab);
     }
+    {
+        String a = "Hello";
+        String b = "Bye";
+        Any aa(a);
+        Any ab(aa);
+        ab = b;
+        ab = aa;
+        CPPUNIT_ASSERT(aa == ab);
+    }
 }
 
 int main(int argc, char **argv)
