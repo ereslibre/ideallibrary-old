@@ -79,10 +79,58 @@ void AnyTest::get()
 
 void AnyTest::typeName()
 {
+    {
+        int a = 100;
+        Any b(a);
+        CPPUNIT_ASSERT_EQUAL(String("int"), b.typeName());
+    }
+    {
+        float a = 100.0;
+        Any b(a);
+        CPPUNIT_ASSERT_EQUAL(String("float"), b.typeName());
+    }
+    {
+        String a = "Hello";
+        Any b(a);
+        CPPUNIT_ASSERT_EQUAL(String("IdealCore::String"), b.typeName());
+    }
+    {
+        MyStruct s;
+        Any as(s);
+        CPPUNIT_ASSERT_EQUAL(String("MyStruct"), as.typeName());
+    }
 }
 
 void AnyTest::operatorEquals()
 {
+    {
+        int a = 100;
+        int b = 50;
+        Any aa(a);
+        Any ab(b);
+        CPPUNIT_ASSERT(aa != ab);
+    }
+    {
+        int a = 100;
+        String b = "Hello";
+        Any aa(a);
+        Any ab(b);
+        CPPUNIT_ASSERT(aa != ab);
+    }
+    {
+        String a = "Hello";
+        String b = "Hello";
+        Any aa(a);
+        Any ab(b);
+        CPPUNIT_ASSERT(aa == ab);
+    }
+    {
+        String a = "Hello";
+        String b(a);
+        Any aa(a);
+        Any ab(b);
+        CPPUNIT_ASSERT(aa == ab);
+    }
 }
 
 void AnyTest::operatorEqualsEquals()
