@@ -18,37 +18,29 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef CHAR_TEST_H
-#define CHAR_TEST_H
+#ifndef ANY_TEST_H
+#define ANY_TEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class CharTest
+class AnyTest
     : public CppUnit::TestFixture
 {
-    CPPUNIT_TEST_SUITE(CharTest);
-    CPPUNIT_TEST(octetsRequired);
-    CPPUNIT_TEST(operatorChar);
-    CPPUNIT_TEST(operatorUnsignedShort);
-    CPPUNIT_TEST(operatorUnsignedInt);
-    CPPUNIT_TEST(operatorEqualsChar);
-    CPPUNIT_TEST(operatorEqualsCharNative);
-    CPPUNIT_TEST(operatorEqualsUnsignedShort);
-    CPPUNIT_TEST(operatorEqualsUnsignedInt);
+    CPPUNIT_TEST_SUITE(AnyTest);
+    CPPUNIT_TEST(get);
+    CPPUNIT_TEST(typeName);
+    CPPUNIT_TEST(operatorEquals);
+    CPPUNIT_TEST(operatorEqualsEquals);
     CPPUNIT_TEST_SUITE_END();
 
 public:
     void setUp();
     void tearDown();
 
-    void octetsRequired();
-    void operatorChar();
-    void operatorUnsignedShort();
-    void operatorUnsignedInt();
-    void operatorEqualsChar();
-    void operatorEqualsCharNative();
-    void operatorEqualsUnsignedShort();
-    void operatorEqualsUnsignedInt();
+    void get();
+    void typeName();
+    void operatorEquals();
+    void operatorEqualsEquals();
 };
 
-#endif //CHAR_TEST_H
+#endif //ANY_TEST_H

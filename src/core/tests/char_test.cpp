@@ -20,6 +20,8 @@
 
 #include "char_test.h"
 
+#include <core/char.h>
+
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>

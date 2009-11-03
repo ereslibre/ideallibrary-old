@@ -117,4 +117,6 @@ private:
 
 }
 
+IDEAL_EXPORT std::ostream &operator<<(std::ostream &stream, const IdealCore::Uri &uri);
+
 #endif //URI_H
