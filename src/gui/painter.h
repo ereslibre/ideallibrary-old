@@ -73,8 +73,8 @@ public:
     void saveState();
     void restoreState();
 
-    void setPenColor(double red, double green, double blue, double alpha = 1.0);
-    void setLineWidth(double width);
+    void setPenColor(ireal red, ireal green, ireal blue, ireal alpha = 1.0);
+    void setLineWidth(ireal width);
 
     enum FillRule {
         WindingFillRule = 0,
@@ -99,15 +99,15 @@ public:
 
     void setLineJoin(LineJoin lineJoin);
 
-    void setDash(const double *dashes, iint32 numDashes, double offset);
+    void setDash(const ireal *dashes, iint32 numDashes, ireal offset);
 
-    void setMiterLimit(double miterLimit);
+    void setMiterLimit(ireal miterLimit);
 
-    void translate(double tx, double ty);
+    void translate(ireal tx, ireal ty);
 
-    void scale(double sx, double sy);
+    void scale(ireal sx, ireal sy);
 
-    void rotate(double angle);
+    void rotate(ireal angle);
 
     void transform(const Matrix &matrix);
 

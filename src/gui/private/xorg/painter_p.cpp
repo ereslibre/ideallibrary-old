@@ -139,12 +139,12 @@ void Painter::restoreState()
     cairo_restore(D_I->m_cairo);
 }
 
-void Painter::setPenColor(double red, double green, double blue, double alpha)
+void Painter::setPenColor(ireal red, ireal green, ireal blue, ireal alpha)
 {
     cairo_set_source_rgba(D_I->m_cairo, red, green, blue, alpha);
 }
 
-void Painter::setLineWidth(double width)
+void Painter::setLineWidth(ireal width)
 {
     cairo_set_line_width(D_I->m_cairo, width);
 }
@@ -209,27 +209,27 @@ void Painter::setLineJoin(LineJoin lineJoin)
     cairo_set_line_join(D_I->m_cairo, cairoLineJoin);
 }
 
-void Painter::setDash(const double *dashes, iint32 numDashes, double offset)
+void Painter::setDash(const ireal *dashes, iint32 numDashes, ireal offset)
 {
     cairo_set_dash(D_I->m_cairo, dashes, numDashes, offset);
 }
 
-void Painter::setMiterLimit(double miterLimit)
+void Painter::setMiterLimit(ireal miterLimit)
 {
     cairo_set_miter_limit(D_I->m_cairo, miterLimit);
 }
 
-void Painter::translate(double tx, double ty)
+void Painter::translate(ireal tx, ireal ty)
 {
     cairo_translate(D_I->m_cairo, tx, ty);
 }
 
-void Painter::scale(double sx, double sy)
+void Painter::scale(ireal sx, ireal sy)
 {
     cairo_scale(D_I->m_cairo, sx, sy);
 }
 
-void Painter::rotate(double angle)
+void Painter::rotate(ireal angle)
 {
     cairo_rotate(D_I->m_cairo, angle);
 }

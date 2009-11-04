@@ -28,18 +28,18 @@ namespace IdealGUI {
 class IDEAL_EXPORT Size
 {
 public:
-    Size(double width, double height);
+    Size(ireal width, ireal height);
     Size(const Size &size);
     virtual ~Size();
 
-    double width() const;
-    void setWidth(double width);
+    ireal width() const;
+    void setWidth(ireal width);
 
-    double height() const;
-    void setHeight(double height);
+    ireal height() const;
+    void setHeight(ireal height);
 
-    double &rwidth() const;
-    double &rheight() const;
+    ireal &rwidth() const;
+    ireal &rheight() const;
 
     bool operator==(const Size &size);
     bool operator!=(const Size &size);

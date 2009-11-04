@@ -31,27 +31,27 @@ Path::PrivateImpl::~PrivateImpl()
 {
 }
 
-void Path::moveTo(double x, double y, Type type)
+void Path::moveTo(ireal x, ireal y, Type type)
 {
 }
 
-void Path::lineTo(double x, double y, Type type)
+void Path::lineTo(ireal x, ireal y, Type type)
 {
 }
 
-void Path::curveTo(double x1, double y1, double x2, double y2, double x3, double y3, Type type)
+void Path::curveTo(ireal x1, ireal y1, ireal x2, ireal y2, ireal x3, ireal y3, Type type)
 {
 }
 
-void Path::arc(double xc, double yc, double radius, double angle1, double angle2)
+void Path::arc(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2)
 {
 }
 
-void Path::arcNegative(double xc, double yc, double radius, double angle1, double angle2)
+void Path::arcNegative(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2)
 {
 }
 
-void Path::rectangle(double x, double y, double width, double height)
+void Path::rectangle(ireal x, ireal y, ireal width, ireal height)
 {
 }
 

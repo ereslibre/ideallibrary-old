@@ -28,18 +28,18 @@ namespace IdealGUI {
 class IDEAL_EXPORT Point
 {
 public:
-    Point(double x, double y);
+    Point(ireal x, ireal y);
     Point(const Point &point);
     virtual ~Point();
 
-    double x() const;
-    void setX(double x);
+    ireal x() const;
+    void setX(ireal x);
 
-    double y() const;
-    void setY(double y);
+    ireal y() const;
+    void setY(ireal y);
 
-    double &rx() const;
-    double &ry() const;
+    ireal &rx() const;
+    ireal &ry() const;
 
     bool operator==(const Point &point);
     bool operator!=(const Point &point);

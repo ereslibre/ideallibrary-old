@@ -31,7 +31,7 @@ class Matrix::PrivateImpl
     : public Matrix::Private
 {
 public:
-    PrivateImpl(double xx, double yx, double xy, double yy, double x0, double y0);
+    PrivateImpl(ireal xx, ireal yx, ireal xy, ireal yy, ireal x0, ireal y0);
     PrivateImpl(const Matrix &matrix);
     PrivateImpl();
     virtual ~PrivateImpl();

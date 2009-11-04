@@ -26,19 +26,19 @@ namespace IdealGUI
 class Size::Private
 {
 public:
-    Private(double width, double height);
+    Private(ireal width, ireal height);
 
-    double m_width;
-    double m_height;
+    ireal m_width;
+    ireal m_height;
 };
 
-Size::Private::Private(double width, double height)
+Size::Private::Private(ireal width, ireal height)
     : m_width(width)
     , m_height(height)
 {
 }
 
-Size::Size(double width, double height)
+Size::Size(ireal width, ireal height)
     : d(new Private(width, height))
 {
 }
@@ -53,32 +53,32 @@ Size::~Size()
     delete d;
 }
 
-double Size::width() const
+ireal Size::width() const
 {
     return d->m_width;
 }
 
-void Size::setWidth(double width)
+void Size::setWidth(ireal width)
 {
     d->m_width = width;
 }
 
-double Size::height() const
+ireal Size::height() const
 {
     return d->m_height;
 }
 
-void Size::setHeight(double height)
+void Size::setHeight(ireal height)
 {
     d->m_height = height;
 }
 
-double &Size::rwidth() const
+ireal &Size::rwidth() const
 {
     return d->m_width;
 }
 
-double &Size::rheight() const
+ireal &Size::rheight() const
 {
     return d->m_height;
 }

@@ -41,12 +41,12 @@ public:
         Relative
     };
 
-    void moveTo(double x, double y, Type type = Absolute);
-    void lineTo(double x, double y, Type type = Absolute);
-    void curveTo(double x1, double y1, double x2, double y2, double x3, double y3, Type type = Absolute);
-    void arc(double xc, double yc, double radius, double angle1, double angle2);
-    void arcNegative(double xc, double yc, double radius, double angle1, double angle2);
-    void rectangle(double x, double y, double width, double height);
+    void moveTo(ireal x, ireal y, Type type = Absolute);
+    void lineTo(ireal x, ireal y, Type type = Absolute);
+    void curveTo(ireal x1, ireal y1, ireal x2, ireal y2, ireal x3, ireal y3, Type type = Absolute);
+    void arc(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2);
+    void arcNegative(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2);
+    void rectangle(ireal x, ireal y, ireal width, ireal height);
 
 private:
     class Private;

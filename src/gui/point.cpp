@@ -25,19 +25,19 @@ namespace IdealGUI {
 class Point::Private
 {
 public:
-    Private(double x, double y);
+    Private(ireal x, ireal y);
 
-    double m_x;
-    double m_y;
+    ireal m_x;
+    ireal m_y;
 };
 
-Point::Private::Private(double x, double y)
+Point::Private::Private(ireal x, ireal y)
     : m_x(x)
     , m_y(y)
 {
 }
 
-Point::Point(double x, double y)
+Point::Point(ireal x, ireal y)
     : d(new Private(x, y))
 {
 }
@@ -52,32 +52,32 @@ Point::~Point()
     delete d;
 }
 
-double Point::x() const
+ireal Point::x() const
 {
     return d->m_x;
 }
 
-void Point::setX(double x)
+void Point::setX(ireal x)
 {
     d->m_x = x;
 }
 
-double Point::y() const
+ireal Point::y() const
 {
     return d->m_y;
 }
 
-void Point::setY(double y)
+void Point::setY(ireal y)
 {
     d->m_y = y;
 }
 
-double &Point::rx() const
+ireal &Point::rx() const
 {
     return d->m_x;
 }
 
-double &Point::ry() const
+ireal &Point::ry() const
 {
     return d->m_y;
 }

@@ -35,16 +35,16 @@ class IDEAL_EXPORT Matrix
     friend class Painter;
 
 public:
-    Matrix(double xx, double yx,
-           double xy, double yy,
-           double x0, double y0);
+    Matrix(ireal xx, ireal yx,
+           ireal xy, ireal yy,
+           ireal x0, ireal y0);
     Matrix(const Matrix &matrix);
     virtual ~Matrix();
 
     static Matrix identity();
-    static Matrix translate(double tx, double ty);
-    static Matrix scale(double sx, double sy);
-    static Matrix rotate(double radians);
+    static Matrix translate(ireal tx, ireal ty);
+    static Matrix scale(ireal sx, ireal sy);
+    static Matrix rotate(ireal radians);
 
 private:
     Matrix();

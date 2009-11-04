@@ -23,7 +23,7 @@
 
 namespace IdealGUI {
 
-Matrix::PrivateImpl::PrivateImpl(double xx, double yx, double xy, double yy, double x0, double y0)
+Matrix::PrivateImpl::PrivateImpl(ireal xx, ireal yx, ireal xy, ireal yy, ireal x0, ireal y0)
 {
     cairo_matrix_init(&m_matrix, xx, yx, xy, yy, x0, y0);
 }
@@ -54,21 +54,21 @@ Matrix Matrix::identity()
     return m;
 }
 
-Matrix Matrix::translate(double tx, double ty)
+Matrix Matrix::translate(ireal tx, ireal ty)
 {
     Matrix m;
     cairo_matrix_init_translate(&static_cast<PrivateImpl*>(m.d)->m_matrix, tx, ty);
     return m;
 }
 
-Matrix Matrix::scale(double sx, double sy)
+Matrix Matrix::scale(ireal sx, ireal sy)
 {
     Matrix m;
     cairo_matrix_init_scale(&static_cast<PrivateImpl*>(m.d)->m_matrix, sx, sy);
     return m;
 }
 
-Matrix Matrix::rotate(double radians)
+Matrix Matrix::rotate(ireal radians)
 {
     Matrix m;
     cairo_matrix_init_rotate(&static_cast<PrivateImpl*>(m.d)->m_matrix, radians);

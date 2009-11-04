@@ -27,7 +27,7 @@ Matrix::Private::~Private()
 {
 }
 
-Matrix::Matrix(double xx, double yx, double xy, double yy, double x0, double y0)
+Matrix::Matrix(ireal xx, ireal yx, ireal xy, ireal yy, ireal x0, ireal y0)
     : d(new PrivateImpl(xx, yx, xy, yy, x0, y0))
 {
 }
