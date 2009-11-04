@@ -76,7 +76,7 @@ public:
     }
 
 private:
-    int numReceived;
+    iint32 numReceived;
     Mutex numReceivedMutex;
 };
 

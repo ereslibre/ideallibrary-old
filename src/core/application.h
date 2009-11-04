@@ -127,7 +127,7 @@ public:
       *
       * @see ExtensionLoader
       */
-    Application(int argc, char **argv, const String &name = String());
+    Application(iint32 argc, char **argv, const String &name = String());
     virtual ~Application();
 
     /**
@@ -201,7 +201,7 @@ public:
       *
       * @return the result of the execution.
       */
-    virtual int exec();
+    virtual iint32 exec();
 
     /**
       * Quits the running application.

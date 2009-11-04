@@ -44,10 +44,10 @@ class IDEAL_EXPORT Application
     friend class Painter;
 
 public:
-    Application(int argc, char **argv);
+    Application(iint32 argc, char **argv);
     virtual ~Application();
 
-    virtual int exec();
+    virtual iint32 exec();
 
     Style *style() const;
     

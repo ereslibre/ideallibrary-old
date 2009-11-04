@@ -32,7 +32,7 @@ public:
     PrivateImpl(File *q);
     ~PrivateImpl();
 
-    int m_inotifyWatch;
+    iint32 m_inotifyWatch;
 };
 
 }

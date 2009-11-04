@@ -117,17 +117,17 @@ Timer::State Timer::state() const
     return d->m_state;
 }
 
-void Timer::setInterval(int msec)
+void Timer::setInterval(iint32 msec)
 {
     d->m_interval = msec;
 }
 
-int Timer::interval() const
+iint32 Timer::interval() const
 {
     return d->m_interval;
 }
 
-void Timer::wait(int ms)
+void Timer::wait(iint32 ms)
 {
     Timer t;
     t.timedWait(ms);

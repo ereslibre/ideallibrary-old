@@ -40,7 +40,7 @@
 
 namespace IdealCore {
 
-static void signal_recv(int signum, siginfo_t *info, void *ptr)
+static void signal_recv(iint32 signum, siginfo_t *info, void *ptr)
 {
     switch (signum) {
         case SIGILL:
@@ -63,7 +63,7 @@ static void signal_recv(int signum, siginfo_t *info, void *ptr)
             break;
     }
     IDEAL_SDEBUG("*** Please, contact developers with the following information:");
-    int fd;
+    iint32 fd;
     char filename[L_tmpnam];
     do {
         if (tmpnam(filename)) {}
@@ -188,7 +188,7 @@ List<char*> Application::parseOptions(ParsingStrictness parsingStrictness, FailV
     struct option longopts[D_I->m_optionList.size() + 1];
     std::map<char, PrivateImpl::OptionItem> optionMap;
     List<PrivateImpl::OptionItem>::iterator it;
-    int i = 0;
+    iint32 i = 0;
     for (it = D_I->m_optionList.begin(); it != D_I->m_optionList.end(); ++it, ++i) {
         PrivateImpl::OptionItem optionItem = *it;
         if (optionItem.opt.has_arg == no_argument) {
@@ -207,7 +207,7 @@ List<char*> Application::parseOptions(ParsingStrictness parsingStrictness, FailV
     option.flag = 0;
     option.val = 0;
     longopts[D_I->m_optionList.size()] = option;
-    int opt;
+    iint32 opt;
     if (parsingStrictness == Flexible) {
         while ((opt = getopt_long_only(d->m_argc, d->m_argv, shortopts.data(), longopts, NULL)) != -1) {
             if (opt == '?') {
@@ -287,8 +287,8 @@ void Application::Private::checkFileWatches()
     PrivateImpl *const d_i = static_cast<PrivateImpl*>(this);
     if (d_i->m_inotifyStarted) {
         char buf[BUF_LEN];
-        int len = 0;
-        int i = 0;
+        iint32 len = 0;
+        iint32 i = 0;
         len = read(d_i->m_inotify, buf, BUF_LEN);
         if (len >= 0) {
             List<PrivateImpl::InotifyEvent> inotifyEventList;

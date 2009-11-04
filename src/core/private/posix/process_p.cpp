@@ -31,7 +31,7 @@ void ProcessCommand::run()
     List<String> res = command.split(' ');
     const char **params = new const char*[res.size() + 1];
     List<String>::iterator it;
-    int i = 0;
+    iint32 i = 0;
     for (it = res.begin(); it != res.end(); ++it, ++i) {
         params[i] = (*it).data();
     }

@@ -32,8 +32,8 @@ public:
     bool listContains() const;
 
     TimeoutType m_timeoutType;
-    int         m_interval;
-    int         m_remaining;
+    iint32      m_interval;
+    iint32      m_remaining;
     State       m_state;
     Timer      *q;
 };

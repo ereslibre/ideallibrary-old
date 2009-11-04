@@ -43,7 +43,7 @@ public:
     }
 
     Uri                           m_opened;
-    int                           m_fd;
+    iint32                        m_fd;
     BuiltinProtocolHandlersLocal *q;
 };
 
@@ -57,7 +57,7 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
     delete d;
 }
 
-ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, int openMode)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, iint32 openMode)
 {
     if (d->m_opened.isValid()) {
         IDEAL_DEBUG_WARNING("the uri " << d->m_opened.uri() << " was opened. Closing");
@@ -67,7 +67,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, in
     if (!uri.isValid()) {
         return InvalidURI;
     }
-    int oflag = 0;
+    iint32 oflag = 0;
     if ((openMode & Read) && (openMode & Write)) {
         oflag = O_RDWR;
     } else if (openMode & Read) {

@@ -39,10 +39,10 @@ Widget::PrivateImpl::~PrivateImpl()
 
 void Widget::show(const Point &point)
 {
-    const int x = point.x();
-    const int y = point.y();
-    const int width = minimumSize().width();
-    const int height = minimumSize().height();
+    const iint32 x = point.x();
+    const iint32 y = point.y();
+    const iint32 width = minimumSize().width();
+    const iint32 height = minimumSize().height();
     IdealGUI::Application *app = static_cast<IdealGUI::Application*>(application());
     IdealGUI::Application::PrivateImpl *a_d = static_cast<IdealGUI::Application::PrivateImpl*>(app->d);
     Display *dpy = a_d->m_dpy;

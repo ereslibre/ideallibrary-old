@@ -67,7 +67,7 @@ public:
     /**
       * @return The port specified on the URI. -1 if no port specified.
       */
-    int port() const;
+    iint32 port() const;
 
     /**
       * @return The path specified on the URI. An empty string if no path specified.

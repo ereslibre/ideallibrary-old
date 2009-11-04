@@ -24,7 +24,7 @@
 
 using namespace IdealCore;
 
-static void printResult(int result)
+static void printResult(iint32 result)
 {
     IDEAL_SDEBUG("The result of the heavy math is " << result);
 }
@@ -36,7 +36,7 @@ class OneClass
 public:
     OneClass(Object *parent);
 
-    IDEAL_SIGNAL(resultOfHeavyMath, int);
+    IDEAL_SIGNAL(resultOfHeavyMath, iint32);
 
 protected:
     void run();
@@ -45,7 +45,7 @@ protected:
 OneClass::OneClass(Object *parent)
     : Object(parent)
     , Thread(NoJoinable)
-    , IDEAL_SIGNAL_INIT(resultOfHeavyMath, int)
+    , IDEAL_SIGNAL_INIT(resultOfHeavyMath, iint32)
 {
 }
 

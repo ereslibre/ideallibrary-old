@@ -48,20 +48,20 @@ public:
     bool sendCommand(CommandType commandType, const Uri &uri);
 
     Uri                          m_uri;
-    int                          m_sockfd;
+    iint32                       m_sockfd;
     static const char           *m_commandGet;
     static const char           *m_commandHead;
-    static const int             m_bufferSize;
+    static const iint32          m_bufferSize;
     BuiltinProtocolHandlersHttp *q;
 };
 
-const char *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\n\r\n";
-const char *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\n\r\n";
-const int   BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
+const char  *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\n\r\n";
+const char  *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\n\r\n";
+const iint32 BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
 
 bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const Uri &uri)
 {
-    int commandSize;
+    iint32 commandSize;
     switch (commandType) {
         case Get:
             commandSize = strlen(m_commandGet);
@@ -81,7 +81,7 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             sprintf(command, "HEAD %s HTTP/1.1\r\nHost: %s\r\n\r\n", uri.path().data(), uri.host().data());
             break;
     }
-    const int bytesSent = send(m_sockfd, command, commandSize, 0);
+    const iint32 bytesSent = send(m_sockfd, command, commandSize, 0);
     delete[] command;
     return bytesSent == commandSize;
 }
@@ -96,7 +96,7 @@ BuiltinProtocolHandlersHttp::~BuiltinProtocolHandlersHttp()
     delete d;
 }
 
-ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, int openMode)
+ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, iint32 openMode)
 {
     if (!uri.isValid()) {
         return InvalidURI;

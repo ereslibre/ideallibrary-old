@@ -42,7 +42,7 @@ void CondVar::wait()
     pthread_cond_wait(&D_I->m_cond, &static_cast<Mutex::PrivateImpl*>(d->m_mutex.d)->m_mutex);
 }
 
-void CondVar::timedWait(int ms)
+void CondVar::timedWait(iint32 ms)
 {
     struct timeval curr;
     gettimeofday(&curr, 0);

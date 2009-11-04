@@ -108,7 +108,7 @@ public:
       * @return < 0, 0 or > 0 if this string is less than, equal to, or greater than @p s
       *         respectively.
       */
-    int compare(const char *s) const;
+    iint32 compare(const char *s) const;
 
     /**
       * Splits the current string by using as separator @s separator.

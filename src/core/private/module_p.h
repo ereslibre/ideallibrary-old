@@ -43,7 +43,7 @@ public:
     void        *m_handle;
     String       m_path;
     bool         m_unused;
-    int          m_refs;
+    iint32       m_refs;
     Application *m_application;
     Module      *q;
 };

@@ -75,29 +75,29 @@ public:
     /**
       * Sets the interval of timeout of this timer
       */
-    void setInterval(int msec);
+    void setInterval(iint32 msec);
 
     /**
       * @return the interval of timeout of this timer
       */
-    int interval() const;
+    iint32 interval() const;
 
     /**
       * Will pause the current thread for @p ms milliseconds
       */
-    static void wait(int ms);
+    static void wait(iint32 ms);
 
     /**
       * Calls @p member in @p receiver after @p ms milliseconds
       */
     template <typename Receiver, typename Member>
-    static void callAfter(int ms, Receiver *receiver, Member member);
+    static void callAfter(iint32 ms, Receiver *receiver, Member member);
 
     /**
       * Calls the static member @p member after @p ms milliseconds
       */
     template <typename Member>
-    static void callStaticAfter(int ms, Member member);
+    static void callStaticAfter(iint32 ms, Member member);
 
 public:
     /**
@@ -107,7 +107,7 @@ public:
 
 private:
     Timer();
-    void timedWait(int ms) const;
+    void timedWait(iint32 ms) const;
 
     class Private;
     class PrivateImpl;
@@ -115,7 +115,7 @@ private:
 };
 
 template <typename Receiver, typename Member>
-void Timer::callAfter(int ms, Receiver *receiver, Member member)
+void Timer::callAfter(iint32 ms, Receiver *receiver, Member member)
 {
     Timer *timer = new Timer(receiver);
     connect(timer->timeout, receiver, member);
@@ -125,7 +125,7 @@ void Timer::callAfter(int ms, Receiver *receiver, Member member)
 }
 
 template <typename Member>
-void Timer::callStaticAfter(int ms, Member member)
+void Timer::callStaticAfter(iint32 ms, Member member)
 {
     Timer *timer = new Timer;
     connectStatic(timer->timeout, member);

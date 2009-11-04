@@ -51,7 +51,7 @@ iuint32 Char::value() const
     return c;
 }
 
-int Char::octetsRequired() const
+iint32 Char::octetsRequired() const
 {
     if (!(c & 0xffffff00)) {
         return 1;

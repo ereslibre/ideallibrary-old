@@ -50,7 +50,7 @@ public:
       * @return The required number of octets to properly encode this character in UTF-8.
       *         The required number of octets can be 1, 2, 3 or 4.
       */
-    int octetsRequired() const;
+    iint32 octetsRequired() const;
 
     /**
       * @return This character mapped to a char type if the conversion can be done. Otherwise, 0

@@ -126,7 +126,7 @@ bool RegExp::match(const String &str, iuint32 numCaptures) const
         d->m_args[i] = new pcrecpp::Arg;
         *d->m_args[i] = &d->m_argsString[i];
     }
-    int consumed;
+    iint32 consumed;
     return d->m_regExp.DoMatch(str.data(), pcrecpp::RE::ANCHOR_BOTH, &consumed, d->m_args, numCaptures);
 }
 

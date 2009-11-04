@@ -209,7 +209,7 @@ void Painter::setLineJoin(LineJoin lineJoin)
     cairo_set_line_join(D_I->m_cairo, cairoLineJoin);
 }
 
-void Painter::setDash(const double *dashes, int numDashes, double offset)
+void Painter::setDash(const double *dashes, iint32 numDashes, double offset)
 {
     cairo_set_dash(D_I->m_cairo, dashes, numDashes, offset);
 }

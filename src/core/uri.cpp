@@ -72,7 +72,7 @@ public:
     String encodeUri(const String &uri) const;
     String decodeUri(const String &uri) const;
 
-    void reconstructPath(int count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail);
+    void reconstructPath(iint32 count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail);
     String reconstructString(const UriTextRangeA &uriTextRange);
     void initializeContents(const String &uri);
 
@@ -81,7 +81,7 @@ public:
     String  m_username;
     String  m_password;
     String  m_host;
-    int     m_port;
+    iint32  m_port;
     String  m_path;
     String  m_query;
     String  m_fragment;
@@ -105,8 +105,8 @@ String Uri::Private::getHex(Char ch) const
         char v[4];
     } fragmentedValue;
     fragmentedValue.value = ch.value();
-    const int octetsRequired = ch.octetsRequired();
-    for (int i = 0; i < octetsRequired; ++i) {
+    const iint32 octetsRequired = ch.octetsRequired();
+    for (iint32 i = 0; i < octetsRequired; ++i) {
         res += '%';
         res += uri_hex[(fragmentedValue.v[octetsRequired - i - 1] >> 4) & 0xf];
         res += uri_hex[fragmentedValue.v[octetsRequired - i - 1] & 0xf];
@@ -188,7 +188,7 @@ String Uri::Private::decodeUri(const String &uri) const
     return res;
 }
 
-void Uri::Private::reconstructPath(int count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail)
+void Uri::Private::reconstructPath(iint32 count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail)
 {
     String encodedUri;
     const char *curr = head->text.first;
@@ -231,7 +231,7 @@ void Uri::Private::initializeContents(const String &uriP_)
         uriNormalizeSyntaxA(&uri);
         {
             char *uriString;
-            int charsRequired;
+            iint32 charsRequired;
             uriToStringCharsRequiredA(&uri, &charsRequired);
             ++charsRequired;
             uriString = new char[charsRequired];
@@ -339,7 +339,7 @@ String Uri::host() const
     return d->m_host;
 }
 
-int Uri::port() const
+iint32 Uri::port() const
 {
     return d->m_port;
 }

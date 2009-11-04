@@ -97,7 +97,7 @@ public:
     }
 };
 
-Application::Application(int argc, char **argv)
+Application::Application(iint32 argc, char **argv)
     : IdealCore::Application(argc, argv)
     , d(new PrivateImpl(this))
 {
@@ -109,7 +109,7 @@ Application::~Application()
     delete d;
 }
 
-int Application::exec()
+iint32 Application::exec()
 {
     if (!d->m_guiEventHandler) {
         d->m_guiEventHandler = new Private::GUIEventHandler(d);

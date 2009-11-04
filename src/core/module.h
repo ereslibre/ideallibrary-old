@@ -153,7 +153,7 @@ public:
         /**
           * The extension type. @see Module::ExtensionType.
           */
-        int extensionType;
+        iint32 extensionType;
 
         /**
           * If only extension type is not enough for determining whether to load the extension or not,

@@ -217,11 +217,11 @@ String::String(const char *str, size_t n)
 String::String(Char c)
     : d(new Private)
 {
-    const int numberOfOctets = c.octetsRequired();
+    const iint32 numberOfOctets = c.octetsRequired();
     d->m_str = new char[numberOfOctets + 1];
     const iuint32 value = c.value();
-    for (int i = 0; i < numberOfOctets; ++i) {
-        const int offset = 8 * (numberOfOctets - i - 1);
+    for (iint32 i = 0; i < numberOfOctets; ++i) {
+        const iint32 offset = 8 * (numberOfOctets - i - 1);
         d->m_str[i] = (value >> offset) & 0xff;
     }
     d->m_str[numberOfOctets] = '\0';
@@ -337,7 +337,7 @@ String String::substr(size_t pos, size_t n) const
     return String();
 }
 
-int String::compare(const char *s) const
+iint32 String::compare(const char *s) const
 {
     return strcoll(d->m_str, s);
 }
@@ -348,7 +348,7 @@ List<String> String::split(Char separator) const
     if (!d->calculateSize()) {
         return res;
     }
-    const int length = strlen(d->m_str);
+    const iint32 length = strlen(d->m_str);
     char *curr = new char[length];
     iuint32 pos = 0;
     for (iuint32 i = 0; i < d->m_size; ++i) {
@@ -364,8 +364,8 @@ List<String> String::split(Char separator) const
                 char v[4];
             } fragmentedValue;
             fragmentedValue.value = currChar.value();
-            const int octetsRequired = currChar.octetsRequired();
-            for (int i = 0; i < octetsRequired; ++i) {
+            const iint32 octetsRequired = currChar.octetsRequired();
+            for (iint32 i = 0; i < octetsRequired; ++i) {
                 curr[pos] = fragmentedValue.v[octetsRequired - i - 1];
                 ++pos;
             }
@@ -417,12 +417,12 @@ String &String::operator=(Char c)
         d->deref();
         d = new Private;
     }
-    const int numberOfOctets = c.octetsRequired();
+    const iint32 numberOfOctets = c.octetsRequired();
     delete[] d->m_str;
     d->m_str = new char[numberOfOctets + 1];
     const iuint32 value = c.value();
-    for (int i = 0; i < numberOfOctets; ++i) {
-        const int offset = 8 * (numberOfOctets - i - 1);
+    for (iint32 i = 0; i < numberOfOctets; ++i) {
+        const iint32 offset = 8 * (numberOfOctets - i - 1);
         d->m_str[i] = (value >> offset) & 0xff;
     }
     d->m_str[numberOfOctets] = '\0';
@@ -453,8 +453,8 @@ String &String::operator+=(const String &str)
     for (iuint32 i = 0; i < str.d->calculateSize(); ++i) {
         const Char currChar = str[i];
         fragmentedValue.value = currChar.value();
-        const int octetsRequired = currChar.octetsRequired();
-        for (int j = 0; j < octetsRequired; ++j) {
+        const iint32 octetsRequired = currChar.octetsRequired();
+        for (iint32 j = 0; j < octetsRequired; ++j) {
             d->m_str[pos] = fragmentedValue.v[octetsRequired - j - 1];
             ++pos;
         }
@@ -488,14 +488,14 @@ String &String::operator+=(Char c)
         d = d->copy();
         old_d->deref();
     }
-    const int numberOfOctets = c.octetsRequired();
+    const iint32 numberOfOctets = c.octetsRequired();
     const iuint32 rawLength = strlen(d->m_str);
     const iuint32 newRawLength = rawLength + numberOfOctets;
     const iuint32 value = c.value();
     d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
-    int pos = 0;
+    iint32 pos = 0;
     for (iuint32 i = rawLength; i < newRawLength; ++i) {
-        const int offset = 8 * (numberOfOctets - pos - 1);
+        const iint32 offset = 8 * (numberOfOctets - pos - 1);
         d->m_str[i] = (value >> offset) & 0xff;
         ++pos;
     }

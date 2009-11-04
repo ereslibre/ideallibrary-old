@@ -47,7 +47,7 @@ Application::Private::~Private()
 
 void Application::Private::processEvents()
 {
-    int timeToSleep;
+    iint32 timeToSleep;
     if (m_sleepTime != -1) {
         checkTimers();
         timeToSleep = m_sleepTime;
@@ -95,7 +95,7 @@ void Application::Private::checkTimers()
             // We control here the case in which the timer that was going to expire
             // (the head of the queue) was removed before actually expiring. With this
             // check we won't fire an incorrect timer when it had already time remaining.
-            const int msDelta = firstExpiredTimer->d->m_remaining - m_sleepTime;
+            const iint32 msDelta = firstExpiredTimer->d->m_remaining - m_sleepTime;
             if (msDelta) {
                 std::vector<Timer*>::iterator it;
                 for (it = m_runningTimerList.begin(); it != m_runningTimerList.end(); ++it) {
@@ -146,7 +146,7 @@ void Application::Private::checkTimers()
     }
 }
 
-Application::Application(int argc, char **argv, const String &name)
+Application::Application(iint32 argc, char **argv, const String &name)
     : IDEAL_SIGNAL_INIT(invalidOption)
     , IDEAL_SIGNAL_INIT(missingParameter)
     , d(new PrivateImpl(this))
@@ -167,7 +167,7 @@ String Application::prefix() const
     return String();
 }
 
-int Application::exec()
+iint32 Application::exec()
 {
     while (true) {
         d->processEvents();

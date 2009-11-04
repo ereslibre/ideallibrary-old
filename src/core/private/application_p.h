@@ -44,19 +44,19 @@ public:
     static bool timerSort(const Timer *left, const Timer *right);
     void checkTimers();
 
-    int                      m_argc;
+    iint32                   m_argc;
     char                   **m_argv;
     String                   m_name;
     bool                     m_prefixSet;
-    int                      m_sleepTime;
-    const int                m_defaultSleepTime;
+    iint32                   m_sleepTime;
+    const iint32             m_defaultSleepTime;
     List<Object*>            m_markedForDeletion;
     Mutex                    m_markedForDeletionMutex;
     List<IdealCore::Module*> m_markedForUnload;
     Mutex                    m_markedForUnloadMutex;
     std::vector<Timer*>      m_runningTimerList;
     Mutex                    m_runningTimerListMutex;
-    int                      m_nextTimeout;
+    iint32                   m_nextTimeout;
     List<ProtocolHandler*>   m_protocolHandlerCache;
     Mutex                    m_protocolHandlerCacheMutex;
     Application             *q;

@@ -88,10 +88,10 @@ public:
     };
 
     struct EventNotify {
-        int event; ///< An OR bitfield with the events received. @see File::Event
-        Uri uri;   ///< The full URI of the file that did notify the event. Note that if you are tracking
-                   ///< a directory, all files under the directory are being tracked also, and this uri
-                   ///< would contain the full URI of the file or folder that notified the event.
+        iint32 event; ///< An OR bitfield with the events received. @see File::Event
+        Uri    uri;   ///< The full URI of the file that did notify the event. Note that if you are tracking
+                      ///< a directory, all files under the directory are being tracked also, and this uri
+                      ///< would contain the full URI of the file or folder that notified the event.
     };
 
     /**

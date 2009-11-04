@@ -36,7 +36,7 @@ AsyncResult::~AsyncResult()
     delete[] m_values;
 }
 
-int AsyncResult::size() const
+iint32 AsyncResult::size() const
 {
     return m_size;
 }

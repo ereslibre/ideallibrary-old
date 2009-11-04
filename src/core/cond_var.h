@@ -48,7 +48,7 @@ public:
       * Locks the current thread waiting for this condition variable to be signaled
       * for a maximum interval of @p ms milliseconds.
       */
-    void timedWait(int ms);
+    void timedWait(iint32 ms);
 
     /**
       * Signal this condition variable.

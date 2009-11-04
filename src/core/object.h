@@ -164,7 +164,7 @@
  *     MyOtherObject(Object *parent);
  *
  *     void doSomethingEasy();
- *     void doSomethingComplex(bool a, int b, Object *c, const List<Object*> &d);
+ *     void doSomethingComplex(bool a, iint32 b, Object *c, const List<Object*> &d);
  *
  *     IDEAL_SIGNAL(myForwardedSignal);
  * };
@@ -407,7 +407,7 @@
  * to a multislot, it would have to look like this:
  *
  * @code
- * void Whatever::aMultiSlotExample(Object *sender, bool a, int b, Object *c, const List<Object*> &d)
+ * void Whatever::aMultiSlotExample(Object *sender, bool a, iint32 b, Object *c, const List<Object*> &d)
  * {
  * }
  * @endcode

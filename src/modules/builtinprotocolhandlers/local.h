@@ -32,7 +32,7 @@ public:
     BuiltinProtocolHandlersLocal();
     ~BuiltinProtocolHandlersLocal();
 
-    virtual ErrorCode open(const Uri &uri, int openMode);
+    virtual ErrorCode open(const Uri &uri, iint32 openMode);
     virtual ByteStream read(iuint32 nbytes);
     virtual iuint32 write(const ByteStream &byteStream);
     virtual void close();

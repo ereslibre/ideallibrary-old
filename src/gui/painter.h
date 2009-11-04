@@ -99,7 +99,7 @@ public:
 
     void setLineJoin(LineJoin lineJoin);
 
-    void setDash(const double *dashes, int numDashes, double offset);
+    void setDash(const double *dashes, iint32 numDashes, double offset);
 
     void setMiterLimit(double miterLimit);
 

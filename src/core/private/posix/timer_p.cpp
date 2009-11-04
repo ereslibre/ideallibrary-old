@@ -30,7 +30,7 @@ Timer::PrivateImpl::PrivateImpl(Timer *q)
 {
 }
 
-void Timer::timedWait(int ms) const
+void Timer::timedWait(iint32 ms) const
 {
     struct timespec tw;
     tw.tv_sec = ms / 1000;
