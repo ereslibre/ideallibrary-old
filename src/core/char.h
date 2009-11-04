@@ -59,10 +59,10 @@ public:
     operator char() const;
 
     /**
-      * @return This character mapped to an unsigned short type if the conversion can be done.
+      * @return This character mapped to an iuint16 type if the conversion can be done.
       *         Otherwise, 0 is returned.
       */
-    operator unsigned short() const;
+    operator iuint16() const;
 
     /**
       * @return This character mapped to an iuint32 type if the conversion can be done.
@@ -72,11 +72,11 @@ public:
 
     bool operator==(Char c) const;
     bool operator==(char c) const;
-    bool operator==(unsigned short c) const;
+    bool operator==(iuint16 c) const;
     bool operator==(iuint32 c) const;
     bool operator!=(Char c) const;
     bool operator!=(char c) const;
-    bool operator!=(unsigned short c) const;
+    bool operator!=(iuint16 c) const;
     bool operator!=(iuint32 c) const;
 
 private:

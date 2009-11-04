@@ -74,13 +74,13 @@ Char::operator char() const
     return c;
 }
 
-Char::operator unsigned short() const
+Char::operator iuint16() const
 {
     if (c & 0xff000000) {
         IDEAL_DEBUG_WARNING("char '" << *this << "' would have been be corrupted on conversion. returning 0");
         return 0;
     }
-    unsigned short res = 0;
+    iuint16 res = 0;
     if (!(c & 0xffffff00)) {
         res = c;
     } else if (!(c & 0xffff0000)) {
@@ -128,7 +128,7 @@ bool Char::operator==(char c) const
     return this->c == (iuint8) c;
 }
 
-bool Char::operator==(unsigned short c) const
+bool Char::operator==(iuint16 c) const
 {
     if (this->c & 0xff000000) {
         return false;
@@ -229,7 +229,7 @@ bool Char::operator!=(char c) const
     return !(*this == c);
 }
 
-bool Char::operator!=(unsigned short c) const
+bool Char::operator!=(iuint16 c) const
 {
     return !(*this == c);
 }

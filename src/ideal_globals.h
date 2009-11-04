@@ -21,13 +21,14 @@
 #ifndef IDEAL_GLOBALS_H
 #define IDEAL_GLOBALS_H
 
-typedef signed char iint8;
-typedef unsigned char iuint8;
-typedef short iint16;
-typedef unsigned short iuint16;
-typedef int iint32;
-typedef unsigned int iuint32;
-typedef long long iint64;
-typedef unsigned long long iuint64;
+typedef signed char            iint8;
+typedef unsigned char          iuint8;
+typedef short                  iint16;
+typedef unsigned short         iuint16;
+typedef int                    iint32;
+typedef unsigned int           iuint32;
+typedef long long              iint64;
+typedef unsigned long long int iuint64;
+typedef double                 ireal;
 
 #endif //IDEAL_GLOBALS_H

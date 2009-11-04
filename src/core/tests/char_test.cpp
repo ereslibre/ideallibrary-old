@@ -90,22 +90,22 @@ void CharTest::operatorUnsignedShort()
 {
     {
         Char c('a');
-        unsigned short c1 = c;
-        CPPUNIT_ASSERT_EQUAL((unsigned short) L'a', c1);
+        iuint16 c1 = c;
+        CPPUNIT_ASSERT_EQUAL((iuint16) L'a', c1);
     }
     {
         Char c(L'ñ');
-        unsigned short c1 = c;
-        CPPUNIT_ASSERT_EQUAL((unsigned short) L'ñ', c1);
+        iuint16 c1 = c;
+        CPPUNIT_ASSERT_EQUAL((iuint16) L'ñ', c1);
     }
     {
         Char c(L'€');
-        unsigned short c1 = c;
-        CPPUNIT_ASSERT_EQUAL((unsigned short) L'€', c1);
+        iuint16 c1 = c;
+        CPPUNIT_ASSERT_EQUAL((iuint16) L'€', c1);
     }
     {
         Char c(L'𝚿');
-        unsigned short c1 = c;
+        iuint16 c1 = c;
         CPPUNIT_ASSERT(((iuint32) L'𝚿') != (iuint32) c1);
     }
 }
@@ -171,17 +171,17 @@ void CharTest::operatorEqualsUnsignedShort()
 {
     {
         Char c('a');
-        unsigned short c1 = 'a';
+        iuint16 c1 = 'a';
         CPPUNIT_ASSERT(c == c1);
     }
     {
         Char c(L'ñ');
-        unsigned short c1 = L'ñ';
+        iuint16 c1 = L'ñ';
         CPPUNIT_ASSERT(c == c1);
     }
     {
         Char c(L'€');
-        unsigned short c1 = L'€';
+        iuint16 c1 = L'€';
         CPPUNIT_ASSERT(c == c1);
     }
 }
