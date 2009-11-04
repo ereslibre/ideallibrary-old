@@ -90,12 +90,13 @@ def configure(conf):
 
 def build(bld):
     bld.env['LIBVERSION'] = LIBVERSION
-    bld.install_files('${PREFIX}/include/ideal', 'src/ideal_conf.h')
-    bld.install_files('${PREFIX}/include/ideal', 'src/ideal_export.h')
     if bld.env['RELEASE']:
         bld.add_subdirs(subdirs_r)
     else:
         bld.add_subdirs(subdirs_d)
+    bld.install_files('${PREFIX}/include/ideal', 'src/ideal_conf.h')
+    bld.install_files('${PREFIX}/include/ideal', 'src/ideal_export.h')
+    bld.install_files('${PREFIX}/include/ideal', 'src/ideal_globals.h')
 
 def check(context):
     ut = UnitTest.unit_test()
