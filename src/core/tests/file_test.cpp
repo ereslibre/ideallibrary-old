@@ -32,7 +32,7 @@ using namespace IdealCore;
 CPPUNIT_TEST_SUITE_REGISTRATION(FileTest);
 
 static Application *s_application = 0;
-static int numCalls = 0;
+static iint32 numCalls = 0;
 static bool disconnectedWarned = false;
 
 static void assertExists(const ProtocolHandler::StatResult &statResult)

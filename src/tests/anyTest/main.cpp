@@ -23,16 +23,28 @@
 
 using namespace IdealCore;
 
+struct MyStruct
+{
+    bool operator==(const MyStruct &myStruct) const
+    {
+        return a == myStruct.a && b == myStruct.b && c == myStruct.c;
+    }
+
+    iint32 a;
+    iint32 b;
+    ireal  c;
+};
+
 int main(int argc, char **argv)
 {
     {
-        int a = 100;
+        iint32 a = 100;
         Any b(a);
         IDEAL_SDEBUG("Number is: " << b.get<int>());
         IDEAL_SDEBUG("Type is: " << b.typeName());
     }
     {
-        int *a = new int;
+        iint32 *a = new iint32;
         *a = 100;
         Any b(a);
         IDEAL_SDEBUG("Number is: " << *b.get<int*>());
@@ -69,6 +81,10 @@ int main(int argc, char **argv)
     }
     {
         List<List<Uri*>*> a;
+        IDEAL_SDEBUG("Type is: " << Any::typeName(a));
+    }
+    {
+        MyStruct a;
         IDEAL_SDEBUG("Type is: " << Any::typeName(a));
     }
     return 0;

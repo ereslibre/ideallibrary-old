@@ -31,8 +31,8 @@
 
 using namespace IdealCore;
 
-static int res;
-static int s_argc;
+static iint32 res;
+static iint32 s_argc;
 static char **s_argv;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TimerTest);
@@ -86,8 +86,8 @@ void TimerTest::secondInterval()
     }
 }
 
-static int didTimeout1 = 0;
-static int didTimeout2 = 0;
+static iint32 didTimeout1 = 0;
+static iint32 didTimeout2 = 0;
 
 static void timeout1()
 {

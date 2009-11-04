@@ -48,14 +48,14 @@ struct MyStruct {
 
     String a;
     Uri    b;
-    int    c;
+    iint32 c;
     float  d;
 };
 
 void AnyTest::get()
 {
     {
-        int a = 100;
+        iint32 a = 100;
         Any b(a);
         CPPUNIT_ASSERT_EQUAL(100, b.get<int>());
     }
@@ -81,7 +81,7 @@ void AnyTest::get()
 void AnyTest::typeName()
 {
     {
-        int a = 100;
+        iint32 a = 100;
         Any b(a);
         CPPUNIT_ASSERT_EQUAL(String("int"), b.typeName());
     }
@@ -105,7 +105,7 @@ void AnyTest::typeName()
 void AnyTest::operatorEquals()
 {
     {
-        int a = 100;
+        iint32 a = 100;
         Any aa;
         aa = a;
         CPPUNIT_ASSERT_EQUAL(100, aa.get<int>());
@@ -139,14 +139,14 @@ void AnyTest::operatorEquals()
 void AnyTest::operatorEqualsEquals()
 {
     {
-        int a = 100;
-        int b = 50;
+        iint32 a = 100;
+        iint32 b = 50;
         Any aa(a);
         Any ab(b);
         CPPUNIT_ASSERT(aa != ab);
     }
     {
-        int a = 100;
+        iint32 a = 100;
         String b = "Hello";
         Any aa(a);
         Any ab(b);
@@ -208,7 +208,7 @@ void AnyTest::operatorEqualsEquals()
         Any aa(a);
         Any ab(a);
         CPPUNIT_ASSERT(aa == ab);
-        int b = 100;
+        iint32 b = 100;
         aa = b;
         ab = b;
         CPPUNIT_ASSERT(aa == ab);

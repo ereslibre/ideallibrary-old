@@ -52,13 +52,13 @@ public:
         m_signalsReceived = 0;
     }
 
-    int signalsReceived() const
+    iint32 signalsReceived() const
     {
         return m_signalsReceived;
     }
 
 private:
-    int m_signalsReceived;
+    iint32 m_signalsReceived;
 };
 
 class Emitter

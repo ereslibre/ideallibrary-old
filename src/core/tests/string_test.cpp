@@ -135,7 +135,7 @@ void StringTest::testSplit()
         String list[] = { String("a"), String("b"), String("c"),
                           String("d"), String("e") };
         List<String>::iterator it = res.begin();
-        int i = 0;
+        iint32 i = 0;
         for (it = res.begin(); it != res.end(); ++it, ++i) {
             CPPUNIT_ASSERT_EQUAL(list[i], *it);
         }
@@ -216,7 +216,7 @@ void StringTest::testOperators()
 {
     {
         String str("This is a string");
-        const int strInitialSize = str.size();
+        const iint32 strInitialSize = str.size();
         String str2;
         str2 = str;
         CPPUNIT_ASSERT_EQUAL(str, str2);
@@ -309,7 +309,7 @@ void StringTest::testOperators()
     {
         String str;
         Char a('a');
-        for (int i = 0; i < 10; ++i) {
+        for (iint32 i = 0; i < 10; ++i) {
             str += a;
         }
         CPPUNIT_ASSERT_EQUAL(String("aaaaaaaaaa"), str);
@@ -317,7 +317,7 @@ void StringTest::testOperators()
     {
         String str;
         Char a(L'á');
-        for (int i = 0; i < 10; ++i) {
+        for (iint32 i = 0; i < 10; ++i) {
             str += a;
         }
         CPPUNIT_ASSERT_EQUAL(String("áááááááááá"), str);
