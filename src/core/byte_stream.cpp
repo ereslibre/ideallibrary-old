@@ -27,7 +27,7 @@ namespace IdealCore {
 class ByteStream::Private
 {
 public:
-    Private(const char *data, unsigned long long int nbytes = 0)
+    Private(const char *data, iuint64 nbytes = 0)
         : m_data(0)
         , m_size(0)
     {
@@ -48,8 +48,8 @@ public:
         delete[] m_data;
     }
 
-    char                  *m_data;
-    unsigned long long int m_size;
+    char   *m_data;
+    iuint64 m_size;
 };
 
 ByteStream::ByteStream()
@@ -67,7 +67,7 @@ ByteStream::ByteStream(const char *data)
 {
 }
 
-ByteStream::ByteStream(const char *data, unsigned long long int nbytes)
+ByteStream::ByteStream(const char *data, iuint64 nbytes)
     : d(new Private(data, nbytes))
 {
 }
@@ -77,7 +77,7 @@ ByteStream::~ByteStream()
     delete d;
 }
 
-unsigned long long int ByteStream::size() const
+iuint64 ByteStream::size() const
 {
     return d->m_size;
 }

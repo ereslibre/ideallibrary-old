@@ -80,7 +80,7 @@ static void assertOthersCanWrite(const ProtocolHandler::StatResult &statResult)
 
 static void assertKernel22Size(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT_EQUAL((unsigned long long int) 56919686, statResult.size);
+    CPPUNIT_ASSERT_EQUAL((iuint64) 56919686, statResult.size);
     ++numCalls;
 }
 

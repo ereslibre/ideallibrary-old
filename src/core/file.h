@@ -70,7 +70,7 @@ public:
     File(const Uri &uri, Object *parent);
     virtual ~File();
 
-    static const unsigned long long int NoMaxBytes = 0;
+    static const iuint64 NoMaxBytes = 0;
 
     enum Event {
         NoEvent              = 0,   ///< Do not track events for this file
@@ -128,7 +128,7 @@ public:
       *
       * @see ProtocolHandler::get()
       */
-    Thread *get(unsigned long long int maxBytes = NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
+    Thread *get(iuint64 maxBytes = NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
 
     /**
       * @return A constructed thread object that will be able to run asynchronously.

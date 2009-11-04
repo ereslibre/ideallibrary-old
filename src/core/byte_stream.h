@@ -39,10 +39,10 @@ public:
     ByteStream();
     ByteStream(const ByteStream &byteStream);
     ByteStream(const char *data);
-    ByteStream(const char *data, unsigned long long int nbytes);
+    ByteStream(const char *data, iuint64 nbytes);
     virtual ~ByteStream();
 
-    unsigned long long int size() const;
+    iuint64 size() const;
 
     const char *data() const;
 
