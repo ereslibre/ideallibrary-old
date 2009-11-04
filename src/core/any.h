@@ -49,6 +49,11 @@ public:
     const std::type_info &type() const;
 
     template <typename T>
+    static String typeName(const T &t);
+    template <typename T>
+    static std::type_info &type(const T&t);
+
+    template <typename T>
     Any &operator=(const T &t);
     Any &operator=(const Any &any);
 
@@ -130,6 +135,19 @@ T Any::get() const
         IDEAL_DEBUG_WARNING("get() on an empty Any class");
     }
     return static_cast<Storage<T>*>(m_s)->m_t;
+}
+
+template <typename T>
+String Any::typeName(const T &t)
+{
+    Any any(t);
+    return any.typeName();
+}
+
+template <typename T>
+std::type_info &Any::type(const T &t)
+{
+    return typeid(T);
 }
 
 template <typename T>

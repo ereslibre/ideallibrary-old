@@ -60,7 +60,10 @@ const std::type_info &Any::type() const
 
 String Any::typeName() const
 {
-    return abi::__cxa_demangle(m_s->type().name(), 0, 0, 0);
+    char *const typeName = abi::__cxa_demangle(m_s->type().name(), 0, 0, 0);
+    String res(typeName);
+    delete[] typeName;
+    return res;
 }
 
 template <>
