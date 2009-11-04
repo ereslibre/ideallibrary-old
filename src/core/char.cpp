@@ -125,7 +125,7 @@ bool Char::operator==(char c) const
     if (this->c & 0xffffff00) {
         return false;
     }
-    return this->c == (unsigned char) c;
+    return this->c == (iuint8) c;
 }
 
 bool Char::operator==(unsigned short c) const
