@@ -22,6 +22,7 @@
 #define IDEAL_EXPORT_H
 
 #include <ideal_conf.h>
+#include <ideal_globals.h>
 #include <iostream>
 
 #define IDEAL_SIGNAL(name, ...) const IdealCore::Signal<__VA_ARGS__> name
