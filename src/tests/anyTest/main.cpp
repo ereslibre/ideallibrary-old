@@ -54,5 +54,22 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("Host is: " << b.get<Uri>().host());
         IDEAL_SDEBUG("Type is: " << b.typeName());
     }
+    IDEAL_SDEBUG("*** Using the static methods");
+    {
+        String a("This is a test");
+        IDEAL_SDEBUG("Type is: " << Any::typeName(a));
+    }
+    {
+        Uri a("http://www.google.com");
+        IDEAL_SDEBUG("Type is: " << Any::typeName(a));
+    }
+    {
+        String *a = 0;
+        IDEAL_SDEBUG("Type is: " << Any::typeName(a));
+    }
+    {
+        List<List<Uri*>*> a;
+        IDEAL_SDEBUG("Type is: " << Any::typeName(a));
+    }
     return 0;
 }
