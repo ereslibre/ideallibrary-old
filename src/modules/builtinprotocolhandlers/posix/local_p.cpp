@@ -89,7 +89,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, in
     }
 }
 
-ByteStream BuiltinProtocolHandlersLocal::read(unsigned int nbytes)
+ByteStream BuiltinProtocolHandlersLocal::read(iuint32 nbytes)
 {
     if (d->m_fd == -1) {
         return ByteStream();
@@ -102,7 +102,7 @@ ByteStream BuiltinProtocolHandlersLocal::read(unsigned int nbytes)
     return ByteStream();
 }
 
-unsigned int BuiltinProtocolHandlersLocal::write(const ByteStream &byteStream)
+iuint32 BuiltinProtocolHandlersLocal::write(const ByteStream &byteStream)
 {
     if (d->m_fd == -1) {
         return 0;

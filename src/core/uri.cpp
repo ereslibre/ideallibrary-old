@@ -63,7 +63,7 @@ public:
         }
     }
 
-    unsigned int refCount() const
+    iuint32 refCount() const
     {
         return m_refs;
     }
@@ -76,17 +76,17 @@ public:
     String reconstructString(const UriTextRangeA &uriTextRange);
     void initializeContents(const String &uri);
 
-    String       m_uri;
-    String       m_scheme;
-    String       m_username;
-    String       m_password;
-    String       m_host;
-    int          m_port;
-    String       m_path;
-    String       m_query;
-    String       m_fragment;
-    bool         m_isValidUri;
-    unsigned int m_refs;
+    String  m_uri;
+    String  m_scheme;
+    String  m_username;
+    String  m_password;
+    String  m_host;
+    int     m_port;
+    String  m_path;
+    String  m_query;
+    String  m_fragment;
+    bool    m_isValidUri;
+    iuint32 m_refs;
 };
 
 const String uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -101,7 +101,7 @@ String Uri::Private::getHex(Char ch) const
 {
     String res;
     union {
-        unsigned int value;
+        iuint32 value;
         char v[4];
     } fragmentedValue;
     fragmentedValue.value = ch.value();
@@ -141,14 +141,14 @@ String Uri::Private::decodeUri(const String &uri) const
             Char newChar;
             String byte1(uri[i + 1]);
             byte1 += uri[i + 2];
-            const unsigned int byte1Val = strtoul(byte1.data(), 0, 16);
+            const iuint32 byte1Val = strtoul(byte1.data(), 0, 16);
             if (!(byte1Val & 0x80)) {
                 newChar.c = byte1Val;
                 i += 3;
             } else if (!(byte1Val & 0x20)) {
                 String byte2(uri[i + 4]);
                 byte2 += uri[i + 5];
-                const unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
                 newChar.c |= (byte1Val << 8);
                 newChar.c |= byte2Val;
                 i += 6;
@@ -157,8 +157,8 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte2 += uri[i + 5];
                 String byte3(uri[i + 7]);
                 byte3 += uri[i + 8];
-                const unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
-                const unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
                 newChar.c |= (byte1Val << 16);
                 newChar.c |= (byte2Val << 8);
                 newChar.c |= byte3Val;
@@ -170,9 +170,9 @@ String Uri::Private::decodeUri(const String &uri) const
                 byte3 += uri[i + 8];
                 String byte4(uri[i + 10]);
                 byte4 += uri[i + 11];
-                const unsigned int byte2Val = strtoul(byte2.data(), 0, 16);
-                const unsigned int byte3Val = strtoul(byte3.data(), 0, 16);
-                const unsigned int byte4Val = strtoul(byte4.data(), 0, 16);
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
+                const iuint32 byte4Val = strtoul(byte4.data(), 0, 16);
                 newChar.c |= (byte1Val << 24);
                 newChar.c |= (byte2Val << 16);
                 newChar.c |= (byte3Val << 8);

@@ -27,7 +27,7 @@ Char::Char()
 {
 }
 
-Char::Char(unsigned int c)
+Char::Char(iuint32 c)
 {
     if (!(c & 0x1fff80)) {
         this->c = c & 0x7f;
@@ -46,7 +46,7 @@ Char::Char(unsigned int c)
     }
 }
 
-unsigned int Char::value() const
+iuint32 Char::value() const
 {
     return c;
 }
@@ -94,9 +94,9 @@ Char::operator unsigned short() const
     return res;        
 }
 
-Char::operator unsigned int() const
+Char::operator iuint32() const
 {
-    unsigned int res = 0;
+    iuint32 res = 0;
     if (!(c & 0xffffff00)) {
         res = c;
     } else if (!(c & 0xffff0000)) {
@@ -168,7 +168,7 @@ bool Char::operator==(unsigned short c) const
     return true;
 }
 
-bool Char::operator==(unsigned int c) const
+bool Char::operator==(iuint32 c) const
 {
     switch (octetsRequired()) {
         case 4:
@@ -234,7 +234,7 @@ bool Char::operator!=(unsigned short c) const
     return !(*this == c);
 }
 
-bool Char::operator!=(unsigned int c) const
+bool Char::operator!=(iuint32 c) const
 {
     return !(*this == c);
 }
@@ -243,7 +243,7 @@ bool Char::operator!=(unsigned int c) const
 
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
 {
-    const unsigned int value = c.value();
+    const iuint32 value = c.value();
     switch (c.octetsRequired()) {
         case 4:
             stream << (char) ((value & 0xff000000) >> 24);

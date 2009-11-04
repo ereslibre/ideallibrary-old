@@ -92,7 +92,7 @@ public:
     virtual bool equals(const Any &any) const = 0;
 
 private:
-    unsigned int m_refs;
+    iuint32 m_refs;
 };
 
 template <typename T>

@@ -72,17 +72,17 @@ void CharTest::operatorChar()
     {
         Char c(L'ñ');
         char c1 = c;
-        CPPUNIT_ASSERT(((unsigned int) L'ñ') != (unsigned int) c1);
+        CPPUNIT_ASSERT(((iuint32) L'ñ') != (iuint32) c1);
     }
     {
         Char c(L'€');
         char c1 = c;
-        CPPUNIT_ASSERT(((unsigned int) L'€') != (unsigned int) c1);
+        CPPUNIT_ASSERT(((iuint32) L'€') != (iuint32) c1);
     }
     {
         Char c(L'𝚿');
         char c1 = c;
-        CPPUNIT_ASSERT(((unsigned int) L'𝚿') != (unsigned int) c1);
+        CPPUNIT_ASSERT(((iuint32) L'𝚿') != (iuint32) c1);
     }
 }
 
@@ -106,7 +106,7 @@ void CharTest::operatorUnsignedShort()
     {
         Char c(L'𝚿');
         unsigned short c1 = c;
-        CPPUNIT_ASSERT(((unsigned int) L'𝚿') != (unsigned int) c1);
+        CPPUNIT_ASSERT(((iuint32) L'𝚿') != (iuint32) c1);
     }
 }
 
@@ -114,23 +114,23 @@ void CharTest::operatorUnsignedInt()
 {
     {
         Char c('a');
-        unsigned int c1 = c;
-        CPPUNIT_ASSERT_EQUAL((unsigned int) L'a', c1);
+        iuint32 c1 = c;
+        CPPUNIT_ASSERT_EQUAL((iuint32) L'a', c1);
     }
     {
         Char c(L'ñ');
-        unsigned int c1 = c;
-        CPPUNIT_ASSERT_EQUAL((unsigned int) L'ñ', c1);
+        iuint32 c1 = c;
+        CPPUNIT_ASSERT_EQUAL((iuint32) L'ñ', c1);
     }
     {
         Char c(L'€');
-        unsigned int c1 = c;
-        CPPUNIT_ASSERT_EQUAL((unsigned int) L'€', c1);
+        iuint32 c1 = c;
+        CPPUNIT_ASSERT_EQUAL((iuint32) L'€', c1);
     }
     {
         Char c(L'𝚿');
-        unsigned int c1 = c;
-        CPPUNIT_ASSERT_EQUAL((unsigned int) L'𝚿', c1);
+        iuint32 c1 = c;
+        CPPUNIT_ASSERT_EQUAL((iuint32) L'𝚿', c1);
     }
 }
 
@@ -190,22 +190,22 @@ void CharTest::operatorEqualsUnsignedInt()
 {
     {
         Char c('a');
-        unsigned int c1 = 'a';
+        iuint32 c1 = 'a';
         CPPUNIT_ASSERT(c == c1);
     }
     {
         Char c(L'ñ');
-        unsigned int c1 = L'ñ';
+        iuint32 c1 = L'ñ';
         CPPUNIT_ASSERT(c == c1);
     }
     {
         Char c(L'€');
-        unsigned int c1 = L'€';
+        iuint32 c1 = L'€';
         CPPUNIT_ASSERT(c == c1);
     }
     {
         Char c(L'𝚿');
-        unsigned int c1 = L'𝚿';
+        iuint32 c1 = L'𝚿';
         CPPUNIT_ASSERT(c == c1);
     }
 }

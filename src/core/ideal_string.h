@@ -123,7 +123,7 @@ public:
       */
     List<String> split(Char separator) const;
 
-    Char operator[](unsigned int pos) const;
+    Char operator[](iuint32 pos) const;
 
     String &operator=(const String &str);
     String &operator=(const char *str);

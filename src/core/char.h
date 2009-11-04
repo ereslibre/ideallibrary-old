@@ -39,12 +39,12 @@ class IDEAL_EXPORT Char
 
 public:
     Char();
-    Char(unsigned int c);
+    Char(iuint32 c);
 
     /**
       * @return The character encoded in UTF-8.
       */
-    unsigned int value() const;
+    iuint32 value() const;
 
     /**
       * @return The required number of octets to properly encode this character in UTF-8.
@@ -65,22 +65,22 @@ public:
     operator unsigned short() const;
 
     /**
-      * @return This character mapped to an unsigned int type if the conversion can be done.
+      * @return This character mapped to an iuint32 type if the conversion can be done.
       *         Otherwise, 0 is returned.
       */
-    operator unsigned int() const;
+    operator iuint32() const;
 
     bool operator==(Char c) const;
     bool operator==(char c) const;
     bool operator==(unsigned short c) const;
-    bool operator==(unsigned int c) const;
+    bool operator==(iuint32 c) const;
     bool operator!=(Char c) const;
     bool operator!=(char c) const;
     bool operator!=(unsigned short c) const;
-    bool operator!=(unsigned int c) const;
+    bool operator!=(iuint32 c) const;
 
 private:
-    unsigned int c;
+    iuint32 c;
 };
 
 }

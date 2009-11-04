@@ -127,9 +127,9 @@ public:
 
     virtual ErrorCode open(const Uri &uri, int openMode = Read | Write) = 0;
 
-    virtual ByteStream read(unsigned int nbytes) = 0;
+    virtual ByteStream read(iuint32 nbytes) = 0;
 
-    virtual unsigned int write(const ByteStream &byteStream) = 0;
+    virtual iuint32 write(const ByteStream &byteStream) = 0;
 
     virtual void close() = 0;
 
@@ -170,7 +170,7 @@ public:
     ProtocolHandler();
 
 private:
-    unsigned int m_weight;
+    iuint32 m_weight;
 };
 
 }

@@ -21,22 +21,24 @@
 #ifndef FIXINCLUDES_H
 #define FIXINCLUDES_H
 
+#include <ideal_export.h>
+
 namespace IdealGUI {
 
-static const unsigned int CreateNotify_    = CreateNotify;
-static const unsigned int MapNotify_       = MapNotify;
-static const unsigned int UnmapNotify_     = UnmapNotify;
-static const unsigned int MotionNotify_    = MotionNotify;
-static const unsigned int EnterNotify_     = EnterNotify;
-static const unsigned int LeaveNotify_     = LeaveNotify;
-static const unsigned int ButtonPress_     = ButtonPress;
-static const unsigned int ButtonRelease_   = ButtonRelease;
-static const unsigned int KeyPress_        = KeyPress;
-static const unsigned int KeyRelease_      = KeyRelease;
-static const unsigned int ConfigureNotify_ = ConfigureNotify;
-static const unsigned int Expose_          = Expose;
-static const unsigned int FocusIn_         = FocusIn;
-static const unsigned int FocusOut_        = FocusOut;
+static const iuint32 CreateNotify_    = CreateNotify;
+static const iuint32 MapNotify_       = MapNotify;
+static const iuint32 UnmapNotify_     = UnmapNotify;
+static const iuint32 MotionNotify_    = MotionNotify;
+static const iuint32 EnterNotify_     = EnterNotify;
+static const iuint32 LeaveNotify_     = LeaveNotify;
+static const iuint32 ButtonPress_     = ButtonPress;
+static const iuint32 ButtonRelease_   = ButtonRelease;
+static const iuint32 KeyPress_        = KeyPress;
+static const iuint32 KeyRelease_      = KeyRelease;
+static const iuint32 ConfigureNotify_ = ConfigureNotify;
+static const iuint32 Expose_          = Expose;
+static const iuint32 FocusIn_         = FocusIn;
+static const iuint32 FocusOut_        = FocusOut;
 
 }
 

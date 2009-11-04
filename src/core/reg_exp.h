@@ -45,8 +45,8 @@ public:
     void setRegExp(const String &regExp);
     String regExp() const;
 
-    bool match(const String &str, unsigned int numCaptures = 0) const;
-    String getCapture(unsigned int i) const;
+    bool match(const String &str, iuint32 numCaptures = 0) const;
+    String getCapture(iuint32 i) const;
 
     RegExp &operator=(const RegExp &regExp);
     RegExp &operator=(const String &regExp);
