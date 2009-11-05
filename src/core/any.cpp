@@ -55,12 +55,15 @@ Any::~Any()
 
 const std::type_info &Any::type() const
 {
-    return m_s->type();
+    if (m_s) {
+        return m_s->type();
+    }
+    return typeid(Any);
 }
 
 String Any::typeName() const
 {
-    char *const typeName = abi::__cxa_demangle(m_s->type().name(), 0, 0, 0);
+    char *const typeName = abi::__cxa_demangle((m_s ? m_s->type().name() : typeid(Any).name()), 0, 0, 0);
     String res(typeName);
     delete[] typeName;
     return res;

@@ -100,6 +100,11 @@ void AnyTest::typeName()
         Any as(s);
         CPPUNIT_ASSERT_EQUAL(String("MyStruct"), as.typeName());
     }
+    {
+        // This instance has not morphed to anything
+        Any a;
+        CPPUNIT_ASSERT_EQUAL(String("IdealCore::Any"), a.typeName());
+    }
 }
 
 void AnyTest::operatorEquals()
