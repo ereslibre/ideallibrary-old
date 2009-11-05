@@ -42,8 +42,14 @@ public:
     ByteStream(const char *data, iuint64 nbytes);
     virtual ~ByteStream();
 
+    /**
+      * @return the size of the stream.
+      */
     iuint64 size() const;
 
+    /**
+      * @return the contents of the stream.
+      */
     const char *data() const;
 
     ByteStream &operator=(const char *data);

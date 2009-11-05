@@ -49,6 +49,9 @@ public:
       */
     void join();
 
+    /**
+      * Executes command @p command.
+      */
     static void execCommand(const String &command);
 
 protected:

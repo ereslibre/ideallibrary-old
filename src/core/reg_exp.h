@@ -45,7 +45,19 @@ public:
     void setRegExp(const String &regExp);
     String regExp() const;
 
+    /**
+      * Tests whether a string matches this regular expression or not.
+      *
+      * @param str the string to test whether matches this regular expression or not.
+      * @param numCaptures the maximum number of captures that this @p str can match.
+      *
+      * @return true if @p str matches this regular expression.
+      */
     bool match(const String &str, iuint32 numCaptures = 0) const;
+
+    /**
+      * @return the capture at position @p i. An empty string if @p i is out of bounds.
+      */
     String getCapture(iuint32 i) const;
 
     RegExp &operator=(const RegExp &regExp);
