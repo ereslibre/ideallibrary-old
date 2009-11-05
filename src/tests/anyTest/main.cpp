@@ -66,6 +66,13 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("Host is: " << b.get<Uri>().host());
         IDEAL_SDEBUG("Type is: " << b.typeName());
     }
+    IDEAL_SDEBUG("*** Going to do something illegal");
+    {
+        MyStruct a;
+        Any b(a);
+        const String myString = b.get<String>();
+        IDEAL_SDEBUG("myString is: \"" << myString << "\"");
+    }
     IDEAL_SDEBUG("*** Using the static methods");
     {
         String a("This is a test");

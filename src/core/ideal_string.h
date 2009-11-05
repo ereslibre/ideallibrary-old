@@ -69,8 +69,8 @@ public:
       *         means that for example:
       *
       * @code
-      *     String myString("Tést");
-      *     const size_t stringSize = myString.size(); // stringSize would contain a 4
+      * String myString("Tést");
+      * const size_t stringSize = myString.size(); // stringSize would contain a 4
       * @endcode
       */
     size_t size() const;

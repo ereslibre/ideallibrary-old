@@ -31,32 +31,151 @@ namespace IdealCore {
 /**
   * @class Any any.h core/any.h
   *
+  * This class can hold a instance of any type. It also provides functionality to find out
+  * the type of a instance in runtime.
+  *
+  * Its usage is very simple:
+  *
+  * @code
+  * String myString("Testing any");
+  * Any any(myString);
+  * IDEAL_SDEBUG("myString contains: " << any.get<String>());
+  * @endcode
+  *
+  * It can also be reutilized, like in the following example:
+  *
+  * @code
+  * String myString("Testing any");
+  * iint32 myInt = 100;
+  * float myFloat = 100.0;
+  * Any any(myString);
+  * any = myInt;
+  * any = myFloat;
+  * @endcode
+  *
+  * It can also work out of the box with user defined types:
+  *
+  * @code
+  * struct MyStruct
+  * {
+  *     iint32 a;
+  *     float b;
+  *     String c;
+  * };
+  * MyStruct myStruct;
+  * iint32 myInt = 100;
+  * float myFloat = 100.0;
+  * Any any(myStruct);
+  * any = myInt;
+  * any = myFloat;
+  * @endcode
+  *
+  * @note the types being encapsulated in the Any instance need to implement operator==, since
+  *       it is possible to directly compare Any objects, being called this operator in case that
+  *       types match.
+  *
+  * @code
+  * MyString myString("This is a test");
+  * MyString otherString("This is a test");
+  * iint32 myInt = 100;
+  * Any myAny(myString);
+  * Any otherAny(otherString);
+  * // will print "yes"
+  * IDEAL_SDEBUG("Are myString and otherString equal? " << (myAny == otherAny ? "yes" : "no"));
+  * otherAny = myInt;
+  * // will print "no", types don't even match
+  * IDEAL_SDEBUG("Are myString and myInt equal? " << (myAny == otherAny ? "yes": "no"));
+  * myAny = myInt;
+  * // will print "yes"
+  * IDEAL_SDEBUG("Are myInt and myInt equal? " << (myAny == otherAny ? "yes" : "no"));
+  * @endcode
+  *
+  * @note constructing Any instances from other Any instance, or assignment between them is a special
+  *       case. Their content will be the same, an Any instance will not encapsulate another Any
+  *       instance.
+  *
+  * @code
+  * iint32 myInt = 100;
+  * Any myAny(myInt);
+  * Any otherAny(myAny);
+  * // will print "yes", since otherAny does not encapsulate myAny, it just points to myInt too
+  * IDEAL_SDEBUG("Are myAny and otherAny equal? " << (myAny == otherAny ? "yes" : "no"));
+  * @endcode
+  *
+  * Same happens with the assignment:
+  *
+  * @code
+  * iint32 myInt = 100;
+  * Any myAny(myInt);
+  * Any otherAny;
+  * otherAny = myAny;
+  * // will print "yes", since otherAny does not encapsulate myAny, it just points to myInt too
+  * IDEAL_SDEBUG("Are myAny and otherAny equal? " << (myAny == otherAny ? "yes" : "no"));
+  * @endcode
+  *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */
 class IDEAL_EXPORT Any
 {
 public:
+    /**
+      * Constructs an empty Any instance.
+      *
+      * @note since it has not morphed yet, type() will return information for Any class, and
+      *       a call to typeName() will return IdealCore::Any, until it is reassigned and it
+      *       morphs.
+      */
     Any();
+
+    /**
+      * Constructs an Any instance of type T.
+      */
     template <typename T>
     Any(const T &t);
     Any(const Any &any);
     virtual ~Any();
 
+    /**
+      * @return The contents of this Any instance with the desired type T. It must match the
+      *         type of the encapsulated instance.
+      */
     template <typename T>
     T get() const;
 
+    /**
+      * @return The type name of the encapsulated type. IdealCore::Any if no encapsulated instance.
+      */
     String typeName() const;
+
+    /**
+      * @return The type of the encapsulated instance.
+      */
     const std::type_info &type() const;
 
+    /**
+      * @return The type name of type T.
+      */
     template <typename T>
     static String typeName(const T &t);
+
+    /**
+      * @return The type as in std::type_info of type T. std::type_info has the ability to be
+      *         compared.
+      */
     template <typename T>
     static std::type_info &type(const T&t);
 
+    /**
+      * Makes this Any instance to morph to type T and encapsulate the @p t instance of type T.
+      */
     template <typename T>
     Any &operator=(const T &t);
     Any &operator=(const Any &any);
 
+    /**
+      * @return true if this Any instance is of the same type and is equal to @p any using
+      *         operator== on the encapsulated type. false otherwise.
+      */
     bool operator==(const Any &any) const;
     bool operator!=(const Any &any) const;
 
@@ -139,6 +258,13 @@ T Any::get() const
 {
     if (!m_s) {
         IDEAL_DEBUG_WARNING("get() on an empty Any class");
+    }
+    if (m_s->type() != typeid(T)) {
+        T t;
+        Any any(t);
+        IDEAL_DEBUG_WARNING("get() of an invalid type " << any.typeName() << " when contents "
+                            "were of type " << typeName());
+        return t;
     }
     return static_cast<Storage<T>*>(m_s)->m_t;
 }
