@@ -118,7 +118,7 @@ public:
 
     bool equals(const Any &any) const
     {
-        if (type() != any.m_s->type()) {
+        if (typeid(T) != any.m_s->type()) {
             return false;
         }
         return m_t == static_cast<Storage<T>*>(any.m_s)->m_t;
