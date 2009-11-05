@@ -67,6 +67,9 @@ private:
     GenericStorage *m_s;
 };
 
+/**
+  * @internal
+  */
 class Any::GenericStorage
 {
 public:
@@ -95,6 +98,9 @@ private:
     iuint32 m_refs;
 };
 
+/**
+  * @internal
+  */
 template <typename T>
 class Any::Storage
     : public GenericStorage

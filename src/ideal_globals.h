@@ -27,7 +27,7 @@ typedef short                  iint16;
 typedef unsigned short         iuint16;
 typedef int                    iint32;
 typedef unsigned int           iuint32;
-typedef long long              iint64;
+typedef long long int          iint64;
 typedef unsigned long long int iuint64;
 typedef double                 ireal;
 
