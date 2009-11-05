@@ -28,7 +28,7 @@ class PathTestApplication
     : public Application
 {
 public:
-    PathTestApplication(int argc, char **argv)
+    PathTestApplication(iint32 argc, char **argv)
         : Application(argc, argv, "pathTest")
     {
     }

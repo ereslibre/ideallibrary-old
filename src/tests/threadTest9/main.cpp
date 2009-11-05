@@ -23,7 +23,7 @@
 
 using namespace IdealCore;
 
-static int i = 0;
+static iint32 i = 0;
 static Application *s_app = 0;
 
 static void myStaticMethod()

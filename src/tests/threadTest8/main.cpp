@@ -24,7 +24,7 @@
 
 using namespace IdealCore;
 
-static void printResult(int result)
+static void printResult(iint32 result)
 {
     IDEAL_SDEBUG("The result of the heavy math is " << result);
 }

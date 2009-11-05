@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    int pipefd[2];
+    iint32 pipefd[2];
     if (pipe(pipefd)) {}
     close(pipefd[0]);
     if (write(pipefd[1], "a", 1)) {}

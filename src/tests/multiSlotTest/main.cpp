@@ -30,7 +30,7 @@ class MediaButton
 public:
     MediaButton(IdealCore::Object *parent);
 
-    void emitPressed(int a, int b, int c);
+    void emitPressed(iint32 a, iint32 b, iint32 c);
 
 public:
     IDEAL_SIGNAL(buttonPressed, int, int, int);
@@ -42,7 +42,7 @@ MediaButton::MediaButton(Object *parent)
 {
 }
 
-void MediaButton::emitPressed(int a, int b, int c)
+void MediaButton::emitPressed(iint32 a, iint32 b, iint32 c)
 {
     emit(buttonPressed, a, b, c);
 }
@@ -53,7 +53,7 @@ class MediaPlayer
 public:
     MediaPlayer(IdealCore::Object *parent);
     
-    void actionReceived(IdealCore::Object *sender, int a, int b, int c);
+    void actionReceived(IdealCore::Object *sender, iint32 a, iint32 b, iint32 c);
 
 public:
     MediaButton *play;
@@ -75,7 +75,7 @@ MediaPlayer::MediaPlayer(Object *parent)
     connectMulti(exit->buttonPressed, this, &MediaPlayer::actionReceived);
 }
 
-void MediaPlayer::actionReceived(IdealCore::Object *sender, int a, int b, int c)
+void MediaPlayer::actionReceived(IdealCore::Object *sender, iint32 a, iint32 b, iint32 c)
 {
     IDEAL_DEBUG("(" << a << ", " << b << ", " << c << ")");
     if (sender == play) {

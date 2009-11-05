@@ -22,11 +22,11 @@
 
 using namespace IdealCore;
 
-static int **numbers = 0;
+static iint32 **numbers = 0;
 
 #define NUMBEROFNUMBERS 5
 
-static void recursiveFunction(int number)
+static void recursiveFunction(iint32 number)
 {
     if (number + 1 < NUMBEROFNUMBERS) {
         numbers[number] = new int;

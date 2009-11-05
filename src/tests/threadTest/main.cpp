@@ -38,7 +38,7 @@ public:
     void slot();
 
 private:
-    int i;
+    iint32 i;
 };
 
 AnObject::AnObject(Object *parent)

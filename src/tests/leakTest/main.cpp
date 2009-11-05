@@ -35,7 +35,7 @@ public:
 
     IDEAL_SIGNAL(mySignal, int);
 
-    void emitMySignal(int value)
+    void emitMySignal(iint32 value)
     {
         emit(mySignal, value);
     }
@@ -54,7 +54,7 @@ public:
     OtherObject(Object *object);
     ~OtherObject(){}
 
-    void receivedSignal(int value);
+    void receivedSignal(iint32 value);
 };
 
 OtherObject::OtherObject(Object *object)
@@ -62,7 +62,7 @@ OtherObject::OtherObject(Object *object)
 {
 }
 
-void OtherObject::receivedSignal(int value)
+void OtherObject::receivedSignal(iint32 value)
 {
     IDEAL_SDEBUG("A signal was received in object " << this);
 }
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 #if CASE1
     List<Object*> objectList;
 
-    for (int i = 0; i < 1000; ++i) {
+    for (iint32 i = 0; i < 1000; ++i) {
         MyObject *myObject = new MyObject(&app);
         OtherObject *otherObject = new OtherObject(&app);
         Object::connect(myObject->mySignal, otherObject, &OtherObject::receivedSignal);
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 
 #if CASE2
     MyObject *object = static_cast<MyObject*>(objectList.front());
-    for (int i = 0; i < 1000; ++i) {
+    for (iint32 i = 0; i < 1000; ++i) {
         object->emitMySignal(i);
     }
 #endif
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
     MyObject *object = new MyObject(&app);
     OtherObject *otherObject = new OtherObject(&app);
     Object::connect(object->mySignal, otherObject, &OtherObject::receivedSignal);
-    for (int i = 0; i < 1000; ++i) {
+    for (iint32 i = 0; i < 1000; ++i) {
         object->emitMySignal(i);
     }
     delete object;
