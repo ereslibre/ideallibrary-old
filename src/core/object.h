@@ -537,7 +537,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
-    static inline void connectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
+    static inline void connectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex &mutex)
     {
         signal.connectSynchronized(receiver, member, mutex);
     }
@@ -562,7 +562,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
-    static inline void connectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
+    static inline void connectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex &mutex)
     {
         signal.connectMultiSynchronized(receiver, member, mutex);
     }
@@ -598,7 +598,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
-    static inline void connectStaticSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
+    static inline void connectStaticSynchronized(const Signal<Param...> &signal, Member member, Mutex &mutex)
     {
         signal.connectStaticSynchronized(member, mutex);
     }
@@ -623,7 +623,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
-    static inline void connectStaticMultiSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
+    static inline void connectStaticMultiSynchronized(const Signal<Param...> &signal, Member member, Mutex &mutex)
     {
         signal.connectStaticMultiSynchronized(member, mutex);
     }
@@ -653,7 +653,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
-    static inline void disconnectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
+    static inline void disconnectSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex &mutex)
     {
         signal.disconnectSynchronized(receiver, member, mutex);
     }
@@ -683,7 +683,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Receiver, typename Member, typename... Param>
-    static inline void disconnectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex *mutex)
+    static inline void disconnectMultiSynchronized(const Signal<Param...> &signal, Receiver *receiver, Member member, Mutex &mutex)
     {
         signal.disconnectMultiSynchronized(receiver, member, mutex);
     }
@@ -728,7 +728,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
-    static inline void disconnectStaticSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
+    static inline void disconnectStaticSynchronized(const Signal<Param...> &signal, Member member, Mutex &mutex)
     {
         signal.disconnectStaticSynchronized(member, mutex);
     }
@@ -758,7 +758,7 @@ public:
       * See @ref workingWithSignals
       */
     template <typename Member, typename... Param>
-    static inline void disconnectStaticMultiSynchronized(const Signal<Param...> &signal, Member member, Mutex *mutex)
+    static inline void disconnectStaticMultiSynchronized(const Signal<Param...> &signal, Member member, Mutex &mutex)
     {
         signal.disconnectStaticMultiSynchronized(member, mutex);
     }

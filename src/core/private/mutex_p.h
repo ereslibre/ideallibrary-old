@@ -28,7 +28,14 @@ namespace IdealCore {
 class Mutex::Private
 {
 public:
+    Private();
     virtual ~Private();
+
+    void ref();
+    void deref();
+
+private:
+    iuint32 m_refs;
 };
 
 }

@@ -54,11 +54,11 @@ int main(int argc, char **argv)
 
     Timer t(&app);
     t.setInterval(100);
-    Object::connectSynchronized(t.timeout, myObject, &MyObject::doSomething, &mutex);
+    Object::connectSynchronized(t.timeout, myObject, &MyObject::doSomething, mutex);
 
     Timer t2(&app);
     t2.setInterval(100);
-    Object::connectSynchronized(t2.timeout, myObject, &MyObject::doSomething, &mutex);
+    Object::connectSynchronized(t2.timeout, myObject, &MyObject::doSomething, mutex);
 
     t.start();
     t2.start();
