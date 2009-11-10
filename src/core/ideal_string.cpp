@@ -379,6 +379,102 @@ List<String> String::split(Char separator) const
     return res;
 }
 
+iint8 String::toChar(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtol(d->m_str, 0, base);
+}
+
+iuint8 String::toUChar(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtoul(d->m_str, 0, base);
+}
+
+iint16 String::toShort(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtol(d->m_str, 0, base);
+}
+
+iuint16 String::toUShort(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtoul(d->m_str, 0, base);
+}
+
+iint32 String::toInt(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtol(d->m_str, 0, base);
+}
+
+iuint32 String::toUInt(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtoul(d->m_str, 0, base);
+}
+
+long String::toLong(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtol(d->m_str, 0, base);
+}
+
+unsigned long String::toULong(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtoul(d->m_str, 0, base);
+}
+
+iint64 String::toLongLong(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtoll(d->m_str, 0, base);
+}
+
+iuint64 String::toULongLong(iint32 base) const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtoull(d->m_str, 0, base);
+}
+
+float String::toFloat() const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtof(d->m_str, 0);
+}
+
+ireal String::toDouble() const
+{
+    if (!d->m_size) {
+        return -1;
+    }
+    return strtod(d->m_str, 0);
+}
+
 Char String::operator[](iuint32 pos) const
 {
     if (pos < d->calculateSize()) {

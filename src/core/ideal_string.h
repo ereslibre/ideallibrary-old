@@ -123,6 +123,19 @@ public:
       */
     List<String> split(Char separator) const;
 
+    iint8 toChar(iint32 base = 10) const;
+    iuint8 toUChar(iint32 base = 10) const;
+    iint16 toShort(iint32 base = 10) const;
+    iuint16 toUShort(iint32 base = 10) const;
+    iint32 toInt(iint32 base = 10) const;
+    iuint32 toUInt(iint32 base = 10) const;
+    long toLong(iint32 base = 10) const;
+    unsigned long toULong(iint32 base = 10) const;
+    iint64 toLongLong(iint32 base = 10) const;
+    iuint64 toULongLong(iint32 base = 10) const;
+    float toFloat() const;
+    ireal toDouble() const;
+
     /**
       * @return the character found at position @p pos on the string. If @p pos is out of
       *         bounds, a default constructed Char is returned.
