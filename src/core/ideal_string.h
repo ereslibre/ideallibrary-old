@@ -142,8 +142,8 @@ public:
     void setNumber(iulong n, iuint32 base = 10);
     void setNumber(iint64 n, iuint32 base = 10);
     void setNumber(iuint64 n, iuint32 base = 10);
-    void setNumber(float n, iuint32 precision = 6);
-    void setNumber(double n, iuint32 precision = 6);
+    void setNumber(float n, iuint8 format = 'g', iuint32 precision = 3);
+    void setNumber(double n, iuint8 format = 'g', iuint32 precision = 3);
 
     static String number(iint32 n, iuint32 base = 10);
     static String number(iuint32 n, iuint32 base = 10);
@@ -151,8 +151,8 @@ public:
     static String number(iulong n, iuint32 base = 10);
     static String number(iint64 n, iuint32 base = 10);
     static String number(iuint64 n, iuint32 base = 10);
-    static String number(float n, iuint32 precision = 6);
-    static String number(double n, iuint32 precision = 6);
+    static String number(float n, iuint8 format = 'g', iuint32 precision = 3);
+    static String number(double n, iuint8 format = 'g', iuint32 precision = 3);
 
     /**
       * @return the character found at position @p pos on the string. If @p pos is out of

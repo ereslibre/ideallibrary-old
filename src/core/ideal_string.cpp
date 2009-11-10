@@ -170,11 +170,11 @@ public:
         delete[] str;
     }
 
-    void dtoa(double number, iuint32 precision)
+    void dtoa(double number, iuint8 format, iuint32 precision)
     {
-        char *const str = new char[5];
+        char *const str = new char[10];
         bzero(str, 5);
-        sprintf(str, "%%.%dlf", precision);
+        sprintf(str, "%%.%dl%c", precision, format);
         char *const res = new char[65];
         bzero(res, 65);
         sprintf(res, str, number);
@@ -566,22 +566,22 @@ void String::setNumber(iuint64 n, iuint32 base)
     d->iuint64toa(n, base);
 }
 
-void String::setNumber(float n, iuint32 precision)
+void String::setNumber(float n, iuint8 format, iuint32 precision)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
-    d->dtoa(n, precision);
+    d->dtoa(n, format, precision);
 }
 
-void String::setNumber(double n, iuint32 precision)
+void String::setNumber(double n, iuint8 format, iuint32 precision)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
-    d->dtoa(n, precision);
+    d->dtoa(n, format, precision);
 }
 
 String String::number(iint32 n, iuint32 base)
@@ -626,17 +626,17 @@ String String::number(iuint64 n, iuint32 base)
     return str;
 }
 
-String String::number(float n, iuint32 precision)
+String String::number(float n, iuint8 format, iuint32 precision)
 {
     String str;
-    str.setNumber(n, precision);
+    str.setNumber(n, format, precision);
     return str;
 }
 
-String String::number(double n, iuint32 precision)
+String String::number(double n, iuint8 format, iuint32 precision)
 {
     String str;
-    str.setNumber(n, precision);
+    str.setNumber(n, format, precision);
     return str;
 }
 
