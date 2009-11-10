@@ -153,7 +153,7 @@ public:
 
     void iuint64toa(iuint64 number, iuint32 base)
     {
-        char *str = new char[66];
+        char *const str = new char[66];
         char *p = str + 64;
         bzero(str, 66);
         while (number) {
@@ -172,10 +172,10 @@ public:
 
     void dtoa(double number, iuint32 precision)
     {
-        char *str = new char[5];
+        char *const str = new char[5];
         bzero(str, 5);
         sprintf(str, "%%.%dlf", precision);
-        char *res = new char[65];
+        char *const res = new char[65];
         bzero(res, 65);
         sprintf(res, str, number);
         init(res);
