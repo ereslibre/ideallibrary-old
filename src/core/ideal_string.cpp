@@ -146,17 +146,16 @@ public:
         return res;
     }
 
-    String iint64toa(iint64 number, int base)
+    void iint64toa(iint64 number, int base)
     {
-        return iuint64toa(number < 0 ? -number : number, base);
+        iuint64toa(number < 0 ? -number : number, base);
     }
 
-    String iuint64toa(iuint64 number, int base)
+    void iuint64toa(iuint64 number, int base)
     {
-        char *str = new char[65];
+        char *str = new char[66];
         char *p = str + 64;
-        bzero(str, 65);
-        int l = 0;
+        bzero(str, 66);
         while (number) {
             const int n = number % base;
             if (n < 10) {
@@ -165,17 +164,14 @@ public:
                 *p = 'a' + (n - 10);
             }
             --p;
-            ++l;
             number /= base;
         }
-        String res(++p, l);
+        init(++p);
         delete[] str;
-        return res;
     }
 
-    String dtoa(double number, int base)
+    void dtoa(double number, int base)
     {
-        return String();
     }
 
     char    *m_str;
@@ -509,37 +505,37 @@ ireal String::toDouble() const
 
 void String::setNumber(iint32 n, iint32 base)
 {
-    *this = d->iint64toa(n, base);
+    d->iint64toa(n, base);
 }
 
 void String::setNumber(iuint32 n, iint32 base)
 {
-    *this = d->iuint64toa(n, base);
+    d->iuint64toa(n, base);
 }
 
 void String::setNumber(long n, iint32 base)
 {
-    *this = d->iint64toa(n, base);
+    d->iint64toa(n, base);
 }
 
 void String::setNumber(iulong n, iint32 base)
 {
-    *this = d->iuint64toa(n, base);
+    d->iuint64toa(n, base);
 }
 
 void String::setNumber(iint64 n, iint32 base)
 {
-    *this = d->iint64toa(n, base);
+    d->iint64toa(n, base);
 }
 
 void String::setNumber(iuint64 n, iint32 base)
 {
-    *this = d->iuint64toa(n, base);
+    d->iuint64toa(n, base);
 }
 
 void String::setNumber(double n, iint32 base)
 {
-    *this = d->dtoa(n, base);
+    d->dtoa(n, base);
 }
 
 String String::number(iint32 n, iint32 base)
