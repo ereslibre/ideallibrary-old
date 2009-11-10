@@ -136,21 +136,23 @@ public:
     float toFloat() const;
     ireal toDouble() const;
 
-    void setNumber(iint32 n, iint32 base = 10);
-    void setNumber(iuint32 n, iint32 base = 10);
-    void setNumber(long n, iint32 base = 10);
-    void setNumber(iulong n, iint32 base = 10);
-    void setNumber(iint64 n, iint32 base = 10);
-    void setNumber(iuint64 n, iint32 base = 10);
-    void setNumber(double n, iint32 base = 10);
+    void setNumber(iint32 n, iuint32 base = 10);
+    void setNumber(iuint32 n, iuint32 base = 10);
+    void setNumber(long n, iuint32 base = 10);
+    void setNumber(iulong n, iuint32 base = 10);
+    void setNumber(iint64 n, iuint32 base = 10);
+    void setNumber(iuint64 n, iuint32 base = 10);
+    void setNumber(float n, iuint32 precision = 6);
+    void setNumber(double n, iuint32 precision = 6);
 
-    static String number(iint32 n, iint32 base = 10);
-    static String number(iuint32 n, iint32 base = 10);
-    static String number(long n, iint32 base = 10);
-    static String number(iulong n, iint32 base = 10);
-    static String number(iint64 n, iint32 base = 10);
-    static String number(iuint64 n, iint32 base = 10);
-    static String number(double n, iint32 base = 10);
+    static String number(iint32 n, iuint32 base = 10);
+    static String number(iuint32 n, iuint32 base = 10);
+    static String number(long n, iuint32 base = 10);
+    static String number(iulong n, iuint32 base = 10);
+    static String number(iint64 n, iuint32 base = 10);
+    static String number(iuint64 n, iuint32 base = 10);
+    static String number(float n, iuint32 precision = 6);
+    static String number(double n, iuint32 precision = 6);
 
     /**
       * @return the character found at position @p pos on the string. If @p pos is out of

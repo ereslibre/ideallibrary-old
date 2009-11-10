@@ -146,12 +146,12 @@ public:
         return res;
     }
 
-    void iint64toa(iint64 number, int base)
+    void iint64toa(iint64 number, iuint32 base)
     {
         iuint64toa(number < 0 ? -number : number, base);
     }
 
-    void iuint64toa(iuint64 number, int base)
+    void iuint64toa(iuint64 number, iuint32 base)
     {
         char *str = new char[66];
         char *p = str + 64;
@@ -170,8 +170,17 @@ public:
         delete[] str;
     }
 
-    void dtoa(double number, int base)
+    void dtoa(double number, iuint32 precision)
     {
+        char *str = new char[5];
+        bzero(str, 5);
+        sprintf(str, "%%.%dlf", precision);
+        char *res = new char[65];
+        bzero(res, 65);
+        sprintf(res, str, number);
+        init(res);
+        delete[] str;
+        delete[] res;
     }
 
     char    *m_str;
@@ -503,7 +512,7 @@ ireal String::toDouble() const
     return strtod(d->m_str, 0);
 }
 
-void String::setNumber(iint32 n, iint32 base)
+void String::setNumber(iint32 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
@@ -512,7 +521,7 @@ void String::setNumber(iint32 n, iint32 base)
     d->iint64toa(n, base);
 }
 
-void String::setNumber(iuint32 n, iint32 base)
+void String::setNumber(iuint32 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
@@ -521,7 +530,7 @@ void String::setNumber(iuint32 n, iint32 base)
     d->iuint64toa(n, base);
 }
 
-void String::setNumber(long n, iint32 base)
+void String::setNumber(long n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
@@ -530,7 +539,7 @@ void String::setNumber(long n, iint32 base)
     d->iint64toa(n, base);
 }
 
-void String::setNumber(iulong n, iint32 base)
+void String::setNumber(iulong n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
@@ -539,7 +548,7 @@ void String::setNumber(iulong n, iint32 base)
     d->iuint64toa(n, base);
 }
 
-void String::setNumber(iint64 n, iint32 base)
+void String::setNumber(iint64 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
@@ -548,7 +557,7 @@ void String::setNumber(iint64 n, iint32 base)
     d->iint64toa(n, base);
 }
 
-void String::setNumber(iuint64 n, iint32 base)
+void String::setNumber(iuint64 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
@@ -557,61 +566,77 @@ void String::setNumber(iuint64 n, iint32 base)
     d->iuint64toa(n, base);
 }
 
-void String::setNumber(double n, iint32 base)
+void String::setNumber(float n, iuint32 precision)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
-    d->dtoa(n, base);
+    d->dtoa(n, precision);
 }
 
-String String::number(iint32 n, iint32 base)
+void String::setNumber(double n, iuint32 precision)
+{
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
+    d->dtoa(n, precision);
+}
+
+String String::number(iint32 n, iuint32 base)
 {
     String str;
     str.setNumber(n, base);
     return str;
 }
 
-String String::number(iuint32 n, iint32 base)
+String String::number(iuint32 n, iuint32 base)
 {
     String str;
     str.setNumber(n, base);
     return str;
 }
 
-String String::number(long n, iint32 base)
+String String::number(long n, iuint32 base)
 {
     String str;
     str.setNumber(n, base);
     return str;
 }
 
-String String::number(iulong n, iint32 base)
+String String::number(iulong n, iuint32 base)
 {
     String str;
     str.setNumber(n, base);
     return str;
 }
 
-String String::number(iint64 n, iint32 base)
+String String::number(iint64 n, iuint32 base)
 {
     String str;
     str.setNumber(n, base);
     return str;
 }
 
-String String::number(iuint64 n, iint32 base)
+String String::number(iuint64 n, iuint32 base)
 {
     String str;
     str.setNumber(n, base);
     return str;
 }
 
-String String::number(double n, iint32 base)
+String String::number(float n, iuint32 precision)
 {
     String str;
-    str.setNumber(n, base);
+    str.setNumber(n, precision);
+    return str;
+}
+
+String String::number(double n, iuint32 precision)
+{
+    String str;
+    str.setNumber(n, precision);
     return str;
 }
 
