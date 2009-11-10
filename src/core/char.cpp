@@ -243,6 +243,7 @@ bool Char::operator!=(iuint32 c) const
 
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
 {
+    stream << '\'';
     const iuint32 value = c.value();
     switch (c.octetsRequired()) {
         case 4:
@@ -264,5 +265,6 @@ std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
             stream << (char) (value & 0xff);
             break;
     }
+    stream << '\'';
     return stream;
 }

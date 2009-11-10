@@ -443,6 +443,6 @@ bool Uri::operator!=(const Uri &uri) const
 
 std::ostream &operator<<(std::ostream &stream, const IdealCore::Uri &uri)
 {
-    stream << uri.uri().data();
+    stream << '\"' << uri.uri().data() << '\"';
     return stream;
 }

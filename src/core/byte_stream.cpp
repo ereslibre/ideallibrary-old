@@ -105,6 +105,6 @@ ByteStream &ByteStream::operator=(const ByteStream &byteStream)
 
 std::ostream &operator<<(std::ostream &stream, const IdealCore::ByteStream &byteStream)
 {
-    stream << byteStream.data();
+    stream << '\"' << byteStream.data() << '\"';
     return stream;
 }

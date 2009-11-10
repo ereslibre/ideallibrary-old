@@ -505,36 +505,64 @@ ireal String::toDouble() const
 
 void String::setNumber(iint32 n, iint32 base)
 {
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
     d->iint64toa(n, base);
 }
 
 void String::setNumber(iuint32 n, iint32 base)
 {
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
     d->iuint64toa(n, base);
 }
 
 void String::setNumber(long n, iint32 base)
 {
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
     d->iint64toa(n, base);
 }
 
 void String::setNumber(iulong n, iint32 base)
 {
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
     d->iuint64toa(n, base);
 }
 
 void String::setNumber(iint64 n, iint32 base)
 {
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
     d->iint64toa(n, base);
 }
 
 void String::setNumber(iuint64 n, iint32 base)
 {
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
     d->iuint64toa(n, base);
 }
 
 void String::setNumber(double n, iint32 base)
 {
+    if (d->refCount() > 1) {
+        d->deref();
+        d = new Private;
+    }
     d->dtoa(n, base);
 }
 
@@ -773,6 +801,6 @@ bool String::operator>=(const String &str) const
 
 std::ostream &operator<<(std::ostream &stream, const IdealCore::String &str)
 {
-    stream << str.data();
+    stream << '\"' << str.data() << '\"';
     return stream;
 }
