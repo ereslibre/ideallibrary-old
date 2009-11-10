@@ -324,6 +324,13 @@ void StringTest::testOperators()
     }
 }
 
+void StringTest::testNumber()
+{
+    {
+        CPPUNIT_ASSERT_EQUAL(String("15"), String::number(15));
+    }
+}
+
 String StringTest::returnSpecialChars()
 {
     return "áéíóúñ€%32";

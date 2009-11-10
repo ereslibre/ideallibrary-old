@@ -34,6 +34,7 @@ class StringTest
     CPPUNIT_TEST(testSplit);
     CPPUNIT_TEST(miscTests);
     CPPUNIT_TEST(testOperators);
+    CPPUNIT_TEST(testNumber);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +47,7 @@ public:
     void testSplit();
     void miscTests();
     void testOperators();
+    void testNumber();
 
 private:
     IdealCore::String returnSpecialChars();

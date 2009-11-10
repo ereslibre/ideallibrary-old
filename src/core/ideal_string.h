@@ -123,18 +123,34 @@ public:
       */
     List<String> split(Char separator) const;
 
-    iint8 toChar(iint32 base = 10) const;
-    iuint8 toUChar(iint32 base = 10) const;
-    iint16 toShort(iint32 base = 10) const;
-    iuint16 toUShort(iint32 base = 10) const;
-    iint32 toInt(iint32 base = 10) const;
-    iuint32 toUInt(iint32 base = 10) const;
-    long toLong(iint32 base = 10) const;
-    unsigned long toULong(iint32 base = 10) const;
-    iint64 toLongLong(iint32 base = 10) const;
-    iuint64 toULongLong(iint32 base = 10) const;
+    iint8 toChar(iuint32 base = 10) const;
+    iuint8 toUChar(iuint32 base = 10) const;
+    iint16 toShort(iuint32 base = 10) const;
+    iuint16 toUShort(iuint32 base = 10) const;
+    iint32 toInt(iuint32 base = 10) const;
+    iuint32 toUInt(iuint32 base = 10) const;
+    long toLong(iuint32 base = 10) const;
+    iulong toULong(iuint32 base = 10) const;
+    iint64 toLongLong(iuint32 base = 10) const;
+    iuint64 toULongLong(iuint32 base = 10) const;
     float toFloat() const;
     ireal toDouble() const;
+
+    void setNumber(iint32 n, iint32 base = 10);
+    void setNumber(iuint32 n, iint32 base = 10);
+    void setNumber(long n, iint32 base = 10);
+    void setNumber(iulong n, iint32 base = 10);
+    void setNumber(iint64 n, iint32 base = 10);
+    void setNumber(iuint64 n, iint32 base = 10);
+    void setNumber(double n, iint32 base = 10);
+
+    static String number(iint32 n, iint32 base = 10);
+    static String number(iuint32 n, iint32 base = 10);
+    static String number(long n, iint32 base = 10);
+    static String number(iulong n, iint32 base = 10);
+    static String number(iint64 n, iint32 base = 10);
+    static String number(iuint64 n, iint32 base = 10);
+    static String number(double n, iint32 base = 10);
 
     /**
       * @return the character found at position @p pos on the string. If @p pos is out of

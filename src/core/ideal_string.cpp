@@ -146,6 +146,38 @@ public:
         return res;
     }
 
+    String iint64toa(iint64 number, int base)
+    {
+        return iuint64toa(number < 0 ? -number : number, base);
+    }
+
+    String iuint64toa(iuint64 number, int base)
+    {
+        char *str = new char[65];
+        char *p = str + 64;
+        bzero(str, 65);
+        int l = 0;
+        while (number) {
+            const int n = number % base;
+            if (n < 10) {
+                *p = '0' + n;
+            } else {
+                *p = 'a' + (n - 10);
+            }
+            --p;
+            ++l;
+            number /= base;
+        }
+        String res(++p, l);
+        delete[] str;
+        return res;
+    }
+
+    String dtoa(double number, int base)
+    {
+        return String();
+    }
+
     char    *m_str;
     iuint32 *m_charMap;
     iuint32  m_size;
@@ -379,7 +411,7 @@ List<String> String::split(Char separator) const
     return res;
 }
 
-iint8 String::toChar(iint32 base) const
+iint8 String::toChar(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -387,7 +419,7 @@ iint8 String::toChar(iint32 base) const
     return strtol(d->m_str, 0, base);
 }
 
-iuint8 String::toUChar(iint32 base) const
+iuint8 String::toUChar(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -395,7 +427,7 @@ iuint8 String::toUChar(iint32 base) const
     return strtoul(d->m_str, 0, base);
 }
 
-iint16 String::toShort(iint32 base) const
+iint16 String::toShort(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -403,7 +435,7 @@ iint16 String::toShort(iint32 base) const
     return strtol(d->m_str, 0, base);
 }
 
-iuint16 String::toUShort(iint32 base) const
+iuint16 String::toUShort(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -411,7 +443,7 @@ iuint16 String::toUShort(iint32 base) const
     return strtoul(d->m_str, 0, base);
 }
 
-iint32 String::toInt(iint32 base) const
+iint32 String::toInt(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -419,7 +451,7 @@ iint32 String::toInt(iint32 base) const
     return strtol(d->m_str, 0, base);
 }
 
-iuint32 String::toUInt(iint32 base) const
+iuint32 String::toUInt(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -427,7 +459,7 @@ iuint32 String::toUInt(iint32 base) const
     return strtoul(d->m_str, 0, base);
 }
 
-long String::toLong(iint32 base) const
+long String::toLong(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -435,7 +467,7 @@ long String::toLong(iint32 base) const
     return strtol(d->m_str, 0, base);
 }
 
-unsigned long String::toULong(iint32 base) const
+iulong String::toULong(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -443,7 +475,7 @@ unsigned long String::toULong(iint32 base) const
     return strtoul(d->m_str, 0, base);
 }
 
-iint64 String::toLongLong(iint32 base) const
+iint64 String::toLongLong(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -451,7 +483,7 @@ iint64 String::toLongLong(iint32 base) const
     return strtoll(d->m_str, 0, base);
 }
 
-iuint64 String::toULongLong(iint32 base) const
+iuint64 String::toULongLong(iuint32 base) const
 {
     if (!d->m_size) {
         return -1;
@@ -473,6 +505,90 @@ ireal String::toDouble() const
         return -1;
     }
     return strtod(d->m_str, 0);
+}
+
+void String::setNumber(iint32 n, iint32 base)
+{
+    *this = d->iint64toa(n, base);
+}
+
+void String::setNumber(iuint32 n, iint32 base)
+{
+    *this = d->iuint64toa(n, base);
+}
+
+void String::setNumber(long n, iint32 base)
+{
+    *this = d->iint64toa(n, base);
+}
+
+void String::setNumber(iulong n, iint32 base)
+{
+    *this = d->iuint64toa(n, base);
+}
+
+void String::setNumber(iint64 n, iint32 base)
+{
+    *this = d->iint64toa(n, base);
+}
+
+void String::setNumber(iuint64 n, iint32 base)
+{
+    *this = d->iuint64toa(n, base);
+}
+
+void String::setNumber(double n, iint32 base)
+{
+    *this = d->dtoa(n, base);
+}
+
+String String::number(iint32 n, iint32 base)
+{
+    String str;
+    str.setNumber(n, base);
+    return str;
+}
+
+String String::number(iuint32 n, iint32 base)
+{
+    String str;
+    str.setNumber(n, base);
+    return str;
+}
+
+String String::number(long n, iint32 base)
+{
+    String str;
+    str.setNumber(n, base);
+    return str;
+}
+
+String String::number(iulong n, iint32 base)
+{
+    String str;
+    str.setNumber(n, base);
+    return str;
+}
+
+String String::number(iint64 n, iint32 base)
+{
+    String str;
+    str.setNumber(n, base);
+    return str;
+}
+
+String String::number(iuint64 n, iint32 base)
+{
+    String str;
+    str.setNumber(n, base);
+    return str;
+}
+
+String String::number(double n, iint32 base)
+{
+    String str;
+    str.setNumber(n, base);
+    return str;
 }
 
 Char String::operator[](iuint32 pos) const
