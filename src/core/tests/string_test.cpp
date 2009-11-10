@@ -327,7 +327,7 @@ void StringTest::testOperators()
 void StringTest::testNumber()
 {
     CPPUNIT_ASSERT_EQUAL(String("15"), String::number(15));
-    CPPUNIT_ASSERT_EQUAL(String("5000000000"), String::number((iuint64) 5000000000));
+    CPPUNIT_ASSERT_EQUAL(String("500000000"), String::number((iuint64) 500000000));
     CPPUNIT_ASSERT_EQUAL(String("10"), String::number(8, 8));
     CPPUNIT_ASSERT_EQUAL(String("12"), String::number(18, 16));
     CPPUNIT_ASSERT_EQUAL(String("16"), String::number(14, 8));
