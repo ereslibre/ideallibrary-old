@@ -347,16 +347,21 @@ void StringTest::testToConversion()
         CPPUNIT_ASSERT_EQUAL(true, ok);
     }
     {
-        String str("1.55");
-        bool ok;
-        CPPUNIT_ASSERT_EQUAL((float) 1.55, str.toFloat(&ok));
-        CPPUNIT_ASSERT_EQUAL(true, ok);
-    }
-    {
-        String str("1.55");
-        bool ok;
-        CPPUNIT_ASSERT_EQUAL((double) 1.55, str.toDouble(&ok));
-        CPPUNIT_ASSERT_EQUAL(true, ok);
+        // locale dependent operations
+        setlocale(LC_ALL, "C");
+
+        {
+            String str("1.55");
+            bool ok;
+            CPPUNIT_ASSERT_EQUAL((float) 1.55, str.toFloat(&ok));
+            CPPUNIT_ASSERT_EQUAL(true, ok);
+        }
+        {
+            String str("1.55");
+            bool ok;
+            CPPUNIT_ASSERT_EQUAL((double) 1.55, str.toDouble(&ok));
+            CPPUNIT_ASSERT_EQUAL(true, ok);
+        }
     }
 }
 
