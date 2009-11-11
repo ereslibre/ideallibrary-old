@@ -358,7 +358,7 @@ void StringTest::testNumber()
     CPPUNIT_ASSERT_EQUAL(String("100"), String::number(4, 2));
     CPPUNIT_ASSERT_EQUAL(String("1f"), String::number(31, 16));
     {
-        // locale dependant operations
+        // locale dependent operations
         setlocale(LC_ALL, "C");
 
         CPPUNIT_ASSERT_EQUAL(String("1.57"), String::number((float) 1.57));
