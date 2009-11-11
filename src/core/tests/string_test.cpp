@@ -332,17 +332,14 @@ void StringTest::testNumber()
     CPPUNIT_ASSERT_EQUAL(String("12"), String::number(18, 16));
     CPPUNIT_ASSERT_EQUAL(String("16"), String::number(14, 8));
     CPPUNIT_ASSERT_EQUAL(String("100"), String::number(4, 2));
+    CPPUNIT_ASSERT_EQUAL(String("1f"), String::number(31, 16));
     {
         // locale dependant operations
-
-        ichar *const currLocale = setlocale(LC_ALL, 0);
         setlocale(LC_ALL, "C");
 
         CPPUNIT_ASSERT_EQUAL(String("1.57"), String::number((float) 1.57));
         CPPUNIT_ASSERT_EQUAL(String("1.58"), String::number((float) 1.578));
         CPPUNIT_ASSERT_EQUAL(String("1.578"), String::number((float) 1.578, 'g', 4));
-
-        setlocale(LC_ALL, currLocale);
     }
 }
 
