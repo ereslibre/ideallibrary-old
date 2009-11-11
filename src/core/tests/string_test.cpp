@@ -324,6 +324,28 @@ void StringTest::testOperators()
     }
 }
 
+void StringTest::testToConversion()
+{
+    {
+        String str;
+        bool ok;
+        CPPUNIT_ASSERT_EQUAL(0, str.toInt(&ok));
+        CPPUNIT_ASSERT_EQUAL(false, ok);
+    }
+    {
+        String str("Cannot convert");
+        bool ok;
+        CPPUNIT_ASSERT_EQUAL(0, str.toInt(&ok));
+        CPPUNIT_ASSERT_EQUAL(false, ok);
+    }
+    {
+        String str("123");
+        bool ok;
+        CPPUNIT_ASSERT_EQUAL(123, str.toInt(&ok));
+        CPPUNIT_ASSERT_EQUAL(true, ok);
+    }
+}
+
 void StringTest::testNumber()
 {
     CPPUNIT_ASSERT_EQUAL(String("15"), String::number(15));

@@ -416,100 +416,196 @@ List<String> String::split(Char separator) const
     return res;
 }
 
-iint8 String::toChar(iuint32 base) const
+iint8 String::toChar(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtol(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtol(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iuint8 String::toUChar(iuint32 base) const
+iuint8 String::toUChar(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtoul(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtoul(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iint16 String::toShort(iuint32 base) const
+iint16 String::toShort(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtol(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtol(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iuint16 String::toUShort(iuint32 base) const
+iuint16 String::toUShort(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtoul(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtoul(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iint32 String::toInt(iuint32 base) const
+iint32 String::toInt(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtol(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtol(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iuint32 String::toUInt(iuint32 base) const
+iuint32 String::toUInt(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtoul(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtoul(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-long String::toLong(iuint32 base) const
+long String::toLong(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtol(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtol(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iulong String::toULong(iuint32 base) const
+iulong String::toULong(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtoul(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtoul(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iint64 String::toLongLong(iuint32 base) const
+iint64 String::toLongLong(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtoll(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtoll(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-iuint64 String::toULongLong(iuint32 base) const
+iuint64 String::toULongLong(bool *ok, iuint32 base) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtoull(d->m_str, 0, base);
+    ichar *p = 0;
+    const ilong res = strtoull(d->m_str, &p, base);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-float String::toFloat() const
+float String::toFloat(bool *ok) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtof(d->m_str, 0);
+    ichar *p = 0;
+    const ilong res = strtof(d->m_str, &p);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
-ireal String::toDouble() const
+ireal String::toDouble(bool *ok) const
 {
-    if (!d->m_size) {
-        return -1;
+    if (!d->calculateSize()) {
+        if (ok) {
+            *ok = false;
+        }
+        return 0;
     }
-    return strtod(d->m_str, 0);
+    ichar *p = 0;
+    const ilong res = strtod(d->m_str, &p);
+    if (ok) {
+        *ok = (p != d->m_str);
+    }
+    return res;
 }
 
 void String::setNumber(iint32 n, iuint32 base)

@@ -34,6 +34,7 @@ class StringTest
     CPPUNIT_TEST(testSplit);
     CPPUNIT_TEST(miscTests);
     CPPUNIT_TEST(testOperators);
+    CPPUNIT_TEST(testToConversion);
     CPPUNIT_TEST(testNumber);
     CPPUNIT_TEST_SUITE_END();
 
@@ -47,6 +48,7 @@ public:
     void testSplit();
     void miscTests();
     void testOperators();
+    void testToConversion();
     void testNumber();
 
 private:

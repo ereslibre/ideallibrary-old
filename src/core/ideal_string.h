@@ -123,18 +123,18 @@ public:
       */
     List<String> split(Char separator) const;
 
-    iint8 toChar(iuint32 base = 10) const;
-    iuint8 toUChar(iuint32 base = 10) const;
-    iint16 toShort(iuint32 base = 10) const;
-    iuint16 toUShort(iuint32 base = 10) const;
-    iint32 toInt(iuint32 base = 10) const;
-    iuint32 toUInt(iuint32 base = 10) const;
-    long toLong(iuint32 base = 10) const;
-    iulong toULong(iuint32 base = 10) const;
-    iint64 toLongLong(iuint32 base = 10) const;
-    iuint64 toULongLong(iuint32 base = 10) const;
-    float toFloat() const;
-    ireal toDouble() const;
+    iint8 toChar(bool *ok = 0, iuint32 base = 10) const;
+    iuint8 toUChar(bool *ok = 0, iuint32 base = 10) const;
+    iint16 toShort(bool *ok = 0, iuint32 base = 10) const;
+    iuint16 toUShort(bool *ok = 0, iuint32 base = 10) const;
+    iint32 toInt(bool *ok = 0, iuint32 base = 10) const;
+    iuint32 toUInt(bool *ok = 0, iuint32 base = 10) const;
+    long toLong(bool *ok = 0, iuint32 base = 10) const;
+    iulong toULong(bool *ok = 0, iuint32 base = 10) const;
+    iint64 toLongLong(bool *ok = 0, iuint32 base = 10) const;
+    iuint64 toULongLong(bool *ok = 0, iuint32 base = 10) const;
+    float toFloat(bool *ok = 0) const;
+    ireal toDouble(bool *ok = 0) const;
 
     void setNumber(iint32 n, iuint32 base = 10);
     void setNumber(iuint32 n, iuint32 base = 10);
