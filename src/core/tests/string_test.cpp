@@ -346,6 +346,18 @@ void StringTest::testToConversion()
         CPPUNIT_ASSERT_EQUAL(123, str.toInt(&ok));
         CPPUNIT_ASSERT_EQUAL(true, ok);
     }
+    {
+        String str("1.55");
+        bool ok;
+        CPPUNIT_ASSERT_EQUAL((float) 1.55, str.toFloat(&ok));
+        CPPUNIT_ASSERT_EQUAL(true, ok);
+    }
+    {
+        String str("1.55");
+        bool ok;
+        CPPUNIT_ASSERT_EQUAL((double) 1.55, str.toDouble(&ok));
+        CPPUNIT_ASSERT_EQUAL(true, ok);
+    }
 }
 
 void StringTest::testNumber()

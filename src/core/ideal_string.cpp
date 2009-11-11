@@ -553,7 +553,7 @@ iint64 String::toLongLong(bool *ok, iuint32 base) const
         return 0;
     }
     ichar *p = 0;
-    const ilong res = strtoll(d->m_str, &p, base);
+    const iint64 res = strtoll(d->m_str, &p, base);
     if (ok) {
         *ok = (p != d->m_str);
     }
@@ -569,7 +569,7 @@ iuint64 String::toULongLong(bool *ok, iuint32 base) const
         return 0;
     }
     ichar *p = 0;
-    const ilong res = strtoull(d->m_str, &p, base);
+    const iuint64 res = strtoull(d->m_str, &p, base);
     if (ok) {
         *ok = (p != d->m_str);
     }
@@ -585,7 +585,7 @@ float String::toFloat(bool *ok) const
         return 0;
     }
     ichar *p = 0;
-    const ilong res = strtof(d->m_str, &p);
+    const float res = strtof(d->m_str, &p);
     if (ok) {
         *ok = (p != d->m_str);
     }
@@ -601,7 +601,7 @@ ireal String::toDouble(bool *ok) const
         return 0;
     }
     ichar *p = 0;
-    const ilong res = strtod(d->m_str, &p);
+    const double res = strtod(d->m_str, &p);
     if (ok) {
         *ok = (p != d->m_str);
     }
