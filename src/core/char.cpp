@@ -74,6 +74,15 @@ Char::operator char() const
     return c;
 }
 
+Char::operator iuint8() const
+{
+    if (c & 0xffffff00) {
+        IDEAL_DEBUG_WARNING("char '" << *this << "' would have been corrupted on conversion. returning 0");
+        return 0;
+    }
+    return c;
+}
+
 Char::operator iuint16() const
 {
     if (c & 0xff000000) {
@@ -126,6 +135,14 @@ bool Char::operator==(char c) const
         return false;
     }
     return this->c == (iuint8) c;
+}
+
+bool Char::operator==(iuint8 c) const
+{
+    if (this->c & 0xffffff00) {
+        return false;
+    }
+    return this->c == c;
 }
 
 bool Char::operator==(iuint16 c) const
@@ -225,6 +242,11 @@ bool Char::operator!=(Char c) const
 }
 
 bool Char::operator!=(char c) const
+{
+    return !(*this == c);
+}
+
+bool Char::operator!=(iuint8 c) const
 {
     return !(*this == c);
 }
