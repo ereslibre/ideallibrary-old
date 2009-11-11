@@ -157,7 +157,7 @@ public:
         ichar *p = str + 64;
         bzero(str, 66);
         while (number) {
-            const int n = number % base;
+            const iint32 n = number % base;
             if (n < 10) {
                 *p = '0' + n;
             } else {
