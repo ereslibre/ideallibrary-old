@@ -94,7 +94,7 @@ ByteStream BuiltinProtocolHandlersLocal::read(iuint32 nbytes)
     if (d->m_fd == -1) {
         return ByteStream();
     }
-    char resBuffer[nbytes];
+    ichar resBuffer[nbytes];
     const size_t bytesRead = ::read(d->m_fd, resBuffer, nbytes);
     if (bytesRead) {
         return ByteStream(resBuffer, bytesRead);

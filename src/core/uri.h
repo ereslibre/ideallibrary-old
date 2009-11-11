@@ -41,7 +41,7 @@ public:
     Uri(const Uri &uri);
     Uri(const String &uri);
     Uri(const String &path, const String &filename);
-    Uri(const char *uri);
+    Uri(const ichar *uri);
     virtual ~Uri();
 
     /**
@@ -105,7 +105,7 @@ public:
     Uri &dirUp();
 
     Uri &operator=(const Uri &uri);
-    Uri &operator=(const char *uri);
+    Uri &operator=(const ichar *uri);
 
     bool operator==(const Uri &uri) const;
     bool operator!=(const Uri &uri) const;

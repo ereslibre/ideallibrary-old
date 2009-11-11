@@ -49,15 +49,15 @@ public:
 
     Uri                          m_uri;
     iint32                       m_sockfd;
-    static const char           *m_commandGet;
-    static const char           *m_commandHead;
+    static const ichar          *m_commandGet;
+    static const ichar          *m_commandHead;
     static const iint32          m_bufferSize;
     BuiltinProtocolHandlersHttp *q;
 };
 
-const char  *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\n\r\n";
-const char  *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\n\r\n";
-const iint32 BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
+const ichar  *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\n\r\n";
+const ichar  *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\n\r\n";
+const iint32 BuiltinProtocolHandlersHttp::Private::m_bufferSize   = 1024 * 32;
 
 bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const Uri &uri)
 {
@@ -71,7 +71,7 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             break;
     }
     commandSize += uri.host().size() + uri.path().size();
-    char *command = new char[commandSize];
+    ichar *command = new ichar[commandSize];
     bzero(command, commandSize);
     switch (commandType) {
         case Get:
@@ -150,7 +150,7 @@ ByteStream BuiltinProtocolHandlersHttp::read(iuint32 nbytes)
     if (d->m_sockfd == -1) {
         return ByteStream();
     }
-    char *buf = new char[d->m_bufferSize];
+    ichar *buf = new ichar[d->m_bufferSize];
     bzero(buf, d->m_bufferSize);
     const ssize_t bytesRead = recv(d->m_sockfd, buf, d->m_bufferSize, 0);
     if (bytesRead > 0) {

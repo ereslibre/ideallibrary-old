@@ -42,15 +42,15 @@ void ApplicationTest::tearDown()
 void ApplicationTest::testOptionHandling()
 {
     optind = 1;
-    const char *argv[] = {"app", "-a", "--force", "foo.txt", "bar.txt"};
-    Application *instance = new Application(5, (char**) argv);
+    const ichar *argv[] = {"app", "-a", "--force", "foo.txt", "bar.txt"};
+    Application *instance = new Application(5, (ichar**) argv);
     Option allFilesOption;
     instance->addOptionWithoutArg(allFilesOption, 'a', "all");
     Option forceOption;
     instance->addOptionWithoutArg(forceOption, 'f', "force");
     Option hiddenOption;
     instance->addOptionWithoutArg(hiddenOption, 'h', "hidden");
-    List<char*> res = instance->parseOptions();
+    List<ichar*> res = instance->parseOptions();
     CPPUNIT_ASSERT(allFilesOption.isValid());
     CPPUNIT_ASSERT(allFilesOption.isOptSet());
     CPPUNIT_ASSERT(forceOption.isValid());
@@ -64,9 +64,9 @@ void ApplicationTest::testOptionHandling()
 void ApplicationTest::testNullOptionsHandling()
 {
     optind = 1;
-    const char *argv[] = {"app", "foo.txt"};
-    Application *instance = new Application(2, (char**) argv);
-    List<char*> res = instance->parseOptions();
+    const ichar *argv[] = {"app", "foo.txt"};
+    Application *instance = new Application(2, (ichar**) argv);
+    List<ichar*> res = instance->parseOptions();
     CPPUNIT_ASSERT_EQUAL((size_t) 1, res.size());
     delete instance;
 }
@@ -74,9 +74,9 @@ void ApplicationTest::testNullOptionsHandling()
 void ApplicationTest::testInvalidOptionsHandling()
 {
     optind = 1;
-    const char *argv[] = {"app", "--non-existant", "foo.txt"};
-    Application *instance = new Application(3, (char**) argv);
-    List<char*> res = instance->parseOptions();
+    const ichar *argv[] = {"app", "--non-existant", "foo.txt"};
+    Application *instance = new Application(3, (ichar**) argv);
+    List<ichar*> res = instance->parseOptions();
     CPPUNIT_ASSERT_EQUAL((size_t) 1, res.size());
     delete instance;
 }
@@ -91,10 +91,10 @@ void ApplicationTest::testInvalidLongOption()
 {
     optind = 1;
     receivedUnknownOption = false;
-    const char *argv[] = {"app", "-non-existant", "foo.txt"};
-    Application *instance = new Application(3, (char**) argv);
+    const ichar *argv[] = {"app", "-non-existant", "foo.txt"};
+    Application *instance = new Application(3, (ichar**) argv);
     Object::connectStatic(instance->invalidOption, receiveInvalidness);
-    List<char*> res = instance->parseOptions();
+    List<ichar*> res = instance->parseOptions();
     CPPUNIT_ASSERT(receivedUnknownOption);
     CPPUNIT_ASSERT_EQUAL((size_t) 1, res.size());
     delete instance;
@@ -104,14 +104,14 @@ void ApplicationTest::testInvalidShortOption()
 {
     optind = 1;
     receivedUnknownOption = false;
-    const char *argv[] = {"app", "-rnf", "foo.txt"};
-    Application *instance = new Application(3, (char**) argv);
+    const ichar *argv[] = {"app", "-rnf", "foo.txt"};
+    Application *instance = new Application(3, (ichar**) argv);
     Option recursiveOption;
     instance->addOptionWithoutArg(recursiveOption, 'r', "recursive");
     Option forceOption;
     instance->addOptionWithoutArg(forceOption, 'f', "force");
     Object::connectStatic(instance->invalidOption, receiveInvalidness);
-    List<char*> res = instance->parseOptions(Application::Strict);
+    List<ichar*> res = instance->parseOptions(Application::Strict);
     CPPUNIT_ASSERT(receivedUnknownOption);
     CPPUNIT_ASSERT(recursiveOption.isOptSet());
     CPPUNIT_ASSERT(forceOption.isOptSet()); // note this
@@ -122,15 +122,15 @@ void ApplicationTest::testInvalidShortOption()
 void ApplicationTest::testValidLongOption()
 {
     optind = 1;
-    const char *argv[] = {"app", "-a", "-hidden"};
-    Application *instance = new Application(3, (char**) argv);
+    const ichar *argv[] = {"app", "-a", "-hidden"};
+    Application *instance = new Application(3, (ichar**) argv);
     Option allFilesOption;
     instance->addOptionWithoutArg(allFilesOption, 'a', "all");
     Option forceOption;
     instance->addOptionWithoutArg(forceOption, 'f', "force");
     Option hiddenOption;
     instance->addOptionWithoutArg(hiddenOption, 'h', "hidden");
-    List<char*> res = instance->parseOptions();
+    List<ichar*> res = instance->parseOptions();
     CPPUNIT_ASSERT(allFilesOption.isValid());
     CPPUNIT_ASSERT(allFilesOption.isOptSet());
     CPPUNIT_ASSERT(forceOption.isValid());
@@ -144,15 +144,15 @@ void ApplicationTest::testValidLongOption()
 void ApplicationTest::testStrict()
 {
     optind = 1;
-    const char *argv[] = {"app", "-a", "-test"};
-    Application *instance = new Application(3, (char**) argv);
+    const ichar *argv[] = {"app", "-a", "-test"};
+    Application *instance = new Application(3, (ichar**) argv);
     Option allFilesOption;
     instance->addOptionWithoutArg(allFilesOption, 'a', "all");
     Option forceOption;
     instance->addOptionWithoutArg(forceOption, 'f', "force");
     Option hiddenOption;
     instance->addOptionWithoutArg(hiddenOption, 'h', "test");
-    List<char*> res = instance->parseOptions(Application::Strict);
+    List<ichar*> res = instance->parseOptions(Application::Strict);
     CPPUNIT_ASSERT(allFilesOption.isValid());
     CPPUNIT_ASSERT(allFilesOption.isOptSet());
     CPPUNIT_ASSERT(forceOption.isValid());
@@ -166,15 +166,15 @@ void ApplicationTest::testStrict()
 void ApplicationTest::testFlexible()
 {
     optind = 1;
-    const char *argv[] = {"app", "-a", "-test"};
-    Application *instance = new Application(3, (char**) argv);
+    const ichar *argv[] = {"app", "-a", "-test"};
+    Application *instance = new Application(3, (ichar**) argv);
     Option allFilesOption;
     instance->addOptionWithoutArg(allFilesOption, 'a', "all");
     Option forceOption;
     instance->addOptionWithoutArg(forceOption, 'f', "force");
     Option hiddenOption;
     instance->addOptionWithoutArg(hiddenOption, 'h', "test");
-    List<char*> res = instance->parseOptions(Application::Flexible);
+    List<ichar*> res = instance->parseOptions(Application::Flexible);
     CPPUNIT_ASSERT(allFilesOption.isValid());
     CPPUNIT_ASSERT(allFilesOption.isOptSet());
     CPPUNIT_ASSERT(forceOption.isValid());

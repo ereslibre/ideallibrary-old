@@ -64,18 +64,18 @@ static void signal_recv(iint32 signum, siginfo_t *info, void *ptr)
     }
     IDEAL_SDEBUG("*** Please, contact developers with the following information:");
     iint32 fd;
-    char filename[L_tmpnam];
+    ichar filename[L_tmpnam];
     do {
         if (tmpnam(filename)) {}
     } while ((fd = open(filename, O_WRONLY | O_CREAT | O_EXCL, 0600)) < 0);
     const pid_t pid = fork();
     switch (pid) {
         case 0:
-            char command[BUFSIZ];
+            ichar command[BUFSIZ];
             sprintf(command, "attach %d\nbt\n", getppid());
             if (write(fd, command, strlen(command))) {}
             close(fd);
-            execlp("gdb", "gdb", "-batch", "-x", filename, (char*) 0);
+            execlp("gdb", "gdb", "-batch", "-x", filename, (ichar*) 0);
         default:
             close(fd);
             waitpid(pid, NULL, 0);
@@ -134,7 +134,7 @@ Application::PrivateImpl::~PrivateImpl()
 #endif
 }
 
-void Application::addOptionWithoutArg(Option &option, char optChar, const char *longOpt)
+void Application::addOptionWithoutArg(Option &option, ichar optChar, const ichar *longOpt)
 {
     PrivateImpl::OptionItem optionItem;
     {
@@ -149,7 +149,7 @@ void Application::addOptionWithoutArg(Option &option, char optChar, const char *
     D_I->m_optionList.push_back(optionItem);
 }
 
-void Application::addOptionWithMandatoryArg(Option &option, char optChar, const char *longOpt)
+void Application::addOptionWithMandatoryArg(Option &option, ichar optChar, const ichar *longOpt)
 {
     PrivateImpl::OptionItem optionItem;
     {
@@ -164,7 +164,7 @@ void Application::addOptionWithMandatoryArg(Option &option, char optChar, const 
     D_I->m_optionList.push_back(optionItem);
 }
 
-void Application::addOptionWithOptionalArg(Option &option, char optChar, const char *longOpt)
+void Application::addOptionWithOptionalArg(Option &option, ichar optChar, const ichar *longOpt)
 {
     PrivateImpl::OptionItem optionItem;
     {
@@ -179,14 +179,14 @@ void Application::addOptionWithOptionalArg(Option &option, char optChar, const c
     D_I->m_optionList.push_back(optionItem);
 }
 
-List<char*> Application::parseOptions(ParsingStrictness parsingStrictness, FailVerbosity failVerbosity)
+List<ichar*> Application::parseOptions(ParsingStrictness parsingStrictness, FailVerbosity failVerbosity)
 {
     if (failVerbosity == FailSilently) {
         opterr = 0;
     }
     String shortopts;
     struct option longopts[D_I->m_optionList.size() + 1];
-    std::map<char, PrivateImpl::OptionItem> optionMap;
+    std::map<ichar, PrivateImpl::OptionItem> optionMap;
     List<PrivateImpl::OptionItem>::iterator it;
     iint32 i = 0;
     for (it = D_I->m_optionList.begin(); it != D_I->m_optionList.end(); ++it, ++i) {
@@ -237,7 +237,7 @@ List<char*> Application::parseOptions(ParsingStrictness parsingStrictness, FailV
         PrivateImpl::OptionItem item = *it;
         item.option->d->m_isValid = true;
     }
-    List<char*> res;
+    List<ichar*> res;
     for (; optind < d->m_argc; ++optind) {
         res.push_back(d->m_argv[optind]);
     }
@@ -286,7 +286,7 @@ void Application::Private::checkFileWatches()
 #ifdef HAVE_INOTIFY
     PrivateImpl *const d_i = static_cast<PrivateImpl*>(this);
     if (d_i->m_inotifyStarted) {
-        char buf[BUF_LEN];
+        ichar buf[BUF_LEN];
         iint32 len = 0;
         iint32 i = 0;
         len = read(d_i->m_inotify, buf, BUF_LEN);

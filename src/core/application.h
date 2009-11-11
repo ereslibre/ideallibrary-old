@@ -127,7 +127,7 @@ public:
       *
       * @see ExtensionLoader
       */
-    Application(iint32 argc, char **argv, const String &name = String());
+    Application(iint32 argc, ichar **argv, const String &name = String());
     virtual ~Application();
 
     /**
@@ -152,7 +152,7 @@ public:
       *
       * @note optChar and longOpt cannot be at the same time '\0' and 0 respectively.
       */
-    void addOptionWithoutArg(Option &option, char optChar, const char *longOpt = 0);
+    void addOptionWithoutArg(Option &option, ichar optChar, const ichar *longOpt = 0);
 
     /**
       * Performs the same action as addOptionWithoutArg, only that this option will expect a
@@ -160,7 +160,7 @@ public:
       *
       * @see addOptionWithoutArg
       */
-    void addOptionWithMandatoryArg(Option &option, char optChar, const char *longOpt = 0);
+    void addOptionWithMandatoryArg(Option &option, ichar optChar, const ichar *longOpt = 0);
 
     /**
       * Performs the same action as addOptionWithoutArg, only that this option will expect an
@@ -168,7 +168,7 @@ public:
       *
       * @see addOptionWithoutArg
       */
-    void addOptionWithOptionalArg(Option &option, char optChar, const char *longOpt = 0);
+    void addOptionWithOptionalArg(Option &option, ichar optChar, const ichar *longOpt = 0);
 
     /**
       * Will try to parse the options given by addOptionWithoutArg, addOptionWithMandatoryArg and
@@ -178,7 +178,7 @@ public:
       * @param parsingStrictness If Flexible is set, long options are allowed to start with a single '-'.
       *        Otherwise, '-' means a short options while '--' means a long option.
       */
-    List<char*> parseOptions(ParsingStrictness parsingStrictness = Flexible, FailVerbosity failVerbosity = FailSilently);
+    List<ichar*> parseOptions(ParsingStrictness parsingStrictness = Flexible, FailVerbosity failVerbosity = FailSilently);
 
     /**
       * @return The default path specified by @p path.

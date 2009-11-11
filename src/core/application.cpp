@@ -146,7 +146,7 @@ void Application::Private::checkTimers()
     }
 }
 
-Application::Application(iint32 argc, char **argv, const String &name)
+Application::Application(iint32 argc, ichar **argv, const String &name)
     : IDEAL_SIGNAL_INIT(invalidOption)
     , IDEAL_SIGNAL_INIT(missingParameter)
     , d(new PrivateImpl(this))

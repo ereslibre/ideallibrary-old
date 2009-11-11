@@ -38,8 +38,8 @@ class IDEAL_EXPORT ByteStream
 public:
     ByteStream();
     ByteStream(const ByteStream &byteStream);
-    ByteStream(const char *data);
-    ByteStream(const char *data, iuint64 nbytes);
+    ByteStream(const ichar *data);
+    ByteStream(const ichar *data, iuint64 nbytes);
     virtual ~ByteStream();
 
     /**
@@ -50,9 +50,9 @@ public:
     /**
       * @return the contents of the stream.
       */
-    const char *data() const;
+    const ichar *data() const;
 
-    ByteStream &operator=(const char *data);
+    ByteStream &operator=(const ichar *data);
     ByteStream &operator=(const ByteStream &byteStream);
 
 private:

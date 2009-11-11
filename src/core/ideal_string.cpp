@@ -29,7 +29,7 @@ class String::Private
 {
 public:
     Private()
-        : m_str(new char[1])
+        : m_str(new ichar[1])
         , m_charMap(0)
         , m_size(0)
         , m_sizeCalculated(true)
@@ -44,11 +44,11 @@ public:
         delete[] m_charMap;
     }
 
-    void init(const char *str)
+    void init(const ichar *str)
     {
         const iuint32 rawLen = strlen(str);
         delete[] m_str;
-        m_str = new char[rawLen + 1];
+        m_str = new ichar[rawLen + 1];
         memcpy(m_str, str, rawLen);
         m_str[rawLen] = '\0';
         m_sizeCalculated = false;
@@ -58,7 +58,7 @@ public:
     {
         const iuint32 rawLen = strlen(m_str);
         Private *privateCopy = new Private;
-        privateCopy->m_str = new char[rawLen + 1];
+        privateCopy->m_str = new ichar[rawLen + 1];
         memcpy(privateCopy->m_str, m_str, rawLen);
         privateCopy->m_str[rawLen] = '\0';
         privateCopy->m_charMap = new iuint32[calculateSize()];
@@ -81,7 +81,7 @@ public:
         size_t i = 0;
         m_size = 0;
         while (true) {
-            const char c = m_str[i];
+            const ichar c = m_str[i];
             if (c == '\0') {
                 break;
             }
@@ -129,7 +129,7 @@ public:
     {
         Char res;
         const iuint32 mappedPos = m_charMap[pos];
-        const char c = m_str[mappedPos];
+        const ichar c = m_str[mappedPos];
         iuint32 numberOfOctets;
         if (!(c & 0x80)) {
             numberOfOctets = 1;
@@ -153,8 +153,8 @@ public:
 
     void iuint64toa(iuint64 number, iuint32 base)
     {
-        char *const str = new char[66];
-        char *p = str + 64;
+        ichar *const str = new ichar[66];
+        ichar *p = str + 64;
         bzero(str, 66);
         while (number) {
             const int n = number % base;
@@ -172,10 +172,10 @@ public:
 
     void dtoa(double number, iuint8 format, iuint32 precision)
     {
-        char *const str = new char[10];
+        ichar *const str = new ichar[10];
         bzero(str, 5);
         sprintf(str, "%%.%dl%c", precision, format);
-        char *const res = new char[65];
+        ichar *const res = new ichar[65];
         bzero(res, 65);
         sprintf(res, str, number);
         init(res);
@@ -183,7 +183,7 @@ public:
         delete[] res;
     }
 
-    char    *m_str;
+    ichar   *m_str;
     iuint32 *m_charMap;
     iuint32  m_size;
     bool     m_sizeCalculated;
@@ -207,7 +207,7 @@ String::String(const std::string &str)
     d->init(str.data());
 }
 
-String::String(const char *str)
+String::String(const ichar *str)
     : d(new Private)
 {
     if (str) {
@@ -215,12 +215,12 @@ String::String(const char *str)
     }
 }
 
-String::String(const char *str, size_t n)
+String::String(const ichar *str, size_t n)
     : d(new Private)
 {
     if (str && n) {
         const size_t rawLength = strlen(str);
-        d->m_str = new char[(n == npos ? rawLength : n) * 4 + 1];
+        d->m_str = new ichar[(n == npos ? rawLength : n) * 4 + 1];
         d->m_charMap = new iuint32[(n == npos ? rawLength : n)];
         size_t count = 0;
         bool breakNext = false;
@@ -243,7 +243,7 @@ String::String(const char *str, size_t n)
         d->m_size = count;
         d->m_sizeCalculated = true;
         if (curr < (n == npos ? rawLength * 4 : n * 4)) {
-            d->m_str = (char*) realloc(d->m_str, curr + 1);
+            d->m_str = (ichar*) realloc(d->m_str, curr + 1);
         }
         if (count < (n == npos ? rawLength : n)) {
             d->m_charMap = (iuint32*) realloc(d->m_charMap, count * sizeof(iuint32));
@@ -255,7 +255,7 @@ String::String(Char c)
     : d(new Private)
 {
     const iint32 numberOfOctets = c.octetsRequired();
-    d->m_str = new char[numberOfOctets + 1];
+    d->m_str = new ichar[numberOfOctets + 1];
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
         const iint32 offset = 8 * (numberOfOctets - i - 1);
@@ -280,7 +280,7 @@ void String::clear()
         d = new Private;
     } else {
         delete[] d->m_str;
-        d->m_str = new char[1];
+        d->m_str = new ichar[1];
         *d->m_str = '\0';
         delete[] d->m_charMap;
         d->m_charMap = 0;
@@ -361,7 +361,7 @@ size_t String::find(const String &str) const
     return npos;
 }
 
-const char *String::data() const
+const ichar *String::data() const
 {
     return d->m_str;
 }
@@ -374,7 +374,7 @@ String String::substr(size_t pos, size_t n) const
     return String();
 }
 
-iint32 String::compare(const char *s) const
+iint32 String::compare(const ichar *s) const
 {
     return strcoll(d->m_str, s);
 }
@@ -386,7 +386,7 @@ List<String> String::split(Char separator) const
         return res;
     }
     const iint32 length = strlen(d->m_str);
-    char *curr = new char[length];
+    ichar *curr = new ichar[length];
     iuint32 pos = 0;
     for (iuint32 i = 0; i < d->m_size; ++i) {
         const Char currChar = d->getCharAt(i);
@@ -398,7 +398,7 @@ List<String> String::split(Char separator) const
         } else if (currChar != separator) {
             union {
                 iuint32 value;
-                char v[4];
+                ichar v[4];
             } fragmentedValue;
             fragmentedValue.value = currChar.value();
             const iint32 octetsRequired = currChar.octetsRequired();
@@ -659,7 +659,7 @@ String &String::operator=(const String &str)
     return *this;
 }
 
-String &String::operator=(const char *str)
+String &String::operator=(const ichar *str)
 {
     if (!str) {
         return *this;
@@ -680,7 +680,7 @@ String &String::operator=(Char c)
     }
     const iint32 numberOfOctets = c.octetsRequired();
     delete[] d->m_str;
-    d->m_str = new char[numberOfOctets + 1];
+    d->m_str = new ichar[numberOfOctets + 1];
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
         const iint32 offset = 8 * (numberOfOctets - i - 1);
@@ -704,10 +704,10 @@ String &String::operator+=(const String &str)
     }
     const iuint32 oldRawLength = strlen(d->m_str);
     const iuint32 newRawLength = oldRawLength + strlen(str.d->m_str);
-    d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
+    d->m_str = (ichar*) realloc(d->m_str, newRawLength + 1);
     union FragmentedValue {
         iuint32 value;
-        char v[4];
+        ichar v[4];
     };
     FragmentedValue fragmentedValue;
     iuint32 pos = oldRawLength;
@@ -725,7 +725,7 @@ String &String::operator+=(const String &str)
     return *this;
 }
 
-String &String::operator+=(const char *str)
+String &String::operator+=(const ichar *str)
 {
     if (d->refCount() > 1) {
         Private *const old_d = d;
@@ -735,7 +735,7 @@ String &String::operator+=(const char *str)
     const iuint32 rawLength = strlen(str);
     const iuint32 oldRawLength = strlen(d->m_str);
     const iuint32 newRawLength = oldRawLength + rawLength;
-    d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
+    d->m_str = (ichar*) realloc(d->m_str, newRawLength + 1);
     memcpy(&d->m_str[oldRawLength], str, rawLength);
     d->m_str[newRawLength] = '\0';
     d->m_sizeCalculated = false;
@@ -753,7 +753,7 @@ String &String::operator+=(Char c)
     const iuint32 rawLength = strlen(d->m_str);
     const iuint32 newRawLength = rawLength + numberOfOctets;
     const iuint32 value = c.value();
-    d->m_str = (char*) realloc(d->m_str, newRawLength + 1);
+    d->m_str = (ichar*) realloc(d->m_str, newRawLength + 1);
     iint32 pos = 0;
     for (iuint32 i = rawLength; i < newRawLength; ++i) {
         const iint32 offset = 8 * (numberOfOctets - pos - 1);
@@ -772,7 +772,7 @@ String String::operator+(const String &str) const
     return res;
 }
 
-String String::operator+(const char *str) const
+String String::operator+(const ichar *str) const
 {
     String res(d->m_str);
     res += str;

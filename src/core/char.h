@@ -56,7 +56,7 @@ public:
       * @return This character mapped to a char type if the conversion can be done. Otherwise, 0
       *         is returned.
       */
-    operator char() const;
+    operator ichar() const;
 
     /**
       * @return This character mapped to a iuint8 type if the conversion can be done. Otherwise, 0
@@ -77,12 +77,12 @@ public:
     operator iuint32() const;
 
     bool operator==(Char c) const;
-    bool operator==(char c) const;
+    bool operator==(ichar c) const;
     bool operator==(iuint8 c) const;
     bool operator==(iuint16 c) const;
     bool operator==(iuint32 c) const;
     bool operator!=(Char c) const;
-    bool operator!=(char c) const;
+    bool operator!=(ichar c) const;
     bool operator!=(iuint8 c) const;
     bool operator!=(iuint16 c) const;
     bool operator!=(iuint32 c) const;

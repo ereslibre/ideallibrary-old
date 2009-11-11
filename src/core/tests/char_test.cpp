@@ -66,22 +66,22 @@ void CharTest::operatorChar()
 {
     {
         Char c('a');
-        char c1 = c;
+        ichar c1 = c;
         CPPUNIT_ASSERT_EQUAL('a', c1);
     }
     {
         Char c(L'ñ');
-        char c1 = c;
+        ichar c1 = c;
         CPPUNIT_ASSERT(((iuint32) L'ñ') != (iuint32) c1);
     }
     {
         Char c(L'€');
-        char c1 = c;
+        ichar c1 = c;
         CPPUNIT_ASSERT(((iuint32) L'€') != (iuint32) c1);
     }
     {
         Char c(L'𝚿');
-        char c1 = c;
+        ichar c1 = c;
         CPPUNIT_ASSERT(((iuint32) L'𝚿') != (iuint32) c1);
     }
 }
@@ -162,7 +162,7 @@ void CharTest::operatorEqualsCharNative()
 {
     {
         Char c('a');
-        char c1 = 'a';
+        ichar c1 = 'a';
         CPPUNIT_ASSERT(c == c1);
     }
 }

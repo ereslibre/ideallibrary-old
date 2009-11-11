@@ -386,7 +386,7 @@ public:
     {
     }
 
-    SignalBase(SignalResource *parent, const char *name, const char * /* signature */)
+    SignalBase(SignalResource *parent, const ichar *name, const ichar * /* signature */)
         : m_parent(parent)
         , m_isDestroyedSignal(!strcmp(name, "destroyed"))
         , m_connectionsMutex(Mutex(Mutex::Recursive))
@@ -461,7 +461,7 @@ class Signal
 public:
     Signal() __attribute__((error("missing call to IDEAL_SIGNAL_INIT on your class constructor")));
 
-    Signal(SignalResource *parent, const char *name, const char *signature)
+    Signal(SignalResource *parent, const ichar *name, const ichar *signature)
         : SignalBase(parent, name, signature)
     {
     }

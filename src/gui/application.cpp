@@ -97,7 +97,7 @@ public:
     }
 };
 
-Application::Application(iint32 argc, char **argv)
+Application::Application(iint32 argc, ichar **argv)
     : IdealCore::Application(argc, argv)
     , d(new PrivateImpl(this))
 {

@@ -42,13 +42,13 @@ void ByteStreamTest::testConstructor()
 {
     ByteStream *byteStream;
     {
-        char myString[] = { "Testing" };
+        ichar myString[] = { "Testing" };
         byteStream = new ByteStream(myString);
     }
     CPPUNIT_ASSERT_EQUAL(String("Testing"), String(byteStream->data()));
     delete byteStream;
     {
-        char *myString = new char[strlen("Testing") + 1];
+        ichar *myString = new ichar[strlen("Testing") + 1];
         strcpy(myString, "Testing");
         byteStream = new ByteStream(myString);
         delete[] myString;

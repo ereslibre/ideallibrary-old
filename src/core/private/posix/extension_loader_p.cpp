@@ -40,7 +40,7 @@ Module *ExtensionLoader::Private::loadModule(const String &path, Object *parent)
     if (!handle) {
         return 0;
     }
-    char *symbolError = dlerror();
+    ichar *symbolError = dlerror();
     moduleFactoryCreator *factoryCreator = (moduleFactoryCreator*) dlsym(handle, "globalModuleEntryPoint");
     symbolError = dlerror();
     if (symbolError) {
@@ -55,7 +55,7 @@ Module *ExtensionLoader::Private::loadModule(const String &path, Object *parent)
 
 Extension *ExtensionLoader::Private::loadExtension(Module *module, const String &entryPoint)
 {
-    char *symbolError = dlerror();
+    ichar *symbolError = dlerror();
     extensionFactoryCreator *factoryCreator = (extensionFactoryCreator*) dlsym(module->d->m_handle, entryPoint.data());
     symbolError = dlerror();
     if (symbolError) {

@@ -64,7 +64,7 @@ public:
       * @return the argument of this option in case that an argument was given on the command line
       *         to this option.
       */
-    char *optArg() const;
+    ichar *optArg() const;
 
 private:
     class Private;

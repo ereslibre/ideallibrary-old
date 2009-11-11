@@ -27,7 +27,7 @@ namespace IdealCore {
 class ByteStream::Private
 {
 public:
-    Private(const char *data, iuint64 nbytes = 0)
+    Private(const ichar *data, iuint64 nbytes = 0)
         : m_data(0)
         , m_size(0)
     {
@@ -37,7 +37,7 @@ public:
             } else {
                 m_size = strlen(data);
             }
-            m_data = new char[m_size + 1];
+            m_data = new ichar[m_size + 1];
             memcpy(m_data, data, m_size);
             m_data[m_size] = '\0';
         }
@@ -48,7 +48,7 @@ public:
         delete[] m_data;
     }
 
-    char   *m_data;
+    ichar  *m_data;
     iuint64 m_size;
 };
 
@@ -62,12 +62,12 @@ ByteStream::ByteStream(const ByteStream &byteStream)
 {
 }
 
-ByteStream::ByteStream(const char *data)
+ByteStream::ByteStream(const ichar *data)
     : d(new Private(data))
 {
 }
 
-ByteStream::ByteStream(const char *data, iuint64 nbytes)
+ByteStream::ByteStream(const ichar *data, iuint64 nbytes)
     : d(new Private(data, nbytes))
 {
 }
@@ -82,12 +82,12 @@ iuint64 ByteStream::size() const
     return d->m_size;
 }
 
-const char *ByteStream::data() const
+const ichar *ByteStream::data() const
 {
     return d->m_data;
 }
 
-ByteStream &ByteStream::operator=(const char *data)
+ByteStream &ByteStream::operator=(const ichar *data)
 {
     delete d;
     d = new Private(data);

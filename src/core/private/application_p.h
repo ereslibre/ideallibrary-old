@@ -45,7 +45,7 @@ public:
     void checkTimers();
 
     iint32                   m_argc;
-    char                   **m_argv;
+    ichar                  **m_argv;
     String                   m_name;
     bool                     m_prefixSet;
     iint32                   m_sleepTime;

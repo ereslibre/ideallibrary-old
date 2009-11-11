@@ -56,9 +56,9 @@ void StringTest::testConstructor()
     CPPUNIT_ASSERT(test5_2 >= test5_1);
     CPPUNIT_ASSERT(test5_2 > test5_1);
     String test6;
-    const char *test6_1 = "file:///home/test";
+    const ichar *test6_1 = "file:///home/test";
     const size_t size = strlen(test6_1);
-    char *test6_2 = new char[size];
+    ichar *test6_2 = new ichar[size];
     strcpy(test6_2, test6_1);
     test6 = test6_2;
     CPPUNIT_ASSERT_EQUAL(size, test6.size());
@@ -233,14 +233,14 @@ void StringTest::testOperators()
         str = str + add;
         str2 = str2 + add;
         CPPUNIT_ASSERT_EQUAL(str, str2);
-        const char *addStr = "Test";
+        const ichar *addStr = "Test";
         str += addStr;
         str2 += addStr;
         CPPUNIT_ASSERT_EQUAL(str, str2);
         str = str + addStr;
         str2 = str2 + addStr;
         CPPUNIT_ASSERT_EQUAL(str, str2);
-        char c = 'c';
+        ichar c = 'c';
         str += c;
         str2 += c;
         CPPUNIT_ASSERT_EQUAL(str, str2);
@@ -335,7 +335,7 @@ void StringTest::testNumber()
     {
         // locale dependant operations
 
-        char *const currLocale = setlocale(LC_ALL, 0);
+        ichar *const currLocale = setlocale(LC_ALL, 0);
         setlocale(LC_ALL, "C");
 
         CPPUNIT_ASSERT_EQUAL(String("1.57"), String::number((float) 1.57));

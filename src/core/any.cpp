@@ -63,7 +63,7 @@ const std::type_info &Any::type() const
 
 String Any::typeName() const
 {
-    char *const typeName = abi::__cxa_demangle((m_s ? m_s->type().name() : typeid(Any).name()), 0, 0, 0);
+    ichar *const typeName = abi::__cxa_demangle((m_s ? m_s->type().name() : typeid(Any).name()), 0, 0, 0);
     String res(typeName);
     delete[] typeName;
     return res;

@@ -65,7 +65,7 @@ iint32 Char::octetsRequired() const
     return 4;
 }
 
-Char::operator char() const
+Char::operator ichar() const
 {
     if (c & 0xffffff00) {
         IDEAL_DEBUG_WARNING("char '" << *this << "' would have been corrupted on conversion. returning 0");
@@ -129,7 +129,7 @@ bool Char::operator==(Char c) const
     return this->c == c.c;
 }
 
-bool Char::operator==(char c) const
+bool Char::operator==(ichar c) const
 {
     if (this->c & 0xffffff00) {
         return false;
@@ -241,7 +241,7 @@ bool Char::operator!=(Char c) const
     return !(*this == c);
 }
 
-bool Char::operator!=(char c) const
+bool Char::operator!=(ichar c) const
 {
     return !(*this == c);
 }
@@ -269,22 +269,22 @@ std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
     const iuint32 value = c.value();
     switch (c.octetsRequired()) {
         case 4:
-            stream << (char) ((value & 0xff000000) >> 24);
-            stream << (char) ((value & 0xff0000) >> 16);
-            stream << (char) ((value & 0xff00) >> 8);
-            stream << (char) (value & 0xff);
+            stream << (ichar) ((value & 0xff000000) >> 24);
+            stream << (ichar) ((value & 0xff0000) >> 16);
+            stream << (ichar) ((value & 0xff00) >> 8);
+            stream << (ichar) (value & 0xff);
             break;
         case 3:
-            stream << (char) ((value & 0xff0000) >> 16);
-            stream << (char) ((value & 0xff00) >> 8);
-            stream << (char) (value & 0xff);
+            stream << (ichar) ((value & 0xff0000) >> 16);
+            stream << (ichar) ((value & 0xff00) >> 8);
+            stream << (ichar) (value & 0xff);
             break;
         case 2:
-            stream << (char) ((value & 0xff00) >> 8);
-            stream << (char) (value & 0xff);
+            stream << (ichar) ((value & 0xff00) >> 8);
+            stream << (ichar) (value & 0xff);
             break;
         default:
-            stream << (char) (value & 0xff);
+            stream << (ichar) (value & 0xff);
             break;
     }
     stream << '\'';

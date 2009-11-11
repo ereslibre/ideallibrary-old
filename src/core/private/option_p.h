@@ -35,9 +35,9 @@ public:
     {
     }
 
-    bool  m_isValid;
-    bool  m_isOptSet;
-    char *m_optArg;
+    bool   m_isValid;
+    bool   m_isOptSet;
+    ichar *m_optArg;
 };
 
 }

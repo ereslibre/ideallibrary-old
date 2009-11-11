@@ -39,7 +39,7 @@ class MyApplication
     : public Application
 {
 public:
-    MyApplication(iint32 argc, char **argv)
+    MyApplication(iint32 argc, ichar **argv)
         : Application(argc, argv)
         , numReceived(0)
     {

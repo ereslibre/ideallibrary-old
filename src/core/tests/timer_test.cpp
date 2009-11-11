@@ -31,9 +31,9 @@
 
 using namespace IdealCore;
 
-static iint32 res;
-static iint32 s_argc;
-static char **s_argv;
+static iint32  res;
+static iint32  s_argc;
+static ichar **s_argv;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TimerTest);
 

@@ -43,7 +43,7 @@ bool Option::isOptSet() const
     return d->m_isOptSet;
 }
 
-char *Option::optArg() const
+ichar *Option::optArg() const
 {
     return d->m_optArg;
 }

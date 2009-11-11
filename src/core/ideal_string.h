@@ -44,15 +44,15 @@ public:
     String();
     String(const String &str);
     String(const std::string &str);
-    String(const char *str);
-    String(const char *str, size_t n);
+    String(const ichar *str);
+    String(const ichar *str, size_t n);
     String(Char c);
     virtual ~String();
 
     /**
       * @return An ANSI character pointer to the string.
       */
-    const char *data() const;
+    const ichar *data() const;
 
     /**
       * Empties the string.
@@ -108,7 +108,7 @@ public:
       * @return < 0, 0 or > 0 if this string is less than, equal to, or greater than @p s
       *         respectively.
       */
-    iint32 compare(const char *s) const;
+    iint32 compare(const ichar *s) const;
 
     /**
       * Splits the current string by using as separator @s separator.
@@ -161,15 +161,15 @@ public:
     Char operator[](iuint32 pos) const;
 
     String &operator=(const String &str);
-    String &operator=(const char *str);
+    String &operator=(const ichar *str);
     String &operator=(Char c);
 
     String &operator+=(const String &str);
-    String &operator+=(const char *str);
+    String &operator+=(const ichar *str);
     String &operator+=(Char c);
 
     String operator+(const String &str) const;
-    String operator+(const char *str) const;
+    String operator+(const ichar *str) const;
     String operator+(Char c) const;
 
     bool operator==(const String &str) const;

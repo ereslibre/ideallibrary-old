@@ -31,7 +31,7 @@ class OwnModulesTestApplication
     : public Application
 {
 public:
-    OwnModulesTestApplication(iint32 argc, char **argv)
+    OwnModulesTestApplication(iint32 argc, ichar **argv)
         : Application(argc, argv, "ownModulesTest")
     {
     }

@@ -21,6 +21,7 @@
 #ifndef IDEAL_GLOBALS_H
 #define IDEAL_GLOBALS_H
 
+typedef char                   ichar;
 typedef signed char            iint8;
 typedef unsigned char          iuint8;
 typedef short                  iint16;

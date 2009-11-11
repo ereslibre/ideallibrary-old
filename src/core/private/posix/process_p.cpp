@@ -29,14 +29,14 @@ void ProcessCommand::run()
         return;
     }
     List<String> res = command.split(' ');
-    const char **params = new const char*[res.size() + 1];
+    const ichar **params = new const ichar*[res.size() + 1];
     List<String>::iterator it;
     iint32 i = 0;
     for (it = res.begin(); it != res.end(); ++it, ++i) {
         params[i] = (*it).data();
     }
     params[i] = 0;
-    execvp(params[0], const_cast<char* const*>(params));
+    execvp(params[0], const_cast<ichar* const*>(params));
 }
 
 void Process::exec()

@@ -84,7 +84,7 @@ int main(int argc, char **argv)
     }
     {
         String str1("First part");
-        const char *str2 = "; Second part";
+        const ichar *str2 = "; Second part";
         str1 += str2;
         std::cout << "\"" << str1 << "\"" << std::endl;
     }

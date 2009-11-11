@@ -94,15 +94,15 @@ const String uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 const String uri_reserved = "!*'();:@&=+$,/?%#[]";
 
-const char uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                         'A', 'B', 'C', 'D', 'E', 'F' };
+const ichar uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                          'A', 'B', 'C', 'D', 'E', 'F' };
 
 String Uri::Private::getHex(Char ch) const
 {
     String res;
     union {
         iuint32 value;
-        char v[4];
+        ichar v[4];
     } fragmentedValue;
     fragmentedValue.value = ch.value();
     const iint32 octetsRequired = ch.octetsRequired();
@@ -191,7 +191,7 @@ String Uri::Private::decodeUri(const String &uri) const
 void Uri::Private::reconstructPath(iint32 count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail)
 {
     String encodedUri;
-    const char *curr = head->text.first;
+    const ichar *curr = head->text.first;
     while (curr != head->text.afterLast) {
         encodedUri += *curr;
         ++curr;
@@ -211,7 +211,7 @@ void Uri::Private::reconstructPath(iint32 count, UriPathSegmentStructA *head, Ur
 String Uri::Private::reconstructString(const UriTextRangeA &uriTextRange)
 {
     String res;
-    const char *curr = uriTextRange.first;
+    const ichar *curr = uriTextRange.first;
     while (curr != uriTextRange.afterLast) {
         res += *(curr);
         ++curr;
@@ -230,11 +230,11 @@ void Uri::Private::initializeContents(const String &uriP_)
     if (m_isValidUri) {
         uriNormalizeSyntaxA(&uri);
         {
-            char *uriString;
+            ichar *uriString;
             iint32 charsRequired;
             uriToStringCharsRequiredA(&uri, &charsRequired);
             ++charsRequired;
-            uriString = new char[charsRequired];
+            uriString = new ichar[charsRequired];
             uriToStringA(uriString, &uri, charsRequired, 0);
             m_uri = decodeUri(uriString);
             delete[] uriString;
@@ -308,7 +308,7 @@ Uri::Uri(const String &path, const String &filename)
     }
 }
 
-Uri::Uri(const char *uri)
+Uri::Uri(const ichar *uri)
     : d(new Private)
 {
     d->initializeContents(uri);
@@ -413,7 +413,7 @@ Uri &Uri::operator=(const Uri &uri)
     return *this;
 }
 
-Uri &Uri::operator=(const char *uri)
+Uri &Uri::operator=(const ichar *uri)
 {
     if (!uri) {
         return *this;
