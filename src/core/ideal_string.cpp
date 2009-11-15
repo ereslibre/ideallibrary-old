@@ -103,7 +103,9 @@ public:
             }
             ++i;
         }
-        m_charMap = (iuint32*) realloc(m_charMap, m_size * sizeof(iuint32));
+        if (m_size < rawLen) {
+            m_charMap = (iuint32*) realloc(m_charMap, m_size * sizeof(iuint32));
+        }
         return m_size;
     }
 
