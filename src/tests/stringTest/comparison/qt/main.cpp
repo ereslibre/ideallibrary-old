@@ -25,7 +25,6 @@
 int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "");
-
     for (int i = 0; i < 1000; ++i) {
         QString str("Test");
         QString str2("Teñt");

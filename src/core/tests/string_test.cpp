@@ -40,7 +40,6 @@ void StringTest::tearDown()
 void StringTest::testConstructor()
 {
     setlocale(LC_ALL, "en_US.UTF-8");
-
     String test1("Test");
     CPPUNIT_ASSERT_EQUAL((size_t) 4, test1.size());
     String test2("Tést");
@@ -349,7 +348,6 @@ void StringTest::testToConversion()
     {
         // locale dependent operations
         setlocale(LC_ALL, "C");
-
         {
             String str("1.55");
             bool ok;
@@ -377,7 +375,6 @@ void StringTest::testNumber()
     {
         // locale dependent operations
         setlocale(LC_ALL, "C");
-
         CPPUNIT_ASSERT_EQUAL(String("1.57"), String::number((float) 1.57));
         CPPUNIT_ASSERT_EQUAL(String("1.58"), String::number((float) 1.578));
         CPPUNIT_ASSERT_EQUAL(String("1.578"), String::number((float) 1.578, 'g', 4));

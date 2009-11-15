@@ -28,7 +28,6 @@ using namespace IdealCore;
 int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "");
-
     {
         Char c(L'𝛏');
         std::cout << "Character is: " << c << std::endl;
