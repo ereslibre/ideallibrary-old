@@ -1,6 +1,6 @@
 /*
  * This file is part of the Ideal libraries
- * Copyright (C) 2009 Rafael Fern®¢ndez L®Æpez <ereslibre@ereslibre.es>
+ * Copyright (C) 2009 Rafael Fern√°ndez L√≥pez <ereslibre@ereslibre.es>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
