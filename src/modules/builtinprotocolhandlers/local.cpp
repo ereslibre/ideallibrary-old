@@ -29,7 +29,7 @@ String BuiltinProtocolHandlersLocal::name() const
 
 String BuiltinProtocolHandlersLocal::description() const
 {
-    return "Contains support for local file operations";
+    return "Contains support for local file protocol";
 }
 
 String BuiltinProtocolHandlersLocal::author() const

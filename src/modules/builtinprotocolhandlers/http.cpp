@@ -24,12 +24,12 @@ namespace IdealCore {
 
 String BuiltinProtocolHandlersHttp::name() const
 {
-    return "Builtin remote protocol handler set";
+    return "Builtin http protocol handler";
 }
 
 String BuiltinProtocolHandlersHttp::description() const
 {
-    return "Contains support for http, https, ftp and sftp protocols";
+    return "Contains support for http protocol";
 }
 
 String BuiltinProtocolHandlersHttp::author() const

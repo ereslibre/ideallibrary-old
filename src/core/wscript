@@ -35,6 +35,8 @@ def configure(conf):
     conf.check_cfg(package = 'libpcrecpp', args = '--cflags --libs')
     if not conf.env['HAVE_LIBURIPARSER'] == 1:
         conf.fatal('Cannot continue without liburiparser. Please, install the development package and try again')
+    if not conf.env['HAVE_LIBPCRECPP'] == 1:
+        conf.fatal('Cannot continue without libpcrecpp. Please, install the development package and try again')
     conf.check_tool('misc')
     conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name = 'HAVE_INOTIFY')
 
