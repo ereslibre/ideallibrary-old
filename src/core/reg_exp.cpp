@@ -52,7 +52,7 @@ public:
     {
         --m_refs;
         if (!m_refs) {
-            for (iuint32 i = 0; i < m_numCaptures; ++i) {
+            for (size_t i = 0; i < m_numCaptures; ++i) {
                 delete m_args[i];
             }
             delete[] m_args;
@@ -61,7 +61,7 @@ public:
         }
     }
 
-    iuint32 refCount() const
+    size_t refCount() const
     {
         return m_refs;
     }
@@ -69,8 +69,8 @@ public:
     pcrecpp::RE    m_regExp;
     pcrecpp::Arg **m_args;
     std::string   *m_argsString;
-    iuint32        m_numCaptures;
-    iuint32        m_refs;
+    size_t         m_numCaptures;
+    size_t         m_refs;
 };
 
 RegExp::RegExp()
@@ -112,9 +112,9 @@ String RegExp::regExp() const
     return d->m_regExp.pattern();
 }
 
-bool RegExp::match(const String &str, iuint32 numCaptures) const
+bool RegExp::match(const String &str, size_t numCaptures) const
 {
-    for (iuint32 i = 0; i < d->m_numCaptures; ++i) {
+    for (size_t i = 0; i < d->m_numCaptures; ++i) {
         delete d->m_args[i];
     }
     delete[] d->m_args;
@@ -122,7 +122,7 @@ bool RegExp::match(const String &str, iuint32 numCaptures) const
     d->m_numCaptures = numCaptures;
     d->m_args = new pcrecpp::Arg*[numCaptures];
     d->m_argsString = new std::string[numCaptures];
-    for (iuint32 i = 0; i < numCaptures; ++i) {
+    for (size_t i = 0; i < numCaptures; ++i) {
         d->m_args[i] = new pcrecpp::Arg;
         *d->m_args[i] = &d->m_argsString[i];
     }
@@ -130,7 +130,7 @@ bool RegExp::match(const String &str, iuint32 numCaptures) const
     return d->m_regExp.DoMatch(str.data(), pcrecpp::RE::ANCHOR_BOTH, &consumed, d->m_args, numCaptures);
 }
 
-String RegExp::getCapture(iuint32 i) const
+String RegExp::getCapture(size_t i) const
 {
     if (i >= d->m_numCaptures) {
         return String();

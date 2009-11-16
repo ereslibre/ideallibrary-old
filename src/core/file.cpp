@@ -81,7 +81,7 @@ public:
 
     File                        *m_file;
     Operation                    m_operation;
-    iuint64                      m_maxBytes;
+    size_t                       m_maxBytes;
     ProtocolHandler::Permissions m_permissions;
     ProtocolHandler             *m_protocolHandler;
 
@@ -186,7 +186,7 @@ void File::Private::Job::readDir()
 void File::Private::Job::readFile()
 {
     m_protocolHandler->open(m_file->d->m_uri, ProtocolHandler::Read);
-    iuint64 bytesRead = 0;
+    size_t bytesRead = 0;
     while (m_maxBytes == NoMaxBytes || bytesRead < m_maxBytes) {
         const ByteStream byteStream = m_protocolHandler->read(BUFFER_SIZE);
         if (!byteStream.size()) {
@@ -266,7 +266,7 @@ Thread *File::stat(Thread::Type type) const
     return job;
 }
 
-Thread *File::get(iuint64 maxBytes, Thread::Type type) const
+Thread *File::get(size_t maxBytes, Thread::Type type) const
 {
     Private::Job *job = new Private::Job(const_cast<File*>(this), type);
     job->m_operation = Private::Job::Get;

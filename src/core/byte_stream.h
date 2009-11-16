@@ -39,13 +39,13 @@ public:
     ByteStream();
     ByteStream(const ByteStream &byteStream);
     ByteStream(const ichar *data);
-    ByteStream(const ichar *data, iuint64 nbytes);
+    ByteStream(const ichar *data, size_t nbytes);
     virtual ~ByteStream();
 
     /**
       * @return the size of the stream.
       */
-    iuint64 size() const;
+    size_t size() const;
 
     /**
       * @return the contents of the stream.

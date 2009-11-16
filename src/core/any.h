@@ -214,7 +214,7 @@ public:
     virtual bool equals(const Any &any) const = 0;
 
 private:
-    iuint32 m_refs;
+    size_t m_refs;
 };
 
 /**

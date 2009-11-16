@@ -109,11 +109,11 @@ public:
 
         ErrorCode errorCode; ///< The error code if an error happened. The stat result is only valid if this
                              ///< field has the NoError value.
-        iint32 type;            ///< The type of this file. Matches ProtocolHandler::Type.
+        iint32 type;         ///< The type of this file. Matches ProtocolHandler::Type.
         String ownerUser;    ///< The user owner of this file.
         String ownerGroup;   ///< The group owner of this file.
-        iint32 permissions;     ///< The permissions of this file. Matches ProtocolHandler::Permissions.
-        iuint64 size;        ///< The size of this file in bytes.
+        iint32 permissions;  ///< The permissions of this file. Matches ProtocolHandler::Permissions.
+        size_t size;         ///< The size of this file in bytes.
         long lastAccessed;   ///< The last access on this file.
         long lastModified;   ///< When was this file last modified.
         String contentType;  ///< The content type of this file.
@@ -127,9 +127,9 @@ public:
 
     virtual ErrorCode open(const Uri &uri, iint32 openMode = Read | Write) = 0;
 
-    virtual ByteStream read(iuint32 nbytes) = 0;
+    virtual ByteStream read(size_t nbytes) = 0;
 
-    virtual iuint32 write(const ByteStream &byteStream) = 0;
+    virtual size_t write(const ByteStream &byteStream) = 0;
 
     virtual void close() = 0;
 
@@ -170,7 +170,7 @@ public:
     ProtocolHandler();
 
 private:
-    iuint32 m_weight;
+    size_t m_weight;
 };
 
 }

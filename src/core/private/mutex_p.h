@@ -35,7 +35,7 @@ public:
     void deref();
 
 private:
-    iuint32 m_refs;
+    size_t m_refs;
 };
 
 }

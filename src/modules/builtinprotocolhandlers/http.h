@@ -33,8 +33,8 @@ public:
     ~BuiltinProtocolHandlersHttp();
 
     virtual ErrorCode open(const Uri &uri, iint32 openMode);
-    virtual ByteStream read(iuint32 nbytes);
-    virtual iuint32 write(const ByteStream &byteStream);
+    virtual ByteStream read(size_t nbytes);
+    virtual size_t write(const ByteStream &byteStream);
     virtual void close();
     virtual List<Uri> listDir(const Uri &uri);
     virtual ErrorCode mkdir(const Uri &uri, Permissions permissions);

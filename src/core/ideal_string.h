@@ -166,7 +166,7 @@ public:
       * @return the character found at position @p pos on the string. If @p pos is out of
       *         bounds, a default constructed Char is returned.
       */
-    Char operator[](iuint32 pos) const;
+    Char operator[](size_t pos) const;
 
     String &operator=(const String &str);
     String &operator=(const ichar *str);

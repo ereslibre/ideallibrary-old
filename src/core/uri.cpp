@@ -63,7 +63,7 @@ public:
         }
     }
 
-    iuint32 refCount() const
+    size_t refCount() const
     {
         return m_refs;
     }
@@ -86,7 +86,7 @@ public:
     String  m_query;
     String  m_fragment;
     bool    m_isValidUri;
-    iuint32 m_refs;
+    size_t  m_refs;
 };
 
 const String uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"

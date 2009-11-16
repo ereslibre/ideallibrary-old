@@ -53,12 +53,12 @@ public:
       *
       * @return true if @p str matches this regular expression.
       */
-    bool match(const String &str, iuint32 numCaptures = 0) const;
+    bool match(const String &str, size_t numCaptures = 0) const;
 
     /**
       * @return the capture at position @p i. An empty string if @p i is out of bounds.
       */
-    String getCapture(iuint32 i) const;
+    String getCapture(size_t i) const;
 
     RegExp &operator=(const RegExp &regExp);
     RegExp &operator=(const String &regExp);

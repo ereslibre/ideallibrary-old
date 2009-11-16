@@ -145,7 +145,7 @@ ProtocolHandler::ErrorCode BuiltinProtocolHandlersHttp::open(const Uri &uri, iin
     }
 }
 
-ByteStream BuiltinProtocolHandlersHttp::read(iuint32 nbytes)
+ByteStream BuiltinProtocolHandlersHttp::read(size_t nbytes)
 {
     if (d->m_sockfd == -1) {
         return ByteStream();
@@ -162,7 +162,7 @@ ByteStream BuiltinProtocolHandlersHttp::read(iuint32 nbytes)
     return ByteStream();
 }
 
-iuint32 BuiltinProtocolHandlersHttp::write(const ByteStream &byteStream)
+size_t BuiltinProtocolHandlersHttp::write(const ByteStream &byteStream)
 {
     return 0;
 }
