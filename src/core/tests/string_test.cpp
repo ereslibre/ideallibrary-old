@@ -59,7 +59,8 @@ void StringTest::testConstructor()
     String test6;
     const ichar *test6_1 = "file:///home/test";
     const size_t size = strlen(test6_1);
-    ichar *test6_2 = new ichar[size];
+    ichar *test6_2 = new ichar[size + 1];
+    bzero(test6_2, size + 1);
     strcpy(test6_2, test6_1);
     test6 = test6_2;
     CPPUNIT_ASSERT_EQUAL(size, test6.size());

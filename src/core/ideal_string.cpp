@@ -1,6 +1,6 @@
 /*
  * This file is part of the Ideal libraries
- * Copyright (C) 2009 Rafael Fern√°ndez L√≥pez <ereslibre@ereslibre.es>
+ * Copyright (C) 2009 Rafael Fern®¢ndez L®Æpez <ereslibre@ereslibre.es>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -388,7 +388,8 @@ List<String> String::split(Char separator) const
         return res;
     }
     const iint32 length = strlen(d->m_str);
-    ichar *curr = new ichar[length];
+    ichar *curr = new ichar[length + 1];
+    bzero(curr, length + 1);
     size_t pos = 0;
     for (size_t i = 0; i < d->m_size; ++i) {
         const Char currChar = d->getCharAt(i);
@@ -396,7 +397,7 @@ List<String> String::split(Char separator) const
             curr[pos] = '\0';
             res.push_back(String(curr));
             pos = 0;
-            bzero(curr, length);
+            bzero(curr, length + 1);
         } else if (currChar != separator) {
             union {
                 iuint32 value;
