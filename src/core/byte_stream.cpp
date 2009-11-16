@@ -30,6 +30,7 @@ public:
     Private(const ichar *data, size_t nbytes = 0)
         : m_data(0)
         , m_size(0)
+        , m_refs(1)
     {
         if (data) {
             if (nbytes) {
@@ -48,8 +49,27 @@ public:
         delete[] m_data;
     }
 
+    void ref()
+    {
+        ++m_refs;
+    }
+
+    void deref()
+    {
+        --m_refs;
+        if (!m_refs) {
+            delete this;
+        }
+    }
+
+    size_t refCount()
+    {
+        return m_refs;
+    }
+
     ichar  *m_data;
     size_t  m_size;
+    size_t  m_refs;
 };
 
 ByteStream::ByteStream()
@@ -58,8 +78,9 @@ ByteStream::ByteStream()
 }
 
 ByteStream::ByteStream(const ByteStream &byteStream)
-    : d(new Private(byteStream.d->m_data, byteStream.d->m_size))
 {
+    byteStream.d->ref();
+    d = byteStream.d;
 }
 
 ByteStream::ByteStream(const ichar *data)
@@ -74,7 +95,7 @@ ByteStream::ByteStream(const ichar *data, size_t nbytes)
 
 ByteStream::~ByteStream()
 {
-    delete d;
+    d->deref();
 }
 
 size_t ByteStream::size() const
@@ -89,15 +110,19 @@ const ichar *ByteStream::data() const
 
 ByteStream &ByteStream::operator=(const ichar *data)
 {
-    delete d;
+    d->deref();
     d = new Private(data);
     return *this;
 }
 
 ByteStream &ByteStream::operator=(const ByteStream &byteStream)
 {
-    delete d;
-    d = new Private(byteStream.d->m_data, byteStream.d->m_size);
+    if (this == &byteStream || d == byteStream.d) {
+        return *this;
+    }
+    d->deref();
+    byteStream.d->ref();
+    d = byteStream.d;
     return *this;
 }
 

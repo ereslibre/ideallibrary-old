@@ -185,11 +185,11 @@ public:
         delete[] res;
     }
 
-    ichar   *m_str;
-    size_t  *m_charMap;
-    size_t   m_size;
-    bool     m_sizeCalculated;
-    size_t   m_refs;
+    ichar  *m_str;
+    size_t *m_charMap;
+    size_t  m_size;
+    bool    m_sizeCalculated;
+    size_t  m_refs;
 };
 
 String::String()
