@@ -418,6 +418,89 @@ List<String> String::split(Char separator) const
     return res;
 }
 
+String &String::prepend(const String &str)
+{
+    if (d->refCount() > 1) {
+        Private *const old_d = d;
+        d = d->copy();
+        old_d->deref();
+    }
+    const iuint32 rawLength = strlen(d->m_str) + strlen(str.d->m_str);
+    ichar *curr = new ichar[rawLength + 1];
+    bzero(curr, rawLength + 1);
+    sprintf(curr, "%s%s", str.data(), d->m_str);
+    d->init(curr);
+    delete[] curr;
+    return *this;
+}
+
+String &String::prepend(const ichar *str)
+{
+    if (d->refCount() > 1) {
+        Private *const old_d = d;
+        d = d->copy();
+        old_d->deref();
+    }
+    const iuint32 rawLength = strlen(d->m_str) + strlen(str);
+    ichar *curr = new ichar[rawLength + 1];
+    bzero(curr, rawLength + 1);
+    sprintf(curr, "%s%s", str, d->m_str);
+    d->init(curr);
+    delete[] curr;
+    return *this;
+}
+
+String &String::prepend(Char c)
+{
+    if (d->refCount() > 1) {
+        Private *const old_d = d;
+        d = d->copy();
+        old_d->deref();
+    }
+    const iint32 numberOfOctets = c.octetsRequired();
+    const iuint32 rawLength = strlen(d->m_str) + numberOfOctets;
+    ichar *curr = new ichar[rawLength + 1];
+    bzero(curr, rawLength + 1);
+    const iuint32 value = c.value();
+    switch (numberOfOctets) {
+        case 1:
+            sprintf(curr, "%c%s", value & 0xff, d->m_str);
+            break;
+        case 2:
+            sprintf(curr, "%c%c%s", (value >> 8) & 0xff, value & 0xff, d->m_str);
+            break;
+        case 3:
+            sprintf(curr, "%c%c%c%s", (value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff, d->m_str);
+            break;
+        case 4:
+            sprintf(curr, "%c%c%c%c%s", (value >> 24) & 0xff, (value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff, d->m_str);
+            break;
+        default:
+            break;
+    }
+    d->init(curr);
+    delete[] curr;
+    return *this;
+}
+
+String &String::append(const String &str)
+{
+    this->operator+=(str);
+    return *this;
+}
+
+String &String::append(const ichar *str)
+{
+    this->operator+=(str);
+    return *this;
+}
+
+String &String::append(Char c)
+{
+    this->operator+=(c);
+    return *this;
+}
+
 iint8 String::toChar(bool *ok, iuint32 base) const
 {
     if (!d->calculateSize()) {
@@ -610,76 +693,84 @@ ireal String::toDouble(bool *ok) const
     return res;
 }
 
-void String::setNumber(iint32 n, iuint32 base)
+String &String::setNumber(iint32 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->iint64toa(n, base);
+    return *this;
 }
 
-void String::setNumber(iuint32 n, iuint32 base)
+String &String::setNumber(iuint32 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->iuint64toa(n, base);
+    return *this;
 }
 
-void String::setNumber(long n, iuint32 base)
+String &String::setNumber(long n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->iint64toa(n, base);
+    return *this;
 }
 
-void String::setNumber(iulong n, iuint32 base)
+String &String::setNumber(iulong n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->iuint64toa(n, base);
+    return *this;
 }
 
-void String::setNumber(iint64 n, iuint32 base)
+String &String::setNumber(iint64 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->iint64toa(n, base);
+    return *this;
 }
 
-void String::setNumber(iuint64 n, iuint32 base)
+String &String::setNumber(iuint64 n, iuint32 base)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->iuint64toa(n, base);
+    return *this;
 }
 
-void String::setNumber(float n, iuint8 format, iuint32 precision)
+String &String::setNumber(float n, iuint8 format, iuint32 precision)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->dtoa(n, format, precision);
+    return *this;
 }
 
-void String::setNumber(double n, iuint8 format, iuint32 precision)
+String &String::setNumber(double n, iuint8 format, iuint32 precision)
 {
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
     d->dtoa(n, format, precision);
+    return *this;
 }
 
 String String::number(iint32 n, iuint32 base)
@@ -692,50 +783,43 @@ String String::number(iint32 n, iuint32 base)
 String String::number(iuint32 n, iuint32 base)
 {
     String str;
-    str.setNumber(n, base);
-    return str;
+    return str.setNumber(n, base);
 }
 
 String String::number(long n, iuint32 base)
 {
     String str;
-    str.setNumber(n, base);
-    return str;
+    return str.setNumber(n, base);
 }
 
 String String::number(iulong n, iuint32 base)
 {
     String str;
-    str.setNumber(n, base);
-    return str;
+    return str.setNumber(n, base);
 }
 
 String String::number(iint64 n, iuint32 base)
 {
     String str;
-    str.setNumber(n, base);
-    return str;
+    return str.setNumber(n, base);
 }
 
 String String::number(iuint64 n, iuint32 base)
 {
     String str;
-    str.setNumber(n, base);
-    return str;
+    return str.setNumber(n, base);
 }
 
 String String::number(float n, iuint8 format, iuint32 precision)
 {
     String str;
-    str.setNumber(n, format, precision);
-    return str;
+    return str.setNumber(n, format, precision);
 }
 
 String String::number(double n, iuint8 format, iuint32 precision)
 {
     String str;
-    str.setNumber(n, format, precision);
-    return str;
+    return str.setNumber(n, format, precision);
 }
 
 Char String::operator[](iuint32 pos) const

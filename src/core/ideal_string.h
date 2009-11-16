@@ -123,6 +123,14 @@ public:
       */
     List<String> split(Char separator) const;
 
+    String &prepend(const String &str);
+    String &prepend(const ichar *str);
+    String &prepend(Char c);
+
+    String &append(const String &str);
+    String &append(const ichar *str);
+    String &append(Char c);
+
     iint8 toChar(bool *ok = 0, iuint32 base = 10) const;
     iuint8 toUChar(bool *ok = 0, iuint32 base = 10) const;
     iint16 toShort(bool *ok = 0, iuint32 base = 10) const;
@@ -136,14 +144,14 @@ public:
     float toFloat(bool *ok = 0) const;
     ireal toDouble(bool *ok = 0) const;
 
-    void setNumber(iint32 n, iuint32 base = 10);
-    void setNumber(iuint32 n, iuint32 base = 10);
-    void setNumber(long n, iuint32 base = 10);
-    void setNumber(iulong n, iuint32 base = 10);
-    void setNumber(iint64 n, iuint32 base = 10);
-    void setNumber(iuint64 n, iuint32 base = 10);
-    void setNumber(float n, iuint8 format = 'g', iuint32 precision = 3);
-    void setNumber(double n, iuint8 format = 'g', iuint32 precision = 3);
+    String &setNumber(iint32 n, iuint32 base = 10);
+    String &setNumber(iuint32 n, iuint32 base = 10);
+    String &setNumber(long n, iuint32 base = 10);
+    String &setNumber(iulong n, iuint32 base = 10);
+    String &setNumber(iint64 n, iuint32 base = 10);
+    String &setNumber(iuint64 n, iuint32 base = 10);
+    String &setNumber(float n, iuint8 format = 'g', iuint32 precision = 3);
+    String &setNumber(double n, iuint8 format = 'g', iuint32 precision = 3);
 
     static String number(iint32 n, iuint32 base = 10);
     static String number(iuint32 n, iuint32 base = 10);

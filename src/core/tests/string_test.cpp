@@ -144,6 +144,26 @@ void StringTest::testSplit()
     }
 }
 
+void StringTest::testPrepend()
+{
+    {
+        String str("Test");
+        CPPUNIT_ASSERT_EQUAL(String("This is a Test"), str.prepend("This is a "));
+    }
+    {
+        String str("ｱｲｳｴｵｶｷｸｹ");
+        CPPUNIT_ASSERT_EQUAL(String("ｾｿﾀﾁﾂﾃｱｲｳｴｵｶｷｸｹ"), str.prepend("ｾｿﾀﾁﾂﾃ"));
+    }
+    {
+        String str("Test");
+        CPPUNIT_ASSERT_EQUAL(String("aTest"), str.prepend('a'));
+    }
+    {
+        String str("Test");
+        CPPUNIT_ASSERT_EQUAL(String("áTest"), str.prepend(L'á'));
+    }
+}
+
 void StringTest::miscTests()
 {
     String specialChars = returnSpecialChars();
