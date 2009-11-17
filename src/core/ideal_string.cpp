@@ -58,6 +58,7 @@ public:
     {
         const size_t rawLen = strlen(m_str);
         Private *privateCopy = new Private;
+        free(privateCopy->m_str);
         privateCopy->m_str = (ichar*) malloc(sizeof(ichar) * (rawLen + 1));
         memcpy(privateCopy->m_str, m_str, rawLen);
         privateCopy->m_str[rawLen] = '\0';
@@ -222,6 +223,7 @@ String::String(const ichar *str, size_t n)
 {
     if (str && n) {
         const size_t rawLength = strlen(str);
+        free(d->m_str);
         d->m_str = (ichar*) malloc(sizeof(ichar) * ((n == npos ? rawLength : n) * 4 + 1));
         d->m_charMap = (size_t*) malloc(sizeof(size_t) * (n == npos ? rawLength : n));
         size_t count = 0;
@@ -257,6 +259,7 @@ String::String(Char c)
     : d(new Private)
 {
     const iint32 numberOfOctets = c.octetsRequired();
+    free(d->m_str);
     d->m_str = (ichar*) malloc(sizeof(ichar) * (numberOfOctets + 1));
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
