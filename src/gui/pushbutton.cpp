@@ -30,7 +30,7 @@ class PushButton::Private
 {
 public:
     Private(PushButton *q);
-    ~Private();
+    virtual ~Private();
 
     PushButton *q;
 };

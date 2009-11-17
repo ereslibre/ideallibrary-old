@@ -38,7 +38,7 @@ public:
         *m_str = '\0';
     }
 
-    ~Private()
+    virtual ~Private()
     {
         free(m_str);
         free(m_charMap);

@@ -32,7 +32,7 @@ class CondVar::PrivateImpl
 {
 public:
     PrivateImpl(Mutex &mutex);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     pthread_cond_t m_cond;
 };

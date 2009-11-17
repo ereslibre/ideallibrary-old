@@ -30,7 +30,7 @@ class File::PrivateImpl
 {
 public:
     PrivateImpl(File *q);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     iint32 m_inotifyWatch;
 };

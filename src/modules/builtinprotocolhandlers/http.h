@@ -30,7 +30,7 @@ class BuiltinProtocolHandlersHttp
 {
 public:
     BuiltinProtocolHandlersHttp();
-    ~BuiltinProtocolHandlersHttp();
+    virtual ~BuiltinProtocolHandlersHttp();
 
     virtual ErrorCode open(const Uri &uri, iint32 openMode);
     virtual ByteStream read(size_t nbytes);

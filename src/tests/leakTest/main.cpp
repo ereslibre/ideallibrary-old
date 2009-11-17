@@ -52,7 +52,7 @@ class OtherObject
 {
 public:
     OtherObject(Object *object);
-    ~OtherObject(){}
+    virtual ~OtherObject(){}
 
     void receivedSignal(iint32 value);
 };

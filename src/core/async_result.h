@@ -64,7 +64,7 @@ class IDEAL_EXPORT AsyncResult
 {
 public:
     AsyncResult(Object *parent);
-    ~AsyncResult();
+    virtual ~AsyncResult();
 
     template <typename... Values>
     void set(const Values&... values);

@@ -33,7 +33,7 @@ class MyObject
 {
 public:
     MyObject(Object *object);
-    ~MyObject()
+    virtual ~MyObject()
     {
         IDEAL_SDEBUG("deleting " << this);
     }
@@ -66,7 +66,7 @@ class OtherObject
 {
 public:
     OtherObject(Object *object);
-    ~OtherObject()
+    virtual ~OtherObject()
     {
         IDEAL_SDEBUG("deleting " << this);
     }

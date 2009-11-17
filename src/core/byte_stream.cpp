@@ -44,7 +44,7 @@ public:
         }
     }
 
-    ~Private()
+    virtual ~Private()
     {
         delete[] m_data;
     }

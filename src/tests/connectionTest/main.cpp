@@ -63,7 +63,7 @@ class OtherObject
 {
 public:
     OtherObject(IdealCore::Object *object);
-    ~OtherObject(){}
+    virtual ~OtherObject(){}
 
     IDEAL_SIGNAL(otherSignal);
 

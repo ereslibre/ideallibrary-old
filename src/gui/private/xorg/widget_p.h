@@ -36,7 +36,7 @@ class Widget::PrivateImpl
 {
 public:
     PrivateImpl(Widget *q);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     Window           m_window;
     cairo_surface_t *m_cs;

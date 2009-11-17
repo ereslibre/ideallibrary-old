@@ -466,7 +466,7 @@ public:
     {
     }
 
-    ~Signal()
+    virtual ~Signal()
     {
         List<CallbackDummy*>::iterator it;
         ContextMutexLocker cml(m_connectionsMutex);

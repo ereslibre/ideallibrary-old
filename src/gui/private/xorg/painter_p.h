@@ -36,7 +36,7 @@ class Painter::PrivateImpl
 {
 public:
     PrivateImpl(Widget *canvas);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     Display *m_dpy;
     cairo_t *m_cairo;

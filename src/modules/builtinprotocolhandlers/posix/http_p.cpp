@@ -36,7 +36,7 @@ public:
     {
     }
 
-    ~Private()
+    virtual ~Private()
     {
     }
 

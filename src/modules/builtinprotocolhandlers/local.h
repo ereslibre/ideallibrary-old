@@ -30,7 +30,7 @@ class BuiltinProtocolHandlersLocal
 {
 public:
     BuiltinProtocolHandlersLocal();
-    ~BuiltinProtocolHandlersLocal();
+    virtual ~BuiltinProtocolHandlersLocal();
 
     virtual ErrorCode open(const Uri &uri, iint32 openMode);
     virtual ByteStream read(size_t nbytes);

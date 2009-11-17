@@ -51,7 +51,7 @@ class Application::Private::GUIEventHandler
 {
 public:
     GUIEventHandler(Application::Private *priv);
-    ~GUIEventHandler();
+    virtual ~GUIEventHandler();
 
 protected:
     virtual void run();

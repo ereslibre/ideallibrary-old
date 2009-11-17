@@ -31,7 +31,7 @@ class Thread::PrivateImpl
 {
 public:
     PrivateImpl(Type type);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     static void *entryPoint(void *param);
 

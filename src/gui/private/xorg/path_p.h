@@ -32,7 +32,7 @@ class Path::PrivateImpl
 {
 public:
     PrivateImpl();
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     cairo_path_t m_path;
 };

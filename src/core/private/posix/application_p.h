@@ -35,7 +35,7 @@ class Application::PrivateImpl
 {
 public:
     PrivateImpl(Application *q);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     struct OptionItem
     {

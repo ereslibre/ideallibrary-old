@@ -31,7 +31,7 @@ class Mutex::PrivateImpl
 {
 public:
     PrivateImpl(RecursionType recursionType);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     pthread_mutex_t     m_mutex;
     pthread_mutexattr_t m_attr;

@@ -38,7 +38,7 @@ class Application::PrivateImpl
 {
 public:
     PrivateImpl(Application *q);
-    ~PrivateImpl();
+    virtual ~PrivateImpl();
 
     Display                  *m_dpy;
     std::map<Window, Widget*> m_widgetMap;
