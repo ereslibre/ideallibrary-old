@@ -65,7 +65,7 @@ String Any::typeName() const
 {
     ichar *const typeName = abi::__cxa_demangle((m_s ? m_s->type().name() : typeid(Any).name()), 0, 0, 0);
     String res(typeName);
-    delete[] typeName;
+    free(typeName);
     return res;
 }
 
