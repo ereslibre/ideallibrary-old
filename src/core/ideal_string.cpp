@@ -282,7 +282,7 @@ void String::clear()
         d = new Private;
     } else {
         free(d->m_str);
-        d->m_str = (ichar*) malloc(sizeof(size_t));
+        d->m_str = (ichar*) malloc(sizeof(ichar));
         *d->m_str = '\0';
         free(d->m_charMap);
         d->m_charMap = 0;
