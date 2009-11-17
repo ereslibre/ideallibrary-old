@@ -197,6 +197,10 @@ public:
     {
     }
 
+    virtual ~GenericStorage()
+    {
+    }
+
     void ref()
     {
         ++m_refs;
