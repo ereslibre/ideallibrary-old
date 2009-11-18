@@ -145,10 +145,10 @@ public:
         --m_refs;
         if (!m_refs) {
             m_refsMutex.unlock();
-            delete this;
+	    delete this;
         } else {
             m_refsMutex.unlock();
-        }
+	}
     }
 
     size_t refCount()
