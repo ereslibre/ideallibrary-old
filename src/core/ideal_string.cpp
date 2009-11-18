@@ -112,35 +112,38 @@ public:
         m_charMap = (size_t*) malloc(sizeof(size_t) * rawLen);
         bzero(m_charMap, rawLen * sizeof(size_t));
         size_t i = 0;
-        ContextMutexLocker cml3(m_sizeMutex);
-        m_size = 0;
+        size_t size = 0;
         while (true) {
             const ichar c = m_str[i];
             if (c == '\0') {
                 break;
             }
             if (!(c & 0x80)) {
-                m_charMap[m_size] = i;
-                ++m_size;
+                m_charMap[size] = i;
+                ++size;
             } else if (!(c & 0x20)) {
-                m_charMap[m_size] = i;
+                m_charMap[size] = i;
                 ++i;
-                ++m_size;
+                ++size;
             } else if (!(c & 0x10)) {
-                m_charMap[m_size] = i;
+                m_charMap[size] = i;
                 i += 2;
-                ++m_size;
+                ++size;
             } else if (!(c & 0x8)) {
-                m_charMap[m_size] = i;
+                m_charMap[size] = i;
                 i += 3;
-                ++m_size;
+                ++size;
             }
             ++i;
         }
-        if (m_size < rawLen) {
-            m_charMap = (size_t*) realloc(m_charMap, m_size * sizeof(size_t));
+        if (size < rawLen) {
+            m_charMap = (size_t*) realloc(m_charMap, size * sizeof(size_t));
         }
-        return m_size;
+        {
+            ContextMutexLocker cml(m_sizeMutex);
+            m_size = size;
+        }
+        return size;
     }
 
     void ref()
