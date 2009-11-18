@@ -35,6 +35,10 @@ public:
     {
     }
 
+    virtual ~Private()
+    {
+    }
+
     bool   m_isValid;
     bool   m_isOptSet;
     ichar *m_optArg;

@@ -24,6 +24,10 @@
 
 namespace IdealCore {
 
+Extension::Private::~Private()
+{
+}
+
 Extension::Extension()
     : d(new Private)
 {

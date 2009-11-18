@@ -38,6 +38,10 @@ File::Private::Private(File *q)
 {
 }
 
+File::Private::~Private()
+{
+}
+
 class File::Private::Job
     : public Thread
 {

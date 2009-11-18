@@ -29,6 +29,7 @@ class File::Private
 {
 public:
     Private(File *q);
+    virtual ~Private();
 
     Uri          m_uri;
     Event        m_events;

@@ -30,6 +30,8 @@ class Module;
 class Extension::Private
 {
 public:
+    virtual ~Private();
+    
     Module *m_module;
 };
 

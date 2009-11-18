@@ -34,6 +34,10 @@ Object::Private::Private(Object *q)
 {
 }
 
+Object::Private::~Private()
+{
+}
+
 void Object::Private::addChild(Object *child)
 {
     ContextMutexLocker cml(m_childrenMutex);
