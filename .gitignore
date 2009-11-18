@@ -6,3 +6,5 @@ cscope.*
 .kdev4
 .kdev_include_paths
 ideallibrary.kdev4
+externtests
+externTests
