@@ -60,7 +60,7 @@ public:
         {
             ContextMutexLocker cml(m_strMutex);
             free(m_str);
-            m_str = (ichar*) malloc(sizeof(ichar) * (rawLen + 1));
+            m_str = (ichar*) malloc((rawLen + 1) * sizeof(ichar));
             memcpy(m_str, str, rawLen);
             m_str[rawLen] = '\0';
         }
@@ -77,13 +77,13 @@ public:
             ContextMutexLocker cml(m_strMutex);
             const size_t rawLen = strlen(m_str);
             free(privateCopy->m_str);
-            privateCopy->m_str = (ichar*) malloc(sizeof(ichar) * (rawLen + 1));
+            privateCopy->m_str = (ichar*) malloc((rawLen + 1) * sizeof(ichar));
             memcpy(privateCopy->m_str, m_str, rawLen);
             privateCopy->m_str[rawLen] = '\0';
         }
         {
             ContextMutexLocker cml(m_charMapMutex);
-            privateCopy->m_charMap = (size_t*) malloc(sizeof(size_t) * calculateSize());
+            privateCopy->m_charMap = (size_t*) malloc(calculateSize() * sizeof(size_t));
             ContextMutexLocker cml2(m_sizeMutex);
             memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(size_t));
             privateCopy->m_size = m_size;
@@ -109,7 +109,7 @@ public:
         free(m_charMap);
         ContextMutexLocker cml2(m_strMutex);
         const size_t rawLen = strlen(m_str);
-        m_charMap = (size_t*) malloc(sizeof(size_t) * rawLen);
+        m_charMap = (size_t*) malloc(rawLen * sizeof(size_t));
         bzero(m_charMap, rawLen * sizeof(size_t));
         size_t i = 0;
         size_t size = 0;
@@ -207,7 +207,7 @@ public:
 
     void iuint64toa(iuint64 number, iuint32 base)
     {
-        ichar *const str = (ichar*) malloc(sizeof(ichar) * 66);
+        ichar *const str = (ichar*) malloc(66 * sizeof(ichar));
         ichar *p = str + 64;
         bzero(str, 66);
         while (number) {
@@ -226,10 +226,10 @@ public:
 
     void dtoa(double number, iuint8 format, iuint32 precision)
     {
-        ichar *const str = (ichar*) malloc(sizeof(ichar) * 10);
+        ichar *const str = (ichar*) malloc(10 * sizeof(ichar));
         bzero(str, 5);
         sprintf(str, "%%.%dl%c", precision, format);
-        ichar *const res = (ichar*) malloc(sizeof(ichar) * 65);
+        ichar *const res = (ichar*) malloc(65 * sizeof(ichar));
         bzero(res, 65);
         sprintf(res, str, number);
         init(res);
@@ -281,9 +281,9 @@ String::String(const ichar *str, size_t n)
         const size_t rawLength = strlen(str);
         ContextMutexLocker cml(d->m_strMutex);
         free(d->m_str);
-        d->m_str = (ichar*) malloc(sizeof(ichar) * ((n == npos ? rawLength : n) * 4 + 1));
+        d->m_str = (ichar*) malloc(((n == npos ? rawLength : n) * 4 + 1) * sizeof(ichar));
         ContextMutexLocker cml2(d->m_charMapMutex);
-        d->m_charMap = (size_t*) malloc(sizeof(size_t) * (n == npos ? rawLength : n));
+        d->m_charMap = (size_t*) malloc((n == npos ? rawLength : n) * sizeof(size_t));
         size_t count = 0;
         bool breakNext = false;
         size_t curr = 0;
@@ -325,7 +325,7 @@ String::String(Char c)
     const iint32 numberOfOctets = c.octetsRequired();
     ContextMutexLocker cml(d->m_strMutex);
     free(d->m_str);
-    d->m_str = (ichar*) malloc(sizeof(ichar) * (numberOfOctets + 1));
+    d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
         const iint32 offset = 8 * (numberOfOctets - i - 1);
@@ -490,7 +490,7 @@ List<String> String::split(Char separator) const
         ContextMutexLocker cml(d->m_strMutex);
         length = strlen(d->m_str);
     }
-    ichar *curr = (ichar*) malloc(sizeof(ichar) * (length + 1));
+    ichar *curr = (ichar*) malloc((length + 1) * sizeof(ichar));
     bzero(curr, length + 1);
     size_t pos = 0;
     ContextMutexLocker cml(d->m_sizeMutex);
@@ -537,7 +537,7 @@ String &String::prepend(const String &str)
             ContextMutexLocker cml(str.d->m_strMutex);
             rawLength = strlen(d->m_str) + strlen(str.d->m_str);
         }
-        curr = (ichar*) malloc(sizeof(ichar) * (rawLength + 1));
+        curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
         bzero(curr, rawLength + 1);
         sprintf(curr, "%s%s", str.data(), d->m_str);
     }
@@ -557,7 +557,7 @@ String &String::prepend(const ichar *str)
     {
         ContextMutexLocker cml(d->m_strMutex);
         const size_t rawLength = strlen(d->m_str) + strlen(str);
-        curr = (ichar*) malloc(sizeof(ichar) * (rawLength + 1));
+        curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
         bzero(curr, rawLength + 1);
         sprintf(curr, "%s%s", str, d->m_str);
     }
@@ -576,7 +576,7 @@ String &String::prepend(Char c)
     const iint32 numberOfOctets = c.octetsRequired();
     ContextMutexLocker cml(d->m_strMutex);
     const size_t rawLength = strlen(d->m_str) + numberOfOctets;
-    ichar *curr = (ichar*) malloc(sizeof(ichar) * (rawLength + 1));
+    ichar *curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
     bzero(curr, rawLength + 1);
     const iuint32 value = c.value();
     switch (numberOfOctets) {
@@ -993,7 +993,7 @@ String &String::operator=(Char c)
     {
         ContextMutexLocker cml(d->m_strMutex);
         free(d->m_str);
-        d->m_str = (ichar*) malloc(sizeof(ichar) * (numberOfOctets + 1));
+        d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
         const iuint32 value = c.value();
         for (iint32 i = 0; i < numberOfOctets; ++i) {
             const iint32 offset = 8 * (numberOfOctets - i - 1);
