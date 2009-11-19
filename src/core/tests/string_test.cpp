@@ -407,6 +407,7 @@ void StringTest::testToConversion()
 void StringTest::testNumber()
 {
     CPPUNIT_ASSERT_EQUAL(String("15"), String::number(15));
+    CPPUNIT_ASSERT_EQUAL(String("-15"), String::number(-15));
     CPPUNIT_ASSERT_EQUAL(String("50000000000"), String::number((iuint64) 50000000000ULL));
     CPPUNIT_ASSERT_EQUAL(String("10"), String::number(8, 8));
     CPPUNIT_ASSERT_EQUAL(String("12"), String::number(18, 16));

@@ -151,14 +151,14 @@ public:
 
     void iint64toa(iint64 number, iuint32 base)
     {
-        iuint64toa(number < 0 ? -number : number, base);
+        iuint64toa(number < 0 ? -number : number, base, number < 0);
     }
 
-    void iuint64toa(iuint64 number, iuint32 base)
+    void iuint64toa(iuint64 number, iuint32 base, bool negative = false)
     {
-        ichar *const str = (ichar*) malloc(66 * sizeof(ichar));
-        ichar *p = str + 64;
-        bzero(str, 66);
+        ichar *const str = (ichar*) malloc(67 * sizeof(ichar));
+        ichar *p = str + 65;
+        bzero(str, 67 * sizeof(ichar));
         while (number) {
             const iint32 n = number % base;
             if (n < 10) {
@@ -169,17 +169,22 @@ public:
             --p;
             number /= base;
         }
-        init(++p);
+        if (negative) {
+            *p = '-';
+        } else {
+            ++p;
+        }
+        init(p);
         free(str);
     }
 
     void dtoa(double number, iuint8 format, iuint32 precision)
     {
         ichar *const str = (ichar*) malloc(10 * sizeof(ichar));
-        bzero(str, 5);
+        bzero(str, 5 * sizeof(ichar));
         sprintf(str, "%%.%dl%c", precision, format);
         ichar *const res = (ichar*) malloc(65 * sizeof(ichar));
-        bzero(res, 65);
+        bzero(res, 65 * sizeof(ichar));
         sprintf(res, str, number);
         init(res);
         free(str);
@@ -412,7 +417,7 @@ List<String> String::split(Char separator) const
     }
     const iint32 length = strlen(d->m_str);
     ichar *curr = (ichar*) malloc((length + 1) * sizeof(ichar));
-    bzero(curr, length + 1);
+    bzero(curr, (length + 1) * sizeof(ichar));
     size_t pos = 0;
     for (size_t i = 0; i < d->m_size; ++i) {
         const Char currChar = d->getCharAt(i);
@@ -420,7 +425,7 @@ List<String> String::split(Char separator) const
             curr[pos] = '\0';
             res.push_back(String(curr));
             pos = 0;
-            bzero(curr, length + 1);
+            bzero(curr, (length + 1) * sizeof(ichar));
         } else if (currChar != separator) {
             union {
                 iuint32 value;
@@ -453,7 +458,7 @@ String &String::prepend(const String &str)
     }
     const size_t rawLength = strlen(d->m_str) + strlen(str.d->m_str);
     ichar *curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
-    bzero(curr, rawLength + 1);
+    bzero(curr, (rawLength + 1) * sizeof(ichar));
     sprintf(curr, "%s%s", str.data(), d->m_str);
     d->init(curr);
     free(curr);
@@ -470,7 +475,7 @@ String &String::prepend(const ichar *str)
     }
     const size_t rawLength = strlen(d->m_str) + strlen(str);
     ichar *curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
-    bzero(curr, rawLength + 1);
+    bzero(curr, (rawLength + 1) * sizeof(ichar));
     sprintf(curr, "%s%s", str, d->m_str);
     d->init(curr);
     free(curr);
@@ -488,7 +493,7 @@ String &String::prepend(Char c)
     const iint32 numberOfOctets = c.octetsRequired();
     const size_t rawLength = strlen(d->m_str) + numberOfOctets;
     ichar *curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
-    bzero(curr, rawLength + 1);
+    bzero(curr, (rawLength + 1) * sizeof(ichar));
     const iuint32 value = c.value();
     switch (numberOfOctets) {
         case 1:
