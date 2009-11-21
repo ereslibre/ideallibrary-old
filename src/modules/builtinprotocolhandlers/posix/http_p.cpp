@@ -71,8 +71,7 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             break;
     }
     commandSize += uri.host().size() + uri.path().size();
-    ichar *command = new ichar[commandSize];
-    bzero(command, commandSize);
+    ichar *command = (ichar*) calloc(commandSize, sizeof(ichar));
     switch (commandType) {
         case Get:
             sprintf(command, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", uri.path().data(), uri.host().data());
@@ -82,7 +81,7 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             break;
     }
     const iint32 bytesSent = send(m_sockfd, command, commandSize, 0);
-    delete[] command;
+    free(command);
     return bytesSent == commandSize;
 }
 
@@ -150,15 +149,14 @@ ByteStream BuiltinProtocolHandlersHttp::read(size_t nbytes)
     if (d->m_sockfd == -1) {
         return ByteStream();
     }
-    ichar *buf = new ichar[d->m_bufferSize];
-    bzero(buf, d->m_bufferSize);
+    ichar *buf = (ichar*) calloc(d->m_bufferSize, sizeof(ichar));
     const ssize_t bytesRead = recv(d->m_sockfd, buf, d->m_bufferSize, 0);
     if (bytesRead > 0) {
         ByteStream res(buf, bytesRead);
         delete buf;
         return res;
     }
-    delete[] buf;
+    free(buf);
     return ByteStream();
 }
 

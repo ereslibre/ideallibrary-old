@@ -77,8 +77,7 @@ public:
         m_sizeCalculated = true;
         free(m_charMap);
         const size_t rawLen = strlen(m_str);
-        m_charMap = (size_t*) malloc(rawLen * sizeof(size_t));
-        bzero(m_charMap, rawLen * sizeof(size_t));
+        m_charMap = (size_t*) calloc(rawLen, sizeof(size_t));
         size_t i = 0;
         m_size = 0;
         while (true) {
@@ -156,9 +155,8 @@ public:
 
     void iuint64toa(iuint64 number, iuint32 base, bool negative = false)
     {
-        ichar *const str = (ichar*) malloc(67 * sizeof(ichar));
+        ichar *const str = (ichar*) calloc(67, sizeof(ichar));
         ichar *p = str + 65;
-        bzero(str, 67 * sizeof(ichar));
         while (number) {
             const iint32 n = number % base;
             if (n < 10) {
@@ -180,11 +178,9 @@ public:
 
     void dtoa(double number, iuint8 format, iuint32 precision)
     {
-        ichar *const str = (ichar*) malloc(10 * sizeof(ichar));
-        bzero(str, 5 * sizeof(ichar));
+        ichar *const str = (ichar*) calloc(10, sizeof(ichar));
         sprintf(str, "%%.%dl%c", precision, format);
-        ichar *const res = (ichar*) malloc(65 * sizeof(ichar));
-        bzero(res, 65 * sizeof(ichar));
+        ichar *const res = (ichar*) calloc(65, sizeof(ichar));
         sprintf(res, str, number);
         init(res);
         free(str);
@@ -406,8 +402,7 @@ List<String> String::split(Char separator) const
         return res;
     }
     const iint32 length = strlen(d->m_str);
-    ichar *curr = (ichar*) malloc((length + 1) * sizeof(ichar));
-    bzero(curr, (length + 1) * sizeof(ichar));
+    ichar *curr = (ichar*) calloc(length + 1, sizeof(ichar));
     size_t pos = 0;
     for (size_t i = 0; i < d->m_size; ++i) {
         const Char currChar = d->getCharAt(i);
@@ -447,8 +442,7 @@ String &String::prepend(const String &str)
         old_d->deref();
     }
     const size_t rawLength = strlen(d->m_str) + strlen(str.d->m_str);
-    ichar *curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
-    bzero(curr, (rawLength + 1) * sizeof(ichar));
+    ichar *curr = (ichar*) calloc(rawLength + 1, sizeof(ichar));
     sprintf(curr, "%s%s", str.data(), d->m_str);
     d->init(curr);
     free(curr);
@@ -464,8 +458,7 @@ String &String::prepend(const ichar *str)
         old_d->deref();
     }
     const size_t rawLength = strlen(d->m_str) + strlen(str);
-    ichar *curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
-    bzero(curr, (rawLength + 1) * sizeof(ichar));
+    ichar *curr = (ichar*) calloc(rawLength + 1, sizeof(ichar));
     sprintf(curr, "%s%s", str, d->m_str);
     d->init(curr);
     free(curr);
@@ -482,8 +475,7 @@ String &String::prepend(Char c)
     }
     const iint32 numberOfOctets = c.octetsRequired();
     const size_t rawLength = strlen(d->m_str) + numberOfOctets;
-    ichar *curr = (ichar*) malloc((rawLength + 1) * sizeof(ichar));
-    bzero(curr, (rawLength + 1) * sizeof(ichar));
+    ichar *curr = (ichar*) calloc(rawLength + 1, sizeof(ichar));
     const iuint32 value = c.value();
     switch (numberOfOctets) {
         case 1:
