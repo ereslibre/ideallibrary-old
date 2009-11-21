@@ -294,18 +294,8 @@ String::~String()
 void String::clear()
 {
     ContextMutexLocker cml(m_dMutex);
-    if (d->refCount() > 1) {
-        d->deref();
-        d = new Private;
-    } else {
-        free(d->m_str);
-        d->m_str = (ichar*) malloc(sizeof(ichar));
-        *d->m_str = '\0';
-        free(d->m_charMap);
-        d->m_charMap = 0;
-        d->m_size = 0;
-        d->m_sizeCalculated = true;
-    }
+    d->deref();
+    d = new Private;
 }
 
 bool String::empty() const
