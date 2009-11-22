@@ -196,28 +196,23 @@ public:
 
 String::String()
     : d(new Private)
-    , m_dMutex(Mutex::Recursive)
 {
 }
 
 String::String(const String &str)
-    : m_dMutex(Mutex::Recursive)
 {
-    ContextMutexLocker cml(str.m_dMutex);
     str.d->ref();
     d = str.d;
 }
 
 String::String(const std::string &str)
     : d(new Private)
-    , m_dMutex(Mutex::Recursive)
 {
     d->init(str.data());
 }
 
 String::String(const ichar *str)
     : d(new Private)
-    , m_dMutex(Mutex::Recursive)
 {
     if (str) {
         d->init(str);
@@ -226,7 +221,6 @@ String::String(const ichar *str)
 
 String::String(const ichar *str, size_t n)
     : d(new Private)
-    , m_dMutex(Mutex::Recursive)
 {
     if (str && n) {
         const size_t rawLength = strlen(str);
@@ -264,7 +258,6 @@ String::String(const ichar *str, size_t n)
 
 String::String(Char c)
     : d(new Private)
-    , m_dMutex(Mutex::Recursive)
 {
     const iint32 numberOfOctets = c.octetsRequired();
     free(d->m_str);
@@ -283,32 +276,27 @@ String::String(Char c)
 
 String::~String()
 {
-    ContextMutexLocker cml(m_dMutex);
     d->deref();
 }
 
 void String::clear()
 {
-    ContextMutexLocker cml(m_dMutex);
     d->deref();
     d = new Private;
 }
 
 bool String::empty() const
 {
-    ContextMutexLocker cml(m_dMutex);
     return d->calculateSize() == 0;
 }
 
 size_t String::size() const
 {
-    ContextMutexLocker cml(m_dMutex);
     return d->calculateSize();
 }
 
 bool String::contains(Char c) const
 {
-    ContextMutexLocker cml(m_dMutex);
     for (size_t i = 0; i < d->calculateSize(); ++i) {
         if (d->getCharAt(i) == c) {
             return true;
@@ -319,7 +307,6 @@ bool String::contains(Char c) const
 
 size_t String::find(Char c) const
 {
-    ContextMutexLocker cml(m_dMutex);
     for (size_t i = 0; i < d->calculateSize(); ++i) {
         if (d->getCharAt(i) == c) {
             return i;
@@ -330,7 +317,6 @@ size_t String::find(Char c) const
 
 size_t String::rfind(Char c) const
 {
-    ContextMutexLocker cml(m_dMutex);
     for (size_t i = d->calculateSize() - 1; i > 0; --i) {
         if (d->getCharAt(i) == c) {
             return i;
@@ -344,8 +330,6 @@ size_t String::rfind(Char c) const
 
 size_t String::find(const String &str) const
 {
-    ContextMutexLocker cml(m_dMutex);
-    ContextMutexLocker cml2(str.m_dMutex);
     if (!d->calculateSize() || !str.d->calculateSize() || str.d->m_size > d->m_size) {
         return npos;
     }
@@ -375,13 +359,11 @@ size_t String::find(const String &str) const
 
 const ichar *String::data() const
 {
-    ContextMutexLocker cml(m_dMutex);
     return d->m_str;
 }
 
 String String::substr(size_t pos, size_t n) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (pos < d->calculateSize()) {
         return String(&d->m_str[d->m_charMap[pos]], n);
     }
@@ -390,13 +372,11 @@ String String::substr(size_t pos, size_t n) const
 
 iint32 String::compare(const ichar *s) const
 {
-    ContextMutexLocker cml(m_dMutex);
     return strcoll(d->m_str, s);
 }
 
 List<String> String::split(Char separator) const
 {
-    ContextMutexLocker cml(m_dMutex);
     List<String> res;
     if (!d->calculateSize()) {
         return res;
@@ -434,8 +414,6 @@ List<String> String::split(Char separator) const
 
 String &String::prepend(const String &str)
 {
-    ContextMutexLocker cml(m_dMutex);
-    ContextMutexLocker cml2(str.m_dMutex);
     if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
@@ -451,7 +429,6 @@ String &String::prepend(const String &str)
 
 String &String::prepend(const ichar *str)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
@@ -467,7 +444,6 @@ String &String::prepend(const ichar *str)
 
 String &String::prepend(Char c)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
@@ -518,7 +494,6 @@ String &String::append(Char c)
 
 iint8 String::toChar(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -535,7 +510,6 @@ iint8 String::toChar(bool *ok, iuint32 base) const
 
 iuint8 String::toUChar(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -552,7 +526,6 @@ iuint8 String::toUChar(bool *ok, iuint32 base) const
 
 iint16 String::toShort(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -569,7 +542,6 @@ iint16 String::toShort(bool *ok, iuint32 base) const
 
 iuint16 String::toUShort(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -586,7 +558,6 @@ iuint16 String::toUShort(bool *ok, iuint32 base) const
 
 iint32 String::toInt(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -603,7 +574,6 @@ iint32 String::toInt(bool *ok, iuint32 base) const
 
 iuint32 String::toUInt(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -620,7 +590,6 @@ iuint32 String::toUInt(bool *ok, iuint32 base) const
 
 long String::toLong(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -637,7 +606,6 @@ long String::toLong(bool *ok, iuint32 base) const
 
 iulong String::toULong(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -654,7 +622,6 @@ iulong String::toULong(bool *ok, iuint32 base) const
 
 iint64 String::toLongLong(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -671,7 +638,6 @@ iint64 String::toLongLong(bool *ok, iuint32 base) const
 
 iuint64 String::toULongLong(bool *ok, iuint32 base) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -688,7 +654,6 @@ iuint64 String::toULongLong(bool *ok, iuint32 base) const
 
 float String::toFloat(bool *ok) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -705,7 +670,6 @@ float String::toFloat(bool *ok) const
 
 ireal String::toDouble(bool *ok) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!d->calculateSize()) {
         if (ok) {
             *ok = false;
@@ -722,7 +686,6 @@ ireal String::toDouble(bool *ok) const
 
 String &String::setNumber(iint32 n, iuint32 base)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -733,7 +696,6 @@ String &String::setNumber(iint32 n, iuint32 base)
 
 String &String::setNumber(iuint32 n, iuint32 base)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -744,7 +706,6 @@ String &String::setNumber(iuint32 n, iuint32 base)
 
 String &String::setNumber(long n, iuint32 base)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -755,7 +716,6 @@ String &String::setNumber(long n, iuint32 base)
 
 String &String::setNumber(iulong n, iuint32 base)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -766,7 +726,6 @@ String &String::setNumber(iulong n, iuint32 base)
 
 String &String::setNumber(iint64 n, iuint32 base)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -777,7 +736,6 @@ String &String::setNumber(iint64 n, iuint32 base)
 
 String &String::setNumber(iuint64 n, iuint32 base)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -788,7 +746,6 @@ String &String::setNumber(iuint64 n, iuint32 base)
 
 String &String::setNumber(float n, iuint8 format, iuint32 precision)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -799,7 +756,6 @@ String &String::setNumber(float n, iuint8 format, iuint32 precision)
 
 String &String::setNumber(double n, iuint8 format, iuint32 precision)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -859,7 +815,6 @@ String String::number(double n, iuint8 format, iuint32 precision)
 
 Char String::operator[](size_t pos) const
 {
-    ContextMutexLocker cml(m_dMutex);
     if (pos < d->calculateSize()) {
         return d->getCharAt(pos);
     }
@@ -868,8 +823,6 @@ Char String::operator[](size_t pos) const
 
 String &String::operator=(const String &str)
 {
-    ContextMutexLocker cml(m_dMutex);
-    ContextMutexLocker cml2(str.m_dMutex);
     if (this == &str || d == str.d) {
         return *this;
     }
@@ -881,7 +834,6 @@ String &String::operator=(const String &str)
 
 String &String::operator=(const ichar *str)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (!str) {
         return *this;
     }
@@ -895,7 +847,6 @@ String &String::operator=(const ichar *str)
 
 String &String::operator=(Char c)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
@@ -919,8 +870,6 @@ String &String::operator=(Char c)
 
 String &String::operator+=(const String &str)
 {
-    ContextMutexLocker cml(m_dMutex);
-    ContextMutexLocker cml2(str.m_dMutex);
     if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
@@ -951,7 +900,6 @@ String &String::operator+=(const String &str)
 
 String &String::operator+=(const ichar *str)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
@@ -969,7 +917,6 @@ String &String::operator+=(const ichar *str)
 
 String &String::operator+=(Char c)
 {
-    ContextMutexLocker cml(m_dMutex);
     if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
@@ -993,7 +940,6 @@ String &String::operator+=(Char c)
 
 String String::operator+(const String &str) const
 {
-    ContextMutexLocker cml(m_dMutex);
     String res(d->m_str);
     res += str;
     return res;
@@ -1001,7 +947,6 @@ String String::operator+(const String &str) const
 
 String String::operator+(const ichar *str) const
 {
-    ContextMutexLocker cml(m_dMutex);
     String res(d->m_str);
     res += str;
     return res;
@@ -1009,7 +954,6 @@ String String::operator+(const ichar *str) const
 
 String String::operator+(Char c) const
 {
-    ContextMutexLocker cml(m_dMutex);
     String res(d->m_str);
     res += c;
     return res;
@@ -1017,8 +961,6 @@ String String::operator+(Char c) const
 
 bool String::operator==(const String &str) const
 {
-    ContextMutexLocker cml(m_dMutex);
-    ContextMutexLocker cml2(str.m_dMutex);
     if (this == &str || d == str.d) {
         return true;
     }
@@ -1032,8 +974,6 @@ bool String::operator!=(const String &str) const
 
 bool String::operator<(const String &str) const
 {
-    ContextMutexLocker cml(m_dMutex);
-    ContextMutexLocker cml2(str.m_dMutex);
     if (this == &str || d == str.d) {
         return false;
     }

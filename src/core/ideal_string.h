@@ -189,8 +189,7 @@ public:
 
 private:
     class Private;
-    Private      *d;
-    mutable Mutex m_dMutex;
+    Private *d;
 };
 
 }
