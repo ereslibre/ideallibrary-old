@@ -32,11 +32,11 @@ def configure(conf):
         conf.sub_config('tests')
     conf.env['LIB_CORE'] = ['rt', 'dl', 'pthread']
     conf.check_cfg(package = 'liburiparser', args = '--cflags --libs')
-    conf.check_cfg(package = 'libpcrecpp', args = '--cflags --libs')
+    conf.check_cfg(package = 'libpcre', args = '--cflags --libs')
     if not conf.env['HAVE_LIBURIPARSER'] == 1:
         conf.fatal('Cannot continue without liburiparser. Please, install the development package and try again')
-    if not conf.env['HAVE_LIBPCRECPP'] == 1:
-        conf.fatal('Cannot continue without libpcrecpp. Please, install the development package and try again')
+    if not conf.env['HAVE_LIBPCRE'] == 1:
+        conf.fatal('Cannot continue without libpcre. Please, install the development package and try again')
     conf.check_tool('misc')
     conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name = 'HAVE_INOTIFY')
 
@@ -51,7 +51,7 @@ def build(bld):
         includes     = '..',
         uselib       = ['CORE',
                         'LIBURIPARSER',
-                        'LIBPCRECPP'],
+                        'LIBPCRE'],
         vnum         = bld.env['LIBVERSION']
         )
     bld.new_task_gen('subst',

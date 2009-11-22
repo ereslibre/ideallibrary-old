@@ -20,7 +20,9 @@
 
 #include "reg_exp.h"
 
-#include <pcrecpp.h>
+#include <vector>
+#include <pcre.h>
+#include <string.h>
 
 namespace IdealCore {
 
@@ -28,18 +30,23 @@ class RegExp::Private
 {
 public:
     Private()
-        : m_regExp("", pcrecpp::UTF8())
-        , m_args(0)
-        , m_argsString(0)
-        , m_numCaptures(0)
+        : m_pcre(0)
         , m_refs(1)
     {
+    }
+
+    ~Private()
+    {
+        if (m_pcre) {
+            pcre_free(m_pcre);
+        }
     }
 
     Private *copy()
     {
         Private *privateCopy = new Private;
         privateCopy->m_regExp = m_regExp;
+        privateCopy->m_captures = m_captures;
         return privateCopy;
     }
 
@@ -52,11 +59,6 @@ public:
     {
         --m_refs;
         if (!m_refs) {
-            for (size_t i = 0; i < m_numCaptures; ++i) {
-                delete m_args[i];
-            }
-            delete[] m_args;
-            delete[] m_argsString;
             delete this;
         }
     }
@@ -66,11 +68,10 @@ public:
         return m_refs;
     }
 
-    pcrecpp::RE    m_regExp;
-    pcrecpp::Arg **m_args;
-    std::string   *m_argsString;
-    size_t         m_numCaptures;
-    size_t         m_refs;
+    String              m_regExp;
+    pcre               *m_pcre;
+    std::vector<String> m_captures;
+    size_t              m_refs;
 };
 
 RegExp::RegExp()
@@ -87,7 +88,7 @@ RegExp::RegExp(const RegExp &regExp)
 RegExp::RegExp(const String &regExp)
     : d(new Private)
 {
-    d->m_regExp = pcrecpp::RE(regExp.data(), pcrecpp::UTF8());
+    d->m_regExp = regExp;
 }
 
 RegExp::~RegExp()
@@ -97,45 +98,59 @@ RegExp::~RegExp()
 
 void RegExp::setRegExp(const String &regExp)
 {
-    if (regExp == d->m_regExp.pattern()) {
+    if (regExp == d->m_regExp) {
         return;
     }
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
-    d->m_regExp = pcrecpp::RE(regExp.data(), pcrecpp::UTF8());
+    d->m_regExp = regExp;
+    if (d->m_pcre) {
+        pcre_free(d->m_pcre);
+    }
+    d->m_pcre = 0;
 }
 
 String RegExp::regExp() const
 {
-    return d->m_regExp.pattern();
+    return d->m_regExp;
 }
 
-bool RegExp::match(const String &str, size_t numCaptures) const
+bool RegExp::match(const String &str) const
 {
-    for (size_t i = 0; i < d->m_numCaptures; ++i) {
-        delete d->m_args[i];
+    d->m_captures.clear();
+    if (!d->m_pcre) {
+        const char *error;
+        iint32 erroffset;
+        d->m_pcre = pcre_compile(d->m_regExp.data(), PCRE_UTF8, &error, &erroffset, 0);
     }
-    delete[] d->m_args;
-    delete[] d->m_argsString;
-    d->m_numCaptures = numCaptures;
-    d->m_args = new pcrecpp::Arg*[numCaptures];
-    d->m_argsString = new std::string[numCaptures];
-    for (size_t i = 0; i < numCaptures; ++i) {
-        d->m_args[i] = new pcrecpp::Arg;
-        *d->m_args[i] = &d->m_argsString[i];
+    if (d->m_pcre) {
+        const iint32 oveccount = (str.size() + d->m_regExp.size()) * 3;
+        iint32 *const ovector = (iint32*) calloc(oveccount, sizeof(iint32));
+        const iint32 rc = pcre_exec(d->m_pcre, 0, str.data(), strlen(str.data()), 0, 0, ovector, oveccount);
+        if (rc > 0) {
+            for (iint32 i = 1; i < rc; ++i) {
+                d->m_captures.push_back(str.substr(ovector[2 * i], ovector[2 * i + 1] - ovector[2 * i]));
+            }
+        }
+        free(ovector);
+        return rc > 0;
     }
-    iint32 consumed;
-    return d->m_regExp.DoMatch(str.data(), pcrecpp::RE::ANCHOR_BOTH, &consumed, d->m_args, numCaptures);
+    return false;
+}
+
+size_t RegExp::numCaptures() const
+{
+    return d->m_captures.size();
 }
 
 String RegExp::getCapture(size_t i) const
 {
-    if (i >= d->m_numCaptures) {
+    if (i >= d->m_captures.size()) {
         return String();
     }
-    return d->m_argsString[i];
+    return d->m_captures.at(i);
 }
 
 RegExp &RegExp::operator=(const RegExp &regExp)
@@ -151,12 +166,9 @@ RegExp &RegExp::operator=(const RegExp &regExp)
 
 RegExp &RegExp::operator=(const String &regExp)
 {
-    if (d->refCount() > 1) {
-        Private *const old_d = d;
-        d = d->copy();
-        old_d->deref();
-    }
-    d->m_regExp = pcrecpp::RE(regExp.data(), pcrecpp::UTF8());
+    d->deref();
+    d = new Private;
+    d->m_regExp = regExp;
     return *this;
 }
 
@@ -165,7 +177,7 @@ bool RegExp::operator==(const RegExp &regExp) const
     if (this == &regExp || d == regExp.d) {
         return true;
     }
-    return d->m_regExp.pattern() == regExp.d->m_regExp.pattern();
+    return d->m_regExp == regExp.d->m_regExp;
 }
 
 bool RegExp::operator!=(const RegExp &regExp) const

@@ -55,18 +55,42 @@ void RegExpTest::match()
     }
 }
 
+void RegExpTest::numCaptures()
+{
+    {
+        RegExp r("(ab)*(\\d+)(\\w*)");
+        CPPUNIT_ASSERT(r.match("1"));
+        CPPUNIT_ASSERT_EQUAL((size_t) 3, r.numCaptures());
+    }
+    {
+        RegExp r("ñ*");
+        CPPUNIT_ASSERT(r.match("ñññ"));
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, r.numCaptures());
+    }
+    {
+        RegExp r("€+");
+        CPPUNIT_ASSERT(r.match("€€€"));
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, r.numCaptures());
+    }
+    {
+        RegExp r("(€+)");
+        CPPUNIT_ASSERT(r.match("€€€"));
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, r.numCaptures());
+    }
+}
+
 void RegExpTest::getCapture()
 {
     {
         RegExp r("(ab)*(\\d+)(\\w*)");
-        CPPUNIT_ASSERT(r.match("1", 3));
+        CPPUNIT_ASSERT(r.match("1"));
         CPPUNIT_ASSERT_EQUAL(String(), r.getCapture(0));
         CPPUNIT_ASSERT_EQUAL(String("1"), r.getCapture(1));
         CPPUNIT_ASSERT_EQUAL(String(), r.getCapture(2));
     }
     {
         RegExp r("(€+)");
-        CPPUNIT_ASSERT(r.match("€€€", 1));
+        CPPUNIT_ASSERT(r.match("€€€"));
         CPPUNIT_ASSERT_EQUAL(String("€€€"), r.getCapture(0));
     }
 }

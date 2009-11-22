@@ -82,7 +82,7 @@ int main(int argc, char **argv)
     {
         RegExp regExp("(\\w*):(\\d*)");
         IDEAL_SDEBUG("regexp is: " << regExp.regExp());
-        const bool matches = regExp.match("test:1234", 2);
+        const bool matches = regExp.match("test:1234");
         IDEAL_SDEBUG("test:1234 matches ? " << (matches ? "yes" : "no"));
         if (matches) {
             IDEAL_SDEBUG("text is: " << regExp.getCapture(0));
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     {
         RegExp regExp("(\\w*):(\\d*)");
         IDEAL_SDEBUG("regexp is: " << regExp.regExp());
-        const bool matches = regExp.match("test:", 2);
+        const bool matches = regExp.match("test:");
         IDEAL_SDEBUG("test: matches ? " << (matches ? "yes" : "no"));
         if (matches) {
             IDEAL_SDEBUG("text is: " << regExp.getCapture(0));
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
     {
         RegExp regExp("(\\w*):(\\d*)");
         IDEAL_SDEBUG("regexp is: " << regExp.regExp());
-        const bool matches = regExp.match(":1234", 2);
+        const bool matches = regExp.match(":1234");
         IDEAL_SDEBUG(":1234 matches ? " << (matches ? "yes" : "no"));
         if (matches) {
             IDEAL_SDEBUG("text is: " << regExp.getCapture(0));

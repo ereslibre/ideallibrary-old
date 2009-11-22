@@ -28,6 +28,7 @@ class RegExpTest
 {
     CPPUNIT_TEST_SUITE(RegExpTest);
     CPPUNIT_TEST(match);
+    CPPUNIT_TEST(numCaptures);
     CPPUNIT_TEST(getCapture);
     CPPUNIT_TEST(operatorEquals);
     CPPUNIT_TEST(operatorEqualsEquals);
@@ -38,6 +39,7 @@ public:
     void tearDown();
 
     void match();
+    void numCaptures();
     void getCapture();
     void operatorEquals();
     void operatorEqualsEquals();
