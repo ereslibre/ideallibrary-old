@@ -1,7 +1,7 @@
 - Core
 
     - liburiparser - http://uriparser.sourceforge.net/
-    - libpcrecpp - http://www.pcre.org/
+    - libpcre - http://www.pcre.org/
 
 - GUI
 
