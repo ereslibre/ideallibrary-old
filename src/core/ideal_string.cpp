@@ -419,11 +419,14 @@ String &String::prepend(const String &str)
         d = d->copy();
         old_d->deref();
     }
-    const size_t rawLength = strlen(d->m_str) + strlen(str.d->m_str);
-    ichar *curr = (ichar*) calloc(rawLength + 1, sizeof(ichar));
-    sprintf(curr, "%s%s", str.data(), d->m_str);
-    d->init(curr);
-    free(curr);
+    const size_t rawLength = strlen(str.d->m_str);
+    const size_t currRawLength = strlen(d->m_str);
+    d->m_str = (ichar*) realloc(d->m_str, (rawLength + currRawLength + 1) * sizeof(ichar));
+    if (currRawLength) {
+        memmove(&d->m_str[rawLength], d->m_str, (currRawLength + 1) * sizeof(ichar));
+    }
+    memcpy(d->m_str, str.d->m_str, rawLength * sizeof(ichar));
+    d->m_sizeCalculated = false;
     return *this;
 }
 
@@ -434,11 +437,14 @@ String &String::prepend(const ichar *str)
         d = d->copy();
         old_d->deref();
     }
-    const size_t rawLength = strlen(d->m_str) + strlen(str);
-    ichar *curr = (ichar*) calloc(rawLength + 1, sizeof(ichar));
-    sprintf(curr, "%s%s", str, d->m_str);
-    d->init(curr);
-    free(curr);
+    const size_t rawLength = strlen(str);
+    const size_t currRawLength = strlen(d->m_str);
+    d->m_str = (ichar*) realloc(d->m_str, (rawLength + currRawLength + 1) * sizeof(ichar));
+    if (currRawLength) {
+        memmove(&d->m_str[rawLength], d->m_str, (currRawLength + 1) * sizeof(ichar));
+    }
+    memcpy(d->m_str, str, rawLength * sizeof(ichar));
+    d->m_sizeCalculated = false;
     return *this;
 }
 
@@ -449,28 +455,18 @@ String &String::prepend(Char c)
         d = d->copy();
         old_d->deref();
     }
+    const size_t currRawLength = strlen(d->m_str);
     const iint32 numberOfOctets = c.octetsRequired();
-    const size_t rawLength = strlen(d->m_str) + numberOfOctets;
-    ichar *curr = (ichar*) calloc(rawLength + 1, sizeof(ichar));
-    const iuint32 value = c.value();
-    switch (numberOfOctets) {
-        case 1:
-            sprintf(curr, "%c%s", value & 0xff, d->m_str);
-            break;
-        case 2:
-            sprintf(curr, "%c%c%s", (value >> 8) & 0xff, value & 0xff, d->m_str);
-            break;
-        case 3:
-            sprintf(curr, "%c%c%c%s", (value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff, d->m_str);
-            break;
-        case 4:
-            sprintf(curr, "%c%c%c%c%s", (value >> 24) & 0xff, (value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff, d->m_str);
-            break;
-        default:
-            break;
+    d->m_str = (ichar*) realloc(d->m_str, (numberOfOctets + currRawLength + 1) * sizeof(ichar));
+    if (currRawLength) {
+        memmove(&d->m_str[numberOfOctets], d->m_str, (currRawLength + 1) * sizeof(ichar));
     }
-    d->init(curr);
-    free(curr);
+    const iuint32 value = c.value();
+    for (iint32 i = 0; i < numberOfOctets; ++i) {
+        const iint32 offset = 8 * (numberOfOctets - i - 1);
+        d->m_str[i] = (value >> offset) & 0xff;
+    }
+    d->m_sizeCalculated = false;
     return *this;
 }
 
