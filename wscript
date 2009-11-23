@@ -71,6 +71,7 @@ def configure(conf):
     conf.env['RELEASE'] = Options.options.release
     conf.env['CXXFLAGS'] += ['-std=c++0x', '-fvisibility=hidden']
     # write config file
+    conf.define('DEST_OS', conf.env['DEST_OS'])
     conf.define('IDEALLIBRARY_PREFIX', conf.env['PREFIX'])
     conf.define('IDEALLIBRARY_VERSION', VERSION)
     if Options.options.release:
