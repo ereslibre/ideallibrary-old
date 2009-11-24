@@ -39,6 +39,13 @@ void StringTest::tearDown()
 
 void StringTest::testConstructor()
 {
+    {
+        String str;
+        str.append("Test");
+        CPPUNIT_ASSERT(!strcmp(str.data(), "Test"));
+        String str2;
+        CPPUNIT_ASSERT(!strcmp(str2.data(), ""));
+    }
     setlocale(LC_ALL, "en_US.UTF-8");
     String test1("Test");
     CPPUNIT_ASSERT_EQUAL((size_t) 4, test1.size());

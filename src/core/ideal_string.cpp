@@ -453,7 +453,7 @@ List<String> String::split(Char separator) const
 
 String &String::prepend(const String &str)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
@@ -471,7 +471,7 @@ String &String::prepend(const String &str)
 
 String &String::prepend(const ichar *str)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
@@ -489,7 +489,7 @@ String &String::prepend(const ichar *str)
 
 String &String::prepend(Char c)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
@@ -721,7 +721,7 @@ ireal String::toDouble(bool *ok) const
 
 String &String::setNumber(iint32 n, iuint32 base)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -731,7 +731,7 @@ String &String::setNumber(iint32 n, iuint32 base)
 
 String &String::setNumber(iuint32 n, iuint32 base)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -741,7 +741,7 @@ String &String::setNumber(iuint32 n, iuint32 base)
 
 String &String::setNumber(long n, iuint32 base)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -751,7 +751,7 @@ String &String::setNumber(long n, iuint32 base)
 
 String &String::setNumber(iulong n, iuint32 base)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -761,7 +761,7 @@ String &String::setNumber(iulong n, iuint32 base)
 
 String &String::setNumber(iint64 n, iuint32 base)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -771,7 +771,7 @@ String &String::setNumber(iint64 n, iuint32 base)
 
 String &String::setNumber(iuint64 n, iuint32 base)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -781,7 +781,7 @@ String &String::setNumber(iuint64 n, iuint32 base)
 
 String &String::setNumber(float n, iuint8 format, iuint32 precision)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -791,7 +791,7 @@ String &String::setNumber(float n, iuint8 format, iuint32 precision)
 
 String &String::setNumber(double n, iuint8 format, iuint32 precision)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -872,7 +872,7 @@ String &String::operator=(const ichar *str)
     if (!str) {
         return *this;
     }
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     } else {
@@ -884,7 +884,7 @@ String &String::operator=(const ichar *str)
 
 String &String::operator=(Char c)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         d->deref();
         d = new Private;
     }
@@ -906,7 +906,7 @@ String &String::operator=(Char c)
 
 String &String::operator+=(const String &str)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
@@ -936,7 +936,7 @@ String &String::operator+=(const String &str)
 
 String &String::operator+=(const ichar *str)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
@@ -953,7 +953,7 @@ String &String::operator+=(const ichar *str)
 
 String &String::operator+=(Char c)
 {
-    if (d->refCount() > 1) {
+    if (d == Private::m_privateEmpty || d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
