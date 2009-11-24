@@ -46,7 +46,6 @@ public:
     void init(const ichar *str)
     {
         const size_t rawLen = strlen(str);
-        free(m_str);
         m_str = (ichar*) malloc((rawLen + 1) * sizeof(ichar));
         memcpy(m_str, str, rawLen);
         m_str[rawLen] = '\0';
@@ -173,6 +172,7 @@ public:
         } else {
             ++p;
         }
+        free(m_str);
         init(p);
         free(str);
     }
@@ -183,6 +183,7 @@ public:
         sprintf(str, "%%.%dl%c", precision, format);
         ichar *const res = (ichar*) calloc(65, sizeof(ichar));
         sprintf(res, str, number);
+        free(m_str);
         init(res);
         free(str);
         free(res);
@@ -874,6 +875,8 @@ String &String::operator=(const ichar *str)
     if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else {
+        free(d->m_str);
     }
     d->init(str);
     return *this;
