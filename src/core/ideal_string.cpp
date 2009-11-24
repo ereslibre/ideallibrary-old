@@ -29,13 +29,12 @@ class String::Private
 {
 public:
     Private()
-        : m_str((ichar*) malloc(sizeof(ichar)))
+        : m_str(0)
         , m_charMap(0)
         , m_size(0)
         , m_sizeCalculated(true)
         , m_refs(1)
     {
-        *m_str = '\0';
     }
 
     virtual ~Private()
@@ -58,7 +57,6 @@ public:
     {
         const size_t rawLen = strlen(m_str);
         Private *privateCopy = new Private;
-        free(privateCopy->m_str);
         privateCopy->m_str = (ichar*) malloc((rawLen + 1) * sizeof(ichar));
         memcpy(privateCopy->m_str, m_str, rawLen);
         privateCopy->m_str[rawLen] = '\0';
@@ -118,6 +116,9 @@ public:
     {
         --m_refs;
         if (!m_refs) {
+            if (this == m_privateEmpty) {
+                m_privateEmpty = 0;
+            }
             delete this;
         }
     }
@@ -187,15 +188,47 @@ public:
         free(res);
     }
 
+    static Private *empty();
+
     ichar  *m_str;
     size_t *m_charMap;
     size_t  m_size;
     bool    m_sizeCalculated;
     size_t  m_refs;
+
+    class PrivateEmpty;
+    static Private *m_privateEmpty;
 };
 
+String::Private *String::Private::m_privateEmpty = 0;
+
+class String::Private::PrivateEmpty
+    : public Private
+{
+public:
+    PrivateEmpty()
+    {
+        m_str = (ichar*) malloc(sizeof(ichar));
+        *m_str = '\0';
+    }
+
+    virtual ~PrivateEmpty()
+    {
+    }
+};
+
+String::Private *String::Private::empty()
+{
+    if (!m_privateEmpty) {
+        m_privateEmpty = new PrivateEmpty;
+    } else {
+        m_privateEmpty->ref();
+    }
+    return m_privateEmpty;
+}
+
 String::String()
-    : d(new Private)
+    : d(Private::empty())
 {
 }
 
@@ -212,19 +245,20 @@ String::String(const std::string &str)
 }
 
 String::String(const ichar *str)
-    : d(new Private)
 {
     if (str) {
+        d = new Private;
         d->init(str);
+    } else {
+        d = Private::empty();
     }
 }
 
 String::String(const ichar *str, size_t n)
-    : d(new Private)
 {
     if (str && n) {
+        d = new Private;
         const size_t rawLength = strlen(str);
-        free(d->m_str);
         d->m_str = (ichar*) malloc(((n == npos ? rawLength : n) * 4 + 1) * sizeof(ichar));
         d->m_charMap = (size_t*) malloc((n == npos ? rawLength : n) * sizeof(size_t));
         size_t count = 0;
@@ -253,6 +287,8 @@ String::String(const ichar *str, size_t n)
         if (count < (n == npos ? rawLength : n)) {
             d->m_charMap = (size_t*) realloc(d->m_charMap, count * sizeof(size_t));
         }
+    } else {
+        d = Private::empty();
     }
 }
 
@@ -260,7 +296,6 @@ String::String(Char c)
     : d(new Private)
 {
     const iint32 numberOfOctets = c.octetsRequired();
-    free(d->m_str);
     d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
@@ -281,13 +316,16 @@ String::~String()
 
 void String::clear()
 {
+    if (d == Private::m_privateEmpty) {
+        return;
+    }
     d->deref();
-    d = new Private;
+    d = Private::empty();
 }
 
 bool String::empty() const
 {
-    return d->calculateSize() == 0;
+    return d == Private::m_privateEmpty || d->calculateSize() == 0;
 }
 
 size_t String::size() const
@@ -852,7 +890,6 @@ String &String::operator=(Char c)
         d = new Private;
     }
     const iint32 numberOfOctets = c.octetsRequired();
-    free(d->m_str);
     d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
