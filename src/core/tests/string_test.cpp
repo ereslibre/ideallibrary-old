@@ -423,6 +423,24 @@ void StringTest::testNumber()
     }
 }
 
+void StringTest::testMisc()
+{
+    {
+        String str("Test");
+        CPPUNIT_ASSERT_EQUAL(String("Test"), str);
+        str.clear();
+        CPPUNIT_ASSERT_EQUAL(String(), str);
+        str = "Test";
+        CPPUNIT_ASSERT_EQUAL(String("Test"), str);
+        str.prepend("This is a ");
+        CPPUNIT_ASSERT_EQUAL(String("This is a Test"), str);
+        str.setNumber(150);
+        CPPUNIT_ASSERT_EQUAL(String("150"), str);
+        str.append(" oranges");
+        CPPUNIT_ASSERT_EQUAL(String("150 oranges"), str);
+    }
+}
+
 String StringTest::returnSpecialChars()
 {
     return "áéíóúñ€%32";

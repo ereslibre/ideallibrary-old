@@ -38,6 +38,7 @@ class StringTest
     CPPUNIT_TEST(testOperators);
     CPPUNIT_TEST(testToConversion);
     CPPUNIT_TEST(testNumber);
+    CPPUNIT_TEST(testMisc);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,6 +55,7 @@ public:
     void testOperators();
     void testToConversion();
     void testNumber();
+    void testMisc();
 
 private:
     IdealCore::String returnSpecialChars();
