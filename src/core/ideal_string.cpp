@@ -453,10 +453,12 @@ List<String> String::split(Char separator) const
 
 String &String::prepend(const String &str)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     const size_t rawLength = strlen(str.d->m_str);
     const size_t currRawLength = strlen(d->m_str);
@@ -471,10 +473,12 @@ String &String::prepend(const String &str)
 
 String &String::prepend(const ichar *str)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     const size_t rawLength = strlen(str);
     const size_t currRawLength = strlen(d->m_str);
@@ -489,10 +493,12 @@ String &String::prepend(const ichar *str)
 
 String &String::prepend(Char c)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     const size_t currRawLength = strlen(d->m_str);
     const iint32 numberOfOctets = c.octetsRequired();
@@ -721,9 +727,11 @@ ireal String::toDouble(bool *ok) const
 
 String &String::setNumber(iint32 n, iuint32 base)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->iint64toa(n, base);
     return *this;
@@ -731,9 +739,11 @@ String &String::setNumber(iint32 n, iuint32 base)
 
 String &String::setNumber(iuint32 n, iuint32 base)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->iuint64toa(n, base);
     return *this;
@@ -741,9 +751,11 @@ String &String::setNumber(iuint32 n, iuint32 base)
 
 String &String::setNumber(long n, iuint32 base)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->iint64toa(n, base);
     return *this;
@@ -751,9 +763,11 @@ String &String::setNumber(long n, iuint32 base)
 
 String &String::setNumber(iulong n, iuint32 base)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->iuint64toa(n, base);
     return *this;
@@ -761,9 +775,11 @@ String &String::setNumber(iulong n, iuint32 base)
 
 String &String::setNumber(iint64 n, iuint32 base)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->iint64toa(n, base);
     return *this;
@@ -771,9 +787,11 @@ String &String::setNumber(iint64 n, iuint32 base)
 
 String &String::setNumber(iuint64 n, iuint32 base)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->iuint64toa(n, base);
     return *this;
@@ -781,9 +799,11 @@ String &String::setNumber(iuint64 n, iuint32 base)
 
 String &String::setNumber(float n, iuint8 format, iuint32 precision)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->dtoa(n, format, precision);
     return *this;
@@ -791,9 +811,11 @@ String &String::setNumber(float n, iuint8 format, iuint32 precision)
 
 String &String::setNumber(double n, iuint8 format, iuint32 precision)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     d->dtoa(n, format, precision);
     return *this;
@@ -872,9 +894,11 @@ String &String::operator=(const ichar *str)
     if (!str) {
         return *this;
     }
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     } else {
         free(d->m_str);
     }
@@ -884,9 +908,13 @@ String &String::operator=(const ichar *str)
 
 String &String::operator=(Char c)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         d->deref();
         d = new Private;
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
+    } else {
+        free(d->m_str);
     }
     const iint32 numberOfOctets = c.octetsRequired();
     d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
@@ -906,10 +934,12 @@ String &String::operator=(Char c)
 
 String &String::operator+=(const String &str)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     const size_t oldRawLength = strlen(d->m_str);
     const size_t newRawLength = oldRawLength + strlen(str.d->m_str);
@@ -936,10 +966,12 @@ String &String::operator+=(const String &str)
 
 String &String::operator+=(const ichar *str)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     const size_t rawLength = strlen(str);
     const size_t oldRawLength = strlen(d->m_str);
@@ -953,10 +985,12 @@ String &String::operator+=(const ichar *str)
 
 String &String::operator+=(Char c)
 {
-    if (d == Private::m_privateEmpty || d->refCount() > 1) {
+    if (d->refCount() > 1) {
         Private *const old_d = d;
         d = d->copy();
         old_d->deref();
+    } else if (d == Private::m_privateEmpty) {
+        Private::m_privateEmpty = 0;
     }
     const iint32 numberOfOctets = c.octetsRequired();
     const size_t rawLength = strlen(d->m_str);
