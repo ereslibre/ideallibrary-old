@@ -40,7 +40,9 @@ private:
 
 }
 
+#ifdef IDEAL_OS_POSIX
 #include <core/private/posix/mutex_p.h>
+#endif //IDEAL_OS_POSIX
 
 #endif //MUTEX_P_H
 

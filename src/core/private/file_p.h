@@ -40,6 +40,8 @@ public:
 
 }
 
+#ifdef IDEAL_OS_POSIX
 #include <core/private/posix/file_p.h>
+#endif //IDEAL_OS_POSIX
 
 #endif //FILE_P_H

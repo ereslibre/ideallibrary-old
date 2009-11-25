@@ -421,7 +421,6 @@
 
 #include <ideal_export.h>
 #include <core/ideal_signal.h>
-#include <core/signal_resource.h>
 
 /**
   * The IdealCore namespace.

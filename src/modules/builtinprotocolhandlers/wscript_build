@@ -19,12 +19,14 @@
 # Boston, MA 02110-1301, USA.
 #
 
-bld.new_task_gen(
+obj = bld.new_task_gen(
     features     = 'cxx cshlib',
-    source       = bld.glob('*.cpp') +
-                   bld.glob('posix/*.cpp'),
+    source       = bld.glob('*.cpp'),
     target       = 'builtinprotocolhandlers',
     includes     = '../..',
     uselib_local = 'idealcore',
     install_path = '${PREFIX}/lib/ideal/modules'
 )
+
+if bld.env['DEST_OS'] in bld.env['POSIX_PLATFORMS']:
+    obj.source += bld.glob('posix/*.cpp')

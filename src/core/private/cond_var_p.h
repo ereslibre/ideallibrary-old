@@ -38,6 +38,8 @@ public:
 
 }
 
+#ifdef IDEAL_OS_POSIX
 #include <core/private/posix/cond_var_p.h>
+#endif //IDEAL_OS_POSIX
 
 #endif //COND_VAR_P_H

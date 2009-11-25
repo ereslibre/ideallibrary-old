@@ -31,6 +31,8 @@ blddir     = 'build'
 subdirs_d  = 'src/core src/gui src/modules src/tests'
 subdirs_r  = 'src/core src/gui src/modules'
 
+posixPlatforms = ['linux']
+
 checkCompilerFeatures = '''struct A {}; struct B {};
                            template <typename... Type>
                            struct C : public Type... {
@@ -53,6 +55,7 @@ def set_options(opt):
                    help = 'Do not build unit tests. Compile without debug information')
 
 def configure(conf):
+    conf.env['POSIX_PLATFORMS'] = posixPlatforms
     # check for basics
     conf.find_program('pkg-config')
     conf.check_tool('compiler_cxx')
@@ -71,7 +74,10 @@ def configure(conf):
     conf.env['RELEASE'] = Options.options.release
     conf.env['CXXFLAGS'] += ['-std=c++0x', '-fvisibility=hidden']
     # write config file
-    conf.define('DEST_OS', conf.env['DEST_OS'])
+    if conf.env['DEST_OS'] in posixPlatforms:
+        conf.define('IDEAL_OS_POSIX', 1)
+    else:
+        conf.undefine('IDEAL_OS_POSIX')
     conf.define('IDEALLIBRARY_PREFIX', conf.env['PREFIX'])
     conf.define('IDEALLIBRARY_VERSION', VERSION)
     if Options.options.release:

@@ -41,12 +41,11 @@ def configure(conf):
     conf.check(fragment = checkInotify, msg = 'Checking for inotify', define_name = 'HAVE_INOTIFY')
 
 def build(bld):
-    bld.new_task_gen(
+    obj = bld.new_task_gen(
         features     = 'cxx cshlib',
         source       = bld.glob('*.cpp') +
                        bld.glob('interfaces/*.cpp') +
-                       bld.glob('private/*.cpp') +
-                       bld.glob('private/posix/*.cpp'),
+                       bld.glob('private/*.cpp'),
         target       = 'idealcore',
         includes     = '..',
         uselib       = ['CORE',
@@ -54,6 +53,8 @@ def build(bld):
                         'LIBPCRE'],
         vnum         = bld.env['LIBVERSION']
         )
+    if bld.env['DEST_OS'] in bld.env['POSIX_PLATFORMS']:
+        obj.source += bld.glob('private/posix/*.cpp')
     bld.new_task_gen('subst',
                      source = 'idealcore.pc.in',
                      target = 'idealcore.pc',

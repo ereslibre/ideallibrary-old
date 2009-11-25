@@ -40,7 +40,9 @@ public:
 
 }
 
+#ifdef IDEAL_OS_POSIX
 #include <core/private/posix/timer_p.h>
+#endif //IDEAL_OS_POSIX
 
 #endif //TIMER_P_H
 

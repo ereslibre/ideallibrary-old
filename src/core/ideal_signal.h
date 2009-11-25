@@ -23,8 +23,8 @@
 
 #include <string.h>
 #include <core/mutex.h>
-#include <core/signal_resource.h>
 #include <core/list.h>
+#include <core/signal_resource.h>
 
 namespace IdealCore {
 
