@@ -42,14 +42,6 @@ public:
         }
     }
 
-    Private *copy()
-    {
-        Private *privateCopy = new Private;
-        privateCopy->m_regExp = m_regExp;
-        privateCopy->m_captures = m_captures;
-        return privateCopy;
-    }
-
     void ref()
     {
         ++m_refs;
@@ -59,6 +51,9 @@ public:
     {
         --m_refs;
         if (!m_refs) {
+            if (this == m_privateEmpty) {
+                m_privateEmpty = 0;
+            }
             delete this;
         }
     }
@@ -68,14 +63,44 @@ public:
         return m_refs;
     }
 
+    static Private *empty();
+
     String              m_regExp;
     pcre               *m_pcre;
     std::vector<String> m_captures;
     size_t              m_refs;
+
+    class PrivateEmpty;
+    static Private *m_privateEmpty;
 };
 
+RegExp::Private *RegExp::Private::m_privateEmpty = 0;
+
+class RegExp::Private::PrivateEmpty
+    : public Private
+{
+public:
+    PrivateEmpty()
+    {
+    }
+
+    virtual ~PrivateEmpty()
+    {
+    }
+};
+
+RegExp::Private *RegExp::Private::empty()
+{
+    if (!m_privateEmpty) {
+        m_privateEmpty = new PrivateEmpty;
+    } else {
+        m_privateEmpty->ref();
+    }
+    return m_privateEmpty;
+}
+
 RegExp::RegExp()
-    : d(new Private)
+    : d(Private::empty())
 {
 }
 
