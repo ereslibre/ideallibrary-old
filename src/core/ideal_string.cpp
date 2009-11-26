@@ -66,7 +66,7 @@ public:
         return privateCopy;
     }
 
-    void copyAndDeattach(String *str)
+    void copyAndDetach(String *str)
     {
         if (m_refs > 1) {
             str->d = copy();
@@ -76,7 +76,7 @@ public:
         }
     }
 
-    void newAndDeattach(String *str)
+    void newAndDetach(String *str)
     {
         if (m_refs > 1) {
             str->d = new Private;
@@ -468,7 +468,7 @@ List<String> String::split(Char separator) const
 
 String &String::prepend(const String &str)
 {
-    d->copyAndDeattach(this);
+    d->copyAndDetach(this);
     const size_t rawLength = strlen(str.d->m_str);
     const size_t currRawLength = strlen(d->m_str);
     d->m_str = (ichar*) realloc(d->m_str, (rawLength + currRawLength + 1) * sizeof(ichar));
@@ -482,7 +482,7 @@ String &String::prepend(const String &str)
 
 String &String::prepend(const ichar *str)
 {
-    d->copyAndDeattach(this);
+    d->copyAndDetach(this);
     const size_t rawLength = strlen(str);
     const size_t currRawLength = strlen(d->m_str);
     d->m_str = (ichar*) realloc(d->m_str, (rawLength + currRawLength + 1) * sizeof(ichar));
@@ -496,7 +496,7 @@ String &String::prepend(const ichar *str)
 
 String &String::prepend(Char c)
 {
-    d->copyAndDeattach(this);
+    d->copyAndDetach(this);
     const size_t currRawLength = strlen(d->m_str);
     const iint32 numberOfOctets = c.octetsRequired();
     d->m_str = (ichar*) realloc(d->m_str, (numberOfOctets + currRawLength + 1) * sizeof(ichar));
@@ -724,56 +724,56 @@ ireal String::toDouble(bool *ok) const
 
 String &String::setNumber(iint32 n, iuint32 base)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->iint64toa(n, base);
     return *this;
 }
 
 String &String::setNumber(iuint32 n, iuint32 base)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->iuint64toa(n, base);
     return *this;
 }
 
 String &String::setNumber(long n, iuint32 base)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->iint64toa(n, base);
     return *this;
 }
 
 String &String::setNumber(iulong n, iuint32 base)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->iuint64toa(n, base);
     return *this;
 }
 
 String &String::setNumber(iint64 n, iuint32 base)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->iint64toa(n, base);
     return *this;
 }
 
 String &String::setNumber(iuint64 n, iuint32 base)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->iuint64toa(n, base);
     return *this;
 }
 
 String &String::setNumber(float n, iuint8 format, iuint32 precision)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->dtoa(n, format, precision);
     return *this;
 }
 
 String &String::setNumber(double n, iuint8 format, iuint32 precision)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->dtoa(n, format, precision);
     return *this;
 }
@@ -851,14 +851,14 @@ String &String::operator=(const ichar *str)
     if (!str) {
         return *this;
     }
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     d->init(str);
     return *this;
 }
 
 String &String::operator=(Char c)
 {
-    d->newAndDeattach(this);
+    d->newAndDetach(this);
     const iint32 numberOfOctets = c.octetsRequired();
     d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
     const iuint32 value = c.value();
@@ -877,7 +877,7 @@ String &String::operator=(Char c)
 
 String &String::operator+=(const String &str)
 {
-    d->copyAndDeattach(this);
+    d->copyAndDetach(this);
     const size_t oldRawLength = strlen(d->m_str);
     const size_t newRawLength = oldRawLength + strlen(str.d->m_str);
     d->m_str = (ichar*) realloc(d->m_str, newRawLength + 1);
@@ -903,7 +903,7 @@ String &String::operator+=(const String &str)
 
 String &String::operator+=(const ichar *str)
 {
-    d->copyAndDeattach(this);
+    d->copyAndDetach(this);
     const size_t rawLength = strlen(str);
     const size_t oldRawLength = strlen(d->m_str);
     const size_t newRawLength = oldRawLength + rawLength;
@@ -916,7 +916,7 @@ String &String::operator+=(const ichar *str)
 
 String &String::operator+=(Char c)
 {
-    d->copyAndDeattach(this);
+    d->copyAndDetach(this);
     const iint32 numberOfOctets = c.octetsRequired();
     const size_t rawLength = strlen(d->m_str);
     const size_t newRawLength = rawLength + numberOfOctets;

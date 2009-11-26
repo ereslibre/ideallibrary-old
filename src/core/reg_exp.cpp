@@ -58,7 +58,7 @@ public:
         }
     }
 
-    void newAndDeattach(RegExp *regExp)
+    void newAndDetach(RegExp *regExp)
     {
         if (m_refs > 1) {
             regExp->d = new Private;
@@ -139,7 +139,7 @@ void RegExp::setRegExp(const String &regExp)
     if (regExp.empty()) {
         d = Private::empty();
     } else {
-        d->newAndDeattach(this);
+        d->newAndDetach(this);
         d->m_regExp = regExp;
     }
 }
@@ -204,7 +204,7 @@ RegExp &RegExp::operator=(const String &regExp)
     if (regExp.empty()) {
         d = Private::empty();
     } else {
-        d->newAndDeattach(this);
+        d->newAndDetach(this);
         d->m_regExp = regExp;
     }
     return *this;
