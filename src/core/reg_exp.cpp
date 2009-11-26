@@ -58,9 +58,19 @@ public:
         }
     }
 
-    size_t refCount() const
+    void newAndDeattach(RegExp *regExp)
     {
-        return m_refs;
+        if (m_refs > 1) {
+            deref();
+            regExp->d = new Private;
+        } else if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        } else {
+            if (m_pcre) {
+                pcre_free(m_pcre);
+            }
+            m_pcre = 0;
+        }
     }
 
     static Private *empty();
@@ -126,15 +136,8 @@ void RegExp::setRegExp(const String &regExp)
     if (regExp == d->m_regExp) {
         return;
     }
-    if (d->refCount() > 1) {
-        d->deref();
-        d = new Private;
-    }
+    d->newAndDeattach(this);
     d->m_regExp = regExp;
-    if (d->m_pcre) {
-        pcre_free(d->m_pcre);
-    }
-    d->m_pcre = 0;
 }
 
 String RegExp::regExp() const
@@ -191,9 +194,12 @@ RegExp &RegExp::operator=(const RegExp &regExp)
 
 RegExp &RegExp::operator=(const String &regExp)
 {
-    d->deref();
-    d = new Private;
-    d->m_regExp = regExp;
+    if (regExp.empty()) {
+        d = Private::empty();
+    } else {
+        d->newAndDeattach(this);
+        d->m_regExp = regExp;
+    }
     return *this;
 }
 
