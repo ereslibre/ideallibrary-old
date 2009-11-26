@@ -34,6 +34,10 @@ public:
     {
     }
 
+    virtual ~Private()
+    {
+    }
+
     Private *copy()
     {
         Private *privateCopy = new Private;
@@ -50,6 +54,26 @@ public:
         return privateCopy;
     }
 
+    void copyAndDetach(Uri *uri)
+    {
+        if (m_refs > 1) {
+            uri->d = copy();
+            deref();
+        } else if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        }
+    }
+
+    void newAndDetach(Uri *uri)
+    {
+        if (m_refs > 1) {
+            uri->d = new Private;
+            deref();
+        } else if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        }
+    }
+
     void ref()
     {
         ++m_refs;
@@ -59,13 +83,11 @@ public:
     {
         --m_refs;
         if (!m_refs) {
+            if (this == m_privateEmpty) {
+                m_privateEmpty = 0;
+            }
             delete this;
         }
-    }
-
-    size_t refCount() const
-    {
-        return m_refs;
     }
 
     String getHex(Char ch) const;
@@ -75,6 +97,8 @@ public:
     void reconstructPath(iint32 count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail);
     String reconstructString(const UriTextRangeA &uriTextRange);
     void initializeContents(const String &uri);
+
+    static Private *empty();
 
     String  m_uri;
     String  m_scheme;
@@ -87,7 +111,35 @@ public:
     String  m_fragment;
     bool    m_isValidUri;
     size_t  m_refs;
+
+    class PrivateEmpty;
+    static Private *m_privateEmpty;
 };
+
+Uri::Private *Uri::Private::m_privateEmpty = 0;
+
+class Uri::Private::PrivateEmpty
+    : public Private
+{
+public:
+    PrivateEmpty()
+    {
+    }
+
+    virtual ~PrivateEmpty()
+    {
+    }
+};
+
+Uri::Private *Uri::Private::empty()
+{
+    if (!m_privateEmpty) {
+        m_privateEmpty = new PrivateEmpty;
+    } else {
+        m_privateEmpty->ref();
+    }
+    return m_privateEmpty;
+}
 
 const String uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                               "abcdefghijklmnopqrstuvwxyz-_.~";
@@ -282,7 +334,7 @@ void Uri::Private::initializeContents(const String &uriP_)
 }
 
 Uri::Uri()
-    : d(new Private)
+    : d(Private::empty())
 {
 }
 
@@ -301,17 +353,23 @@ Uri::Uri(const String &uri)
 Uri::Uri(const String &path, const String &filename)
     : d(new Private)
 {
-    if (path[path.size() - 1] == '/') {
+    if (!path.empty() && !filename.empty() && path[path.size() - 1] == '/') {
         d->initializeContents(path + filename);
-    } else {
+    } else if (!path.empty() && !filename.empty()) {
         d->initializeContents(path + '/' + filename);
+    } else if (path.empty()) {
+        d->initializeContents(filename);
+    } else {
+        d->initializeContents(path);
     }
 }
 
 Uri::Uri(const ichar *uri)
     : d(new Private)
 {
-    d->initializeContents(uri);
+    if (uri) {
+        d->initializeContents(uri);
+    }
 }
 
 Uri::~Uri()
@@ -375,14 +433,10 @@ bool Uri::contains(const Uri &uri) const
 
 Uri &Uri::dirUp()
 {
-    if (d->m_path.empty() || !d->m_path.compare("/")) {
+    if (d == Private::m_privateEmpty || d->m_path.empty() || !d->m_path.compare("/")) {
         return *this;
     }
-    if (d->refCount() > 1) {
-        Private *const old_d = d;
-        d = d->copy();
-        old_d->deref();
-    }
+    d->copyAndDetach(this);
     size_t size = d->m_uri.size();
     if (d->m_uri[size - 1] == '/') {
         d->m_uri = d->m_uri.substr(0, size - 1);
@@ -413,15 +467,26 @@ Uri &Uri::operator=(const Uri &uri)
     return *this;
 }
 
+Uri &Uri::operator=(const String &uri)
+{
+    if (uri == d->m_uri) {
+        return *this;
+    }
+    if (uri.empty()) {
+        d = Private::empty();
+    } else {
+        d->newAndDetach(this);
+        d->initializeContents(uri);
+    }
+    return *this;
+}
+
 Uri &Uri::operator=(const ichar *uri)
 {
     if (!uri) {
         return *this;
     }
-    if (d->refCount() > 1) {
-        d->deref();
-        d = new Private;
-    }
+    d->newAndDetach(this);
     d->initializeContents(uri);
     return *this;
 }

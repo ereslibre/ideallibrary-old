@@ -105,6 +105,7 @@ public:
     Uri &dirUp();
 
     Uri &operator=(const Uri &uri);
+    Uri &operator=(const String &uri);
     Uri &operator=(const ichar *uri);
 
     bool operator==(const Uri &uri) const;
