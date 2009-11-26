@@ -66,8 +66,10 @@ static Mutex outputMutex;
                                   std::cout << message << std::endl;                         \
                               } while (0)
 #else
-#define IDEAL_DEBUG(message)
-#define IDEAL_SDEBUG(message)
+#define IDEAL_DEBUG(message) do {        \
+                             } while (0)
+#define IDEAL_SDEBUG(message) do {        \
+                              } while (0)
 #endif
 
 #define D_I static_cast<PrivateImpl*>(d)
