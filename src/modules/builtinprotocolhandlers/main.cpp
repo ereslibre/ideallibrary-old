@@ -22,7 +22,7 @@
 #include "http.h"
 
 #include <core/module.h>
-#include <core/extension.h>
+#include <core/interfaces/extension.h>
 
 namespace IdealCore {
 

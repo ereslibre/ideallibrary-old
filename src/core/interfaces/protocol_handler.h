@@ -22,7 +22,7 @@
 #define PROTOCOL_HANDLER_H
 
 #include <ideal_export.h>
-#include <core/extension.h>
+#include <core/interfaces/extension.h>
 #include <core/byte_stream.h>
 
 namespace IdealCore {

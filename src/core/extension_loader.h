@@ -22,9 +22,9 @@
 #define EXTENSION_LOADER_H
 
 #include <ideal_export.h>
+#include <core/interfaces/extension.h>
 #include <core/object.h>
 #include <core/ideal_string.h>
-#include <core/extension.h>
 #include <core/module.h>
 
 namespace IdealCore {

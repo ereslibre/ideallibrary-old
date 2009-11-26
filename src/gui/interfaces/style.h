@@ -23,7 +23,7 @@
 
 #include <ideal_export.h>
 
-#include <core/extension.h>
+#include <core/interfaces/extension.h>
 
 namespace IdealGUI {
 

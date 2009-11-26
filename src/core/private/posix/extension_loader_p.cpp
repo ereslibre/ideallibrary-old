@@ -24,7 +24,7 @@
 
 #include <core/extension_loader.h>
 #include <core/private/module_p.h>
-#include <core/private/extension_p.h>
+#include <core/interfaces/private/extension_p.h>
 
 namespace IdealCore {
 

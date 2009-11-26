@@ -22,7 +22,7 @@
 #define FOOINTERFACE_H
 
 #include <ideal_export.h>
-#include <core/extension.h>
+#include <core/interfaces/extension.h>
 
 using namespace IdealCore;
 

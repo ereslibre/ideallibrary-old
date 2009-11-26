@@ -18,24 +18,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef EXTENSION_P_H
-#define EXTENSION_P_H
+#include "extension.h"
+#include "private/extension_p.h"
 
-#include <core/extension.h>
+#include <core/private/module_p.h>
 
 namespace IdealCore {
 
-class Module;
-
-class Extension::Private
+Extension::Private::~Private()
 {
-public:
-    virtual ~Private();
-    
-    Module *m_module;
-};
-
 }
 
-#endif
+Extension::Extension()
+    : d(new Private)
+{
+}
 
+Extension::~Extension()
+{
+    d->m_module->d->deref();
+    delete d;
+}
+
+}
