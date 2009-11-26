@@ -79,8 +79,8 @@ public:
     void newAndDeattach(String *str)
     {
         if (m_refs > 1) {
-            deref();
             str->d = new Private;
+            deref();
         } else if (this == m_privateEmpty) {
             m_privateEmpty = 0;
         } else {

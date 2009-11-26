@@ -61,8 +61,8 @@ public:
     void newAndDeattach(RegExp *regExp)
     {
         if (m_refs > 1) {
-            deref();
             regExp->d = new Private;
+            deref();
         } else if (this == m_privateEmpty) {
             m_privateEmpty = 0;
         } else {
