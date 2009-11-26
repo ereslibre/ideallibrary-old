@@ -32,7 +32,7 @@ public:
         : m_str(0)
         , m_charMap(0)
         , m_size(0)
-        , m_sizeCalculated(true)
+        , m_sizeCalculated(false)
         , m_refs(1)
     {
     }
@@ -66,6 +66,16 @@ public:
         return privateCopy;
     }
 
+    void clearContents()
+    {
+        free(m_str);
+        m_str = 0;
+        free(m_charMap);
+        m_charMap = 0;
+        m_size = 0;
+        m_sizeCalculated = false;
+    }
+
     void copyAndDetach(String *str)
     {
         if (m_refs > 1) {
@@ -84,7 +94,7 @@ public:
         } else if (this == m_privateEmpty) {
             m_privateEmpty = 0;
         } else {
-            free(m_str);
+            clearContents();
         }
     }
 
@@ -94,6 +104,9 @@ public:
             return m_size;
         }
         m_sizeCalculated = true;
+        if (!m_str) {
+            m_size = 0;
+        }
         free(m_charMap);
         const size_t rawLen = strlen(m_str);
         m_charMap = (size_t*) calloc(rawLen, sizeof(size_t));
@@ -226,6 +239,8 @@ public:
     {
         m_str = (ichar*) malloc(sizeof(ichar));
         *m_str = '\0';
+        m_size = 0;
+        m_sizeCalculated = true;
     }
 
     virtual ~PrivateEmpty()

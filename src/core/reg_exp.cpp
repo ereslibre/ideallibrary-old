@@ -37,9 +37,7 @@ public:
 
     ~Private()
     {
-        if (m_pcre) {
-            pcre_free(m_pcre);
-        }
+        pcre_free(m_pcre);
     }
 
     void ref()
@@ -58,6 +56,14 @@ public:
         }
     }
 
+    void clearContents()
+    {
+        m_regExp = String();
+        pcre_free(m_pcre);
+        m_pcre = 0;
+        m_captures = std::vector<String>();
+    }
+
     void newAndDetach(RegExp *regExp)
     {
         if (m_refs > 1) {
@@ -66,10 +72,7 @@ public:
         } else if (this == m_privateEmpty) {
             m_privateEmpty = 0;
         } else {
-            if (m_pcre) {
-                pcre_free(m_pcre);
-                m_pcre = 0;
-            }
+            clearContents();
         }
     }
 
@@ -80,29 +83,15 @@ public:
     std::vector<String> m_captures;
     size_t              m_refs;
 
-    class PrivateEmpty;
     static Private *m_privateEmpty;
 };
 
 RegExp::Private *RegExp::Private::m_privateEmpty = 0;
 
-class RegExp::Private::PrivateEmpty
-    : public Private
-{
-public:
-    PrivateEmpty()
-    {
-    }
-
-    virtual ~PrivateEmpty()
-    {
-    }
-};
-
 RegExp::Private *RegExp::Private::empty()
 {
     if (!m_privateEmpty) {
-        m_privateEmpty = new PrivateEmpty;
+        m_privateEmpty = new Private;
     } else {
         m_privateEmpty->ref();
     }

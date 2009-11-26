@@ -112,29 +112,15 @@ public:
     bool    m_isValidUri;
     size_t  m_refs;
 
-    class PrivateEmpty;
     static Private *m_privateEmpty;
 };
 
 Uri::Private *Uri::Private::m_privateEmpty = 0;
 
-class Uri::Private::PrivateEmpty
-    : public Private
-{
-public:
-    PrivateEmpty()
-    {
-    }
-
-    virtual ~PrivateEmpty()
-    {
-    }
-};
-
 Uri::Private *Uri::Private::empty()
 {
     if (!m_privateEmpty) {
-        m_privateEmpty = new PrivateEmpty;
+        m_privateEmpty = new Private;
     } else {
         m_privateEmpty->ref();
     }
