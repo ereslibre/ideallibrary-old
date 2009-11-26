@@ -18,10 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QObject>
-#include <iostream>
-
-using namespace std;
+#include <QtCore/QObject>
+#include <QtCore/QDebug>
 
 class MyObject
     : public QObject
@@ -74,14 +72,14 @@ OtherObject::OtherObject(QObject *object)
 
 void OtherObject::receivedSignal()
 {
-    cout << "I RECEIVED A SIGNAL ! (from object: " << sender() << ")" << endl;
+    qDebug() << "I RECEIVED A SIGNAL ! (from object:" << sender() << ")";
     MyObject *myObject = static_cast<MyObject*>(sender());
     myObject->testExternalInt = 100;
 }
 
 void OtherObject::buttonPushed(bool param)
 {
-    cout << "BUTTON CLICKED ! (from object: " << sender() << " and param " << param << ")" << endl;
+    qDebug() << "BUTTON CLICKED ! (from object:" << sender() << "and param" << param << ")";
 }
 
 int main(int argc, char **argv)

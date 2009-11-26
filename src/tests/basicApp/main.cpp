@@ -23,10 +23,8 @@
 #include <core/file.h>
 #include <core/application.h>
 #include <core/genious_pointer.h>
-#include <iostream>
 
 using namespace IdealCore;
-using namespace std;
 
 class MyObject
     : public Object
@@ -83,17 +81,17 @@ OtherObject::OtherObject(Object *object)
 
 void OtherObject::receivedSignal()
 {
-    cout << "I (" << this << ") RECEIVED A SIGNAL !" << endl;
+    IDEAL_SDEBUG("I (" << this << ") RECEIVED A SIGNAL !");
 }
 
 void OtherObject::buttonPushed(bool param)
 {
-    cout << "BUTTON CLICKED ! (param " << param << ")" << endl;
+    IDEAL_SDEBUG("BUTTON CLICKED ! (param " << param << ")");
 }
 
 void OtherObject::destroyedSlot()
 {
-    cout << "deleting object" << endl;
+    IDEAL_SDEBUG("deleting object");
 }
 
 int main(int argc, char **argv)
