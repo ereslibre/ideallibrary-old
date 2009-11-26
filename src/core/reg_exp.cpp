@@ -68,8 +68,8 @@ public:
         } else {
             if (m_pcre) {
                 pcre_free(m_pcre);
+                m_pcre = 0;
             }
-            m_pcre = 0;
         }
     }
 
