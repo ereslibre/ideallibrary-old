@@ -136,8 +136,12 @@ void RegExp::setRegExp(const String &regExp)
     if (regExp == d->m_regExp) {
         return;
     }
-    d->newAndDeattach(this);
-    d->m_regExp = regExp;
+    if (regExp.empty()) {
+        d = Private::empty();
+    } else {
+        d->newAndDeattach(this);
+        d->m_regExp = regExp;
+    }
 }
 
 String RegExp::regExp() const
@@ -194,6 +198,9 @@ RegExp &RegExp::operator=(const RegExp &regExp)
 
 RegExp &RegExp::operator=(const String &regExp)
 {
+    if (regExp == d->m_regExp) {
+        return *this;
+    }
     if (regExp.empty()) {
         d = Private::empty();
     } else {
