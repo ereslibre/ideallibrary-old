@@ -19,52 +19,51 @@
  */
 
 #include <core/object.h>
+#include <core/application.h>
 #include <core/ideal_string.h>
-#include <locale.h>
-#include <iostream>
 
 using namespace IdealCore;
 
 int main(int argc, char **argv)
 {
-    setlocale(LC_ALL, "");
+    Application app(argc, argv);
     {
         Char c(L'𝛏');
-        std::cout << "Character is: " << c << std::endl;
+        IDEAL_SDEBUG("Character is: " << c);
     }
     {
         String str("This is a tést with spécial cháracters");
         Char c(L'é');
-        std::cout << "String contains 'é'? " << (str.contains(c) ? "yes" : "no") << std::endl;
+        IDEAL_SDEBUG("String contains 'é'? " << (str.contains(c) ? "yes" : "no"));
     }
     {
         String str("What special char ?ñ");
-        std::cout << "String contains 'ñ'? " << (str.contains(L'ñ') ? "yes" : "no") << std::endl;
+        IDEAL_SDEBUG("String contains 'ñ'? " << (str.contains(L'ñ') ? "yes" : "no"));
     }
     {
         String str("What special char ?");
-        std::cout << "String contains 'ñ'? " << (str.contains(L'ñ') ? "yes" : "no") << std::endl;
+        IDEAL_SDEBUG("String contains 'ñ'? " << (str.contains(L'ñ') ? "yes" : "no"));
     }
     {
         Char c(L'𝛏');
         String str(c);
-        std::cout << "String with a char (𝛏) contains: " << str << std::endl;
+        IDEAL_SDEBUG("String with a char (𝛏) contains: " << str);
     }
     {
         String str("Hi, how are you?", 7);
-        std::cout << "Should print \"Hi, how\": " << str << std::endl;
+        IDEAL_SDEBUG("Should print \"Hi, how\": " << str);
     }
     {
         String str("Hí, hów are you?", 7);
-        std::cout << "Should print \"Hí, hów\": " << str << std::endl;
+        IDEAL_SDEBUG("Should print \"Hí, hów\": " << str);
     }
     {
         String str("𝛏𝛏𝛏𝛏𝛏", 3);
-        std::cout << "Should print \"𝛏𝛏𝛏\": " << str << std::endl;
+        IDEAL_SDEBUG("Should print \"𝛏𝛏𝛏\": " << str);
     }
     {
         String str("𝛏𝛏𝛏𝛏𝛏", 10);
-        std::cout << "Should print \"𝛏𝛏𝛏𝛏𝛏\": " << str << std::endl;
+        IDEAL_SDEBUG("Should print \"𝛏𝛏𝛏𝛏𝛏\": " << str);
     }
     {
         String str("one𝛏two𝛏three𝛏four𝛏five𝛏spécial𝛏ñññTestñññ𝛏𝚿𝛏");
@@ -72,34 +71,34 @@ int main(int argc, char **argv)
         List<String>::iterator it;
         for (it = split.begin(); it != split.end(); ++it) {
             String str = *it;
-            std::cout << "element: " << str << std::endl;
+            IDEAL_SDEBUG("element: " << str);
         }
     }
     {
         String str1("First part");
         String str2("; Second part");
         str1 += str2;
-        std::cout << "\"" << str1 << "\"" << std::endl;
+        IDEAL_SDEBUG("\"" << str1 << "\"");
     }
     {
         String str1("First part");
         const ichar *str2 = "; Second part";
         str1 += str2;
-        std::cout << "\"" << str1 << "\"" << std::endl;
+        IDEAL_SDEBUG("\"" << str1 << "\"");
     }
     {
         String str1("First part; ");
         Char c(L'𝛏');
         str1 += c;
-        std::cout << "\"" << str1 << "\"" << std::endl;
+        IDEAL_SDEBUG("\"" << str1 << "\"");
     }
     {
         String str1("Hello world !");
-        std::cout << "\"" << str1.substr(6, 5) << "\"" << std::endl;
+        IDEAL_SDEBUG("\"" << str1.substr(6, 5) << "\"");
     }
     {
         String str1("Hello world !");
-        std::cout << "\"" << str1.substr(0, str1.size()) << "\"" << std::endl;
+        IDEAL_SDEBUG("\"" << str1.substr(0, str1.size()) << "\"");
     }
 
     return 0;
