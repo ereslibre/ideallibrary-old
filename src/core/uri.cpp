@@ -71,6 +71,8 @@ public:
             deref();
         } else if (this == m_privateEmpty) {
             m_privateEmpty = 0;
+        } else {
+            clearContents();
         }
     }
 
@@ -88,6 +90,20 @@ public:
             }
             delete this;
         }
+    }
+
+    void clearContents()
+    {
+        m_uri = String();
+        m_scheme = String();
+        m_username = String();
+        m_password = String();
+        m_host = String();
+        m_port = -1;
+        m_path = String();
+        m_query = String();
+        m_fragment = String();
+        m_isValidUri = false;
     }
 
     String getHex(Char ch) const;
