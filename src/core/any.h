@@ -58,6 +58,11 @@ namespace IdealCore {
   * @code
   * struct MyStruct
   * {
+  *     bool operator==(const MyStruct &myStruct) const
+  *     {
+  *         return a == myStruct.a && b == myStruct.b && c == myStruct.c;
+  *     }
+  *
   *     iint32 a;
   *     float b;
   *     String c;
