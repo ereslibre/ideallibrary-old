@@ -32,21 +32,42 @@ public:
         , m_size(0)
         , m_refs(1)
     {
-        if (data) {
-            if (nbytes) {
-                m_size = nbytes;
-            } else {
-                m_size = strlen(data);
-            }
-            m_data = new ichar[m_size + 1];
-            memcpy(m_data, data, m_size);
-            m_data[m_size] = '\0';
+        if (nbytes) {
+            m_size = nbytes;
+        } else {
+            m_size = strlen(data);
         }
+        m_data = (ichar*) malloc((m_size + 1) * sizeof(ichar));
+        memcpy(m_data, data, m_size);
+        m_data[m_size] = '\0';
     }
 
     virtual ~Private()
     {
-        delete[] m_data;
+        free(m_data);
+    }
+
+    void clearContents()
+    {
+        free(m_data);
+        m_data = 0;
+        m_size = 0;
+    }
+
+    void newAndDetach(ByteStream *byteStream, const ichar *data = 0)
+    {
+        if (m_refs > 1) {
+            if (data) {
+                byteStream->d = new Private(data);
+            } else {
+                byteStream->d = empty();
+            }
+            deref();
+        } else if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        } else {
+            clearContents();
+        }
     }
 
     void ref()
@@ -58,22 +79,36 @@ public:
     {
         --m_refs;
         if (!m_refs) {
+            if (this == m_privateEmpty) {
+                m_privateEmpty = 0;
+            }
             delete this;
         }
     }
 
-    size_t refCount()
-    {
-        return m_refs;
-    }
+    static Private *empty();
 
     ichar  *m_data;
     size_t  m_size;
     size_t  m_refs;
+
+    static Private *m_privateEmpty;
 };
 
+ByteStream::Private *ByteStream::Private::m_privateEmpty = 0;
+
+ByteStream::Private *ByteStream::Private::empty()
+{
+    if (!m_privateEmpty) {
+        m_privateEmpty = new Private(0);
+    } else {
+        m_privateEmpty->ref();
+    }
+    return m_privateEmpty;
+}
+
 ByteStream::ByteStream()
-    : d(new Private(0))
+    : d(Private::empty())
 {
 }
 
@@ -84,13 +119,21 @@ ByteStream::ByteStream(const ByteStream &byteStream)
 }
 
 ByteStream::ByteStream(const ichar *data)
-    : d(new Private(data))
 {
+    if (data) {
+        d = new Private(data);
+    } else {
+        d = Private::empty();
+    }
 }
 
 ByteStream::ByteStream(const ichar *data, size_t nbytes)
-    : d(new Private(data, nbytes))
 {
+    if (data && nbytes) {
+        d = new Private(data, nbytes);
+    } else {
+        d = Private::empty();
+    }
 }
 
 ByteStream::~ByteStream()
@@ -110,8 +153,7 @@ const ichar *ByteStream::data() const
 
 ByteStream &ByteStream::operator=(const ichar *data)
 {
-    d->deref();
-    d = new Private(data);
+    d->newAndDetach(this, data);
     return *this;
 }
 
