@@ -24,6 +24,11 @@
 #include <ideal_export.h>
 #include <core/ideal_string.h>
 
+#define GLOBAL_MODULE_ENTRY_POINT(module)                                 \
+    extern "C" IDEAL_EXPORT IdealCore::Module *globalModuleEntryPoint() { \
+        return new module;                                                \
+    }
+
 namespace IdealCore {
 
 /**

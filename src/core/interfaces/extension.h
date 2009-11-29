@@ -30,11 +30,6 @@
         return new type;                                   \
     }
 
-#define GLOBAL_MODULE_ENTRY_POINT(module)                                 \
-    extern "C" IDEAL_EXPORT IdealCore::Module *globalModuleEntryPoint() { \
-        return new module;                                                \
-    }
-
 namespace IdealCore {
 
 /**
