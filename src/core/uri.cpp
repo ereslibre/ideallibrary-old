@@ -1,5 +1,5 @@
 /*
- * This file is part of the Ideal libraries
+ * This file is part of the Ideal Library
  * Copyright (C) 2009 Rafael Fernández López <ereslibre@ereslibre.es>
  *
  * This library is free software; you can redistribute it and/or
