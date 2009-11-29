@@ -27,7 +27,7 @@ mkdir $2/$1 &> /dev/null
 
 cp waf $2/$1 &> /dev/null
 
-echo -e "#! /usr/bin/env python
+echo -e "#!/usr/bin/env python
 
 VERSION    = '0.1'
 APPNAME    = '$1'
