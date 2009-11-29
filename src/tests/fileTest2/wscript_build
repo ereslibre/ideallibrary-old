@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 #
 # This file is part of the Ideal Library
 # Copyright (C) 2009 Rafael Fernández López <ereslibre@ereslibre.es>
