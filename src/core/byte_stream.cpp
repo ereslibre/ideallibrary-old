@@ -27,12 +27,11 @@ namespace IdealCore {
 class ByteStream::Private
 {
 public:
-    Private(const ichar *data, size_t nbytes = 0)
+    Private()
         : m_data(0)
         , m_size(0)
         , m_refs(1)
     {
-        init(data, nbytes);
     }
 
     virtual ~Private()
@@ -60,14 +59,10 @@ public:
         m_size = 0;
     }
 
-    void newAndDetach(ByteStream *byteStream, const ichar *data = 0)
+    void newAndDetach(ByteStream *byteStream)
     {
         if (m_refs > 1) {
-            if (data) {
-                byteStream->d = new Private(data);
-            } else {
-                byteStream->d = empty();
-            }
+            byteStream->d = new Private;
             deref();
         } else if (this == m_privateEmpty) {
             m_privateEmpty = 0;
@@ -106,7 +101,7 @@ ByteStream::Private *ByteStream::Private::m_privateEmpty = 0;
 ByteStream::Private *ByteStream::Private::empty()
 {
     if (!m_privateEmpty) {
-        m_privateEmpty = new Private(0);
+        m_privateEmpty = new Private;
     } else {
         m_privateEmpty->ref();
     }
@@ -127,7 +122,8 @@ ByteStream::ByteStream(const ByteStream &byteStream)
 ByteStream::ByteStream(const ichar *data)
 {
     if (data) {
-        d = new Private(data);
+        d = new Private;
+        d->init(data);
     } else {
         d = Private::empty();
     }
@@ -136,7 +132,8 @@ ByteStream::ByteStream(const ichar *data)
 ByteStream::ByteStream(const ichar *data, size_t nbytes)
 {
     if (data && nbytes) {
-        d = new Private(data, nbytes);
+        d = new Private;
+        d->init(data, nbytes);
     } else {
         d = Private::empty();
     }
@@ -159,7 +156,7 @@ const ichar *ByteStream::data() const
 
 ByteStream &ByteStream::operator=(const ichar *data)
 {
-    d->newAndDetach(this, data);
+    d->newAndDetach(this);
     d->init(data);
     return *this;
 }
