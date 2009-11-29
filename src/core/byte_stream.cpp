@@ -32,14 +32,16 @@ public:
         , m_size(0)
         , m_refs(1)
     {
-        if (nbytes) {
-            m_size = nbytes;
-        } else {
-            m_size = strlen(data);
+        if (data) {
+            if (nbytes) {
+                m_size = nbytes;
+            } else {
+                m_size = strlen(data);
+            }
+            m_data = (ichar*) malloc((m_size + 1) * sizeof(ichar));
+            memcpy(m_data, data, m_size);
+            m_data[m_size] = '\0';
         }
-        m_data = (ichar*) malloc((m_size + 1) * sizeof(ichar));
-        memcpy(m_data, data, m_size);
-        m_data[m_size] = '\0';
     }
 
     virtual ~Private()
