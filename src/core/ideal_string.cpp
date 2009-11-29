@@ -46,9 +46,8 @@ public:
     void init(const ichar *str)
     {
         const size_t rawLen = strlen(str);
-        m_str = (ichar*) malloc((rawLen + 1) * sizeof(ichar));
+        m_str = (ichar*) calloc(rawLen + 1, sizeof(ichar));
         memcpy(m_str, str, rawLen);
-        m_str[rawLen] = '\0';
         m_sizeCalculated = false;
     }
 
@@ -56,9 +55,8 @@ public:
     {
         const size_t rawLen = strlen(m_str);
         Private *privateCopy = new Private;
-        privateCopy->m_str = (ichar*) malloc((rawLen + 1) * sizeof(ichar));
+        privateCopy->m_str = (ichar*) calloc(rawLen + 1, sizeof(ichar));
         memcpy(privateCopy->m_str, m_str, rawLen);
-        privateCopy->m_str[rawLen] = '\0';
         privateCopy->m_charMap = (size_t*) malloc(calculateSize() * sizeof(size_t));
         memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(size_t));
         privateCopy->m_size = m_size;
@@ -237,8 +235,7 @@ class String::Private::PrivateEmpty
 public:
     PrivateEmpty()
     {
-        m_str = (ichar*) malloc(sizeof(ichar));
-        *m_str = '\0';
+        m_str = (ichar*) calloc(1, sizeof(ichar));
         m_size = 0;
         m_sizeCalculated = true;
     }
@@ -290,7 +287,7 @@ String::String(const ichar *str, size_t n)
     if (str && n) {
         d = new Private;
         const size_t rawLength = strlen(str);
-        d->m_str = (ichar*) malloc(((n == npos ? rawLength : n) * 4 + 1) * sizeof(ichar));
+        d->m_str = (ichar*) calloc((n == npos ? rawLength : n) * 4 + 1, sizeof(ichar));
         d->m_charMap = (size_t*) malloc((n == npos ? rawLength : n) * sizeof(size_t));
         size_t count = 0;
         bool breakNext = false;
@@ -309,7 +306,6 @@ String::String(const ichar *str, size_t n)
             d->m_str[i] = str[i];
             ++curr;
         }
-        d->m_str[curr] = '\0';
         d->m_size = count;
         d->m_sizeCalculated = true;
         if (curr < (n == npos ? rawLength * 4 : n * 4)) {
@@ -327,13 +323,12 @@ String::String(Char c)
     : d(new Private)
 {
     const iint32 numberOfOctets = c.octetsRequired();
-    d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
+    d->m_str = (ichar*) calloc(numberOfOctets + 1, sizeof(ichar));
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
         const iint32 offset = 8 * (numberOfOctets - i - 1);
         d->m_str[i] = (value >> offset) & 0xff;
     }
-    d->m_str[numberOfOctets] = '\0';
     d->m_charMap = (size_t*) malloc(sizeof(size_t));
     d->m_charMap[0] = 0;
     d->m_size = 1;
@@ -875,13 +870,12 @@ String &String::operator=(Char c)
 {
     d->newAndDetach(this);
     const iint32 numberOfOctets = c.octetsRequired();
-    d->m_str = (ichar*) malloc((numberOfOctets + 1) * sizeof(ichar));
+    d->m_str = (ichar*) calloc(numberOfOctets + 1, sizeof(ichar));
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
         const iint32 offset = 8 * (numberOfOctets - i - 1);
         d->m_str[i] = (value >> offset) & 0xff;
     }
-    d->m_str[numberOfOctets] = '\0';
     free(d->m_charMap);
     d->m_charMap = (size_t*) malloc(sizeof(size_t));
     d->m_charMap[0] = 0;

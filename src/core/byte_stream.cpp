@@ -32,21 +32,25 @@ public:
         , m_size(0)
         , m_refs(1)
     {
+        init(data, nbytes);
+    }
+
+    virtual ~Private()
+    {
+        free(m_data);
+    }
+
+    void init(const ichar *data, size_t nbytes = 0)
+    {
         if (data) {
             if (nbytes) {
                 m_size = nbytes;
             } else {
                 m_size = strlen(data);
             }
-            m_data = (ichar*) malloc((m_size + 1) * sizeof(ichar));
+            m_data = (ichar*) calloc(m_size + 1, sizeof(ichar));
             memcpy(m_data, data, m_size);
-            m_data[m_size] = '\0';
         }
-    }
-
-    virtual ~Private()
-    {
-        free(m_data);
     }
 
     void clearContents()
@@ -156,6 +160,7 @@ const ichar *ByteStream::data() const
 ByteStream &ByteStream::operator=(const ichar *data)
 {
     d->newAndDetach(this, data);
+    d->init(data);
     return *this;
 }
 
