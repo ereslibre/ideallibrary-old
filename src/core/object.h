@@ -104,7 +104,7 @@
  * public:
  *     MyObject(Object *parent);
  *
- *     IDEAL_SIGNAL(myComplexSignal, bool, int, Object*, List<Object*>);
+ *     IDEAL_SIGNAL(myComplexSignal, bool, iint32, Object*, List<Object*>);
  * };
  * @endcode
  *
@@ -113,7 +113,7 @@
  * @code
  * MyObject::MyObject(Object *parent)
  *     : Object(parent)
- *     , IDEAL_SIGNAL_INIT(myComplexSignal, bool, int, Object*, List<Object*>)
+ *     , IDEAL_SIGNAL_INIT(myComplexSignal, bool, iint32, Object*, List<Object*>)
  * {
  * }
  * @endcode
@@ -135,7 +135,7 @@
  *     MyObject(Object *parent);
  *
  *     IDEAL_SIGNAL(myFirstSignal);
- *     IDEAL_SIGNAL(myComplexSignal, bool, int, Object*, List<Object*>);
+ *     IDEAL_SIGNAL(myComplexSignal, bool, iint32, Object*, List<Object*>);
  * };
  * @endcode
  *
@@ -145,7 +145,7 @@
  * MyObject::MyObject(Object *parent)
  *     : Object(parent)
  *     , IDEAL_SIGNAL_INIT(myFirstSignal)
- *     , IDEAL_SIGNAL_INIT(myComplexSignal, bool, int, Object*, List<Object*>)
+ *     , IDEAL_SIGNAL_INIT(myComplexSignal, bool, iint32, Object*, List<Object*>)
  * {
  * }
  * @endcode
@@ -188,7 +188,7 @@
  *     IDEAL_SDEBUG("We have done something easy");
  * }
  *
- * void MyOtherObject::doSomethingComplex(bool, int, Object*, const List<Object*>&)
+ * void MyOtherObject::doSomethingComplex(bool, iint32, Object*, const List<Object*>&)
  * {
  *     IDEAL_SDEBUG("We have done something complex");
  * }
@@ -234,7 +234,7 @@
  *     void modifyStateAndNotify();
  *
  *     IDEAL_SIGNAL(myFirstSignal);
- *     IDEAL_SIGNAL(myComplexSignal, bool, int, Object*, List<Object*>);
+ *     IDEAL_SIGNAL(myComplexSignal, bool, iint32, Object*, List<Object*>);
  * };
  * @endcode
  *
@@ -244,7 +244,7 @@
  * MyObject::MyObject(Object *parent)
  *     : Object(parent)
  *     , IDEAL_SIGNAL_INIT(myFirstSignal)
- *     , IDEAL_SIGNAL_INIT(myComplexSignal, bool, int, Object*, List<Object*>)
+ *     , IDEAL_SIGNAL_INIT(myComplexSignal, bool, iint32, Object*, List<Object*>)
  * {
  * }
  *
@@ -401,7 +401,7 @@
  * signal has. For example, if we want to connect a signal defined by:
  *
  * @code
- * IDEAL_SIGNAL(myComplexSignal, bool, int, Object*, List<Object*>);
+ * IDEAL_SIGNAL(myComplexSignal, bool, iint32, Object*, List<Object*>);
  * @endcode
  *
  * to a multislot, it would have to look like this:
