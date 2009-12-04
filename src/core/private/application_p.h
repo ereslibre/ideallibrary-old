@@ -47,6 +47,7 @@ public:
     iint32                   m_argc;
     ichar                  **m_argv;
     String                   m_name;
+    Locale                   m_locale;
     bool                     m_prefixSet;
     iint32                   m_sleepTime;
     const iint32             m_defaultSleepTime;

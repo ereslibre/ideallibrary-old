@@ -25,10 +25,9 @@
 #include <core/object.h>
 #include <core/option.h>
 #include <core/ideal_string.h>
+#include <core/ideal_locale.h>
 
 namespace IdealCore {
-
-class Event;
 
 /**
   * @class Application application.h core/application.h
@@ -137,6 +136,11 @@ public:
       *         which means in a posix system: "${IDEAL_PREFIX}/lib/ideal/modules/".
       */
     virtual String prefix() const;
+
+    /**
+      * @return The locale information of the current running application.
+      */
+    Locale locale() const;
 
     /**
       * An option without argument will be added to the list of possible options being passed

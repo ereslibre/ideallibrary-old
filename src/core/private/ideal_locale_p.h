@@ -18,30 +18,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TIMER_P_H
-#define TIMER_P_H
+#ifndef LOCALE_P_H
+#define LOCALE_P_H
 
 namespace IdealCore {
 
-class Timer::Private
+class Locale::Private
 {
 public:
-    Private(Timer *q);
+    Private(Locale *q);
     virtual ~Private();
 
-    bool listContains() const;
+    void ref();
+    void deref();
 
-    TimeoutType m_timeoutType;
-    iint32      m_interval;
-    iint32      m_remaining;
-    State       m_state;
-    Timer      *q;
+    size_t  m_refs;
+    Locale *q;
 };
 
 }
 
 #ifdef IDEAL_OS_POSIX
-#include <core/private/posix/timer_p.h>
+#include <core/private/posix/ideal_locale_p.h>
 #endif //IDEAL_OS_POSIX
 
-#endif //TIMER_P_H
+#endif //LOCALE_P_H

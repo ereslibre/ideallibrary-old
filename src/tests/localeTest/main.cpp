@@ -18,30 +18,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TIMER_P_H
-#define TIMER_P_H
+#include <core/application.h>
+#include <core/ideal_locale.h>
 
-namespace IdealCore {
+using namespace IdealCore;
 
-class Timer::Private
+int main(int argc, char **argv)
 {
-public:
-    Private(Timer *q);
-    virtual ~Private();
-
-    bool listContains() const;
-
-    TimeoutType m_timeoutType;
-    iint32      m_interval;
-    iint32      m_remaining;
-    State       m_state;
-    Timer      *q;
-};
-
+    Application app(argc, argv);
+    IDEAL_SDEBUG("Codeset: " << app.locale().codeSet());
+    return 0;
 }
-
-#ifdef IDEAL_OS_POSIX
-#include <core/private/posix/timer_p.h>
-#endif //IDEAL_OS_POSIX
-
-#endif //TIMER_P_H

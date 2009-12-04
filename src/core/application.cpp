@@ -167,6 +167,11 @@ String Application::prefix() const
     return String();
 }
 
+Locale Application::locale() const
+{
+    return d->m_locale;
+}
+
 iint32 Application::exec()
 {
     while (true) {
