@@ -35,4 +35,56 @@ String Locale::codeSet() const
     return nl_langinfo(CODESET);
 }
 
+String Locale::weekDay(WeekDay weekDay, Format format) const
+{
+    switch (weekDay) {
+        case Monday:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(DAY_2);
+            } else {
+                return nl_langinfo(ABDAY_2);
+            }
+        case Tuesday:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(DAY_3);
+            } else {
+                return nl_langinfo(ABDAY_4);
+            }
+        case Wednesday:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(DAY_4);
+            } else {
+                return nl_langinfo(ABDAY_4);
+            }
+        case Thursday:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(DAY_5);
+            } else {
+                return nl_langinfo(ABDAY_5);
+            }
+        case Friday:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(DAY_6);
+            } else {
+                return nl_langinfo(ABDAY_6);
+            }
+        case Saturday:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(DAY_7);
+            } else {
+                return nl_langinfo(ABDAY_7);
+            }
+        case Sunday:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(DAY_1);
+            } else {
+                return nl_langinfo(ABDAY_1);
+            }
+        default:
+            IDEAL_DEBUG_WARNING("unknown weekday");
+            break;
+    }
+    return String();
+}
+
 }

@@ -40,7 +40,23 @@ public:
     Locale(const Locale &locale);
     virtual ~Locale();
 
+    enum WeekDay {
+        Monday = 0,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday,
+        Sunday
+    };
+
+    enum Format {
+        NotAbbreviated = 0,
+        Abbreviated
+    };
+
     String codeSet() const;
+    String weekDay(WeekDay weekDay, Format format = NotAbbreviated) const;
 
 private:
     class Private;
