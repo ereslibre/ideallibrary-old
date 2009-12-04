@@ -1,10 +1,7 @@
 .waf-*
 .lock-wscript
-build
-doc
+build/
+doc/
 cscope.*
-.kdev4
-.kdev_include_paths
-ideallibrary.kdev4
-externtests
-externTests
+externtests/
+externTests/
