@@ -41,18 +41,18 @@ public:
     virtual ~Locale();
 
     enum WeekDay {
-        Monday = 0, ///< Monday
-        Tuesday,    ///< Tuesday
-        Wednesday,  ///< Wednesday
-        Thursday,   ///< Thursday
-        Friday,     ///< Friday
-        Saturday,   ///< Saturday
-        Sunday      ///< Sunday
+        Monday = 0,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday,
+        Sunday
     };
 
     enum Format {
-        NotAbbreviated = 0, ///< Not abbreviated output
-        Abbreviated         ///< Abbreviated output
+        NotAbbreviated = 0,
+        Abbreviated
     };
 
     /**
