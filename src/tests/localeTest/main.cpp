@@ -26,10 +26,14 @@ using namespace IdealCore;
 int main(int argc, char **argv)
 {
     Application app(argc, argv);
+
     IDEAL_SDEBUG("Codeset: " << app.locale().codeSet());
     IDEAL_SDEBUG("Monday: " << app.locale().weekDay(Locale::Monday));
     IDEAL_SDEBUG("Abbr. Monday: " << app.locale().weekDay(Locale::Monday, Locale::Abbreviated));
     IDEAL_SDEBUG("August: " << app.locale().month(Locale::August));
     IDEAL_SDEBUG("Abbr. August: " << app.locale().month(Locale::August, Locale::Abbreviated));
+    IDEAL_SDEBUG("Am: " << app.locale().amPm(Locale::Am));
+    IDEAL_SDEBUG("Pm: " << app.locale().amPm(Locale::Pm));
+
     return 0;
 }
