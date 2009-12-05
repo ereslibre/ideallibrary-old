@@ -29,5 +29,7 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("Codeset: " << app.locale().codeSet());
     IDEAL_SDEBUG("Monday: " << app.locale().weekDay(Locale::Monday));
     IDEAL_SDEBUG("Abbr. Monday: " << app.locale().weekDay(Locale::Monday, Locale::Abbreviated));
+    IDEAL_SDEBUG("August: " << app.locale().month(Locale::August));
+    IDEAL_SDEBUG("Abbr. August: " << app.locale().month(Locale::August, Locale::Abbreviated));
     return 0;
 }

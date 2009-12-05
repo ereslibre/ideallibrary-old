@@ -87,4 +87,86 @@ String Locale::weekDay(WeekDay weekDay, Format format) const
     return String();
 }
 
+String Locale::month(Month month, Format format) const
+{
+    switch (month) {
+        case January:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_1);
+            } else {
+                return nl_langinfo(ABMON_1);
+            }
+        case February:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_2);
+            } else {
+                return nl_langinfo(ABMON_2);
+            }
+        case March:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_3);
+            } else {
+                return nl_langinfo(ABMON_3);
+            }
+        case April:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_4);
+            } else {
+                return nl_langinfo(ABMON_4);
+            }
+        case May:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_5);
+            } else {
+                return nl_langinfo(ABMON_5);
+            }
+        case June:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_6);
+            } else {
+                return nl_langinfo(ABMON_6);
+            }
+        case July:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_7);
+            } else {
+                return nl_langinfo(ABMON_7);
+            }
+        case August:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_8);
+            } else {
+                return nl_langinfo(ABMON_8);
+            }
+        case September:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_9);
+            } else {
+                return nl_langinfo(ABMON_9);
+            }
+        case October:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_10);
+            } else {
+                return nl_langinfo(ABMON_10);
+            }
+        case November:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_11);
+            } else {
+                return nl_langinfo(ABMON_11);
+            }
+        case December:
+            if (format == NotAbbreviated) {
+                return nl_langinfo(MON_12);
+            } else {
+                return nl_langinfo(ABMON_12);
+            }
+        default:
+            IDEAL_DEBUG_WARNING("unknown month");
+            break;
+    }
+    return String();
+}
+
 }

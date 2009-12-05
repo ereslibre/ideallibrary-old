@@ -50,6 +50,21 @@ public:
         Sunday
     };
 
+    enum Month {
+        January = 0,
+        February,
+        March,
+        April,
+        May,
+        June,
+        July,
+        August,
+        September,
+        October,
+        November,
+        December
+    };
+
     enum Format {
         NotAbbreviated = 0,
         Abbreviated
@@ -57,6 +72,7 @@ public:
 
     String codeSet() const;
     String weekDay(WeekDay weekDay, Format format = NotAbbreviated) const;
+    String month(Month month, Format format = NotAbbreviated) const;
 
 private:
     class Private;
