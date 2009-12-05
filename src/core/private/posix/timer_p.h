@@ -30,6 +30,7 @@ class Timer::PrivateImpl
 {
 public:
     PrivateImpl(Timer *q);
+    virtual ~PrivateImpl();
 };
 
 }

@@ -65,6 +65,11 @@ public:
         December
     };
 
+    enum AmPm {
+        Am = 0,
+        Pm
+    };
+
     enum Format {
         NotAbbreviated = 0,
         Abbreviated
@@ -76,19 +81,34 @@ public:
     String codeSet() const;
 
     /**
-      * @param weekDay The requested week day. @see WeekDay.
+      * @param weekDay The requested week day.
       *
-      * @param format The desired format. @see Format.
+      * @param format The desired format.
       *
       * @return The requested @p weekDay in the desired @p format.
       */
     String weekDay(WeekDay weekDay, Format format = NotAbbreviated) const;
+
+    /**
+      * @param month The requested month.
+      *
+      * @param format The desired format.
+      *
+      * @return The requested @p month in the desired @p format.
+      */
     String month(Month month, Format format = NotAbbreviated) const;
+
+    /**
+      * @param amPm The requested time of day.
+      *
+      * @return The requested time of day. Depending on the locale, this can be an empty string.
+      */
+    String amPm(AmPm amPm) const;
 
 private:
     class Private;
     class PrivateImpl;
-    Private *d;
+    Private *const d;
 };
 
 }

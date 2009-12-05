@@ -32,6 +32,9 @@ class Process::PrivateImpl
     : public Process::Private
 {
 public:
+    PrivateImpl();
+    virtual ~PrivateImpl();
+
     pid_t m_pid;
 };
 

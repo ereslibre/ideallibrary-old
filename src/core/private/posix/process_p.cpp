@@ -23,6 +23,14 @@
 
 namespace IdealCore {
 
+Process::PrivateImpl::PrivateImpl()
+{
+}
+
+Process::PrivateImpl::~PrivateImpl()
+{
+}
+
 void ProcessCommand::run()
 {
     if (command.empty()) {

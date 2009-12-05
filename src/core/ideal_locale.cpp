@@ -52,9 +52,9 @@ Locale::Locale()
 }
 
 Locale::Locale(const Locale &locale)
+    : d(locale.d)
 {
     locale.d->ref();
-    d = locale.d;
 }
 
 Locale::~Locale()

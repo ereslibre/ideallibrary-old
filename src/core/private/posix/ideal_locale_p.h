@@ -30,6 +30,7 @@ class Locale::PrivateImpl
 {
 public:
     PrivateImpl(Locale *q);
+    virtual ~PrivateImpl();
 };
 
 }
