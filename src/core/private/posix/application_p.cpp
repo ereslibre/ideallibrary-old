@@ -20,7 +20,6 @@
 
 #include <stdlib.h>
 #include <signal.h>
-#include <locale.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <dlfcn.h>
@@ -90,7 +89,6 @@ Application::PrivateImpl::PrivateImpl(Application *q)
     , m_inotifyStarted(false)
 #endif
 {
-    setlocale(LC_ALL, "");
     {
         struct sigaction sa;
         sigemptyset(&sa.sa_mask);

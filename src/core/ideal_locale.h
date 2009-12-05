@@ -70,7 +70,18 @@ public:
         Abbreviated
     };
 
+    /**
+      * @return The current codeset of the application. Example: "UTF-8".
+      */
     String codeSet() const;
+
+    /**
+      * @param weekDay The requested week day. @see WeekDay.
+      *
+      * @param format The desired format. @see Format.
+      *
+      * @return The requested @p weekDay in the desired @p format.
+      */
     String weekDay(WeekDay weekDay, Format format = NotAbbreviated) const;
     String month(Month month, Format format = NotAbbreviated) const;
 

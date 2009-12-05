@@ -28,6 +28,7 @@ namespace IdealCore {
 Locale::PrivateImpl::PrivateImpl(Locale *q)
     : Private(q)
 {
+    setlocale(LC_ALL, "");
 }
 
 String Locale::codeSet() const
