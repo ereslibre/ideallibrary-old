@@ -47,7 +47,7 @@ void Locale::Private::deref()
 }
 
 Locale::Locale()
-    : d(new Private(this))
+    : d(new PrivateImpl(this))
 {
 }
 

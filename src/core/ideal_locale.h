@@ -41,21 +41,32 @@ public:
     virtual ~Locale();
 
     enum WeekDay {
-        Monday = 0,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday,
-        Sunday
+        Monday = 0, ///< Monday
+        Tuesday,    ///< Tuesday
+        Wednesday,  ///< Wednesday
+        Thursday,   ///< Thursday
+        Friday,     ///< Friday
+        Saturday,   ///< Saturday
+        Sunday      ///< Sunday
     };
 
     enum Format {
-        NotAbbreviated = 0,
-        Abbreviated
+        NotAbbreviated = 0, ///< Not abbreviated output
+        Abbreviated         ///< Abbreviated output
     };
 
+    /**
+      * @return The current codeset of the application. Example: "UTF-8".
+      */
     String codeSet() const;
+
+    /**
+      * @param weekDay The requested week day. @see WeekDay.
+      *
+      * @param format The desired format. @see Format.
+      *
+      * @return The requested @p weekDay in the desired @p format.
+      */
     String weekDay(WeekDay weekDay, Format format = NotAbbreviated) const;
 
 private:
