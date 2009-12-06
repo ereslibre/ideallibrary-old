@@ -163,4 +163,24 @@ String Locale::amPm(AmPm amPm) const
     return nl_langinfo(PM_STR);
 }
 
+String Locale::dateTimeFormat() const
+{
+    return nl_langinfo(D_T_FMT);
+}
+
+String Locale::dateFormat() const
+{
+    return nl_langinfo(D_FMT);
+}
+
+String Locale::timeFormat() const
+{
+    return nl_langinfo(T_FMT);
+}
+
+String Locale::timeAmPmFormat() const
+{
+    return nl_langinfo(T_FMT_AMPM);
+}
+
 }

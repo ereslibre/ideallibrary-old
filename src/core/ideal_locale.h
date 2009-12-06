@@ -105,6 +105,14 @@ public:
       */
     String amPm(AmPm amPm) const;
 
+    String dateTimeFormat() const;
+
+    String dateFormat() const;
+
+    String timeFormat() const;
+
+    String timeAmPmFormat() const;
+
 private:
     class Private;
     class PrivateImpl;

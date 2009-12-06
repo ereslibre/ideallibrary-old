@@ -34,6 +34,10 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("Abbr. August: " << app.locale().month(Locale::August, Locale::Abbreviated));
     IDEAL_SDEBUG("Am: " << app.locale().amPm(Locale::Am));
     IDEAL_SDEBUG("Pm: " << app.locale().amPm(Locale::Pm));
+    IDEAL_SDEBUG("Date & time format: " << app.locale().dateTimeFormat());
+    IDEAL_SDEBUG("Date format: " << app.locale().dateFormat());
+    IDEAL_SDEBUG("Time format: " << app.locale().timeFormat());
+    IDEAL_SDEBUG("Time Am/Pm format: " << app.locale().timeAmPmFormat());
 
     return 0;
 }
