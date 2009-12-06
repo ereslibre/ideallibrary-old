@@ -39,6 +39,7 @@ int main(int argc, char **argv)
     IDEAL_SDEBUG("Time format: " << app.locale().timeFormat());
     IDEAL_SDEBUG("Time Am/Pm format: " << app.locale().timeAmPmFormat());
     IDEAL_SDEBUG("Currency symbol: " << app.locale().currencySymbol());
+    IDEAL_SDEBUG("Int. Currency symbol: " << app.locale().intCurrencySymbol());
 
     return 0;
 }

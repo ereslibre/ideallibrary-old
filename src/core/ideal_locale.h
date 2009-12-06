@@ -113,7 +113,15 @@ public:
 
     String timeAmPmFormat() const;
 
-    Char currencySymbol() const;
+    /**
+      * @return The currency symbol of the current locale.
+      */
+    String currencySymbol() const;
+
+    /**
+      * @return The international representation of the currency symbol of the current locale.
+      */
+    String intCurrencySymbol() const;
 
 private:
     class Private;
