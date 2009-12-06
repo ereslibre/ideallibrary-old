@@ -150,7 +150,22 @@ void CharTest::operatorUnsignedInt()
     }
 }
 
-void CharTest::operatorEqualsChar()
+void CharTest::operatorEquals()
+{
+    {
+        Char c('a');
+        Char d(L'ñ');
+        c = d;
+        CPPUNIT_ASSERT_EQUAL(Char(L'ñ'), c);
+    }
+    {
+        Char c('a');
+        c = 'b';
+        CPPUNIT_ASSERT_EQUAL(Char('b'), c);
+    }
+}
+
+void CharTest::operatorEqualsEqualsChar()
 {
     {
         Char c('a');
@@ -174,7 +189,7 @@ void CharTest::operatorEqualsChar()
     }
 }
 
-void CharTest::operatorEqualsCharNative()
+void CharTest::operatorEqualsEqualsCharNative()
 {
     {
         Char c('a');
@@ -183,7 +198,7 @@ void CharTest::operatorEqualsCharNative()
     }
 }
 
-void CharTest::operatorEqualsUnsignedShort()
+void CharTest::operatorEqualsEqualsUnsignedShort()
 {
     {
         Char c('a');
@@ -202,7 +217,7 @@ void CharTest::operatorEqualsUnsignedShort()
     }
 }
 
-void CharTest::operatorEqualsUnsignedInt()
+void CharTest::operatorEqualsEqualsUnsignedInt()
 {
     {
         Char c('a');

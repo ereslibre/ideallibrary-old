@@ -32,10 +32,11 @@ class CharTest
     CPPUNIT_TEST(operatorChar);
     CPPUNIT_TEST(operatorUnsignedShort);
     CPPUNIT_TEST(operatorUnsignedInt);
-    CPPUNIT_TEST(operatorEqualsChar);
-    CPPUNIT_TEST(operatorEqualsCharNative);
-    CPPUNIT_TEST(operatorEqualsUnsignedShort);
-    CPPUNIT_TEST(operatorEqualsUnsignedInt);
+    CPPUNIT_TEST(operatorEquals);
+    CPPUNIT_TEST(operatorEqualsEqualsChar);
+    CPPUNIT_TEST(operatorEqualsEqualsCharNative);
+    CPPUNIT_TEST(operatorEqualsEqualsUnsignedShort);
+    CPPUNIT_TEST(operatorEqualsEqualsUnsignedInt);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,10 +48,11 @@ public:
     void operatorChar();
     void operatorUnsignedShort();
     void operatorUnsignedInt();
-    void operatorEqualsChar();
-    void operatorEqualsCharNative();
-    void operatorEqualsUnsignedShort();
-    void operatorEqualsUnsignedInt();
+    void operatorEquals();
+    void operatorEqualsEqualsChar();
+    void operatorEqualsEqualsCharNative();
+    void operatorEqualsEqualsUnsignedShort();
+    void operatorEqualsEqualsUnsignedInt();
 };
 
 #endif //CHAR_TEST_H

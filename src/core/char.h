@@ -39,6 +39,7 @@ class IDEAL_EXPORT Char
 
 public:
     Char();
+    Char(const Char &c);
     Char(iuint32 c);
     Char(const ichar *c);
 
@@ -77,12 +78,18 @@ public:
       */
     operator iuint32() const;
 
-    bool operator==(Char c) const;
+    Char &operator=(const Char &c);
+    Char &operator=(ichar c);
+    Char &operator=(iuint8 c);
+    Char &operator=(iuint16 c);
+    Char &operator=(iuint32 c);
+
+    bool operator==(const Char &c) const;
     bool operator==(ichar c) const;
     bool operator==(iuint8 c) const;
     bool operator==(iuint16 c) const;
     bool operator==(iuint32 c) const;
-    bool operator!=(Char c) const;
+    bool operator!=(const Char &c) const;
     bool operator!=(ichar c) const;
     bool operator!=(iuint8 c) const;
     bool operator!=(iuint16 c) const;

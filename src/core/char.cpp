@@ -29,6 +29,11 @@ Char::Char()
 {
 }
 
+Char::Char(const Char &c)
+    : c(c.c)
+{
+}
+
 Char::Char(iuint32 c)
 {
     if (!(c & 0x1fff80)) {
@@ -145,7 +150,37 @@ Char::operator iuint32() const
     return res;    
 }
 
-bool Char::operator==(Char c) const
+Char &Char::operator=(const Char &c)
+{
+    this->c = c.c;
+    return *this;
+}
+
+Char &Char::operator=(ichar c)
+{
+    this->c = (c & 0x000000ff);
+    return *this;
+}
+
+Char &Char::operator=(iuint8 c)
+{
+    this->c = (c & 0x000000ff);
+    return *this;
+}
+
+Char &Char::operator=(iuint16 c)
+{
+    this->c = (c & 0x0000ffff);
+    return *this;
+}
+
+Char &Char::operator=(iuint32 c)
+{
+    this->c = c;
+    return *this;
+}
+
+bool Char::operator==(const Char &c) const
 {
     return this->c == c.c;
 }
@@ -257,7 +292,7 @@ bool Char::operator==(iuint32 c) const
     return true;
 }
 
-bool Char::operator!=(Char c) const
+bool Char::operator!=(const Char &c) const
 {
     return !(*this == c);
 }
