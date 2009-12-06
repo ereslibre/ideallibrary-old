@@ -40,6 +40,7 @@ class IDEAL_EXPORT Char
 public:
     Char();
     Char(iuint32 c);
+    Char(const ichar *c);
 
     /**
       * @return The character encoded in UTF-8.

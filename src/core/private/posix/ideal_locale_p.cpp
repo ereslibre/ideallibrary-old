@@ -183,4 +183,9 @@ String Locale::timeAmPmFormat() const
     return nl_langinfo(T_FMT_AMPM);
 }
 
+Char Locale::currencySymbol() const
+{
+    return nl_langinfo(CURRENCY_SYMBOL);
+}
+
 }

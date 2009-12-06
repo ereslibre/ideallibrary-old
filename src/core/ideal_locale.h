@@ -113,6 +113,8 @@ public:
 
     String timeAmPmFormat() const;
 
+    Char currencySymbol() const;
+
 private:
     class Private;
     class PrivateImpl;

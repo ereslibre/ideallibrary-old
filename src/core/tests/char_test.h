@@ -27,6 +27,7 @@ class CharTest
     : public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(CharTest);
+    CPPUNIT_TEST(constructor);
     CPPUNIT_TEST(octetsRequired);
     CPPUNIT_TEST(operatorChar);
     CPPUNIT_TEST(operatorUnsignedShort);
@@ -41,6 +42,7 @@ public:
     void setUp();
     void tearDown();
 
+    void constructor();
     void octetsRequired();
     void operatorChar();
     void operatorUnsignedShort();

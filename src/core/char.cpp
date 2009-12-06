@@ -20,6 +20,8 @@
 
 #include "char.h"
 
+#include <string.h>
+
 namespace IdealCore {
 
 Char::Char()
@@ -46,6 +48,25 @@ Char::Char(iuint32 c)
     }
 }
 
+Char::Char(const ichar *ic)
+    : c(0)
+{
+    if (ic) {
+        const size_t rawLen = strlen(ic);
+        if (rawLen && rawLen <= 4) {
+            for (size_t i = 0; i < rawLen; ++i) {
+                c |= (ic[i] & 0x000000ff) << (rawLen - i - 1) * 8;
+            }
+        } else if (rawLen) {
+            IDEAL_DEBUG_WARNING("provided string is wider than 4 bytes. initializing char to 0");
+        } else {
+            IDEAL_DEBUG_WARNING("provided empty string. initializing char to 0");
+        }
+    } else {
+        IDEAL_DEBUG_WARNING("provided null string. initializing char to 0");
+    }
+}
+
 iuint32 Char::value() const
 {
     return c;
@@ -68,7 +89,7 @@ iint32 Char::octetsRequired() const
 Char::operator ichar() const
 {
     if (c & 0xffffff00) {
-        IDEAL_DEBUG_WARNING("char '" << *this << "' would have been corrupted on conversion. returning 0");
+        IDEAL_DEBUG_WARNING("char " << *this << " would have been corrupted on conversion. returning 0");
         return 0;
     }
     return c;
@@ -77,7 +98,7 @@ Char::operator ichar() const
 Char::operator iuint8() const
 {
     if (c & 0xffffff00) {
-        IDEAL_DEBUG_WARNING("char '" << *this << "' would have been corrupted on conversion. returning 0");
+        IDEAL_DEBUG_WARNING("char " << *this << " would have been corrupted on conversion. returning 0");
         return 0;
     }
     return c;
@@ -86,7 +107,7 @@ Char::operator iuint8() const
 Char::operator iuint16() const
 {
     if (c & 0xff000000) {
-        IDEAL_DEBUG_WARNING("char '" << *this << "' would have been be corrupted on conversion. returning 0");
+        IDEAL_DEBUG_WARNING("char " << *this << " would have been be corrupted on conversion. returning 0");
         return 0;
     }
     iuint16 res = 0;

@@ -38,6 +38,22 @@ void CharTest::tearDown()
 {
 }
 
+void CharTest::constructor()
+{
+    {
+        Char c("a");
+        CPPUNIT_ASSERT_EQUAL(Char('a'), c);
+    }
+    {
+        Char c("ñ");
+        CPPUNIT_ASSERT_EQUAL(Char(L'ñ'), c);
+    }
+    {
+        Char c("โ");
+        CPPUNIT_ASSERT_EQUAL(Char(L'โ'), c);
+    }
+}
+
 void CharTest::octetsRequired()
 {
     {
