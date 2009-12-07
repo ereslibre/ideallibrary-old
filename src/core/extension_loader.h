@@ -29,6 +29,8 @@
 
 namespace IdealCore {
 
+class ExtensionLoadDecider;
+
 /**
   * @class ExtensionLoader extension_loader.h core/extension_loader.h
   *
@@ -39,39 +41,6 @@ namespace IdealCore {
 class IDEAL_EXPORT ExtensionLoader
 {
 public:
-    /**
-      * @struct ExtensionLoadDecider extension_loader.h core/extension_loader.h
-      *
-      * Reimplement if you need to load extensions.
-      *
-      * @author Rafael Fernández López <ereslibre@ereslibre.es>
-      */
-    struct ExtensionLoadDecider
-    {
-        /**
-          * @return Whether the extension with information @p extensionInfo should be loaded or not.
-          *
-          * @code
-          * struct Decider
-          *     : public ExtensionLoader::ExtensionLoadDecider
-          * {
-          *     bool loadExtension(const Module::ExtensionInfo &extensionInfo) const
-          *     {
-          *         return extensionInfo.extensionType == MyExtensionType &&
-          *                !extensionInfo.componentOwner.compare("myapplication");
-          *     }
-          * }
-          * @endcode
-          *
-          * This example is pretty vague, since it will load absolutely all extensions of type
-          * MyExtensionType and whose owner is "myapplication". You will probably want to be more
-          * strict depending on the context in which you want results.
-          *
-          * @see Module::ExtensionInfo
-          */
-        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const = 0;
-    };
-
     /**
       * Find all extensions that satisfy @p extensionLoadDecider, reparenting them to @p parent
       * before being returned.

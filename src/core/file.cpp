@@ -21,8 +21,8 @@
 #include "file.h"
 #include "private/file_p.h"
 
-#include <core/module.h>
 #include <core/extension_loader.h>
+#include <core/interfaces/extension_load_decider.h>
 
 #include <core/application.h>
 #include <core/private/application_p.h>
@@ -71,11 +71,11 @@ public:
         bool operator()(ProtocolHandler *&left, ProtocolHandler *&right);
     };
 
-    class ExtensionLoadDecider
-        : public ExtensionLoader::ExtensionLoadDecider
+    class ExtensionFileLoadDecider
+        : public ExtensionLoadDecider
     {
     public:
-        ExtensionLoadDecider(File *file);
+        ExtensionFileLoadDecider(File *file);
 
         virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const;
 
@@ -116,7 +116,7 @@ ProtocolHandler *File::Private::Job::findProtocolHandler()
             }
         }
     }
-    ProtocolHandler *res = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionLoadDecider(m_file), m_file);
+    ProtocolHandler *res = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionFileLoadDecider(m_file), m_file);
     if (!res) {
         IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
     }
@@ -207,12 +207,12 @@ bool File::Private::Job::LessThanProtocolHandler::operator()(ProtocolHandler *&l
     return left->m_weight < right->m_weight;
 }
 
-File::Private::Job::ExtensionLoadDecider::ExtensionLoadDecider(File *file)
+File::Private::Job::ExtensionFileLoadDecider::ExtensionFileLoadDecider(File *file)
     : m_file(file)
 {
 }
 
-bool File::Private::Job::ExtensionLoadDecider::loadExtension(const Module::ExtensionInfo &extensionInfo) const
+bool File::Private::Job::ExtensionFileLoadDecider::loadExtension(const Module::ExtensionInfo &extensionInfo) const
 {
     if (extensionInfo.componentOwner.compare("ideallibrary") ||
         extensionInfo.extensionType != Module::ProtocolHandler) {

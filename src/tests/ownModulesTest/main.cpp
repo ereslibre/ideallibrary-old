@@ -22,6 +22,7 @@
 
 #include <core/application.h>
 #include <core/extension_loader.h>
+#include <core/interfaces/extension_load_decider.h>
 
 #include "foointerface.h"
 
@@ -42,8 +43,8 @@ public:
     }
 };
 
-struct ExtensionLoadDecider
-    : public ExtensionLoader::ExtensionLoadDecider
+struct ExtensionOwnLoadDecider
+    : public ExtensionLoadDecider
 {
     bool loadExtension(const Module::ExtensionInfo &extensionInfo) const
     {
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
 {
     OwnModulesTestApplication app(argc, argv);
 
-    FooInterface *fooInterface = ExtensionLoader::findFirstExtension<FooInterface>(new ExtensionLoadDecider, &app);
+    FooInterface *fooInterface = ExtensionLoader::findFirstExtension<FooInterface>(new ExtensionOwnLoadDecider, &app);
     if (fooInterface) {
         IDEAL_SDEBUG("*** Module found. Info following:");
         IDEAL_SDEBUG("\tInterface test call:\t" << fooInterface->testInterface());

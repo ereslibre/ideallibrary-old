@@ -22,8 +22,8 @@
 #include "private/application_p.h"
 
 #include <core/event.h>
-#include <core/module.h>
 #include <core/extension_loader.h>
+#include <core/interfaces/extension_load_decider.h>
 #include <gui/widget.h>
 
 namespace IdealGUI {
@@ -85,8 +85,8 @@ void Application::Private::GUIEventDispatcher::run()
     }
 }
 
-class ExtensionLoadDecider
-    : public IdealCore::ExtensionLoader::ExtensionLoadDecider
+class ExtensionGUILoadDecider
+    : public IdealCore::ExtensionLoadDecider
 {
 public:
     virtual bool loadExtension(const IdealCore::Module::ExtensionInfo &extensionInfo) const
@@ -101,7 +101,7 @@ Application::Application(iint32 argc, ichar **argv)
     : IdealCore::Application(argc, argv)
     , d(new PrivateImpl(this))
 {
-    d->m_style = IdealCore::ExtensionLoader::findFirstExtension<Style>(new ExtensionLoadDecider, this);
+    d->m_style = IdealCore::ExtensionLoader::findFirstExtension<Style>(new ExtensionGUILoadDecider, this);
 }
 
 Application::~Application()

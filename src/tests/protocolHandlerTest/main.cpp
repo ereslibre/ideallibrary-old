@@ -19,9 +19,9 @@
  */
 
 #include <core/file.h>
-#include <core/module.h>
 #include <core/application.h>
 #include <core/extension_loader.h>
+#include <core/interfaces/extension_load_decider.h>
 #include <core/interfaces/protocol_handler.h>
 
 #define BUFFER_SIZE (1024 * 32)
@@ -38,8 +38,8 @@ static void statResult(ProtocolHandler::StatResult statResult)
     IDEAL_SDEBUG("\t\t*** Is directory?\t" << ((statResult.type & ProtocolHandler::Directory) ? "yes" : "no"));
 }
 
-struct ExtensionLoadDecider
-    : public ExtensionLoader::ExtensionLoadDecider
+struct ExtensionPHLoadDecider
+    : public ExtensionLoadDecider
 {
     virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const
     {
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    ProtocolHandler *protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionLoadDecider, &app);
+    ProtocolHandler *protocolHandler = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionPHLoadDecider, &app);
 
     if (protocolHandler) {
         IDEAL_SDEBUG("*** Going to read /usr/include/stdio.h");
