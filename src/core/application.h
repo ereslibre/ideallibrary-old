@@ -27,6 +27,12 @@
 #include <core/ideal_string.h>
 #include <core/ideal_locale.h>
 
+/**
+  * The IdealCore namespace.
+  *
+  * It contains the basic pillars of the Ideal Library. All other modules are built upon this one.
+  * If you want to use the Ideal Library, you will have to use IdealCore.
+  */
 namespace IdealCore {
 
 /**
