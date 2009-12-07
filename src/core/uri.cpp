@@ -31,6 +31,7 @@ public:
         : m_port(-1)
         , m_isValidUri(false)
         , m_refs(1)
+        , m_initialized(false)
     {
     }
 
@@ -51,6 +52,7 @@ public:
         privateCopy->m_query = m_query;
         privateCopy->m_fragment = m_fragment;
         privateCopy->m_isValidUri = m_isValidUri;
+        privateCopy->m_initialized = m_initialized;
         return privateCopy;
     }
 
@@ -104,6 +106,7 @@ public:
         m_query = String();
         m_fragment = String();
         m_isValidUri = false;
+        m_initialized = false;
     }
 
     String getHex(Char ch) const;
@@ -112,7 +115,7 @@ public:
 
     void reconstructPath(iint32 count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail);
     String reconstructString(const UriTextRangeA &uriTextRange);
-    void initializeContents(const String &uri);
+    void initializeContents();
 
     static Private *empty();
 
@@ -127,6 +130,7 @@ public:
     String  m_fragment;
     bool    m_isValidUri;
     size_t  m_refs;
+    bool    m_initialized;
 
     static Private *m_privateEmpty;
 };
@@ -273,10 +277,10 @@ String Uri::Private::reconstructString(const UriTextRangeA &uriTextRange)
     return res;
 }
 
-void Uri::Private::initializeContents(const String &uriP_)
+void Uri::Private::initializeContents()
 {
-    m_uri = uriP_;
-    const String uriP = encodeUri(uriP_);
+    m_initialized = true;
+    const String uriP = encodeUri(m_uri);
     UriParserStateA parserState;
     UriUriA uri;
     parserState.uri = &uri;
@@ -349,20 +353,20 @@ Uri::Uri(const Uri &uri)
 Uri::Uri(const String &uri)
     : d(new Private)
 {
-    d->initializeContents(uri);
+    d->m_uri = uri;
 }
 
 Uri::Uri(const String &path, const String &filename)
     : d(new Private)
 {
     if (!path.empty() && !filename.empty() && path[path.size() - 1] == '/') {
-        d->initializeContents(path + filename);
+        d->m_uri = path + filename;
     } else if (!path.empty() && !filename.empty()) {
-        d->initializeContents(path + '/' + filename);
+        d->m_uri = path + '/' + filename;
     } else if (path.empty()) {
-        d->initializeContents(filename);
+        d->m_uri = filename;
     } else {
-        d->initializeContents(path);
+        d->m_uri = path;
     }
 }
 
@@ -370,7 +374,7 @@ Uri::Uri(const ichar *uri)
     : d(new Private)
 {
     if (uri) {
-        d->initializeContents(uri);
+        d->m_uri = uri;
     }
 }
 
@@ -381,36 +385,57 @@ Uri::~Uri()
 
 String Uri::scheme() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     return d->m_scheme;
 }
 
 String Uri::username() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     return d->m_username;
 }
 
 String Uri::password() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     return d->m_password;
 }
 
 String Uri::host() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     return d->m_host;
 }
 
 iint32 Uri::port() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     return d->m_port;
 }
 
 String Uri::path() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     return d->m_path;
 }
 
 String Uri::filename() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     const size_t sepPos = d->m_path.rfind('/');
     if (sepPos != String::npos && sepPos < d->m_path.size() - 1) {
         return d->m_path.substr(sepPos + 1);
@@ -425,16 +450,28 @@ String Uri::uri() const
 
 bool Uri::isValid() const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     return d->m_isValidUri;
 }
 
 bool Uri::contains(const Uri &uri) const
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
+    if (!uri.d->m_initialized) {
+        uri.d->initializeContents();
+    }
     return d->m_path.find(uri.d->m_path) == 0;
 }
 
 Uri &Uri::dirUp()
 {
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
     if (d == Private::m_privateEmpty || d->m_path.empty() || !d->m_path.compare("/")) {
         return *this;
     }
@@ -478,7 +515,7 @@ Uri &Uri::operator=(const String &uri)
         d = Private::empty();
     } else {
         d->newAndDetach(this);
-        d->initializeContents(uri);
+        d->m_uri = uri;
     }
     return *this;
 }
@@ -489,7 +526,7 @@ Uri &Uri::operator=(const ichar *uri)
         return *this;
     }
     d->newAndDetach(this);
-    d->initializeContents(uri);
+    d->m_uri = uri;
     return *this;
 }
 
