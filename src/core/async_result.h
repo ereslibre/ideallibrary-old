@@ -70,7 +70,7 @@ public:
     void set(const Values&... values);
 
     template <typename T>
-    T get(iint32 i) const;
+    T get(size_t i) const;
 
     /**
       * @return How many parameters the signal returned.
@@ -79,7 +79,7 @@ public:
       *       arguments). If you want to know if the signal was received, you can use resultReceived()
       *       method.
       */
-    iint32 size() const;
+    size_t size() const;
 
     /**
       * @return Whether this object set() method was called.
@@ -96,7 +96,7 @@ public:
 
 private:
     Any   *m_values;
-    iint32 m_size;
+    size_t m_size;
     bool   m_resultReceived;
 };
 
@@ -108,7 +108,7 @@ void AsyncResult::set(const Values&... values)
     if (m_size) {
         m_values = new Any[m_size];
         Any val[sizeof...(Values)] = { values... };
-        for (iint32 i = 0; i < m_size; ++i) {
+        for (size_t i = 0; i < m_size; ++i) {
             m_values[i] = val[i];
         }
     } else {
@@ -119,7 +119,7 @@ void AsyncResult::set(const Values&... values)
 }
 
 template <typename T>
-T AsyncResult::get(iint32 i) const
+T AsyncResult::get(size_t i) const
 {
     if (i >= 0 && i < m_size) {
         return m_values[i].get<T>();
