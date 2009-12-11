@@ -140,6 +140,14 @@ public:
     Thread *mkdir(ProtocolHandler::Permissions permissions = ProtocolHandler::SystemDefault, Thread::Type type = Thread::NoJoinable) const;
 
     /**
+      * @return A protocol handler capable of working with the current URI. 0 if no protocol handler
+      *         was found.
+      *
+      * @note The owner of the protocol handler is this File object.
+      */
+    ProtocolHandler *protocolHandler() const;
+
+    /**
       * @return The URI of the file object.
       */
     Uri uri() const;

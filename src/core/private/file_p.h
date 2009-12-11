@@ -21,6 +21,7 @@
 #ifndef FILE_P_H
 #define FILE_P_H
 
+#include <core/interfaces/extension_load_decider.h>
 #include <core/file.h>
 
 namespace IdealCore {
@@ -30,6 +31,20 @@ class File::Private
 public:
     Private(File *q);
     virtual ~Private();
+
+    class ExtensionFileLoadDecider
+        : public ExtensionLoadDecider
+    {
+    public:
+        ExtensionFileLoadDecider(File *file);
+
+        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const;
+
+    private:
+        File *m_file;
+    };
+
+    ProtocolHandler *findProtocolHandler();
 
     Uri          m_uri;
     Event        m_events;

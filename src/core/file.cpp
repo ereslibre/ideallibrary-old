@@ -22,7 +22,6 @@
 #include "private/file_p.h"
 
 #include <core/extension_loader.h>
-#include <core/interfaces/extension_load_decider.h>
 
 #include <core/application.h>
 #include <core/private/application_p.h>
@@ -42,6 +41,43 @@ File::Private::~Private()
 {
 }
 
+File::Private::ExtensionFileLoadDecider::ExtensionFileLoadDecider(File *file)
+    : m_file(file)
+{
+}
+
+bool File::Private::ExtensionFileLoadDecider::loadExtension(const Module::ExtensionInfo &extensionInfo) const
+{
+    if (extensionInfo.componentOwner.compare("ideallibrary") ||
+        extensionInfo.extensionType != Module::ProtocolHandler) {
+        return false;
+    }
+    ProtocolHandler::AdditionalInfo *additionalInfo = static_cast<ProtocolHandler::AdditionalInfo*>(extensionInfo.additionalInfo);
+    return additionalInfo->handlesProtocols.contains(m_file->d->m_uri.scheme());
+}
+
+ProtocolHandler *File::Private::findProtocolHandler()
+{
+    Application::Private *const app_d = q->application()->d;
+    List<ProtocolHandler*>::iterator it;
+    {
+        ContextMutexLocker cml(app_d->m_protocolHandlerCacheMutex);
+        for (it = app_d->m_protocolHandlerCache.begin(); it != app_d->m_protocolHandlerCache.end(); ++it) {
+            ProtocolHandler *protocolHandler = *it;
+            if (protocolHandler->canBeReusedWith(q->d->m_uri)) {
+                app_d->m_protocolHandlerCache.erase(it);
+                ++protocolHandler->m_weight;
+                return protocolHandler;
+            }
+        }
+    }
+    ProtocolHandler *res = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionFileLoadDecider(q), q);
+    if (!res) {
+        IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << q->d->m_uri.scheme() << "\" protocol");
+    }
+    return res;
+}
+
 class File::Private::Job
     : public Thread
 {
@@ -54,7 +90,6 @@ public:
 
     Job(File *file, Type type);
 
-    ProtocolHandler *findProtocolHandler();
     void cacheOrDiscard(ProtocolHandler *protocolHandler);
 
     ProtocolHandler::StatResult statPrivate();
@@ -69,18 +104,6 @@ public:
     struct LessThanProtocolHandler
     {
         bool operator()(ProtocolHandler *&left, ProtocolHandler *&right);
-    };
-
-    class ExtensionFileLoadDecider
-        : public ExtensionLoadDecider
-    {
-    public:
-        ExtensionFileLoadDecider(File *file);
-
-        virtual bool loadExtension(const Module::ExtensionInfo &extensionInfo) const;
-
-    private:
-        File *m_file;
     };
 
     File                        *m_file;
@@ -99,28 +122,6 @@ File::Private::Job::Job(File *file, Type type)
     , m_maxBytes(NoMaxBytes)
     , m_protocolHandler(0)
 {
-}
-
-ProtocolHandler *File::Private::Job::findProtocolHandler()
-{
-    Application::Private *const app_d = m_file->application()->d;
-    List<ProtocolHandler*>::iterator it;
-    {
-        ContextMutexLocker cml(app_d->m_protocolHandlerCacheMutex);
-        for (it = app_d->m_protocolHandlerCache.begin(); it != app_d->m_protocolHandlerCache.end(); ++it) {
-            ProtocolHandler *protocolHandler = *it;
-            if (protocolHandler->canBeReusedWith(m_file->d->m_uri)) {
-                app_d->m_protocolHandlerCache.erase(it);
-                ++protocolHandler->m_weight;
-                return protocolHandler;
-            }
-        }
-    }
-    ProtocolHandler *res = ExtensionLoader::findFirstExtension<ProtocolHandler>(new ExtensionFileLoadDecider(m_file), m_file);
-    if (!res) {
-        IDEAL_DEBUG_WARNING("currently there are no installed extensions capable of handling \"" << m_file->d->m_uri.scheme() << "\" protocol");
-    }
-    return res;
 }
 
 void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
@@ -145,7 +146,7 @@ void File::Private::Job::cacheOrDiscard(ProtocolHandler *protocolHandler)
 ProtocolHandler::StatResult File::Private::Job::statPrivate()
 {
     ProtocolHandler::StatResult res;
-    m_protocolHandler = findProtocolHandler();
+    m_protocolHandler = m_file->d->findProtocolHandler();
     if (m_protocolHandler) {
         res = m_protocolHandler->stat(m_file->d->m_uri);
     }
@@ -175,7 +176,7 @@ void File::Private::Job::get()
 
 void File::Private::Job::mkdir()
 {
-    m_protocolHandler = findProtocolHandler();
+    m_protocolHandler = m_file->d->findProtocolHandler();
     if (m_protocolHandler) {
         m_protocolHandler->mkdir(m_file->d->m_uri, m_permissions);
         cacheOrDiscard(m_protocolHandler);
@@ -205,21 +206,6 @@ void File::Private::Job::readFile()
 bool File::Private::Job::LessThanProtocolHandler::operator()(ProtocolHandler *&left, ProtocolHandler *&right)
 {
     return left->m_weight < right->m_weight;
-}
-
-File::Private::Job::ExtensionFileLoadDecider::ExtensionFileLoadDecider(File *file)
-    : m_file(file)
-{
-}
-
-bool File::Private::Job::ExtensionFileLoadDecider::loadExtension(const Module::ExtensionInfo &extensionInfo) const
-{
-    if (extensionInfo.componentOwner.compare("ideallibrary") ||
-        extensionInfo.extensionType != Module::ProtocolHandler) {
-        return false;
-    }
-    ProtocolHandler::AdditionalInfo *additionalInfo = static_cast<ProtocolHandler::AdditionalInfo*>(extensionInfo.additionalInfo);
-    return additionalInfo->handlesProtocols.contains(m_file->d->m_uri.scheme());
 }
 
 void File::Private::Job::run()
@@ -284,6 +270,11 @@ Thread *File::mkdir(ProtocolHandler::Permissions permissions, Thread::Type type)
     job->m_operation = Private::Job::Mkdir;
     job->m_permissions = permissions;
     return job;
+}
+
+ProtocolHandler *File::protocolHandler() const
+{
+    return d->findProtocolHandler();
 }
 
 Uri File::uri() const
