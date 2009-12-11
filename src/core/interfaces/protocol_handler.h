@@ -125,14 +125,44 @@ public:
         OverwriteTarget           ///< Overwrite target silently if it already exists.
     };
 
+    /**
+      * Opens the requested @p uri in @p openMode mode in order to manipulate contents afterwards.
+      *
+      * @return An ErrorCode indicating whether the operation did succeed or if it could not be
+      *         completed successfully.
+      */
     virtual ErrorCode open(const Uri &uri, iint32 openMode = Read | Write) = 0;
 
+    /**
+      * Reads @p nbytes from the already opened URI.
+      *
+      * @return The ByteStream containing the information read. An empty ByteStream if no data could
+      *         be read, or if there was no information to read.
+      *
+      * @note You need to have opened this URI already with Read permissions.
+      */
     virtual ByteStream read(size_t nbytes) = 0;
 
+    /**
+      * Writes information into the already opened file.
+      *
+      * @return The number of bytes that have actually been written.
+      *
+      * @note You need to have opened this URI already with Write permissions.
+      */
     virtual size_t write(const ByteStream &byteStream) = 0;
 
+    /**
+      * Closes the URI that has already been opened.
+      */
     virtual void close() = 0;
 
+    /**
+      * Lists @p uri.
+      *
+      * @return The list of children URIs of @p uri. In case that no children could be found, an
+      *         empty list is returned.
+      */
     virtual List<Uri> listDir(const Uri &uri) = 0;
 
     /**
