@@ -126,7 +126,9 @@ public:
       *         several times until the file has been reached EOF or it has been cancelled, or maxBytes
       *         has been reached.
       *
-      * @see ProtocolHandler::get()
+      * @see ProtocolHandler::open()
+      * @see ProtocolHandler::read()
+      * @see ProtocolHandler::close()
       */
     Thread *get(size_t maxBytes = NoMaxBytes, Thread::Type type = Thread::NoJoinable) const;
 
