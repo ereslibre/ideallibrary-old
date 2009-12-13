@@ -30,7 +30,7 @@ blddir     = 'build'
 subdirs_d  = 'src/core src/gui src/modules src/tests'
 subdirs_r  = 'src/core src/gui src/modules'
 
-posixPlatforms = ['linux']
+posixPlatforms = ['linux', 'darwin']
 
 checkCompilerFeatures = '''struct A {}; struct B {};
                            template <typename... Type>

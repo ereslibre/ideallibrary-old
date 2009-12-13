@@ -29,7 +29,9 @@ checkInotify = '''#include <sys/inotify.h>
 def configure(conf):
     if not Options.options.release:
         conf.sub_config('tests')
-    conf.env['LIB_CORE'] = ['rt', 'dl', 'pthread']
+    conf.env['LIB_CORE'] = ['dl', 'pthread']
+    if conf.env['DEST_OS'] == 'linux':
+        conf.env['LIB_CORE'] += ['rt']
     conf.check_cfg(package = 'liburiparser', args = '--cflags --libs')
     conf.check_cfg(package = 'libpcre', args = '--cflags --libs')
     if not conf.env['HAVE_LIBURIPARSER'] == 1:
