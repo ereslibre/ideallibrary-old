@@ -21,7 +21,6 @@
 #ifndef IDEAL_SIGNAL_H
 #define IDEAL_SIGNAL_H
 
-#include <string.h>
 #include <core/mutex.h>
 #include <core/list.h>
 #include <core/signal_resource.h>
@@ -386,9 +385,19 @@ public:
     {
     }
 
+    SignalBase(SignalResource *parent)
+        : m_parent(parent)
+        , m_isDestroyedSignal(true)
+        , m_connectionsMutex(Mutex::Recursive)
+        , m_beingEmitted(false)
+        , m_beingEmittedMutex(Mutex::Recursive)
+    {
+        parent->signalCreated(this);
+    }
+
     SignalBase(SignalResource *parent, const ichar *name, const ichar * /* signature */)
         : m_parent(parent)
-        , m_isDestroyedSignal(!strcmp(name, "destroyed"))
+        , m_isDestroyedSignal(false)
         , m_connectionsMutex(Mutex::Recursive)
         , m_beingEmitted(false)
         , m_beingEmittedMutex(Mutex::Recursive)
@@ -494,6 +503,11 @@ protected:
     }
 
 private:
+    Signal(SignalResource *parent)
+        : SignalBase(parent)
+    {
+    }
+
     template <typename Receiver, typename Member>
     void connect(Receiver *receiver, Member member) const
     {

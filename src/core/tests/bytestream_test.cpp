@@ -20,6 +20,8 @@
 
 #include "bytestream_test.h"
 
+#include <string.h>
+
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>

@@ -93,7 +93,7 @@ void Object::Private::cleanConnections()
 
 Object::Object(Object *parent)
     : d(new Private(this))
-    , IDEAL_SIGNAL_INIT(destroyed)
+    , destroyed(Signal<>(this))
 {
     d->m_parent = parent;
     if (!parent) {
@@ -295,7 +295,7 @@ List<const SignalBase*> Object::signals() const
 
 Object::Object()
     : d(new Private(this))
-    , IDEAL_SIGNAL_INIT(destroyed)
+    , destroyed(Signal<>(this))
 {
     d->m_parent = 0;
     d->m_application = 0;

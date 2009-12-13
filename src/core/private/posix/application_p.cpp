@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <dlfcn.h>
