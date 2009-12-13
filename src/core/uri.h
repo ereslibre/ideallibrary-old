@@ -90,6 +90,11 @@ public:
     bool isValid() const;
 
     /**
+      * @return Whether the URI is empty or not.
+      */
+    bool empty() const;
+
+    /**
       * @return Whether this URI contains @p uri in the sense of the path.
       *
       * @note "file:///home/user" contains "file:///home", but "text.txt" does not contain "xt"

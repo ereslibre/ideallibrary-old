@@ -456,6 +456,11 @@ bool Uri::isValid() const
     return d->m_isValidUri;
 }
 
+bool Uri::empty() const
+{
+    return d->m_uri.empty();
+}
+
 bool Uri::contains(const Uri &uri) const
 {
     if (!d->m_initialized) {
