@@ -185,12 +185,22 @@ String Locale::timeAmPmFormat() const
 
 String Locale::currencySymbol() const
 {
+#ifdef CURRENCY_SYMBOL
     return nl_langinfo(CURRENCY_SYMBOL);
+#elif defined(CRNCYSTR)
+    return nl_langinfo(CRNCYSTR);
+#else
+    return String();
+#endif
 }
 
 String Locale::intCurrencySymbol() const
 {
+#ifdef INT_CURR_SYMBOL
     return nl_langinfo(INT_CURR_SYMBOL);
+#else
+    return String();
+#endif
 }
 
 }
