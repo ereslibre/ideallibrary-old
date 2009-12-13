@@ -59,7 +59,7 @@ BuiltinProtocolHandlersLocal::~BuiltinProtocolHandlersLocal()
 
 ProtocolHandler::ErrorCode BuiltinProtocolHandlersLocal::open(const Uri &uri, iint32 openMode)
 {
-    if (d->m_opened.isValid()) {
+    if (!d->m_opened.empty() && d->m_opened.isValid()) {
         IDEAL_DEBUG_WARNING("the uri " << d->m_opened.uri() << " was opened. Closing");
         close();
     }
