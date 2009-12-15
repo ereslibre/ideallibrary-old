@@ -33,6 +33,8 @@ public:
         , m_charMap(0)
         , m_size(0)
         , m_sizeCalculated(false)
+        , m_rawLen(0)
+        , m_rawLenCalculated(false)
         , m_refs(1)
     {
     }
@@ -45,22 +47,24 @@ public:
 
     void init(const ichar *str)
     {
-        const size_t rawLen = strlen(str);
-        m_str = (ichar*) calloc(rawLen + 1, sizeof(ichar));
-        memcpy(m_str, str, rawLen);
+        m_rawLen = strlen(str);
+        m_rawLenCalculated = true;
+        m_str = (ichar*) calloc(m_rawLen + 1, sizeof(ichar));
+        memcpy(m_str, str, m_rawLen);
         m_sizeCalculated = false;
     }
 
     Private *copy()
     {
-        const size_t rawLen = strlen(m_str);
         Private *privateCopy = new Private;
-        privateCopy->m_str = (ichar*) calloc(rawLen + 1, sizeof(ichar));
-        memcpy(privateCopy->m_str, m_str, rawLen);
+        privateCopy->m_str = (ichar*) calloc(calculateRawLen() + 1, sizeof(ichar));
+        memcpy(privateCopy->m_str, m_str, m_rawLen);
         privateCopy->m_charMap = (size_t*) malloc(calculateSize() * sizeof(size_t));
         memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(size_t));
         privateCopy->m_size = m_size;
-        privateCopy->m_sizeCalculated = true;
+        privateCopy->m_sizeCalculated = m_sizeCalculated;
+        privateCopy->m_rawLen = m_rawLen;
+        privateCopy->m_rawLenCalculated = m_rawLenCalculated;
         return privateCopy;
     }
 
@@ -72,6 +76,8 @@ public:
         m_charMap = 0;
         m_size = 0;
         m_sizeCalculated = false;
+        m_rawLen = 0;
+        m_rawLenCalculated = false;
     }
 
     void copyAndDetach(String *str)
@@ -106,8 +112,7 @@ public:
             m_size = 0;
         }
         free(m_charMap);
-        const size_t rawLen = strlen(m_str);
-        m_charMap = (size_t*) calloc(rawLen, sizeof(size_t));
+        m_charMap = (size_t*) calloc(calculateRawLen(), sizeof(size_t));
         size_t i = 0;
         m_size = 0;
         while (true) {
@@ -133,10 +138,24 @@ public:
             }
             ++i;
         }
-        if (m_size < rawLen) {
+        if (m_size < m_rawLen) {
             m_charMap = (size_t*) realloc(m_charMap, m_size * sizeof(size_t));
         }
         return m_size;
+    }
+
+    size_t calculateRawLen()
+    {
+        if (m_rawLenCalculated) {
+            return m_rawLen;
+        }
+        m_rawLenCalculated = true;
+        if (m_str) {
+            m_rawLen = strlen(m_str);
+        } else {
+            m_rawLen = 0;
+        }
+        return m_rawLen;
     }
 
     void ref()
@@ -221,6 +240,8 @@ public:
     size_t *m_charMap;
     size_t  m_size;
     bool    m_sizeCalculated;
+    size_t  m_rawLen;
+    bool    m_rawLenCalculated;
     size_t  m_refs;
 
     class PrivateEmpty;
@@ -238,6 +259,8 @@ public:
         m_str = (ichar*) calloc(1, sizeof(ichar));
         m_size = 0;
         m_sizeCalculated = true;
+        m_rawLen = 0;
+        m_rawLenCalculated = true;
     }
 
     virtual ~PrivateEmpty()
@@ -308,6 +331,8 @@ String::String(const ichar *str, size_t n)
         }
         d->m_size = count;
         d->m_sizeCalculated = true;
+        d->m_rawLen = curr;
+        d->m_rawLenCalculated = true;
         if (curr < (n == npos ? rawLength * 4 : n * 4)) {
             d->m_str = (ichar*) realloc(d->m_str, curr + 1);
         }
@@ -333,6 +358,8 @@ String::String(Char c)
     d->m_charMap[0] = 0;
     d->m_size = 1;
     d->m_sizeCalculated = true;
+    d->m_rawLen = numberOfOctets;
+    d->m_rawLenCalculated = true;
 }
 
 String::~String()
@@ -478,40 +505,41 @@ List<String> String::split(Char separator) const
 
 String &String::prepend(const String &str)
 {
+    d->calculateRawLen();
     d->copyAndDetach(this);
-    const size_t rawLength = strlen(str.d->m_str);
-    const size_t currRawLength = strlen(d->m_str);
-    d->m_str = (ichar*) realloc(d->m_str, (rawLength + currRawLength + 1) * sizeof(ichar));
-    if (currRawLength) {
-        memmove(&d->m_str[rawLength], d->m_str, (currRawLength + 1) * sizeof(ichar));
+    d->m_str = (ichar*) realloc(d->m_str, (str.d->calculateRawLen() + d->m_rawLen + 1) * sizeof(ichar));
+    if (d->m_rawLen) {
+        memmove(&d->m_str[str.d->m_rawLen], d->m_str, (d->m_rawLen + 1) * sizeof(ichar));
     }
-    memcpy(d->m_str, str.d->m_str, rawLength * sizeof(ichar));
+    memcpy(d->m_str, str.d->m_str, str.d->m_rawLen * sizeof(ichar));
     d->m_sizeCalculated = false;
+    d->m_rawLenCalculated = false;
     return *this;
 }
 
 String &String::prepend(const ichar *str)
 {
+    d->calculateRawLen();
     d->copyAndDetach(this);
     const size_t rawLength = strlen(str);
-    const size_t currRawLength = strlen(d->m_str);
-    d->m_str = (ichar*) realloc(d->m_str, (rawLength + currRawLength + 1) * sizeof(ichar));
-    if (currRawLength) {
-        memmove(&d->m_str[rawLength], d->m_str, (currRawLength + 1) * sizeof(ichar));
+    d->m_str = (ichar*) realloc(d->m_str, (rawLength + d->m_rawLen + 1) * sizeof(ichar));
+    if (d->m_rawLen) {
+        memmove(&d->m_str[rawLength], d->m_str, (d->m_rawLen + 1) * sizeof(ichar));
     }
     memcpy(d->m_str, str, rawLength * sizeof(ichar));
     d->m_sizeCalculated = false;
+    d->m_rawLenCalculated = false;
     return *this;
 }
 
 String &String::prepend(Char c)
 {
+    d->calculateRawLen();
     d->copyAndDetach(this);
-    const size_t currRawLength = strlen(d->m_str);
     const iint32 numberOfOctets = c.octetsRequired();
-    d->m_str = (ichar*) realloc(d->m_str, (numberOfOctets + currRawLength + 1) * sizeof(ichar));
-    if (currRawLength) {
-        memmove(&d->m_str[numberOfOctets], d->m_str, (currRawLength + 1) * sizeof(ichar));
+    d->m_str = (ichar*) realloc(d->m_str, (numberOfOctets + d->m_rawLen + 1) * sizeof(ichar));
+    if (d->m_rawLen) {
+        memmove(&d->m_str[numberOfOctets], d->m_str, (d->m_rawLen + 1) * sizeof(ichar));
     }
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
@@ -519,6 +547,7 @@ String &String::prepend(Char c)
         d->m_str[i] = (value >> offset) & 0xff;
     }
     d->m_sizeCalculated = false;
+    d->m_rawLenCalculated = false;
     return *this;
 }
 
@@ -881,21 +910,23 @@ String &String::operator=(Char c)
     d->m_charMap[0] = 0;
     d->m_size = 1;
     d->m_sizeCalculated = true;
+    d->m_rawLen = numberOfOctets;
+    d->m_rawLenCalculated = true;
     return *this;
 }
 
 String &String::operator+=(const String &str)
 {
+    d->calculateRawLen();
     d->copyAndDetach(this);
-    const size_t oldRawLength = strlen(d->m_str);
-    const size_t newRawLength = oldRawLength + strlen(str.d->m_str);
+    const size_t newRawLength = d->m_rawLen + str.d->calculateRawLen();
     d->m_str = (ichar*) realloc(d->m_str, newRawLength + 1);
     union FragmentedValue {
         iuint32 value;
         ichar v[4];
     };
     FragmentedValue fragmentedValue;
-    size_t pos = oldRawLength;
+    size_t pos = d->m_rawLen;
     for (size_t i = 0; i < str.d->calculateSize(); ++i) {
         const Char currChar = str[i];
         fragmentedValue.value = currChar.value();
@@ -907,38 +938,44 @@ String &String::operator+=(const String &str)
     }
     d->m_str[newRawLength] = '\0';
     d->m_sizeCalculated = false;
+    d->m_rawLen = newRawLength;
+    d->m_rawLenCalculated = true;
     return *this;
 }
 
 String &String::operator+=(const ichar *str)
 {
+    d->calculateRawLen();
     d->copyAndDetach(this);
     const size_t rawLength = strlen(str);
-    const size_t oldRawLength = strlen(d->m_str);
-    const size_t newRawLength = oldRawLength + rawLength;
+    const size_t newRawLength = d->m_rawLen + rawLength;
     d->m_str = (ichar*) realloc(d->m_str, newRawLength + 1);
-    memcpy(&d->m_str[oldRawLength], str, rawLength);
+    memcpy(&d->m_str[d->m_rawLen], str, rawLength);
     d->m_str[newRawLength] = '\0';
     d->m_sizeCalculated = false;
+    d->m_rawLen = newRawLength;
+    d->m_rawLenCalculated = true;
     return *this;
 }
 
 String &String::operator+=(Char c)
 {
+    d->calculateRawLen();
     d->copyAndDetach(this);
     const iint32 numberOfOctets = c.octetsRequired();
-    const size_t rawLength = strlen(d->m_str);
-    const size_t newRawLength = rawLength + numberOfOctets;
+    const size_t newRawLength = d->m_rawLen + numberOfOctets;
     const iuint32 value = c.value();
     d->m_str = (ichar*) realloc(d->m_str, newRawLength + 1);
     iint32 pos = 0;
-    for (size_t i = rawLength; i < newRawLength; ++i) {
+    for (size_t i = d->m_rawLen; i < newRawLength; ++i) {
         const iint32 offset = 8 * (numberOfOctets - pos - 1);
         d->m_str[i] = (value >> offset) & 0xff;
         ++pos;
     }
     d->m_str[newRawLength] = '\0';
     d->m_sizeCalculated = false;
+    d->m_rawLen = newRawLength;
+    d->m_rawLenCalculated = true;
     return *this;
 }
 
