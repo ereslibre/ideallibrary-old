@@ -147,13 +147,25 @@ Uri::Private *Uri::Private::empty()
     return m_privateEmpty;
 }
 
-const String uri_unreserved = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                              "abcdefghijklmnopqrstuvwxyz-_.~";
+static const bool uri_unencoded[] = { /* 0 - 15 */
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      /* 16 - 31 */
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      /* 31 - 47 */
+                                      0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                      /* 48 - 63 */
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+                                      /* 64 - 79 */
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                      /* 80 - 95 */
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+                                      /* 96 - 111 */
+                                      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                      /* 112 - 127 */
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 };
 
-const String uri_reserved = "!*'();:@&=+$,/?%#[]";
-
-const ichar uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                          'A', 'B', 'C', 'D', 'E', 'F' };
+static const ichar uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                 'A', 'B', 'C', 'D', 'E', 'F' };
 
 String Uri::Private::getHex(Char ch) const
 {
@@ -177,7 +189,7 @@ String Uri::Private::encodeUri(const String &uri) const
     String res;
     for (size_t i = 0; i < uri.size(); ++i) {
         const Char c = uri[i];
-        if (uri_unreserved.find(c) != String::npos || uri_reserved.find(c) != String::npos) {
+        if (c.octetsRequired() == 1 && uri_unencoded[c.value()]) {
             res += c;
         } else {
             res += getHex(c);
