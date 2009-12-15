@@ -472,8 +472,7 @@ List<String> String::split(Char separator) const
     if (!d->calculateSize()) {
         return res;
     }
-    const iint32 length = strlen(d->m_str);
-    ichar *curr = (ichar*) calloc(length + 1, sizeof(ichar));
+    ichar *curr = (ichar*) calloc(d->calculateRawLen() + 1, sizeof(ichar));
     size_t pos = 0;
     for (size_t i = 0; i < d->m_size; ++i) {
         const Char currChar = d->getCharAt(i);
@@ -481,7 +480,7 @@ List<String> String::split(Char separator) const
             curr[pos] = '\0';
             res.push_back(String(curr));
             pos = 0;
-            bzero(curr, (length + 1) * sizeof(ichar));
+            bzero(curr, (d->m_rawLen + 1) * sizeof(ichar));
         } else if (currChar != separator) {
             union {
                 iuint32 value;
