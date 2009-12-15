@@ -181,7 +181,8 @@ String Uri::Private::encodeUri(const String &uri) const
     String res;
     for (size_t i = 0; i < uri.size(); ++i) {
         const Char c = uri[i];
-        if (c.octetsRequired() == 1 && uri_unencoded[c.value()]) {
+        const iuint32 value = c.value();
+        if (value < 128 && uri_unencoded[value]) {
             res += c;
         } else {
             res += getHex(c);
