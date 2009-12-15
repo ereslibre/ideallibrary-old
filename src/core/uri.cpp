@@ -39,7 +39,7 @@ public:
     {
     }
 
-    Private *copy()
+    Private *copy() const
     {
         Private *privateCopy = new Private;
         privateCopy->m_uri = m_uri;
