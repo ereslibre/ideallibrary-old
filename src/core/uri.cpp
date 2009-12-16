@@ -143,14 +143,14 @@ Uri::Private *Uri::Private::empty()
     return m_privateEmpty;
 }
 
-static const bool uri_unencoded[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                      0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 32 - 47
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, // 48 - 63
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, // 80 - 95
-                                      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 }; // 112 - 127
+static const bool uri_unreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
+                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
+                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
+                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 80 - 95
+                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
+                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }; // 112 - 127
 
 static const ichar uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                                  'A', 'B', 'C', 'D', 'E', 'F' };
@@ -175,15 +175,19 @@ String Uri::Private::getHex(Char ch) const
 String Uri::Private::encodeUri(const String &uri) const
 {
     String res;
+#if 0
     for (size_t i = 0; i < uri.size(); ++i) {
         const Char c = uri[i];
         const iuint32 value = c.value();
-        if (value < 128 && uri_unencoded[value]) {
+        if (value < 128 && uri_unreserved[value]) {
             res += c;
         } else {
             res += getHex(c);
         }
     }
+#else
+    // Parse here
+#endif
     return res;
 }
 
@@ -193,6 +197,7 @@ String Uri::Private::decodeUri(const String &uri) const
         return uri;
     }
     String res;
+#if 0
     size_t i = 0;
     while (i < uri.size()) {
         const Char currChar = uri[i];
@@ -244,6 +249,9 @@ String Uri::Private::decodeUri(const String &uri) const
             ++i;
         }
     }
+#else
+    // Parse here
+#endif
     return res;
 }
 
@@ -354,6 +362,22 @@ String Uri::filename() const
         return d->m_path.substr(sepPos + 1);
     }
     return String();
+}
+
+String Uri::query() const
+{
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
+    return d->m_query;
+}
+
+String Uri::fragment() const
+{
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
+    return d->m_fragment;
 }
 
 String Uri::uri() const

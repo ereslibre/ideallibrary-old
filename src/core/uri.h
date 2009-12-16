@@ -80,6 +80,16 @@ public:
     String filename() const;
 
     /**
+      * @return The query part of the URI. An empty string if no query part specified.
+      */
+    String query() const;
+
+    /**
+      * @return The fragment part of the URI. An empty string if no fragment part specified.
+      */
+    String fragment() const;
+
+    /**
       * @return The full URI.
       */
     String uri() const;
