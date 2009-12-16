@@ -140,6 +140,10 @@ void UriTest::testConstructor()
 
     Uri test25("file:///home/ﭧﭪﭷﮎ/ﮕﮒ.txt");
     CPPUNIT_ASSERT_EQUAL(String("/home/ﭧﭪﭷﮎ/ﮕﮒ.txt"), test25.path());
+
+    Uri test26("/home/user/folder with spaces/file(2)_.txt");
+    CPPUNIT_ASSERT_EQUAL(String("/home/user/folder with spaces/file(2)_.txt"), test26.path());
+    CPPUNIT_ASSERT_EQUAL(String("file(2)_.txt"), test26.filename());
 }
 
 void UriTest::testDirUp()
