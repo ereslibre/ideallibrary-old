@@ -18,8 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <uriparser/Uri.h>
-
 #include "uri.h"
 
 namespace IdealCore{
@@ -113,8 +111,6 @@ public:
     String encodeUri(const String &uri) const;
     String decodeUri(const String &uri) const;
 
-    void reconstructPath(iint32 count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail);
-    String reconstructString(const UriTextRangeA &uriTextRange);
     void initializeContents();
 
     static Private *empty();
@@ -251,97 +247,9 @@ String Uri::Private::decodeUri(const String &uri) const
     return res;
 }
 
-void Uri::Private::reconstructPath(iint32 count, UriPathSegmentStructA *head, UriPathSegmentStructA *tail)
-{
-    String encodedUri;
-    const ichar *curr = head->text.first;
-    while (curr != head->text.afterLast) {
-        encodedUri += *curr;
-        ++curr;
-    }
-    const String currSegment = decodeUri(encodedUri);
-    if (head == tail) {
-        m_path += currSegment;
-    } else if (!count) {
-        m_path = '/';
-    }
-    if (head->next) {
-        m_path += currSegment + '/';
-        reconstructPath(count + 1, head->next, tail);
-    }
-}
-
-String Uri::Private::reconstructString(const UriTextRangeA &uriTextRange)
-{
-    String res;
-    const ichar *curr = uriTextRange.first;
-    while (curr != uriTextRange.afterLast) {
-        res += *(curr);
-        ++curr;
-    }
-    return res;
-}
-
 void Uri::Private::initializeContents()
 {
     m_initialized = true;
-    const String uriP = encodeUri(m_uri);
-    UriParserStateA parserState;
-    UriUriA uri;
-    parserState.uri = &uri;
-    m_isValidUri = uriParseUriA(&parserState, uriP.data()) == URI_SUCCESS;
-    if (m_isValidUri) {
-        uriNormalizeSyntaxA(&uri);
-        {
-            ichar *uriString;
-            iint32 charsRequired;
-            uriToStringCharsRequiredA(&uri, &charsRequired);
-            ++charsRequired;
-            uriString = new ichar[charsRequired];
-            uriToStringA(uriString, &uri, charsRequired, 0);
-            m_uri = decodeUri(uriString);
-            delete[] uriString;
-        }
-        if (uri.scheme.first && uri.scheme.afterLast) {
-            m_scheme = reconstructString(uri.scheme);
-        }
-        if (uri.userInfo.first && uri.userInfo.afterLast) {
-            const String userInfo = reconstructString(uri.userInfo);
-            const size_t sepPos = userInfo.find(':');
-            if (sepPos != String::npos) {
-                m_username = userInfo.substr(0, sepPos);
-                m_password = userInfo.substr(sepPos + 1);
-            } else {
-                m_username = userInfo;
-            }
-        }
-        if (uri.hostText.first && uri.hostText.afterLast) {
-            m_host = decodeUri(reconstructString(uri.hostText));
-        }
-        if (uri.portText.first && uri.portText.afterLast) {
-            m_port = atoi(reconstructString(uri.portText).data());
-        }
-        if (uri.pathHead) {
-            reconstructPath(0, uri.pathHead, uri.pathTail);
-            if (m_path.empty()) {
-                m_path = '/';
-            } else {
-                if (m_path[m_path.size() - 1] == '/') {
-                    m_path = m_path.substr(0, m_path.size() - 1);
-                    m_uri = m_uri.substr(0, m_uri.size() - 1);
-                }
-            }
-        } else {
-            m_path = '/';
-        }
-        if (uri.query.first && uri.query.afterLast) {
-            m_query = reconstructString(uri.query);
-        }
-        if (uri.fragment.first && uri.fragment.afterLast) {
-            m_fragment = reconstructString(uri.fragment);
-        }
-    }
-    uriFreeUriMembersA(&uri);
 }
 
 Uri::Uri()
