@@ -26,7 +26,8 @@ class Uri::Private
 {
 public:
     Private()
-        : m_port(-1)
+        : m_parserPos(0)
+        , m_port(-1)
         , m_isValidUri(false)
         , m_refs(1)
         , m_initialized(false)
@@ -115,6 +116,44 @@ public:
 
     static Private *empty();
 
+    bool parseURI();
+    bool parseScheme();
+    bool parseHierPart();
+    bool parseQuery();
+    bool parseFragment();
+    bool parseAuthority();
+    bool parsePathAbempty();
+    bool parsePathAbsolute();
+    bool parsePathRootless();
+    bool parsePathEmpty();
+    bool parseURIReference();
+    bool parseRelativeRef();
+    bool parseAbsoluteURI();
+    bool parseRelativePart();
+    bool parseUserinfo();
+    bool parseHost();
+    bool parsePort();
+    bool parseUnreserved();
+    bool parsePctEncoded();
+    bool parseSubDelims();
+    bool parseIPLiteral();
+    bool parseIPv4Address();
+    bool parseRegName();
+    bool parseIPv6Address();
+    bool parseIPvFuture();
+    bool parseH16();
+    bool parseLs32();
+    bool parseDecOctet();
+    bool parsePathNoScheme();
+    bool parseSegment();
+    bool parseSegmentNz();
+    bool parseSegmentNzNc();
+    bool parsePchar();
+    bool parseReserved();
+    bool parseGenDelims();
+    String  m_parserAux;
+    size_t  m_parserPos;
+
     String  m_uri;
     String  m_scheme;
     String  m_username;
@@ -143,14 +182,221 @@ Uri::Private *Uri::Private::empty()
     return m_privateEmpty;
 }
 
-static const bool uri_unreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
-                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
-                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
-                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
-                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 80 - 95
-                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
-                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }; // 112 - 127
+static const bool is_alpha[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 48 - 63
+                                 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
+                                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 80 - 95
+                                 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
+                                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }; // 112 - 127
+
+static const bool is_digit[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
+                                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80 - 95
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
+
+static const bool is_unreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
+                                      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 80 - 95
+                                      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }; // 112 - 127
+
+bool Uri::Private::parseURI()
+{
+    if (!parseScheme()) {
+        return false;
+    }
+    m_scheme = m_parserAux;
+    m_parserAux.clear();
+    return true;
+}
+
+bool Uri::Private::parseScheme()
+{
+    Char curr = m_uri[m_parserPos];
+    iuint32 currValue = curr.value();
+    if (currValue > 127 || !is_alpha[currValue]) {
+        return false;
+    }
+    curr = m_uri[m_parserPos];
+    currValue = curr.value();
+    while (currValue < 128 && (is_alpha[currValue] || is_digit[currValue] || curr == '+' ||
+                               curr == '-' || curr == '.')) {
+        m_parserAux += curr;
+        ++m_parserPos;
+        curr = m_uri[m_parserPos];
+        currValue = curr.value();
+    }
+    return true;
+}
+
+bool Uri::Private::parseHierPart()
+{
+    return true;
+}
+
+bool Uri::Private::parseQuery()
+{
+    return true;
+}
+
+bool Uri::Private::parseFragment()
+{
+    return true;
+}
+
+bool Uri::Private::parseAuthority()
+{
+    return true;
+}
+
+bool Uri::Private::parsePathAbempty()
+{
+    return true;
+}
+
+bool Uri::Private::parsePathAbsolute()
+{
+    return true;
+}
+
+bool Uri::Private::parsePathRootless()
+{
+    return true;
+}
+
+bool Uri::Private::parsePathEmpty()
+{
+    return true;
+}
+
+bool Uri::Private::parseURIReference()
+{
+    return true;
+}
+
+bool Uri::Private::parseAbsoluteURI()
+{
+    return true;
+}
+
+bool Uri::Private::parseRelativeRef()
+{
+    return true;
+}
+
+bool Uri::Private::parseUserinfo()
+{
+    return true;
+}
+
+bool Uri::Private::parseHost()
+{
+    return true;
+}
+
+bool Uri::Private::parsePort()
+{
+    return true;
+}
+
+bool Uri::Private::parseUnreserved()
+{
+    return true;
+}
+
+bool Uri::Private::parsePctEncoded()
+{
+    return true;
+}
+
+bool Uri::Private::parseSubDelims()
+{
+    return true;
+}
+
+bool Uri::Private::parseIPLiteral()
+{
+    return true;
+}
+
+bool Uri::Private::parseIPv4Address()
+{
+    return true;
+}
+
+bool Uri::Private::parseRegName()
+{
+    return true;
+}
+
+bool Uri::Private::parseIPv6Address()
+{
+    return true;
+}
+
+bool Uri::Private::parseIPvFuture()
+{
+    return true;
+}
+
+bool Uri::Private::parseH16()
+{
+    return true;
+}
+
+bool Uri::Private::parseLs32()
+{
+    return true;
+}
+
+bool Uri::Private::parseDecOctet()
+{
+    return true;
+}
+
+bool Uri::Private::parsePathNoScheme()
+{
+    return true;
+}
+
+bool Uri::Private::parseSegment()
+{
+    return true;
+}
+
+bool Uri::Private::parseSegmentNz()
+{
+    return true;
+}
+
+bool Uri::Private::parseSegmentNzNc()
+{
+    return true;
+}
+
+bool Uri::Private::parsePchar()
+{
+    return true;
+}
+
+bool Uri::Private::parseReserved()
+{
+    return true;
+}
+
+bool Uri::Private::parseGenDelims()
+{
+    return true;
+}
 
 static const ichar uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                                  'A', 'B', 'C', 'D', 'E', 'F' };
@@ -258,6 +504,7 @@ String Uri::Private::decodeUri(const String &uri) const
 void Uri::Private::initializeContents()
 {
     m_initialized = true;
+    parseURI(); // change to parseURIReference();
 }
 
 Uri::Uri()
