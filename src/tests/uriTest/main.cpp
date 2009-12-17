@@ -30,5 +30,11 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("Scheme is: " << uri.scheme());
         IDEAL_SDEBUG("Host is: " << uri.host());
     }
+    {
+        Uri uri("file:///home/user/file.txt");
+        IDEAL_SDEBUG("Uri is: " << uri.uri());
+        IDEAL_SDEBUG("Scheme is: " << uri.scheme());
+        IDEAL_SDEBUG("Path is: " << uri.path());
+    }
     return 0;
 }

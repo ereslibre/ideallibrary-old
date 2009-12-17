@@ -116,6 +116,7 @@ public:
 
     static Private *empty();
 
+    bool expectChar(Char c);
     bool parseURI();
     bool parseScheme();
     bool parseHierPart();
@@ -200,22 +201,65 @@ static const bool is_digit[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
 
+static const bool is_gendelim[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, // 32 - 47
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, // 48 - 63
+                                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, // 80 - 95
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
+
+static const bool is_subdelim[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                    0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, // 32 - 47
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, // 48 - 63
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80 - 95
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
+                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
+
 static const bool is_unreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, // 32 - 47
                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 80 - 95
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, // 80 - 95
                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }; // 112 - 127
+                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 }; // 112 - 127
+
+bool Uri::Private::expectChar(Char c)
+{
+    const Char curr = m_uri[m_parserPos];
+    const iuint32 currValue = curr.value();
+    if (!currValue || currValue > 127 || curr != c) {
+        return false;
+    }
+    ++m_parserPos;
+    return true;
+}
 
 bool Uri::Private::parseURI()
 {
     if (!parseScheme()) {
         return false;
     }
-    m_scheme = m_parserAux;
-    m_parserAux.clear();
+    if (!expectChar(':')) {
+        return false;
+    }
+    if (!parseHierPart()) {
+        return false;
+    }
+    if (expectChar('?')) {
+        if (!parseQuery()) {
+            return false;
+        }
+    }
+    if (expectChar('#')) {
+        if (!parseFragment()) {
+            return false;
+        }
+    }
     return true;
 }
 
@@ -223,24 +267,43 @@ bool Uri::Private::parseScheme()
 {
     Char curr = m_uri[m_parserPos];
     iuint32 currValue = curr.value();
-    if (currValue > 127 || !is_alpha[currValue]) {
+    if (!currValue || currValue > 127 || !is_alpha[currValue]) {
         return false;
     }
-    curr = m_uri[m_parserPos];
-    currValue = curr.value();
-    while (currValue < 128 && (is_alpha[currValue] || is_digit[currValue] || curr == '+' ||
-                               curr == '-' || curr == '.')) {
+    while (currValue && currValue < 128 && (is_alpha[currValue] || is_digit[currValue] ||
+                                            curr == '+' || curr == '-' || curr == '.')) {
         m_parserAux += curr;
         ++m_parserPos;
         curr = m_uri[m_parserPos];
         currValue = curr.value();
     }
+    m_scheme = m_parserAux;
+    m_parserAux.clear();
     return true;
 }
 
 bool Uri::Private::parseHierPart()
 {
-    return true;
+    if (expectChar('/')) {
+        if (expectChar('/')) {
+            if (!parseAuthority()) {
+                return false;
+            }
+            if (!parsePathAbempty()) {
+                return false;
+            }
+            return true;
+        } else {
+            --m_parserPos;
+        }
+    }
+    if (parsePathAbsolute()) {
+        return true;
+    }
+    if (parsePathRootless()) {
+        return true;
+    }
+    return parsePathEmpty();
 }
 
 bool Uri::Private::parseQuery()
@@ -255,16 +318,59 @@ bool Uri::Private::parseFragment()
 
 bool Uri::Private::parseAuthority()
 {
+    const size_t oldParserPos = m_parserPos;
+    if (!parseUserinfo()) {
+        m_parserPos = oldParserPos;
+    }
+    if (!parseHost()) {
+        return false;
+    }
+    if (expectChar(':')) {
+        if (!parsePort()) {
+            return false;
+        }
+    }
     return true;
 }
 
 bool Uri::Private::parsePathAbempty()
 {
+    Char curr = m_uri[m_parserPos];
+    while (curr == '/') {
+        m_parserAux += '/';
+        ++m_parserPos;
+        if (!parseSegment()) {
+            return false;
+        }
+        curr = m_uri[m_parserPos];
+    }
+    m_path = m_parserAux;
+    m_parserAux.clear();
     return true;
 }
 
 bool Uri::Private::parsePathAbsolute()
 {
+    if (!expectChar('/')) {
+        return false;
+    }
+    m_parserAux = '/';
+    const size_t oldParserPos = m_parserPos;
+    if (parseSegmentNz()) {
+        Char curr = m_uri[m_parserPos];
+        while (curr == '/') {
+            m_parserAux += '/';
+            ++m_parserPos;
+            if (!parseSegment()) {
+                return false;
+            }
+            curr = m_uri[m_parserPos];
+        }
+    } else {
+        m_parserPos = oldParserPos;
+    }
+    m_path = m_parserAux;
+    m_parserAux.clear();
     return true;
 }
 
@@ -370,6 +476,8 @@ bool Uri::Private::parsePathNoScheme()
 
 bool Uri::Private::parseSegment()
 {
+    while (parsePchar()) {
+    }
     return true;
 }
 
@@ -385,7 +493,30 @@ bool Uri::Private::parseSegmentNzNc()
 
 bool Uri::Private::parsePchar()
 {
-    return true;
+    const Char curr = m_uri[m_parserPos];
+    const iuint32 currValue = curr.value();
+    if (!currValue) {
+        return false;
+    }
+    if (is_unreserved[currValue]) {
+        m_parserAux += curr;
+        ++m_parserPos;
+        return true;
+    }
+    if (parsePctEncoded()) {
+        return true;
+    }
+    if (is_subdelim[currValue]) {
+        m_parserAux += curr;
+        ++m_parserPos;
+        return true;
+    }
+    if (curr == ':' || curr == '@') {
+        m_parserAux += curr;
+        ++m_parserPos;
+        return true;
+    }
+    return false;
 }
 
 bool Uri::Private::parseReserved()
