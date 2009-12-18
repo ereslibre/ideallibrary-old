@@ -295,12 +295,15 @@ bool Uri::Private::parseHierPart()
             --m_parserPos;
         }
     }
+    const size_t parserOldPos = m_parserPos;
     if (parsePathAbsolute()) {
         return true;
     }
+    m_parserPos = parserOldPos;
     if (parsePathRootless()) {
         return true;
     }
+    m_parserPos = parserOldPos;
     if (parsePathEmpty()) {
         return true;
     }
@@ -448,12 +451,15 @@ bool Uri::Private::parseRelativePart()
             --m_parserPos;
         }
     }
+    const size_t parserOldPos = m_parserPos;
     if (parsePathAbsolute()) {
         return true;
     }
+    m_parserPos = parserOldPos;
     if (parsePathNoScheme()) {
         return true;
     }
+    m_parserPos = parserOldPos;
     if (parsePathEmpty()) {
         return true;
     }
@@ -488,9 +494,11 @@ void Uri::Private::parseUserinfo()
             ++m_parserPos;
             continue;
         }
+        const size_t parserOldPos = m_parserPos;
         if (parsePctEncoded()) {
             continue;
         }
+        m_parserPos = parserOldPos;
         if (currValue < 128 && (is_subdelim[currValue] ||
                                 curr == ':')) {
             m_parserAux += curr;
@@ -503,14 +511,17 @@ void Uri::Private::parseUserinfo()
 
 void Uri::Private::parseHost()
 {
+    const size_t parserOldPos = m_parserPos;
     if (parseIPLiteral()) {
         m_host = m_parserAux;
         return;
     }
+    m_parserPos = parserOldPos;
     if (parseIPv4Address()) {
         m_host = m_parserAux;
         return;
     }
+    m_parserPos = parserOldPos;
     parseRegName();
     m_host = m_parserAux;
 }
@@ -557,12 +568,14 @@ bool Uri::Private::parseIPLiteral()
     if (!expectChar('[')) {
         return false;
     }
+    const size_t parserOldPos = m_parserPos;
     if (parseIPv6Address()) {
         if (!expectChar(']')) {
             return false;
         }
         return true;
     }
+    m_parserPos = parserOldPos;
     if (parseIPvFuture()) {
         if (!expectChar(']')) {
             return false;
@@ -609,9 +622,11 @@ void Uri::Private::parseRegName()
             ++m_parserPos;
             continue;
         }
+        const size_t parserOldPos = m_parserPos;
         if (parsePctEncoded()) {
             continue;
         }
+        m_parserPos = parserOldPos;
         if (is_subdelim[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
@@ -677,6 +692,7 @@ bool Uri::Private::parseH16()
 
 bool Uri::Private::parseLs32()
 {
+    const size_t parserOldPos = m_parserPos;
     if (parseH16()) {
         if (!expectChar(':')) {
             return false;
@@ -686,6 +702,7 @@ bool Uri::Private::parseLs32()
         }
         return false;
     }
+    m_parserPos = parserOldPos;
     if (parseIPv4Address()) {
         return true;
     }
@@ -735,9 +752,11 @@ bool Uri::Private::parseSegmentNzNc()
         ++m_parserPos;
         return true;
     }
+    const size_t parserOldPos = m_parserPos;
     if (parsePctEncoded()) {
         return true;
     }
+    m_parserPos = parserOldPos;
     if (is_subdelim[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
@@ -758,15 +777,16 @@ bool Uri::Private::parsePchar()
     if (!currValue) {
         return false;
     }
-    const size_t parserOldPos = m_parserPos;
     if (is_unreserved[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
         return true;
     }
+    const size_t parserOldPos = m_parserPos;
     if (parsePctEncoded()) {
         return true;
     }
+    m_parserPos = parserOldPos;
     if (is_subdelim[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
