@@ -50,14 +50,10 @@ public:
     String scheme() const;
 
     /**
-      * @return The username specified on the URI. An empty string if no username specified.
+      * @return The username and password specified on the URI. An empty string if no username
+      *         or password specified.
       */
-    String username() const;
-
-    /**
-      * @return The password specified on the URI. An empty string if no password specified.
-      */
-    String password() const;
+    String userInfo() const;
 
     /**
       * @return The host specified on the URI. An empty string if no host specified.

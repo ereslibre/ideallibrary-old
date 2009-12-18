@@ -46,16 +46,15 @@ void UriTest::testConstructor()
     CPPUNIT_ASSERT_EQUAL(String(), test1.host());
 
     Uri test2("ftp://username,project:password@ftp.server.com/path/to/project/file.html");
+    CPPUNIT_ASSERT(test2.isValid());
     CPPUNIT_ASSERT_EQUAL(String("ftp"), test2.scheme());
     CPPUNIT_ASSERT_EQUAL(String("ftp.server.com"), test2.host());
     CPPUNIT_ASSERT_EQUAL(String("/path/to/project/file.html"), test2.path());
-    CPPUNIT_ASSERT_EQUAL(String("username,project"), test2.username());
-    CPPUNIT_ASSERT_EQUAL(String("password"), test2.password());
+    CPPUNIT_ASSERT_EQUAL(String("username,project:password"), test2.userInfo());
 
     Uri test3("ftp://username@ftp.host.com");
     CPPUNIT_ASSERT_EQUAL(String("ftp"), test3.scheme());
-    CPPUNIT_ASSERT_EQUAL(String("username"), test3.username());
-    CPPUNIT_ASSERT(test3.password().empty());
+    CPPUNIT_ASSERT_EQUAL(String("username"), test3.userInfo());
     CPPUNIT_ASSERT_EQUAL(String("ftp.host.com"), test3.host());
 
     // Now, add some examples that can be found on the standard spec at point 1.1.2

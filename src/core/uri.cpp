@@ -43,8 +43,7 @@ public:
         Private *privateCopy = new Private;
         privateCopy->m_uri = m_uri;
         privateCopy->m_scheme = m_scheme;
-        privateCopy->m_username = m_username;
-        privateCopy->m_password = m_password;
+        privateCopy->m_userInfo = m_userInfo;
         privateCopy->m_host = m_host;
         privateCopy->m_port = m_port;
         privateCopy->m_path = m_path;
@@ -97,8 +96,7 @@ public:
     {
         m_uri = String();
         m_scheme = String();
-        m_username = String();
-        m_password = String();
+        m_userInfo = String();
         m_host = String();
         m_port = -1;
         m_path = String();
@@ -154,8 +152,7 @@ public:
 
     String  m_uri;
     String  m_scheme;
-    String  m_username;
-    String  m_password;
+    String  m_userInfo;
     String  m_host;
     iint32  m_port;
     String  m_path;
@@ -352,6 +349,8 @@ void Uri::Private::parseAuthority()
     const Char curr = m_uri[m_parserPos];
     if (curr != '@') {
         m_parserPos = parserOldPos;
+    } else {
+        ++m_parserPos;
     }
     parseHost();
     if (expectChar(':')) {
@@ -506,6 +505,7 @@ void Uri::Private::parseUserinfo()
             ++m_parserPos;
             continue;
         }
+        m_userInfo = m_parserAux;
         return;
     }
 }
@@ -807,7 +807,6 @@ bool Uri::Private::parsePchar()
         ++m_parserPos;
         return true;
     }
-    m_parserPos = parserOldPos;
     return false;
 }
 
@@ -929,8 +928,8 @@ String Uri::Private::decodeUri(const String &uri) const
 
 void Uri::Private::initializeContents()
 {
-    parseURIReference();
     m_initialized = true;
+    m_isValid = parseURIReference();
 }
 
 Uri::Uri()
@@ -985,20 +984,12 @@ String Uri::scheme() const
     return d->m_scheme;
 }
 
-String Uri::username() const
+String Uri::userInfo() const
 {
     if (!d->m_initialized) {
         d->initializeContents();
     }
-    return d->m_username;
-}
-
-String Uri::password() const
-{
-    if (!d->m_initialized) {
-        d->initializeContents();
-    }
-    return d->m_password;
+    return d->m_userInfo;
 }
 
 String Uri::host() const

@@ -58,5 +58,13 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("Path is: " << uri.path());
         IDEAL_SDEBUG("Valid: " << (uri.isValid() ? "yes" : "no"));
     }
+    {
+        Uri uri("svn+ssh://svn.host.com/test/testing");
+        IDEAL_SDEBUG("Uri is: " << uri.uri());
+        IDEAL_SDEBUG("Scheme is: " << uri.scheme());
+        IDEAL_SDEBUG("Host is: " << uri.host());
+        IDEAL_SDEBUG("Path is: " << uri.path());
+        IDEAL_SDEBUG("Valid: " << (uri.isValid() ? "yes" : "no"));
+    }
     return 0;
 }

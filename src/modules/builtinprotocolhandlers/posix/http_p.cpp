@@ -203,8 +203,7 @@ bool BuiltinProtocolHandlersHttp::canBeReusedWith(const Uri &uri) const
 {
     return d->m_uri.scheme() == uri.scheme() &&
            d->m_uri.host() == uri.host() &&
-           (uri.username().empty() || d->m_uri.username() == uri.username()) &&
-           (uri.password().empty() || d->m_uri.password() == uri.password()) &&
+           (uri.userInfo().empty() || d->m_uri.userInfo() == uri.userInfo()) &&
            (uri.port() == -1 || d->m_uri.port() == uri.port());
 }
 
