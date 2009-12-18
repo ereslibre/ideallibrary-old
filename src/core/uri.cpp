@@ -346,10 +346,14 @@ bool Uri::Private::parseFragment()
 
 bool Uri::Private::parseAuthority()
 {
+    const size_t oldParserPos = m_parserPos;
     if (!parseUserinfo()) {
         return false;
     }
-    // TODO: check for '@'
+    const Char curr = m_uri[m_parserPos];
+    if (curr != '@') {
+        m_parserPos = oldParserPos;
+    }
     if (!parseHost()) {
         return false;
     }
@@ -432,6 +436,7 @@ bool Uri::Private::parseURIReference()
     if (parseURI()) {
         return true;
     }
+    m_parserPos = 0;
     return parseRelativeRef();
 }
 
@@ -591,6 +596,27 @@ bool Uri::Private::parseIPLiteral()
 
 bool Uri::Private::parseIPv4Address()
 {
+    if (!parseDecOctet()) {
+        return false;
+    }
+    if (!expectChar('.')) {
+        return false;
+    }
+    if (!parseDecOctet()) {
+        return false;
+    }
+    if (!expectChar('.')) {
+        return false;
+    }
+    if (!parseDecOctet()) {
+        return false;
+    }
+    if (!expectChar('.')) {
+        return false;
+    }
+    if (!parseDecOctet()) {
+        return false;
+    }
     return true;
 }
 
@@ -618,6 +644,7 @@ bool Uri::Private::parseRegName()
 
 bool Uri::Private::parseIPv6Address()
 {
+    // TODO
     return true;
 }
 
@@ -704,8 +731,7 @@ bool Uri::Private::parsePathNoScheme()
 
 bool Uri::Private::parseSegment()
 {
-    while (parsePchar()) {
-    }
+    while (parsePchar()) { }
     return true;
 }
 
@@ -885,7 +911,7 @@ String Uri::Private::decodeUri(const String &uri) const
 void Uri::Private::initializeContents()
 {
     m_initialized = true;
-    parseURI(); // change to parseURIReference();
+    parseURIReference();
 }
 
 Uri::Uri()
