@@ -741,7 +741,9 @@ void Uri::Private::parseSegment()
 bool Uri::Private::parseSegmentNz()
 {
     const bool res = parsePchar();
-    while (parsePchar()) {}
+    if (res) {
+        while (parsePchar()) {}
+    }
     return res;
 }
 
@@ -929,7 +931,7 @@ String Uri::Private::decodeUri(const String &uri) const
 void Uri::Private::initializeContents()
 {
     m_initialized = true;
-    m_isValid = parseURIReference();
+    m_isValid = parseURIReference() && m_parserPos == m_uri.size();
 }
 
 Uri::Uri()
