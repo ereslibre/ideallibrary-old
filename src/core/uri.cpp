@@ -20,8 +20,6 @@
 
 #include "uri.h"
 
-#include <stack>
-
 namespace IdealCore{
 
 class Uri::Private
@@ -118,16 +116,14 @@ public:
 
     static Private *empty();
 
-    void saveParserState();
-    void restoreParserState();
     bool expectChar(Char c);
     bool parseURI();
     bool parseScheme();
     bool parseHierPart();
-    bool parseQuery();
-    bool parseFragment();
-    bool parseAuthority();
-    bool parsePathAbempty();
+    void parseQuery();
+    void parseFragment();
+    void parseAuthority();
+    void parsePathAbempty();
     bool parsePathAbsolute();
     bool parsePathRootless();
     bool parsePathEmpty();
@@ -135,27 +131,26 @@ public:
     bool parseRelativeRef();
     bool parseAbsoluteURI();
     bool parseRelativePart();
-    bool parseUserinfo();
-    bool parseHost();
-    bool parsePort();
+    void parseUserinfo();
+    void parseHost();
+    void parsePort();
     bool parsePctEncoded();
     bool parseIPLiteral();
     bool parseIPv4Address();
-    bool parseRegName();
+    void parseRegName();
     bool parseIPv6Address();
     bool parseIPvFuture();
     bool parseH16();
     bool parseLs32();
     bool parseDecOctet();
     bool parsePathNoScheme();
-    bool parseSegment();
+    void parseSegment();
     bool parseSegmentNz();
     bool parseSegmentNzNc();
     bool parsePchar();
     bool parseReserved();
     String  m_parserAux;
     size_t  m_parserPos;
-    std::stack<size_t> m_parserPosStack;
 
     String  m_uri;
     String  m_scheme;
@@ -239,18 +234,6 @@ static const bool is_unreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 }; // 112 - 127
 
-void Uri::Private::saveParserState()
-{
-    m_parserPosStack.push(m_parserPos);
-}
-
-void Uri::Private::restoreParserState()
-{
-    m_parserPos = m_parserPosStack.top();
-    m_parserPosStack.pop();
-    m_parserAux.clear();
-}
-
 bool Uri::Private::expectChar(Char c)
 {
     const Char curr = m_uri[m_parserPos];
@@ -264,41 +247,30 @@ bool Uri::Private::expectChar(Char c)
 
 bool Uri::Private::parseURI()
 {
-    saveParserState();
     if (!parseScheme()) {
-        restoreParserState();
         return false;
     }
     if (!expectChar(':')) {
-        restoreParserState();
         return false;
     }
     if (!parseHierPart()) {
-        restoreParserState();
         return false;
     }
     if (expectChar('?')) {
-        if (!parseQuery()) {
-            restoreParserState();
-            return false;
-        }
+        parseQuery();
     }
     if (expectChar('#')) {
-        if (!parseFragment()) {
-            restoreParserState();
-            return false;
-        }
+        parseFragment();
     }
     return true;
 }
 
 bool Uri::Private::parseScheme()
 {
-    saveParserState();
+    m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     iuint32 currValue = curr.value();
     if (!currValue || currValue > 127 || !is_alpha[currValue]) {
-        restoreParserState();
         return false;
     }
     while (currValue && currValue < 128 && (is_alpha[currValue] || is_digit[currValue] ||
@@ -309,23 +281,15 @@ bool Uri::Private::parseScheme()
         currValue = curr.value();
     }
     m_scheme = m_parserAux;
-    m_parserAux.clear();
     return true;
 }
 
 bool Uri::Private::parseHierPart()
 {
-    saveParserState();
     if (expectChar('/')) {
         if (expectChar('/')) {
-            if (!parseAuthority()) {
-                restoreParserState();
-                return false;
-            }
-            if (!parsePathAbempty()) {
-                restoreParserState();
-                return false;
-            }
+            parseAuthority();
+            parsePathAbempty();
             return true;
         } else {
             --m_parserPos;
@@ -340,12 +304,12 @@ bool Uri::Private::parseHierPart()
     if (parsePathEmpty()) {
         return true;
     }
-    restoreParserState();
     return false;
 }
 
-bool Uri::Private::parseQuery()
+void Uri::Private::parseQuery()
 {
+    m_parserAux.clear();
     while (true) {
         const Char curr = m_uri[m_parserPos];
         if (parsePchar()) {
@@ -356,12 +320,13 @@ bool Uri::Private::parseQuery()
             ++m_parserPos;
             continue;
         }
-        return true;
+        return;
     }
 }
 
-bool Uri::Private::parseFragment()
+void Uri::Private::parseFragment()
 {
+    m_parserAux.clear();
     while (true) {
         const Char curr = m_uri[m_parserPos];
         if (parsePchar()) {
@@ -372,50 +337,36 @@ bool Uri::Private::parseFragment()
             ++m_parserPos;
             continue;
         }
-        return true;
+        return;
     }
 }
 
-bool Uri::Private::parseAuthority()
+void Uri::Private::parseAuthority()
 {
-    saveParserState();
-    if (!parseUserinfo()) {
-        restoreParserState();
-        return false;
-    }
+    m_parserAux.clear();
+    const size_t parserOldPos = m_parserPos;
+    parseUserinfo();
     const Char curr = m_uri[m_parserPos];
     if (curr != '@') {
-        restoreParserState();
+        m_parserPos = parserOldPos;
     }
-    if (!parseHost()) {
-        restoreParserState();
-        return false;
-    }
+    parseHost();
     if (expectChar(':')) {
-        if (!parsePort()) {
-            restoreParserState();
-            return false;
-        }
+        parsePort();
     }
-    return true;
 }
 
-bool Uri::Private::parsePathAbempty()
+void Uri::Private::parsePathAbempty()
 {
-    saveParserState();
+    m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     while (curr == '/') {
         m_parserAux += '/';
         ++m_parserPos;
-        if (!parseSegment()) {
-            restoreParserState();
-            return false;
-        }
+        parseSegment();
         curr = m_uri[m_parserPos];
     }
     m_path = m_parserAux;
-    m_parserAux.clear();
-    return true;
 }
 
 bool Uri::Private::parsePathAbsolute()
@@ -423,43 +374,34 @@ bool Uri::Private::parsePathAbsolute()
     if (!expectChar('/')) {
         return false;
     }
-    saveParserState();
     m_parserAux = '/';
     if (parseSegmentNz()) {
         Char curr = m_uri[m_parserPos];
         while (curr == '/') {
             m_parserAux += '/';
             ++m_parserPos;
-            if (!parseSegment()) {
-                restoreParserState();
-                return false;
-            }
+            parseSegment();
             curr = m_uri[m_parserPos];
         }
     }
     m_path = m_parserAux;
-    m_parserAux.clear();
     return true;
 }
 
 bool Uri::Private::parsePathRootless()
 {
+    m_parserAux.clear();
     if (!parseSegmentNz()) {
         return false;
     }
-    saveParserState();
     Char curr = m_uri[m_parserPos];
     while (curr == '/') {
         m_parserAux += '/';
         ++m_parserPos;
-        if (!parseSegment()) {
-            restoreParserState();
-            return false;
-        }
+        parseSegment();
         curr = m_uri[m_parserPos];
     }
     m_path = m_parserAux;
-    m_parserAux.clear();
     return true;
 }
 
@@ -480,41 +422,27 @@ bool Uri::Private::parseURIReference()
 
 bool Uri::Private::parseAbsoluteURI()
 {
-    saveParserState();
     if (!parseScheme()) {
-        restoreParserState();
         return false;
     }
     if (!expectChar(':')) {
-        restoreParserState();
         return false;
     }
     if (!parseHierPart()) {
-        restoreParserState();
         return false;
     }
     if (expectChar('?')) {
-        if (!parseQuery()) {
-            restoreParserState();
-            return false;
-        }
+        parseQuery();
     }
     return true;
 }
 
 bool Uri::Private::parseRelativePart()
 {
-    saveParserState();
     if (expectChar('/')) {
         if (expectChar('/')) {
-            if (!parseAuthority()) {
-                restoreParserState();
-                return false;
-            }
-            if (!parsePathAbempty()) {
-                restoreParserState();
-                return false;
-            }
+            parseAuthority();
+            parsePathAbempty();
             return true;
         } else {
             --m_parserPos;
@@ -529,39 +457,31 @@ bool Uri::Private::parseRelativePart()
     if (parsePathEmpty()) {
         return true;
     }
-    restoreParserState();
     return false;
 }
 
 bool Uri::Private::parseRelativeRef()
 {
-    saveParserState();
     if (!parseRelativePart()) {
-        restoreParserState();
         return false;
     }
     if (expectChar('?')) {
-        if (!parseQuery()) {
-            restoreParserState();
-            return false;
-        }
+        parseQuery();
     }
     if (expectChar('#')) {
-        if (!parseFragment()) {
-            restoreParserState();
-            return false;
-        }
+        parseFragment();
     }
     return true;
 }
 
-bool Uri::Private::parseUserinfo()
+void Uri::Private::parseUserinfo()
 {
+    m_parserAux.clear();
     while (true) {
         const Char curr = m_uri[m_parserPos];
         const iuint32 currValue = curr.value();
         if (!currValue) {
-            return true;
+            return;
         }
         if (currValue < 128 && is_unreserved[currValue]) {
             m_parserAux += curr;
@@ -577,34 +497,27 @@ bool Uri::Private::parseUserinfo()
             ++m_parserPos;
             continue;
         }
-        return true;
+        return;
     }
 }
 
-bool Uri::Private::parseHost()
+void Uri::Private::parseHost()
 {
-    saveParserState();
     if (parseIPLiteral()) {
         m_host = m_parserAux;
-        m_parserAux.clear();
-        return true;
+        return;
     }
     if (parseIPv4Address()) {
         m_host = m_parserAux;
-        m_parserAux.clear();
-        return true;
+        return;
     }
-    if (parseRegName()) {
-        m_host = m_parserAux;
-        m_parserAux.clear();
-        return true;
-    }
-    restoreParserState();
-    return false;
+    parseRegName();
+    m_host = m_parserAux;
 }
 
-bool Uri::Private::parsePort()
+void Uri::Private::parsePort()
 {
+    m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     iuint32 currValue = curr.value();
     while (currValue && currValue < 128 && is_digit[currValue]) {
@@ -614,8 +527,6 @@ bool Uri::Private::parsePort()
         currValue = curr.value();
     }
     m_port = m_parserAux.empty() ? -1 : atoi(m_parserAux.data());
-    m_parserAux.clear();
-    return true;
 }
 
 bool Uri::Private::parsePctEncoded()
@@ -623,12 +534,10 @@ bool Uri::Private::parsePctEncoded()
     if (!expectChar('%')) {
         return false;
     }
-    saveParserState();
     m_parserAux += '%';
     Char curr = m_uri[m_parserPos];
     size_t currValue = curr.value();
     if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-        restoreParserState();
         return false;
     }
     m_parserAux += curr;
@@ -636,7 +545,6 @@ bool Uri::Private::parsePctEncoded()
     curr = m_uri[m_parserPos];
     currValue = curr.value();
     if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-        restoreParserState();
         return false;
     }
     m_parserAux += curr;
@@ -649,61 +557,50 @@ bool Uri::Private::parseIPLiteral()
     if (!expectChar('[')) {
         return false;
     }
-    saveParserState();
     if (parseIPv6Address()) {
         if (!expectChar(']')) {
-            restoreParserState();
             return false;
         }
         return true;
     }
     if (parseIPvFuture()) {
         if (!expectChar(']')) {
-            restoreParserState();
             return false;
         }
         return true;
     }
-    restoreParserState();
     return false;
 }
 
 bool Uri::Private::parseIPv4Address()
 {
-    saveParserState();
     if (!parseDecOctet()) {
-        restoreParserState();
         return false;
     }
     if (!expectChar('.')) {
-        restoreParserState();
         return false;
     }
     if (!parseDecOctet()) {
-        restoreParserState();
         return false;
     }
     if (!expectChar('.')) {
-        restoreParserState();
         return false;
     }
     if (!parseDecOctet()) {
-        restoreParserState();
         return false;
     }
     if (!expectChar('.')) {
-        restoreParserState();
         return false;
     }
     if (!parseDecOctet()) {
-        restoreParserState();
         return false;
     }
     return true;
 }
 
-bool Uri::Private::parseRegName()
+void Uri::Private::parseRegName()
 {
+    m_parserAux.clear();
     while (true) {
         const Char curr = m_uri[m_parserPos];
         const size_t currValue = curr.value();
@@ -720,7 +617,7 @@ bool Uri::Private::parseRegName()
             ++m_parserPos;
             continue;
         }
-        return true;
+        return;
     }
 }
 
@@ -735,16 +632,16 @@ bool Uri::Private::parseIPvFuture()
     if (!expectChar('v')) {
         return false;
     }
-    saveParserState();
+    m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     size_t currValue = curr.value();
     if (!is_hexdig[currValue]) {
-        restoreParserState();
+        
         return false;
     }
     ++m_parserPos;
     if (!expectChar('.')) {
-        restoreParserState();
+        
         return false;
     }
     curr = m_uri[m_parserPos];
@@ -761,18 +658,15 @@ bool Uri::Private::parseIPvFuture()
         ++m_parserPos;
         return true;
     }
-    restoreParserState();
     return false;
 }
 
 bool Uri::Private::parseH16()
 {
-    saveParserState();
     for (size_t i = 0; i < 4; ++i) {
         const Char curr = m_uri[m_parserPos];
         const size_t currValue = curr.value();
         if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-            restoreParserState();
             return false;
         }
         m_parserAux += curr;
@@ -783,22 +677,18 @@ bool Uri::Private::parseH16()
 
 bool Uri::Private::parseLs32()
 {
-    saveParserState();
     if (parseH16()) {
         if (!expectChar(':')) {
-            restoreParserState();
             return false;
         }
         if (parseH16()) {
             return true;
         }
-        restoreParserState();
         return false;
     }
     if (parseIPv4Address()) {
         return true;
     }
-    restoreParserState();
     return false;
 }
 
@@ -810,29 +700,24 @@ bool Uri::Private::parseDecOctet()
 
 bool Uri::Private::parsePathNoScheme()
 {
+    m_parserAux.clear();
     if (!parseSegmentNzNc()) {
         return false;
     }
-    saveParserState();
     Char curr = m_uri[m_parserPos];
     while (curr == '/') {
         m_parserAux += '/';
         ++m_parserPos;
-        if (!parseSegment()) {
-            restoreParserState();
-            return false;
-        }
+        parseSegment();
         curr = m_uri[m_parserPos];
     }
     m_path = m_parserAux;
-    m_parserAux.clear();
     return true;
 }
 
-bool Uri::Private::parseSegment()
+void Uri::Private::parseSegment()
 {
     while (parsePchar()) {}
-    return true;
 }
 
 bool Uri::Private::parseSegmentNz()
@@ -842,9 +727,9 @@ bool Uri::Private::parseSegmentNz()
 
 bool Uri::Private::parseSegmentNzNc()
 {
+    m_parserAux.clear();
     const Char curr = m_uri[m_parserPos];
     const iuint32 currValue = curr.value();
-    saveParserState();
     if (is_unreserved[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
@@ -863,7 +748,6 @@ bool Uri::Private::parseSegmentNzNc()
         ++m_parserPos;
         return true;
     }
-    restoreParserState();
     return false;
 }
 
@@ -874,7 +758,7 @@ bool Uri::Private::parsePchar()
     if (!currValue) {
         return false;
     }
-    saveParserState();
+    const size_t parserOldPos = m_parserPos;
     if (is_unreserved[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
@@ -893,13 +777,12 @@ bool Uri::Private::parsePchar()
         ++m_parserPos;
         return true;
     }
-    restoreParserState();
+    m_parserPos = parserOldPos;
     return false;
 }
 
 bool Uri::Private::parseReserved()
 {
-    saveParserState();
     const Char curr = m_uri[m_parserPos];
     const iuint32 currValue = curr.value();
     if (is_gendelim[currValue] || is_subdelim[currValue]) {
@@ -907,7 +790,7 @@ bool Uri::Private::parseReserved()
         ++m_parserPos;
         return true;
     }
-    restoreParserState();
+    
     return false;
 }
 
