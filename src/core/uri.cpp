@@ -777,9 +777,8 @@ bool Uri::Private::parseSegmentNzNc()
             res = true;
             continue;
         }
-        break;
+        return res;
     }
-    return res;
 }
 
 bool Uri::Private::parsePchar()
