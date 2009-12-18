@@ -346,11 +346,8 @@ void Uri::Private::parseAuthority()
     m_parserAux.clear();
     const size_t parserOldPos = m_parserPos;
     parseUserinfo();
-    const Char curr = m_uri[m_parserPos];
-    if (curr != '@') {
+    if (!expectChar('@')) {
         m_parserPos = parserOldPos;
-    } else {
-        ++m_parserPos;
     }
     parseHost();
     if (expectChar(':')) {
