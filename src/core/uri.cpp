@@ -28,7 +28,7 @@ public:
     Private()
         : m_parserPos(0)
         , m_port(-1)
-        , m_isValidUri(false)
+        , m_isValid(false)
         , m_refs(1)
         , m_initialized(false)
     {
@@ -50,7 +50,7 @@ public:
         privateCopy->m_path = m_path;
         privateCopy->m_query = m_query;
         privateCopy->m_fragment = m_fragment;
-        privateCopy->m_isValidUri = m_isValidUri;
+        privateCopy->m_isValid = m_isValid;
         privateCopy->m_initialized = m_initialized;
         return privateCopy;
     }
@@ -104,7 +104,7 @@ public:
         m_path = String();
         m_query = String();
         m_fragment = String();
-        m_isValidUri = false;
+        m_isValid = false;
         m_initialized = false;
     }
 
@@ -161,7 +161,7 @@ public:
     String  m_path;
     String  m_query;
     String  m_fragment;
-    bool    m_isValidUri;
+    bool    m_isValid;
     size_t  m_refs;
     bool    m_initialized;
 
@@ -530,12 +530,21 @@ bool Uri::Private::parseUserinfo()
 bool Uri::Private::parseHost()
 {
     if (parseIPLiteral()) {
+        m_host = m_parserAux;
+        m_parserAux.clear();
         return true;
     }
     if (parseIPv4Address()) {
+        m_host = m_parserAux;
+        m_parserAux.clear();
         return true;
     }
-    return parseRegName();
+    if (parseRegName()) {
+        m_host = m_parserAux;
+        m_parserAux.clear();
+        return true;
+    }
+    return false;
 }
 
 bool Uri::Private::parsePort()
@@ -548,6 +557,8 @@ bool Uri::Private::parsePort()
         curr = m_uri[m_parserPos];
         currValue = curr.value();
     }
+    m_port = m_parserAux.empty() ? -1 : atoi(m_parserAux.data());
+    m_parserAux.clear();
     return true;
 }
 
@@ -731,7 +742,7 @@ bool Uri::Private::parsePathNoScheme()
 
 bool Uri::Private::parseSegment()
 {
-    while (parsePchar()) { }
+    while (parsePchar()) {}
     return true;
 }
 
@@ -1044,7 +1055,7 @@ bool Uri::isValid() const
     if (!d->m_initialized) {
         d->initializeContents();
     }
-    return d->m_isValidUri;
+    return d->m_isValid;
 }
 
 bool Uri::empty() const
