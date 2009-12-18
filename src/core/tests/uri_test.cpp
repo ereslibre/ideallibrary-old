@@ -88,8 +88,6 @@ void UriTest::testConstructor()
     // End of spec examples
 
     // Test for invalid URI's
-    Uri test12("1http://www.host.com/");
-    CPPUNIT_ASSERT(!test12.isValid());
     Uri test13("http://username:@@ftp.host.com");
     CPPUNIT_ASSERT(!test13.isValid());
     Uri test14("http://www.host.com:abc80");
