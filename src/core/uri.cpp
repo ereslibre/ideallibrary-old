@@ -420,6 +420,7 @@ bool Uri::Private::parseURIReference()
         return true;
     }
     m_parserPos = 0;
+    m_parserAux.clear();
     return parseRelativeRef();
 }
 
@@ -739,35 +740,44 @@ void Uri::Private::parseSegment()
 
 bool Uri::Private::parseSegmentNz()
 {
-    return parsePchar();
+    const bool res = parsePchar();
+    while (parsePchar()) {}
+    return res;
 }
 
 bool Uri::Private::parseSegmentNzNc()
 {
-    m_parserAux.clear();
-    const Char curr = m_uri[m_parserPos];
-    const iuint32 currValue = curr.value();
-    if (is_unreserved[currValue]) {
-        m_parserAux += curr;
-        ++m_parserPos;
-        return true;
+    bool res = false;
+    while (true) {
+        const Char curr = m_uri[m_parserPos];
+        const iuint32 currValue = curr.value();
+        if (is_unreserved[currValue]) {
+            m_parserAux += curr;
+            ++m_parserPos;
+            res = true;
+            continue;
+        }
+        const size_t parserOldPos = m_parserPos;
+        if (parsePctEncoded()) {
+            res = true;
+            continue;
+        }
+        m_parserPos = parserOldPos;
+        if (is_subdelim[currValue]) {
+            m_parserAux += curr;
+            ++m_parserPos;
+            res = true;
+            continue;
+        }
+        if (curr == '@') {
+            m_parserAux += '@';
+            ++m_parserPos;
+            res = true;
+            continue;
+        }
+        break;
     }
-    const size_t parserOldPos = m_parserPos;
-    if (parsePctEncoded()) {
-        return true;
-    }
-    m_parserPos = parserOldPos;
-    if (is_subdelim[currValue]) {
-        m_parserAux += curr;
-        ++m_parserPos;
-        return true;
-    }
-    if (curr == '@') {
-        m_parserAux += '@';
-        ++m_parserPos;
-        return true;
-    }
-    return false;
+    return res;
 }
 
 bool Uri::Private::parsePchar()
@@ -919,8 +929,8 @@ String Uri::Private::decodeUri(const String &uri) const
 
 void Uri::Private::initializeContents()
 {
-    m_initialized = true;
     parseURIReference();
+    m_initialized = true;
 }
 
 Uri::Uri()
