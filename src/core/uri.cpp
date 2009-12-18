@@ -379,14 +379,13 @@ bool Uri::Private::parseFragment()
 bool Uri::Private::parseAuthority()
 {
     saveParserState();
-    const size_t oldParserPos = m_parserPos;
     if (!parseUserinfo()) {
         restoreParserState();
         return false;
     }
     const Char curr = m_uri[m_parserPos];
     if (curr != '@') {
-        m_parserPos = oldParserPos;
+        restoreParserState();
     }
     if (!parseHost()) {
         restoreParserState();
