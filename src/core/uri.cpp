@@ -636,7 +636,7 @@ void Uri::Private::parseRegName()
 
 bool Uri::Private::parseIPv6Address()
 {
-    const String parserOldAux = m_parserAux;
+    m_parserAux.clear();
     const size_t parserOldPos = m_parserPos;
     {
         // 6( h16 ":" ) ls32
@@ -660,7 +660,7 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // "::" 5( h16 ":" ) ls32
         if (expectChar(':') && expectChar(':')) {
@@ -687,7 +687,7 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // [ h16 ] "::" 4( h16 ":" ) ls32
         const bool hasColon = expectChar(':');
@@ -719,7 +719,7 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
         const bool hasColon = expectChar(':');
@@ -756,7 +756,7 @@ bool Uri::Private::parseIPv6Address()
 
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
         const bool hasColon = expectChar(':');
@@ -803,12 +803,12 @@ bool Uri::Private::parseIPv6Address()
 
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // [ *3( h16 ":" ) h16 ] "::" h16 ":" ls32
         bool hasColon = false;
         if (parseH16()) {
-            for (size_t i = 0; i < 5; ++i) {
+            for (size_t i = 0; i < 3; ++i) {
                 if (!expectChar(':')) {
                     break;
                 }
@@ -833,12 +833,12 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // [ *4( h16 ":" ) h16 ] "::" ls32
         bool hasColon = false;
         if (parseH16()) {
-            for (size_t i = 0; i < 5; ++i) {
+            for (size_t i = 0; i < 4; ++i) {
                 if (!expectChar(':')) {
                     break;
                 }
@@ -860,7 +860,7 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // [ *5( h16 ":" ) h16 ] "::" h16
         bool hasColon = false;
@@ -887,7 +887,7 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
-    m_parserAux = parserOldAux;
+    m_parserAux.clear();
     {
         // [ *6( h16 ":" ) h16 ] "::"
         bool hasColon = false;
