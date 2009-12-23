@@ -636,7 +636,248 @@ void Uri::Private::parseRegName()
 
 bool Uri::Private::parseIPv6Address()
 {
-    // TODO
+    const size_t parserOldPos = m_parserPos;
+    {
+        // 6( h16 ":" ) ls32
+        bool parse = true;
+        for (size_t i = 0; i < 6; ++i) {
+            if (!parseH16()) {
+                parse = false;
+                break;
+            }
+            if (!expectChar(':')) {
+                parse = false;
+                break;
+            }
+        }
+        if (parse) {
+            if (parseLs32()) {
+                return true;
+            }
+        }
+    }
+    m_parserPos = parserOldPos;
+    {
+        // "::" 5( h16 ":" ) ls32
+        if (expectChar(':') && expectChar(':')) {
+            bool parse = true;
+            for (size_t i = 0; i < 5; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                if (parseLs32()) {
+                    return true;
+                }
+            }
+        }
+    }
+    m_parserPos = parserOldPos;
+    {
+        // [ h16 ] "::" 4( h16 ":" ) ls32
+        const bool hasColon = expectChar(':');
+        bool parse = true;
+        if (!hasColon) {
+            parse = parseH16();
+        }
+        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            bool parse = true;
+            for (size_t i = 0; i < 4; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                if (parseLs32()) {
+                    return true;
+                }
+            }
+        }
+    }
+    m_parserPos = parserOldPos;
+    {
+        // [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
+        const bool hasColon = expectChar(':');
+        bool parse = true;
+        if (!hasColon) {
+            parse = parseH16();
+            if (parse && expectChar(':')) {
+                parse = parseH16();
+            }
+        }
+        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            bool parse = true;
+            for (size_t i = 0; i < 3; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                if (parseLs32()) {
+                    return true;
+                }
+            }
+        }
+
+    }
+    m_parserPos = parserOldPos;
+    {
+        // [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
+        const bool hasColon = expectChar(':');
+        bool parse = true;
+        if (!hasColon) {
+            for (size_t i = 0; i < 2; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                parse = parseH16();
+            }
+        }
+        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            bool parse = true;
+            for (size_t i = 0; i < 2; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                if (parseLs32()) {
+                    return true;
+                }
+            }
+        }
+
+    }
+    m_parserPos = parserOldPos;
+    {
+        // [ *3( h16 ":" ) h16 ] "::" h16 ":" ls32
+        const bool hasColon = expectChar(':');
+        bool parse = true;
+        if (!hasColon) {
+            for (size_t i = 0; i < 3; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                parse = parseH16();
+            }
+        }
+        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            if (parseH16() && expectChar(':') && parseLs32()) {
+                return true;
+            }
+        }
+    }
+    m_parserPos = parserOldPos;
+    {
+        // [ *4( h16 ":" ) h16 ] "::" ls32
+        const bool hasColon = expectChar(':');
+        bool parse = true;
+        if (!hasColon) {
+            for (size_t i = 0; i < 4; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                parse = parseH16();
+            }
+        }
+        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            if (parseLs32()) {
+                return true;
+            }
+        }
+    }
+    m_parserPos = parserOldPos;
+    {
+        // [ *5( h16 ":" ) h16 ] "::" h16
+        const bool hasColon = expectChar(':');
+        bool parse = true;
+        if (!hasColon) {
+            for (size_t i = 0; i < 4; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                parse = parseH16();
+            }
+        }
+        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            if (parseH16()) {
+                return true;
+            }
+        }
+    }
+    m_parserPos = parserOldPos;
+    {
+        // [ *6( h16 ":" ) h16 ] "::"
+        const bool hasColon = expectChar(':');
+        bool parse = true;
+        if (!hasColon) {
+            for (size_t i = 0; i < 4; ++i) {
+                if (!parseH16()) {
+                    parse = false;
+                    break;
+                }
+                if (!expectChar(':')) {
+                    parse = false;
+                    break;
+                }
+            }
+            if (parse) {
+                parse = parseH16();
+            }
+        }
+        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            return true;
+        }
+    }
     return false;
 }
 
