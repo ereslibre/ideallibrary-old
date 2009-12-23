@@ -565,19 +565,24 @@ bool Uri::Private::parseIPLiteral()
 {
     if (!expectChar('[')) {
         return false;
+    } else {
+        m_parserAux = '[';
     }
     const size_t parserOldPos = m_parserPos;
     if (parseIPv6Address()) {
         if (!expectChar(']')) {
             return false;
         }
+        m_parserAux += ']';
         return true;
     }
+    m_parserAux = '[';
     m_parserPos = parserOldPos;
     if (parseIPvFuture()) {
         if (!expectChar(']')) {
             return false;
         }
+        m_parserAux += ']';
         return true;
     }
     return false;
@@ -636,6 +641,7 @@ void Uri::Private::parseRegName()
 
 bool Uri::Private::parseIPv6Address()
 {
+    const String parserOldAux = m_parserAux;
     const size_t parserOldPos = m_parserPos;
     {
         // 6( h16 ":" ) ls32
@@ -648,6 +654,8 @@ bool Uri::Private::parseIPv6Address()
             if (!expectChar(':')) {
                 parse = false;
                 break;
+            } else {
+                m_parserAux += ':';
             }
         }
         if (parse) {
@@ -657,9 +665,12 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // "::" 5( h16 ":" ) ls32
         if (expectChar(':') && expectChar(':')) {
+            m_parserAux += ':';
+            m_parserAux += ':';
             bool parse = true;
             for (size_t i = 0; i < 5; ++i) {
                 if (!parseH16()) {
@@ -669,6 +680,8 @@ bool Uri::Private::parseIPv6Address()
                 if (!expectChar(':')) {
                     parse = false;
                     break;
+                } else {
+                    m_parserAux += ':';
                 }
             }
             if (parse) {
@@ -679,6 +692,7 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // [ h16 ] "::" 4( h16 ":" ) ls32
         const bool hasColon = expectChar(':');
@@ -687,6 +701,8 @@ bool Uri::Private::parseIPv6Address()
             parse = parseH16();
         }
         if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            m_parserAux += ':';
+            m_parserAux += ':';
             bool parse = true;
             for (size_t i = 0; i < 4; ++i) {
                 if (!parseH16()) {
@@ -696,6 +712,8 @@ bool Uri::Private::parseIPv6Address()
                 if (!expectChar(':')) {
                     parse = false;
                     break;
+                } else {
+                    m_parserAux += ':';
                 }
             }
             if (parse) {
@@ -706,6 +724,7 @@ bool Uri::Private::parseIPv6Address()
         }
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
         const bool hasColon = expectChar(':');
@@ -713,10 +732,13 @@ bool Uri::Private::parseIPv6Address()
         if (!hasColon) {
             parse = parseH16();
             if (parse && expectChar(':')) {
+                m_parserAux += ':';
                 parse = parseH16();
             }
         }
         if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            m_parserAux += ':';
+            m_parserAux += ':';
             bool parse = true;
             for (size_t i = 0; i < 3; ++i) {
                 if (!parseH16()) {
@@ -726,6 +748,8 @@ bool Uri::Private::parseIPv6Address()
                 if (!expectChar(':')) {
                     parse = false;
                     break;
+                } else {
+                    m_parserAux += ':';
                 }
             }
             if (parse) {
@@ -737,6 +761,7 @@ bool Uri::Private::parseIPv6Address()
 
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
         const bool hasColon = expectChar(':');
@@ -750,6 +775,8 @@ bool Uri::Private::parseIPv6Address()
                 if (!expectChar(':')) {
                     parse = false;
                     break;
+                } else {
+                    m_parserAux += ':';
                 }
             }
             if (parse) {
@@ -757,6 +784,8 @@ bool Uri::Private::parseIPv6Address()
             }
         }
         if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+            m_parserAux += ':';
+            m_parserAux += ':';
             bool parse = true;
             for (size_t i = 0; i < 2; ++i) {
                 if (!parseH16()) {
@@ -766,6 +795,8 @@ bool Uri::Private::parseIPv6Address()
                 if (!expectChar(':')) {
                     parse = false;
                     break;
+                } else {
+                    m_parserAux += ':';
                 }
             }
             if (parse) {
@@ -777,104 +808,111 @@ bool Uri::Private::parseIPv6Address()
 
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // [ *3( h16 ":" ) h16 ] "::" h16 ":" ls32
-        const bool hasColon = expectChar(':');
-        bool parse = true;
-        if (!hasColon) {
-            for (size_t i = 0; i < 3; ++i) {
-                if (!parseH16()) {
-                    parse = false;
-                    break;
-                }
+        bool hasColon = false;
+        if (parseH16()) {
+            for (size_t i = 0; i < 5; ++i) {
                 if (!expectChar(':')) {
-                    parse = false;
                     break;
                 }
-            }
-            if (parse) {
-                parse = parseH16();
+                m_parserAux += ':';
+                if (!parseH16()) {
+                    hasColon = true;
+                    break;
+                }
             }
         }
-        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
-            if (parseH16() && expectChar(':') && parseLs32()) {
-                return true;
+        if (expectChar(':') && (hasColon || expectChar(':'))) {
+            m_parserAux += ':';
+            if (!hasColon) {
+                m_parserAux += ':';
+            }
+            if (parseH16() && expectChar(':')) {
+                m_parserAux += ':';
+                if (parseLs32()) {
+                  return true;
+                }
             }
         }
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // [ *4( h16 ":" ) h16 ] "::" ls32
-        const bool hasColon = expectChar(':');
-        bool parse = true;
-        if (!hasColon) {
-            for (size_t i = 0; i < 4; ++i) {
-                if (!parseH16()) {
-                    parse = false;
-                    break;
-                }
+        bool hasColon = false;
+        if (parseH16()) {
+            for (size_t i = 0; i < 5; ++i) {
                 if (!expectChar(':')) {
-                    parse = false;
                     break;
                 }
-            }
-            if (parse) {
-                parse = parseH16();
+                m_parserAux += ':';
+                if (!parseH16()) {
+                    hasColon = true;
+                    break;
+                }
             }
         }
-        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+        if (expectChar(':') && (hasColon || expectChar(':'))) {
+            m_parserAux += ':';
+            if (!hasColon) {
+                m_parserAux += ':';
+            }
             if (parseLs32()) {
                 return true;
             }
         }
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // [ *5( h16 ":" ) h16 ] "::" h16
-        const bool hasColon = expectChar(':');
-        bool parse = true;
-        if (!hasColon) {
-            for (size_t i = 0; i < 4; ++i) {
-                if (!parseH16()) {
-                    parse = false;
-                    break;
-                }
+        bool hasColon = false;
+        if (parseH16()) {
+            for (size_t i = 0; i < 5; ++i) {
                 if (!expectChar(':')) {
-                    parse = false;
                     break;
                 }
-            }
-            if (parse) {
-                parse = parseH16();
+                m_parserAux += ':';
+                if (!parseH16()) {
+                    hasColon = true;
+                    break;
+                }
             }
         }
-        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+        if (expectChar(':') && (hasColon || expectChar(':'))) {
+            m_parserAux += ':';
+            if (!hasColon) {
+                m_parserAux += ':';
+            }
             if (parseH16()) {
                 return true;
             }
         }
     }
     m_parserPos = parserOldPos;
+    m_parserAux = parserOldAux;
     {
         // [ *6( h16 ":" ) h16 ] "::"
-        const bool hasColon = expectChar(':');
-        bool parse = true;
-        if (!hasColon) {
-            for (size_t i = 0; i < 4; ++i) {
-                if (!parseH16()) {
-                    parse = false;
-                    break;
-                }
+        bool hasColon = false;
+        if (parseH16()) {
+            for (size_t i = 0; i < 6; ++i) {
                 if (!expectChar(':')) {
-                    parse = false;
                     break;
                 }
-            }
-            if (parse) {
-                parse = parseH16();
+                m_parserAux += ':';
+                if (!parseH16()) {
+                    hasColon = true;
+                    break;
+                }
             }
         }
-        if (parse && expectChar(':') && (hasColon || expectChar(':'))) {
+        if (expectChar(':') && (hasColon || expectChar(':'))) {
+            m_parserAux += ':';
+            if (!hasColon) {
+                m_parserAux += ':';
+            }
             return true;
         }
     }
@@ -883,19 +921,16 @@ bool Uri::Private::parseIPv6Address()
 
 bool Uri::Private::parseIPvFuture()
 {
-    if (!expectChar('v')) {
+    if (!expectChar('v') && !expectChar('V')) {
         return false;
     }
-    m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     size_t currValue = curr.value();
     if (!is_hexdig[currValue]) {
-        
         return false;
     }
     ++m_parserPos;
     if (!expectChar('.')) {
-        
         return false;
     }
     curr = m_uri[m_parserPos];
@@ -921,7 +956,7 @@ bool Uri::Private::parseH16()
         const Char curr = m_uri[m_parserPos];
         const size_t currValue = curr.value();
         if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-            return false;
+            return i;
         }
         m_parserAux += curr;
         ++m_parserPos;

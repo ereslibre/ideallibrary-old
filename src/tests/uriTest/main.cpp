@@ -66,5 +66,12 @@ int main(int argc, char **argv)
         IDEAL_SDEBUG("Path is: " << uri.path());
         IDEAL_SDEBUG("Valid: " << (uri.isValid() ? "yes" : "no"));
     }
+    {
+        Uri uri("ldap://[2001:db8::7]");
+        IDEAL_SDEBUG("Uri is: " << uri.uri());
+        IDEAL_SDEBUG("Scheme is: " << uri.scheme());
+        IDEAL_SDEBUG("Host is: " << uri.host());
+        IDEAL_SDEBUG("Valid: " << (uri.isValid() ? "yes" : "no"));
+    }
     return 0;
 }
