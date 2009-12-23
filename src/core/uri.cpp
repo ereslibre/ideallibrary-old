@@ -565,24 +565,19 @@ bool Uri::Private::parseIPLiteral()
 {
     if (!expectChar('[')) {
         return false;
-    } else {
-        m_parserAux = '[';
     }
     const size_t parserOldPos = m_parserPos;
     if (parseIPv6Address()) {
         if (!expectChar(']')) {
             return false;
         }
-        m_parserAux += ']';
         return true;
     }
-    m_parserAux = '[';
     m_parserPos = parserOldPos;
     if (parseIPvFuture()) {
         if (!expectChar(']')) {
             return false;
         }
-        m_parserAux += ']';
         return true;
     }
     return false;
@@ -924,6 +919,7 @@ bool Uri::Private::parseIPvFuture()
     if (!expectChar('v') && !expectChar('V')) {
         return false;
     }
+    m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     size_t currValue = curr.value();
     if (!is_hexdig[currValue]) {
