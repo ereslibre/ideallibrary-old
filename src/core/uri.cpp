@@ -20,7 +20,7 @@
 
 #include "uri.h"
 
-namespace IdealCore{
+namespace IdealCore {
 
 class Uri::Private
 {
@@ -838,89 +838,6 @@ String Uri::Private::getHex(Char ch) const
         res += uri_hex[(fragmentedValue.v[octetsRequired - i - 1] >> 4) & 0xf];
         res += uri_hex[fragmentedValue.v[octetsRequired - i - 1] & 0xf];
     }
-    return res;
-}
-
-String Uri::Private::encodeUri(const String &uri) const
-{
-    String res;
-#if 0
-    for (size_t i = 0; i < uri.size(); ++i) {
-        const Char c = uri[i];
-        const iuint32 value = c.value();
-        if (value < 128 && uri_unreserved[value]) {
-            res += c;
-        } else {
-            res += getHex(c);
-        }
-    }
-#else
-    // Parse here
-#endif
-    return res;
-}
-
-String Uri::Private::decodeUri(const String &uri) const
-{
-    if (!uri.contains('%')) {
-        return uri;
-    }
-    String res;
-#if 0
-    size_t i = 0;
-    while (i < uri.size()) {
-        const Char currChar = uri[i];
-        if (currChar == '%') {
-            Char newChar;
-            String byte1(uri[i + 1]);
-            byte1 += uri[i + 2];
-            const iuint32 byte1Val = strtoul(byte1.data(), 0, 16);
-            if (!(byte1Val & 0x80)) {
-                newChar.c = byte1Val;
-                i += 3;
-            } else if (!(byte1Val & 0x20)) {
-                String byte2(uri[i + 4]);
-                byte2 += uri[i + 5];
-                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
-                newChar.c |= (byte1Val << 8);
-                newChar.c |= byte2Val;
-                i += 6;
-            } else if (!(byte1Val & 0x10)) {
-                String byte2(uri[i + 4]);
-                byte2 += uri[i + 5];
-                String byte3(uri[i + 7]);
-                byte3 += uri[i + 8];
-                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
-                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
-                newChar.c |= (byte1Val << 16);
-                newChar.c |= (byte2Val << 8);
-                newChar.c |= byte3Val;
-                i += 9;
-            } else if (!(byte1Val & 0x8)) {
-                String byte2(uri[i + 4]);
-                byte2 += uri[i + 5];
-                String byte3(uri[i + 7]);
-                byte3 += uri[i + 8];
-                String byte4(uri[i + 10]);
-                byte4 += uri[i + 11];
-                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
-                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
-                const iuint32 byte4Val = strtoul(byte4.data(), 0, 16);
-                newChar.c |= (byte1Val << 24);
-                newChar.c |= (byte2Val << 16);
-                newChar.c |= (byte3Val << 8);
-                newChar.c |= byte4Val;
-                i += 12;
-            }
-            res += newChar;
-        } else {
-            res += currChar;
-            ++i;
-        }
-    }
-#else
-    // Parse here
-#endif
     return res;
 }
 
