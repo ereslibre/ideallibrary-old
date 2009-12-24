@@ -149,7 +149,6 @@ public:
     bool parsePchar();
     bool parseReserved();
     String  m_parserAux;
-    Stack<String> m_pathStack;
     size_t  m_parserPos;
 
     String  m_uri;
@@ -360,16 +359,17 @@ void Uri::Private::parseAuthority()
 void Uri::Private::parsePathAbempty()
 {
     m_parserAux.clear();
+    Stack<String> pathStack;
     while (expectChar('/')) {
-        m_pathStack.push(String('/'));
+        pathStack.push(String('/'));
         parseSegment();
-        m_pathStack.push(m_parserAux);
+        pathStack.push(m_parserAux);
         m_parserAux.clear();
     }
     m_path.clear();
-    const size_t stackSize = m_pathStack.size();
+    const size_t stackSize = pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(m_pathStack.pop());
+        m_path.prepend(pathStack.pop());
     }
 }
 
@@ -378,21 +378,22 @@ bool Uri::Private::parsePathAbsolute()
     if (!expectChar('/')) {
         return false;
     }
-    m_pathStack.push(String('/'));
+    Stack<String> pathStack;
+    pathStack.push(String('/'));
     if (parseSegmentNz()) {
-        m_pathStack.push(m_parserAux);
+        pathStack.push(m_parserAux);
         m_parserAux.clear();
         while (expectChar('/')) {
-            m_pathStack.push(String('/'));
+            pathStack.push(String('/'));
             parseSegment();
-            m_pathStack.push(m_parserAux);
+            pathStack.push(m_parserAux);
             m_parserAux.clear();
         }
     }
     m_path.clear();
-    const size_t stackSize = m_pathStack.size();
+    const size_t stackSize = pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(m_pathStack.pop());
+        m_path.prepend(pathStack.pop());
     }
     return true;
 }
@@ -403,18 +404,19 @@ bool Uri::Private::parsePathRootless()
     if (!parseSegmentNz()) {
         return false;
     }
-    m_pathStack.push(m_parserAux);
+    Stack<String> pathStack;
+    pathStack.push(m_parserAux);
     m_parserAux.clear();
     while (expectChar('/')) {
-        m_pathStack.push(String('/'));
+        pathStack.push(String('/'));
         parseSegment();
-        m_pathStack.push(m_parserAux);
+        pathStack.push(m_parserAux);
         m_parserAux.clear();
     }
     m_path.clear();
-    const size_t stackSize = m_pathStack.size();
+    const size_t stackSize = pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(m_pathStack.pop());
+        m_path.prepend(pathStack.pop());
     }
     return true;
 }
@@ -1013,18 +1015,19 @@ bool Uri::Private::parsePathNoScheme()
     if (!parseSegmentNzNc()) {
         return false;
     }
-    m_pathStack.push(m_parserAux);
+    Stack<String> pathStack;
+    pathStack.push(m_parserAux);
     m_parserAux.clear();
     while (expectChar('/')) {
-        m_pathStack.push(String('/'));
+        pathStack.push(String('/'));
         parseSegment();
-        m_pathStack.push(m_parserAux);
+        pathStack.push(m_parserAux);
         m_parserAux.clear();
     }
     m_path.clear();
-    const size_t stackSize = m_pathStack.size();
+    const size_t stackSize = pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(m_pathStack.pop());
+        m_path.prepend(pathStack.pop());
     }
     return true;
 }
