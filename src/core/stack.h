@@ -37,7 +37,8 @@ public:
     virtual ~Stack();
 
     void push(const T &t);
-    const T pop();
+    T pop();
+    T peek() const;
 
     size_t size() const;
 
@@ -138,10 +139,19 @@ void Stack<T>::push(const T &t)
 }
 
 template <typename T>
-const T Stack<T>::pop()
+T Stack<T>::pop()
 {
     if (d->m_top) {
         return d->m_stack[--d->m_top];
+    }
+    return T();
+}
+
+template <typename T>
+T Stack<T>::peek() const
+{
+    if (d->m_top) {
+        return d->m_stack[d->m_top - 1];
     }
     return T();
 }
