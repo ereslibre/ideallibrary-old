@@ -124,7 +124,7 @@ void Stack<T>::push(const T &t)
             d->m_stack = new T[2];
         } else {
             const size_t oldCapacity = d->m_capacity;
-            d->m_capacity = (oldCapacity * 2);
+            d->m_capacity = oldCapacity * 2;
             T *const oldStack = d->m_stack;
             d->m_stack = new T[d->m_capacity];
             for (size_t i = 0; i < oldCapacity; ++i) {
