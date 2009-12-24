@@ -360,11 +360,36 @@ void Uri::Private::parsePathAbempty()
 {
     m_parserAux.clear();
     Stack<String> pathStack;
+    size_t upLevels = 0;
     while (expectChar('/')) {
         pathStack.push(String('/'));
         parseSegment();
-        pathStack.push(m_parserAux);
+        if (m_parserAux.empty() && pathStack.size() > 1) {
+            pathStack.pop();
+        } else if (!m_parserAux.empty()) {
+            if (m_parserAux == Char('.')) {
+                pathStack.pop();
+            } else if (m_parserAux == String("..")) {
+                ++upLevels;
+                pathStack.pop();
+            } else {
+                if (upLevels) {
+                    for (size_t i = 0; i < upLevels; ++i) {
+                        pathStack.pop();
+                        pathStack.pop();
+                    }
+                    upLevels = 0;
+                }
+                pathStack.push(m_parserAux);
+            }
+        }
         m_parserAux.clear();
+    }
+    if (upLevels) {
+        for (size_t i = 0; i < upLevels; ++i) {
+            pathStack.pop();
+            pathStack.pop();
+        }
     }
     m_path.clear();
     const size_t stackSize = pathStack.size();
@@ -381,12 +406,18 @@ bool Uri::Private::parsePathAbsolute()
     Stack<String> pathStack;
     pathStack.push(String('/'));
     if (parseSegmentNz()) {
-        pathStack.push(m_parserAux);
+        if (!m_parserAux.empty()) {
+            pathStack.push(m_parserAux);
+        }
         m_parserAux.clear();
         while (expectChar('/')) {
             pathStack.push(String('/'));
             parseSegment();
-            pathStack.push(m_parserAux);
+            if (m_parserAux.empty()) {
+                pathStack.pop();
+            } else if (!m_parserAux.empty()) {
+                pathStack.push(m_parserAux);
+            }
             m_parserAux.clear();
         }
     }
@@ -410,7 +441,11 @@ bool Uri::Private::parsePathRootless()
     while (expectChar('/')) {
         pathStack.push(String('/'));
         parseSegment();
-        pathStack.push(m_parserAux);
+        if (m_parserAux.empty() && pathStack.size() > 1) {
+            pathStack.pop();
+        } else if (!m_parserAux.empty()) {
+            pathStack.push(m_parserAux);
+        }
         m_parserAux.clear();
     }
     m_path.clear();
@@ -1021,7 +1056,11 @@ bool Uri::Private::parsePathNoScheme()
     while (expectChar('/')) {
         pathStack.push(String('/'));
         parseSegment();
-        pathStack.push(m_parserAux);
+        if (m_parserAux.empty() && pathStack.size() > 1) {
+            pathStack.pop();
+        } else if (!m_parserAux.empty()) {
+            pathStack.push(m_parserAux);
+        }
         m_parserAux.clear();
     }
     m_path.clear();
