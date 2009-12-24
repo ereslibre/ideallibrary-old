@@ -5,3 +5,5 @@ doc/
 cscope.*
 externtests/
 externTests/
+src/.kdev_include_paths
+src/src.kdev4
