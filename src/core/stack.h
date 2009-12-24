@@ -76,7 +76,7 @@ Stack<T>::Private::Private()
 template <typename T>
 Stack<T>::Private::~Private()
 {
-    free(m_stack);
+    delete[] m_stack;
 }
 
 template <typename T>
@@ -119,17 +119,16 @@ void Stack<T>::push(const T &t)
     if (d->m_top == d->m_capacity) {
         if (!d->m_capacity) {
             d->m_capacity = 2;
-            d->m_stack = (T*) calloc(sizeof(T), 2);
-            for (size_t i = 0; i < 2; ++i) {
-                d->m_stack[i] = T();
-            }
+            d->m_stack = new T[2];
         } else {
             const size_t oldCapacity = d->m_capacity;
             d->m_capacity = (oldCapacity * 2);
-            d->m_stack = (T*) realloc(d->m_stack, d->m_capacity * sizeof(T));
-            for (size_t i = oldCapacity; i < d->m_capacity; ++i) {
-                d->m_stack[i] = T();
+            T *const oldStack = d->m_stack;
+            d->m_stack = new T[d->m_capacity];
+            for (size_t i = 0; i < oldCapacity; ++i) {
+                d->m_stack[i] = oldStack[i];
             }
+            delete[] oldStack;
         }
     }
     d->m_stack[d->m_top] = t;
