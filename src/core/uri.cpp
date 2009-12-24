@@ -368,27 +368,8 @@ void Uri::Private::parsePathAbempty()
     }
     m_path.clear();
     const size_t stackSize = m_pathStack.size();
-    size_t skips = 0;
-    size_t i = 0;
-    while (i < stackSize) {
-        const String curr = m_pathStack.pop();
-        if (curr == Char('.')) {
-            m_pathStack.pop();
-            ++i;
-        } else if (curr == String("..")) {
-            ++skips;
-            m_pathStack.pop();
-            ++i;
-        } else {
-            if (skips) {
-                --skips;
-                m_pathStack.pop();
-                ++i;
-            } else {
-                m_path.prepend(curr);
-            }
-        }
-        ++i;
+    for (size_t i = 0; i < stackSize; ++i) {
+        m_path.prepend(m_pathStack.pop());
     }
 }
 
@@ -410,27 +391,8 @@ bool Uri::Private::parsePathAbsolute()
     }
     m_path.clear();
     const size_t stackSize = m_pathStack.size();
-    size_t skips = 0;
-    size_t i = 0;
-    while (i < stackSize) {
-        const String curr = m_pathStack.pop();
-        if (curr == Char('.')) {
-            m_pathStack.pop();
-            ++i;
-        } else if (curr == String("..")) {
-            ++skips;
-            m_pathStack.pop();
-            ++i;
-        } else {
-            if (skips) {
-                --skips;
-                m_pathStack.pop();
-                ++i;
-            } else {
-                m_path.prepend(curr);
-            }
-        }
-        ++i;
+    for (size_t i = 0; i < stackSize; ++i) {
+        m_path.prepend(m_pathStack.pop());
     }
     return true;
 }
@@ -451,27 +413,8 @@ bool Uri::Private::parsePathRootless()
     }
     m_path.clear();
     const size_t stackSize = m_pathStack.size();
-    size_t skips = 0;
-    size_t i = 0;
-    while (i < stackSize) {
-        const String curr = m_pathStack.pop();
-        if (curr == Char('.')) {
-            m_pathStack.pop();
-            ++i;
-        } else if (curr == String("..")) {
-            ++skips;
-            m_pathStack.pop();
-            ++i;
-        } else {
-            if (skips) {
-                --skips;
-                m_pathStack.pop();
-                ++i;
-            } else {
-                m_path.prepend(curr);
-            }
-        }
-        ++i;
+    for (size_t i = 0; i < stackSize; ++i) {
+        m_path.prepend(m_pathStack.pop());
     }
     return true;
 }
@@ -615,21 +558,25 @@ void Uri::Private::parsePort()
 
 bool Uri::Private::parsePctEncoded()
 {
-    if (!expectChar('%')) {
+    const Char curr = m_uri[m_parserPos];
+    const iint32 octetsRequired = curr.octetsRequired();
+    if (!expectChar('%') && octetsRequired == 1) {
         return false;
     }
-    m_parserAux += '%';
-    Char curr = m_uri[m_parserPos];
-    size_t currValue = curr.value();
-    if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-        return false;
-    }
-    m_parserAux += curr;
-    ++m_parserPos;
-    curr = m_uri[m_parserPos];
-    currValue = curr.value();
-    if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-        return false;
+    if (octetsRequired == 1) {
+        m_parserAux += '%';
+        Char curr = m_uri[m_parserPos];
+        size_t currValue = curr.value();
+        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+            return false;
+        }
+        m_parserAux += curr;
+        ++m_parserPos;
+        curr = m_uri[m_parserPos];
+        currValue = curr.value();
+        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+            return false;
+        }
     }
     m_parserAux += curr;
     ++m_parserPos;
@@ -1076,27 +1023,8 @@ bool Uri::Private::parsePathNoScheme()
     }
     m_path.clear();
     const size_t stackSize = m_pathStack.size();
-    size_t skips = 0;
-    size_t i = 0;
-    while (i < stackSize) {
-        const String curr = m_pathStack.pop();
-        if (curr == Char('.')) {
-            m_pathStack.pop();
-            ++i;
-        } else if (curr == String("..")) {
-            ++skips;
-            m_pathStack.pop();
-            ++i;
-        } else {
-            if (skips) {
-                --skips;
-                m_pathStack.pop();
-                ++i;
-            } else {
-                m_path.prepend(curr);
-            }
-        }
-        ++i;
+    for (size_t i = 0; i < stackSize; ++i) {
+        m_path.prepend(m_pathStack.pop());
     }
     return true;
 }
