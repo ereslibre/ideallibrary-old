@@ -19,6 +19,7 @@
  */
 
 #include "uri.h"
+#include "stack.h"
 
 namespace IdealCore {
 
@@ -148,6 +149,7 @@ public:
     bool parsePchar();
     bool parseReserved();
     String  m_parserAux;
+    Stack<String> m_pathStack;
     size_t  m_parserPos;
 
     String  m_uri;
@@ -358,14 +360,15 @@ void Uri::Private::parseAuthority()
 void Uri::Private::parsePathAbempty()
 {
     m_parserAux.clear();
-    Char curr = m_uri[m_parserPos];
-    while (curr == '/') {
-        m_parserAux += '/';
-        ++m_parserPos;
+    while (expectChar('/')) {
+        m_pathStack.push(String('/'));
         parseSegment();
-        curr = m_uri[m_parserPos];
+        m_pathStack.push(m_parserAux);
+        m_parserAux.clear();
     }
-    m_path = m_parserAux;
+    for (size_t i = 0; i < m_pathStack.size(); ++i) {
+        IDEAL_SDEBUG(m_pathStack.pop());
+    }
 }
 
 bool Uri::Private::parsePathAbsolute()
@@ -373,17 +376,18 @@ bool Uri::Private::parsePathAbsolute()
     if (!expectChar('/')) {
         return false;
     }
-    m_parserAux = '/';
+    m_pathStack.push(String('/'));
     if (parseSegmentNz()) {
-        Char curr = m_uri[m_parserPos];
-        while (curr == '/') {
-            m_parserAux += '/';
-            ++m_parserPos;
+        while (expectChar('/')) {
+            m_pathStack.push(String('/'));
             parseSegment();
-            curr = m_uri[m_parserPos];
+            m_pathStack.push(m_parserAux);
+            m_parserAux.clear();
         }
     }
-    m_path = m_parserAux;
+    for (size_t i = 0; i < m_pathStack.size(); ++i) {
+        IDEAL_SDEBUG(m_pathStack.pop());
+    }
     return true;
 }
 
@@ -393,21 +397,21 @@ bool Uri::Private::parsePathRootless()
     if (!parseSegmentNz()) {
         return false;
     }
-    Char curr = m_uri[m_parserPos];
-    while (curr == '/') {
-        m_parserAux += '/';
-        ++m_parserPos;
+    while (expectChar('/')) {
+        m_pathStack.push(String('/'));
         parseSegment();
-        curr = m_uri[m_parserPos];
+        m_pathStack.push(m_parserAux);
+        m_parserAux.clear();
     }
-    m_path = m_parserAux;
+    for (size_t i = 0; i < m_pathStack.size(); ++i) {
+        IDEAL_SDEBUG(m_pathStack.pop());
+    }
     return true;
 }
 
 bool Uri::Private::parsePathEmpty()
 {
-    const Char curr = m_uri[m_parserPos];
-    return !curr.value();
+    return !m_uri[m_parserPos].value();
 }
 
 bool Uri::Private::parseURIReference()
@@ -991,14 +995,15 @@ bool Uri::Private::parsePathNoScheme()
     if (!parseSegmentNzNc()) {
         return false;
     }
-    Char curr = m_uri[m_parserPos];
-    while (curr == '/') {
-        m_parserAux += '/';
-        ++m_parserPos;
+    while (expectChar('/')) {
+        m_pathStack.push(String('/'));
         parseSegment();
-        curr = m_uri[m_parserPos];
+        m_pathStack.push(m_parserAux);
+        m_parserAux.clear();
     }
-    m_path = m_parserAux;
+    for (size_t i = 0; i < m_pathStack.size(); ++i) {
+        IDEAL_SDEBUG(m_pathStack.pop());
+    }
     return true;
 }
 

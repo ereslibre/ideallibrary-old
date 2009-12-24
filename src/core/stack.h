@@ -37,12 +37,11 @@ public:
     virtual ~Stack();
 
     void push(const T &t);
-    const T &pop();
+    const T pop();
+
+    size_t size() const;
 
     Stack &operator=(const Stack &stack);
-
-    bool operator==(const Stack &stack) const;
-    bool operator!=(const Stack &stack) const;
 
 private:
     class Private;
@@ -60,12 +59,16 @@ public:
     void deref();
 
     T     *m_stack;
+    size_t m_top;
+    size_t m_capacity;
     size_t m_refs;
 };
 
 template <typename T>
 Stack<T>::Private::Private()
     : m_stack(0)
+    , m_top(0)
+    , m_capacity(0)
     , m_refs(1)
 {
 }
@@ -93,12 +96,15 @@ void Stack<T>::Private::deref()
 
 template <typename T>
 Stack<T>::Stack()
+    : d(new Private)
 {
 }
 
 template <typename T>
 Stack<T>::Stack(const Stack<T> &stack)
 {
+    stack.d->ref();
+    d = stack.d;
 }
 
 template <typename T>
@@ -110,29 +116,51 @@ Stack<T>::~Stack()
 template <typename T>
 void Stack<T>::push(const T &t)
 {
+    if (d->m_top == d->m_capacity) {
+        if (!d->m_capacity) {
+            d->m_capacity = 2;
+            d->m_stack = (T*) calloc(sizeof(T), 2);
+            for (size_t i = 0; i < 2; ++i) {
+                d->m_stack[i] = T();
+            }
+        } else {
+            const size_t oldCapacity = d->m_capacity;
+            d->m_capacity = (oldCapacity * 2);
+            d->m_stack = (T*) realloc(d->m_stack, d->m_capacity * sizeof(T));
+            for (size_t i = oldCapacity; i < d->m_capacity; ++i) {
+                d->m_stack[i] = T();
+            }
+        }
+    }
+    d->m_stack[d->m_top] = t;
+    ++d->m_top;
 }
 
 template <typename T>
-const T &Stack<T>::pop()
+const T Stack<T>::pop()
 {
+    if (d->m_top) {
+        return d->m_stack[--d->m_top];
+    }
+    return T();
+}
+
+template <typename T>
+size_t Stack<T>::size() const
+{
+    return d->m_top;
 }
 
 template <typename T>
 Stack<T> &Stack<T>::operator=(const Stack<T> &stack)
 {
+    if (this == &stack || d == stack.d) {
+        return *this;
+    }
+    d->deref();
+    stack.d->ref();
+    d = stack.d;
     return *this;
-}
-
-template <typename T>
-bool Stack<T>::operator==(const Stack<T> &stack) const
-{
-    return false;
-}
-
-template <typename T>
-bool Stack<T>::operator!=(const Stack<T> &stack) const
-{
-    return true;
 }
 
 }
