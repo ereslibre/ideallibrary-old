@@ -120,7 +120,7 @@ void UriTest::testConstructor()
 
     Uri test21("file:///home/user/folder/");
     CPPUNIT_ASSERT(test21.isValid());
-    CPPUNIT_ASSERT_EQUAL(String("/home/user/folder/"), test21.path());
+    CPPUNIT_ASSERT_EQUAL(String("/home/user/folder"), test21.path());
     CPPUNIT_ASSERT_EQUAL(String(), test21.host());
 
     Uri test22("file:///home/user/imágenes/spécial.png");
