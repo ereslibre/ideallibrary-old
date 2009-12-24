@@ -19,8 +19,8 @@
  */
 
 #include "event.h"
-#include <core/object.h>
-#include <core/genious_pointer.h>
+#include "object.h"
+#include "genious_pointer.h"
 
 namespace IdealCore {
 

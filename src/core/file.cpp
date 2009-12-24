@@ -21,10 +21,10 @@
 #include "file.h"
 #include "private/file_p.h"
 
-#include <core/extension_loader.h>
+#include "extension_loader.h"
 
-#include <core/application.h>
-#include <core/private/application_p.h>
+#include "application.h"
+#include "private/application_p.h"
 
 #define PH_CACHE_SIZE 10
 #define BUFFER_SIZE (1024 * 32)

@@ -21,7 +21,7 @@
 #include "object.h"
 #include "private/object_p.h"
 
-#include <core/application.h>
+#include "application.h"
 #include "private/application_p.h"
 
 namespace IdealCore {
