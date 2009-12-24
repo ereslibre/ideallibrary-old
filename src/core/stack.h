@@ -41,6 +41,8 @@ public:
 
     size_t size() const;
 
+    void clear();
+
     Stack &operator=(const Stack &stack);
 
 private:
@@ -148,6 +150,14 @@ template <typename T>
 size_t Stack<T>::size() const
 {
     return d->m_top;
+}
+
+template <typename T>
+void Stack<T>::clear()
+{
+    delete[] d->m_stack;
+    d->m_top = 0;
+    d->m_capacity = 0;
 }
 
 template <typename T>

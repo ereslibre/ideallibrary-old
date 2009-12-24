@@ -366,8 +366,29 @@ void Uri::Private::parsePathAbempty()
         m_pathStack.push(m_parserAux);
         m_parserAux.clear();
     }
-    for (size_t i = 0; i < m_pathStack.size(); ++i) {
-        IDEAL_SDEBUG(m_pathStack.pop());
+    m_path.clear();
+    const size_t stackSize = m_pathStack.size();
+    size_t skips = 0;
+    size_t i = 0;
+    while (i < stackSize) {
+        const String curr = m_pathStack.pop();
+        if (curr == Char('.')) {
+            m_pathStack.pop();
+            ++i;
+        } else if (curr == String("..")) {
+            ++skips;
+            m_pathStack.pop();
+            ++i;
+        } else {
+            if (skips) {
+                --skips;
+                m_pathStack.pop();
+                ++i;
+            } else {
+                m_path.prepend(curr);
+            }
+        }
+        ++i;
     }
 }
 
@@ -378,6 +399,8 @@ bool Uri::Private::parsePathAbsolute()
     }
     m_pathStack.push(String('/'));
     if (parseSegmentNz()) {
+        m_pathStack.push(m_parserAux);
+        m_parserAux.clear();
         while (expectChar('/')) {
             m_pathStack.push(String('/'));
             parseSegment();
@@ -385,8 +408,29 @@ bool Uri::Private::parsePathAbsolute()
             m_parserAux.clear();
         }
     }
-    for (size_t i = 0; i < m_pathStack.size(); ++i) {
-        IDEAL_SDEBUG(m_pathStack.pop());
+    m_path.clear();
+    const size_t stackSize = m_pathStack.size();
+    size_t skips = 0;
+    size_t i = 0;
+    while (i < stackSize) {
+        const String curr = m_pathStack.pop();
+        if (curr == Char('.')) {
+            m_pathStack.pop();
+            ++i;
+        } else if (curr == String("..")) {
+            ++skips;
+            m_pathStack.pop();
+            ++i;
+        } else {
+            if (skips) {
+                --skips;
+                m_pathStack.pop();
+                ++i;
+            } else {
+                m_path.prepend(curr);
+            }
+        }
+        ++i;
     }
     return true;
 }
@@ -397,21 +441,48 @@ bool Uri::Private::parsePathRootless()
     if (!parseSegmentNz()) {
         return false;
     }
+    m_pathStack.push(m_parserAux);
+    m_parserAux.clear();
     while (expectChar('/')) {
         m_pathStack.push(String('/'));
         parseSegment();
         m_pathStack.push(m_parserAux);
         m_parserAux.clear();
     }
-    for (size_t i = 0; i < m_pathStack.size(); ++i) {
-        IDEAL_SDEBUG(m_pathStack.pop());
+    m_path.clear();
+    const size_t stackSize = m_pathStack.size();
+    size_t skips = 0;
+    size_t i = 0;
+    while (i < stackSize) {
+        const String curr = m_pathStack.pop();
+        if (curr == Char('.')) {
+            m_pathStack.pop();
+            ++i;
+        } else if (curr == String("..")) {
+            ++skips;
+            m_pathStack.pop();
+            ++i;
+        } else {
+            if (skips) {
+                --skips;
+                m_pathStack.pop();
+                ++i;
+            } else {
+                m_path.prepend(curr);
+            }
+        }
+        ++i;
     }
     return true;
 }
 
 bool Uri::Private::parsePathEmpty()
 {
-    return !m_uri[m_parserPos].value();
+    if (!m_uri[m_parserPos].value()) {
+        m_path.clear();
+        return true;
+    }
+    return false;
 }
 
 bool Uri::Private::parseURIReference()
@@ -619,7 +690,7 @@ void Uri::Private::parseRegName()
     while (true) {
         const Char curr = m_uri[m_parserPos];
         const size_t currValue = curr.value();
-        if (is_unreserved[currValue]) {
+        if (currValue < 128 && is_unreserved[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             continue;
@@ -629,7 +700,7 @@ void Uri::Private::parseRegName()
             continue;
         }
         m_parserPos = parserOldPos;
-        if (is_subdelim[currValue]) {
+        if (currValue < 128 && is_subdelim[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             continue;
@@ -926,7 +997,7 @@ bool Uri::Private::parseIPvFuture()
     m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     size_t currValue = curr.value();
-    if (!is_hexdig[currValue]) {
+    if (currValue > 127 || !is_hexdig[currValue]) {
         return false;
     }
     ++m_parserPos;
@@ -935,11 +1006,11 @@ bool Uri::Private::parseIPvFuture()
     }
     curr = m_uri[m_parserPos];
     currValue = curr.value();
-    if (is_unreserved[currValue]) {
+    if (currValue < 128 && is_unreserved[currValue]) {
         ++m_parserPos;
         return true;
     }
-    if (is_subdelim[currValue]) {
+    if (currValue < 128 && is_subdelim[currValue]) {
         ++m_parserPos;
         return true;
     }
@@ -995,14 +1066,37 @@ bool Uri::Private::parsePathNoScheme()
     if (!parseSegmentNzNc()) {
         return false;
     }
+    m_pathStack.push(m_parserAux);
+    m_parserAux.clear();
     while (expectChar('/')) {
         m_pathStack.push(String('/'));
         parseSegment();
         m_pathStack.push(m_parserAux);
         m_parserAux.clear();
     }
-    for (size_t i = 0; i < m_pathStack.size(); ++i) {
-        IDEAL_SDEBUG(m_pathStack.pop());
+    m_path.clear();
+    const size_t stackSize = m_pathStack.size();
+    size_t skips = 0;
+    size_t i = 0;
+    while (i < stackSize) {
+        const String curr = m_pathStack.pop();
+        if (curr == Char('.')) {
+            m_pathStack.pop();
+            ++i;
+        } else if (curr == String("..")) {
+            ++skips;
+            m_pathStack.pop();
+            ++i;
+        } else {
+            if (skips) {
+                --skips;
+                m_pathStack.pop();
+                ++i;
+            } else {
+                m_path.prepend(curr);
+            }
+        }
+        ++i;
     }
     return true;
 }
@@ -1027,7 +1121,7 @@ bool Uri::Private::parseSegmentNzNc()
     while (true) {
         const Char curr = m_uri[m_parserPos];
         const iuint32 currValue = curr.value();
-        if (is_unreserved[currValue]) {
+        if (currValue < 128 && is_unreserved[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             res = true;
@@ -1039,7 +1133,7 @@ bool Uri::Private::parseSegmentNzNc()
             continue;
         }
         m_parserPos = parserOldPos;
-        if (is_subdelim[currValue]) {
+        if (currValue < 128 && is_subdelim[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             res = true;
@@ -1062,7 +1156,7 @@ bool Uri::Private::parsePchar()
     if (!currValue) {
         return false;
     }
-    if (is_unreserved[currValue]) {
+    if (currValue < 128 && is_unreserved[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
         return true;
@@ -1072,7 +1166,7 @@ bool Uri::Private::parsePchar()
         return true;
     }
     m_parserPos = parserOldPos;
-    if (is_subdelim[currValue]) {
+    if (currValue < 128 && is_subdelim[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
         return true;
@@ -1089,7 +1183,7 @@ bool Uri::Private::parseReserved()
 {
     const Char curr = m_uri[m_parserPos];
     const iuint32 currValue = curr.value();
-    if (is_gendelim[currValue] || is_subdelim[currValue]) {
+    if (currValue < 128 && (is_gendelim[currValue] || is_subdelim[currValue])) {
         m_parserAux += curr;
         ++m_parserPos;
         return true;
