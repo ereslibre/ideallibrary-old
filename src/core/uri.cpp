@@ -360,35 +360,14 @@ void Uri::Private::parsePathAbempty()
 {
     m_parserAux.clear();
     Stack<String> pathStack;
-    size_t upLevels = 0;
     while (expectChar('/')) {
         pathStack.push(String('/'));
         parseSegment();
-        if (m_parserAux.empty() && pathStack.size() > 1) {
+        if (m_parserAux.empty()) {
             pathStack.pop();
-        } else if (!m_parserAux.empty()) {
-            if (m_parserAux == Char('.')) {
-                pathStack.pop();
-            } else if (m_parserAux == String("..")) {
-                ++upLevels;
-                pathStack.pop();
-            } else {
-                if (upLevels) {
-                    for (size_t i = 0; i < upLevels; ++i) {
-                        pathStack.pop();
-                        pathStack.pop();
-                    }
-                    upLevels = 0;
-                }
-                pathStack.push(m_parserAux);
-            }
-        }
-        m_parserAux.clear();
-    }
-    if (upLevels) {
-        for (size_t i = 0; i < upLevels; ++i) {
-            pathStack.pop();
-            pathStack.pop();
+        } else {
+            pathStack.push(m_parserAux);
+            m_parserAux.clear();
         }
     }
     m_path.clear();
@@ -408,17 +387,17 @@ bool Uri::Private::parsePathAbsolute()
     if (parseSegmentNz()) {
         if (!m_parserAux.empty()) {
             pathStack.push(m_parserAux);
+            m_parserAux.clear();
         }
-        m_parserAux.clear();
         while (expectChar('/')) {
             pathStack.push(String('/'));
             parseSegment();
             if (m_parserAux.empty()) {
                 pathStack.pop();
-            } else if (!m_parserAux.empty()) {
+            } else {
                 pathStack.push(m_parserAux);
+                m_parserAux.clear();
             }
-            m_parserAux.clear();
         }
     }
     m_path.clear();
@@ -441,12 +420,12 @@ bool Uri::Private::parsePathRootless()
     while (expectChar('/')) {
         pathStack.push(String('/'));
         parseSegment();
-        if (m_parserAux.empty() && pathStack.size() > 1) {
+        if (m_parserAux.empty()) {
             pathStack.pop();
         } else if (!m_parserAux.empty()) {
             pathStack.push(m_parserAux);
+            m_parserAux.clear();
         }
-        m_parserAux.clear();
     }
     m_path.clear();
     const size_t stackSize = pathStack.size();
@@ -595,25 +574,21 @@ void Uri::Private::parsePort()
 
 bool Uri::Private::parsePctEncoded()
 {
-    const Char curr = m_uri[m_parserPos];
-    const iint32 octetsRequired = curr.octetsRequired();
-    if (!expectChar('%') && octetsRequired == 1) {
+    if (!expectChar('%')) {
         return false;
     }
-    if (octetsRequired == 1) {
-        m_parserAux += '%';
-        Char curr = m_uri[m_parserPos];
-        size_t currValue = curr.value();
-        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-            return false;
-        }
-        m_parserAux += curr;
-        ++m_parserPos;
-        curr = m_uri[m_parserPos];
-        currValue = curr.value();
-        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-            return false;
-        }
+    m_parserAux += '%';
+    Char curr = m_uri[m_parserPos];
+    size_t currValue = curr.value();
+    if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+        return false;
+    }
+    m_parserAux += curr;
+    ++m_parserPos;
+    curr = m_uri[m_parserPos];
+    currValue = curr.value();
+    if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+        return false;
     }
     m_parserAux += curr;
     ++m_parserPos;
@@ -1056,12 +1031,12 @@ bool Uri::Private::parsePathNoScheme()
     while (expectChar('/')) {
         pathStack.push(String('/'));
         parseSegment();
-        if (m_parserAux.empty() && pathStack.size() > 1) {
+        if (m_parserAux.empty()) {
             pathStack.pop();
-        } else if (!m_parserAux.empty()) {
+        } else {
             pathStack.push(m_parserAux);
+            m_parserAux.clear();
         }
-        m_parserAux.clear();
     }
     m_path.clear();
     const size_t stackSize = pathStack.size();
