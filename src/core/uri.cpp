@@ -363,7 +363,7 @@ void Uri::Private::parsePathAbempty()
     while (expectChar('/')) {
         pathStack.push(String('/'));
         parseSegment();
-        if (m_parserAux.empty()) {
+        if (m_parserAux.empty() && pathStack.size() > 1) {
             pathStack.pop();
         } else {
             pathStack.push(m_parserAux);
@@ -392,7 +392,7 @@ bool Uri::Private::parsePathAbsolute()
         while (expectChar('/')) {
             pathStack.push(String('/'));
             parseSegment();
-            if (m_parserAux.empty()) {
+            if (m_parserAux.empty() && pathStack.size() > 1) {
                 pathStack.pop();
             } else {
                 pathStack.push(m_parserAux);
