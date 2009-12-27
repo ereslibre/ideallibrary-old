@@ -28,6 +28,7 @@ class Uri::Private
 public:
     Private()
         : m_parserPos(0)
+        , m_parserLevelUp(0)
         , m_port(-1)
         , m_isValid(false)
         , m_refs(1)
@@ -115,6 +116,7 @@ public:
 
     static Private *empty();
 
+    void constructPath();
     bool expectChar(Char c);
     bool parseURI();
     bool parseScheme();
@@ -148,8 +150,10 @@ public:
     bool parseSegmentNzNc();
     bool parsePchar();
     bool parseReserved();
-    String  m_parserAux;
-    size_t  m_parserPos;
+    String        m_parserAux;
+    size_t        m_parserPos;
+    size_t        m_parserLevelUp;
+    Stack<String> m_pathStack;
 
     String  m_uri;
     String  m_scheme;
@@ -231,6 +235,36 @@ static const bool is_unreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, // 80 - 95
                                       0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
                                       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 }; // 112 - 127
+
+static const String currLevel('.');
+static const String parentLevel("..");
+
+void Uri::Private::constructPath()
+{
+    if (m_parserAux == currLevel) {
+        m_pathStack.pop();
+        m_parserAux.clear();
+        return;
+    } else if (m_parserAux == parentLevel) {
+        m_pathStack.pop();
+        ++m_parserLevelUp;
+        m_parserAux.clear();
+        return;
+    }
+    for (size_t i = 0; i < m_parserLevelUp; ++i) {
+        if (m_pathStack.size() > 1) {
+            m_pathStack.pop();
+        }
+        if (m_pathStack.size() > 1) {
+            m_pathStack.pop();
+        }
+    }
+    m_parserLevelUp = 0;
+    if (!m_parserAux.empty()) {
+        m_pathStack.push(m_parserAux);
+        m_parserAux.clear();
+    }
+}
 
 bool Uri::Private::expectChar(Char c)
 {
@@ -359,21 +393,17 @@ void Uri::Private::parseAuthority()
 void Uri::Private::parsePathAbempty()
 {
     m_parserAux.clear();
-    Stack<String> pathStack;
+    m_pathStack.clear();
     while (expectChar('/')) {
-        pathStack.push(String('/'));
+        m_pathStack.push(String('/'));
         parseSegment();
-        if (m_parserAux.empty() && pathStack.size() > 1) {
-            pathStack.pop();
-        } else {
-            pathStack.push(m_parserAux);
-            m_parserAux.clear();
-        }
+        constructPath();
     }
+    constructPath();
     m_path.clear();
-    const size_t stackSize = pathStack.size();
+    const size_t stackSize = m_pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(pathStack.pop());
+        m_path.prepend(m_pathStack.pop());
     }
 }
 
@@ -382,28 +412,21 @@ bool Uri::Private::parsePathAbsolute()
     if (!expectChar('/')) {
         return false;
     }
-    Stack<String> pathStack;
-    pathStack.push(String('/'));
+    m_pathStack.clear();
+    m_pathStack.push(String('/'));
     if (parseSegmentNz()) {
-        if (!m_parserAux.empty()) {
-            pathStack.push(m_parserAux);
-            m_parserAux.clear();
-        }
+        constructPath();
         while (expectChar('/')) {
-            pathStack.push(String('/'));
+            m_pathStack.push(String('/'));
             parseSegment();
-            if (m_parserAux.empty() && pathStack.size() > 1) {
-                pathStack.pop();
-            } else {
-                pathStack.push(m_parserAux);
-                m_parserAux.clear();
-            }
+            constructPath();
         }
     }
+    constructPath();
     m_path.clear();
-    const size_t stackSize = pathStack.size();
+    const size_t stackSize = m_pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(pathStack.pop());
+        m_path.prepend(m_pathStack.pop());
     }
     return true;
 }
@@ -414,23 +437,19 @@ bool Uri::Private::parsePathRootless()
     if (!parseSegmentNz()) {
         return false;
     }
-    Stack<String> pathStack;
-    pathStack.push(m_parserAux);
+    m_pathStack.clear();
+    m_pathStack.push(m_parserAux);
     m_parserAux.clear();
     while (expectChar('/')) {
-        pathStack.push(String('/'));
+        m_pathStack.push(String('/'));
         parseSegment();
-        if (m_parserAux.empty()) {
-            pathStack.pop();
-        } else if (!m_parserAux.empty()) {
-            pathStack.push(m_parserAux);
-            m_parserAux.clear();
-        }
+        constructPath();
     }
+    constructPath();
     m_path.clear();
-    const size_t stackSize = pathStack.size();
+    const size_t stackSize = m_pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(pathStack.pop());
+        m_path.prepend(m_pathStack.pop());
     }
     return true;
 }
@@ -1025,23 +1044,19 @@ bool Uri::Private::parsePathNoScheme()
     if (!parseSegmentNzNc()) {
         return false;
     }
-    Stack<String> pathStack;
-    pathStack.push(m_parserAux);
+    m_pathStack.clear();
+    m_pathStack.push(m_parserAux);
     m_parserAux.clear();
     while (expectChar('/')) {
-        pathStack.push(String('/'));
+        m_pathStack.push(String('/'));
         parseSegment();
-        if (m_parserAux.empty()) {
-            pathStack.pop();
-        } else {
-            pathStack.push(m_parserAux);
-            m_parserAux.clear();
-        }
+        constructPath();
     }
+    constructPath();
     m_path.clear();
-    const size_t stackSize = pathStack.size();
+    const size_t stackSize = m_pathStack.size();
     for (size_t i = 0; i < stackSize; ++i) {
-        m_path.prepend(pathStack.pop());
+        m_path.prepend(m_pathStack.pop());
     }
     return true;
 }
