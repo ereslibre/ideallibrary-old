@@ -41,6 +41,7 @@ public:
     T peek() const;
 
     size_t size() const;
+    bool empty() const;
 
     void clear();
 
@@ -160,6 +161,12 @@ template <typename T>
 size_t Stack<T>::size() const
 {
     return d->m_top;
+}
+
+template <typename T>
+bool Stack<T>::empty() const
+{
+    return d->m_top == 0;
 }
 
 template <typename T>
