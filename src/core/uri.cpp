@@ -1324,26 +1324,16 @@ Uri &Uri::dirUp()
     if (!d->m_initialized) {
         d->initializeContents();
     }
-    if (d == Private::m_privateEmpty || d->m_path.empty() || !d->m_path.compare("/")) {
+    if (d == Private::m_privateEmpty || d->m_path.empty() || d->m_path == Char('/')) {
         return *this;
     }
     d->copyAndDetach(this);
-    size_t size = d->m_uri.size();
-    if (d->m_uri[size - 1] == '/') {
-        d->m_uri = d->m_uri.substr(0, size - 1);
+    size_t lastSlashPos = d->m_uri.rfind('/');
+    if (lastSlashPos == d->m_uri.size() - 1) {
+        lastSlashPos = d->m_uri.rfind('/', 2);
     }
-    size = d->m_path.size();
-    if (d->m_path[size - 1] == '/') {
-        d->m_path = d->m_path.substr(0, size - 1);
-    }
-    size_t pos = d->m_uri.rfind('/');
-    d->m_uri = d->m_uri.substr(0, d->m_uri.size() - (d->m_uri.size() - pos));
-    pos = d->m_path.rfind('/');
-    d->m_path = d->m_path.substr(0, d->m_path.size() - (d->m_path.size() - pos));
-    if (d->m_path.empty()) {
-        d->m_uri += '/';
-        d->m_path = '/';
-    }
+    d->m_uri = d->m_uri.substr(0, d->m_uri.size() - (d->m_uri.size() - lastSlashPos) + 1);
+    d->m_path = d->m_path.substr(0, d->m_path.size() - (d->m_path.size() - lastSlashPos) + 1);
     return *this;
 }
 

@@ -183,7 +183,7 @@ void UriTest::testConstructor()
     {
         Uri test("file:///home/user/folder/");
         CPPUNIT_ASSERT(test.isValid());
-        CPPUNIT_ASSERT_EQUAL(String("/home/user/folder"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("/home/user/folder/"), test.path());
         CPPUNIT_ASSERT_EQUAL(String(), test.host());
     }
     {
@@ -217,13 +217,13 @@ void UriTest::testDirUp()
     {
         Uri uri("file:///home/user/folder1/folder2/test.txt");
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/folder2"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/folder2/"), uri.uri());
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/"), uri.uri());
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/user"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/"), uri.uri());
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/"), uri.uri());
         uri.dirUp();
         CPPUNIT_ASSERT_EQUAL(String("file:///"), uri.uri());
         uri.dirUp();
@@ -232,12 +232,12 @@ void UriTest::testDirUp()
     {
         Uri uri("file:///home/user/folder1/folder2/");
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/folder1/"), uri.uri());
     }
     {
         Uri uri("/home/user/folder1/folder2/");
         uri.dirUp();
-        CPPUNIT_ASSERT_EQUAL(String("/home/user/folder1"), uri.uri());
+        CPPUNIT_ASSERT_EQUAL(String("/home/user/folder1/"), uri.uri());
     }
     {
         Uri uri("test.txt");
