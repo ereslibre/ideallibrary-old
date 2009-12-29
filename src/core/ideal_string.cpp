@@ -396,25 +396,31 @@ bool String::contains(Char c) const
     return false;
 }
 
-size_t String::find(Char c) const
+size_t String::find(Char c, size_t n) const
 {
     for (size_t i = 0; i < d->calculateSize(); ++i) {
         if (d->getCharAt(i) == c) {
-            return i;
+            if (!--n) {
+                return i;
+            }
         }
     }
     return npos;
 }
 
-size_t String::rfind(Char c) const
+size_t String::rfind(Char c, size_t n) const
 {
     for (size_t i = d->calculateSize() - 1; i > 0; --i) {
         if (d->getCharAt(i) == c) {
-            return i;
+            if (!--n) {
+                return i;
+            }
         }
     }
     if (d->calculateSize() && d->getCharAt(0) == c) {
-        return 0;
+        if (!--n) {
+            return 0;
+        }
     }
     return npos;
 }

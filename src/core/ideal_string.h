@@ -81,16 +81,17 @@ public:
     bool contains(Char c) const;
 
     /**
-      * @return The first position in which character @p c is found. If @p c is not found, npos is
-      *         returned instead.
+      * @return The first position in which the @p n occurrence of character @p c is found.
+      *         If @p c is not found (or there is not @p n occurrence), npos is returned instead.
       */
-    size_t find(Char c) const;
+    size_t find(Char c, size_t n = 1) const;
 
     /**
-      * @return The first position in which character @p c is found starting to search from the right.
-      *         If @p c is not found, npos is returned instead.
+      * @return The first position in which the @p n occurrence of character @p c is found starting
+      *         to search from the right. If @p c is not found (or there is not @p n occurrence),
+      *         npos is returned instead.
       */
-    size_t rfind(Char c) const;
+    size_t rfind(Char c, size_t n = 1) const;
 
     /**
       * @return The first occurrence of @p str. npos is returned if @p str is not found.
