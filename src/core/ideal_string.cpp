@@ -512,11 +512,13 @@ String &String::prepend(const String &str)
 {
     d->calculateRawLen();
     d->copyAndDetach(this);
-    d->m_str = (ichar*) realloc(d->m_str, (str.d->calculateRawLen() + d->m_rawLen + 1) * sizeof(ichar));
+    const size_t totalRawLen = str.d->calculateRawLen() + d->m_rawLen;
+    d->m_str = (ichar*) realloc(d->m_str, (totalRawLen + 1) * sizeof(ichar));
     if (d->m_rawLen) {
-        memmove(&d->m_str[str.d->m_rawLen], d->m_str, (d->m_rawLen + 1) * sizeof(ichar));
+        memmove(&d->m_str[str.d->m_rawLen], d->m_str, d->m_rawLen * sizeof(ichar));
     }
     memcpy(d->m_str, str.d->m_str, str.d->m_rawLen * sizeof(ichar));
+    d->m_str[totalRawLen] = '\0';
     d->m_sizeCalculated = false;
     d->m_rawLenCalculated = false;
     return *this;
@@ -526,12 +528,14 @@ String &String::prepend(const ichar *str)
 {
     d->calculateRawLen();
     d->copyAndDetach(this);
-    const size_t rawLength = strlen(str);
-    d->m_str = (ichar*) realloc(d->m_str, (rawLength + d->m_rawLen + 1) * sizeof(ichar));
+    const size_t rawLen = strlen(str);
+    const size_t totalRawLen = rawLen + d->m_rawLen;
+    d->m_str = (ichar*) realloc(d->m_str, (totalRawLen + 1) * sizeof(ichar));
     if (d->m_rawLen) {
-        memmove(&d->m_str[rawLength], d->m_str, (d->m_rawLen + 1) * sizeof(ichar));
+        memmove(&d->m_str[rawLen], d->m_str, d->m_rawLen * sizeof(ichar));
     }
-    memcpy(d->m_str, str, rawLength * sizeof(ichar));
+    memcpy(d->m_str, str, rawLen * sizeof(ichar));
+    d->m_str[totalRawLen] = '\0';
     d->m_sizeCalculated = false;
     d->m_rawLenCalculated = false;
     return *this;
@@ -542,15 +546,17 @@ String &String::prepend(Char c)
     d->calculateRawLen();
     d->copyAndDetach(this);
     const iint32 numberOfOctets = c.octetsRequired();
+    const size_t totalRawLen = numberOfOctets + d->m_rawLen;
     d->m_str = (ichar*) realloc(d->m_str, (numberOfOctets + d->m_rawLen + 1) * sizeof(ichar));
     if (d->m_rawLen) {
-        memmove(&d->m_str[numberOfOctets], d->m_str, (d->m_rawLen + 1) * sizeof(ichar));
+        memmove(&d->m_str[numberOfOctets], d->m_str, d->m_rawLen * sizeof(ichar));
     }
     const iuint32 value = c.value();
     for (iint32 i = 0; i < numberOfOctets; ++i) {
         const iint32 offset = 8 * (numberOfOctets - i - 1);
         d->m_str[i] = (value >> offset) & 0xff;
     }
+    d->m_str[totalRawLen] = '\0';
     d->m_sizeCalculated = false;
     d->m_rawLenCalculated = false;
     return *this;

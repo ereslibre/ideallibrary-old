@@ -96,14 +96,18 @@ public:
 
     void clearContents()
     {
-        m_uri = String();
-        m_scheme = String();
-        m_userInfo = String();
-        m_host = String();
+        m_parserAux.clear();
+        m_parserPos = 0;
+        m_parserLevelUp = 0;
+        m_pathStack.clear();
+        m_uri.clear();
+        m_scheme.clear();
+        m_userInfo.clear();
+        m_host.clear();
         m_port = -1;
-        m_path = String();
-        m_query = String();
-        m_fragment = String();
+        m_path.clear();
+        m_query.clear();
+        m_fragment.clear();
         m_isValid = false;
         m_initialized = false;
     }
@@ -1328,12 +1332,7 @@ Uri &Uri::dirUp()
         return *this;
     }
     d->copyAndDetach(this);
-    size_t lastSlashPos = d->m_uri.rfind('/');
-    if (lastSlashPos == d->m_uri.size() - 1) {
-        lastSlashPos = d->m_uri.rfind('/', 2);
-    }
-    d->m_uri = d->m_uri.substr(0, d->m_uri.size() - (d->m_uri.size() - lastSlashPos) + 1);
-    d->m_path = d->m_path.substr(0, d->m_path.size() - (d->m_path.size() - lastSlashPos) + 1);
+    // TODO
     return *this;
 }
 

@@ -46,7 +46,6 @@ void UriTest::testConstructor()
         CPPUNIT_ASSERT_EQUAL(String("/non/existant/path/nor/file.txt"), test.path());
         CPPUNIT_ASSERT_EQUAL(String(), test.host());
     }
-
     {
         Uri test("ftp://username,project:password@ftp.server.com/path/to/project/file.html");
         CPPUNIT_ASSERT(test.isValid());
@@ -55,7 +54,6 @@ void UriTest::testConstructor()
         CPPUNIT_ASSERT_EQUAL(String("/path/to/project/file.html"), test.path());
         CPPUNIT_ASSERT_EQUAL(String("username,project:password"), test.userInfo());
     }
-
     {
         Uri test("ftp://username@ftp.host.com");
         CPPUNIT_ASSERT_EQUAL(String("ftp"), test.scheme());
