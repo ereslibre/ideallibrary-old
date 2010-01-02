@@ -86,11 +86,11 @@ def configure(conf):
     # uselib stuff
     conf.env['RPATH_IDEAL'] = conf.env['PREFIX'] + '/lib'
     if Options.options.release:
-        print '*** Going to compile in RELEASE mode'
+        Utils.pprint('BLUE', '*** Going to compile in RELEASE mode')
         conf.env['CXXFLAGS'] += ['-O2', '-w']
     else:
-        print '*** Going to compile in DEBUG mode (default)'
-        print '*** To compile in RELEASE mode call "waf configure --release [more-options]"'
+        Utils.pprint('BLUE', '*** Going to compile in DEBUG mode (default)')
+        Utils.pprint('BLUE', '*** To compile in RELEASE mode call "./waf configure --release [more-options]"')
         conf.env['CXXFLAGS'] += ['-O', '-g', '-Wall', '-Werror']
     conf.write_config_header('src/ideal_conf.h')
 
@@ -112,7 +112,7 @@ def check(context):
 def shutdown():
     if Options.commands['install']:
         print ''
-        Utils.pprint('RED', '*** Running unit tests')
+        Utils.pprint('BLUE', '*** Running unit tests')
         print ''
         ut = UnitTest.unit_test()
         ut.run_if_waf_does = 'install'
