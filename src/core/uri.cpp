@@ -94,13 +94,12 @@ public:
         }
     }
 
-    void clearContents()
+    void clearContentsKeepUri()
     {
         m_parserAux.clear();
         m_parserPos = 0;
         m_parserLevelUp = 0;
         m_pathStack.clear();
-        m_uri.clear();
         m_scheme.clear();
         m_userInfo.clear();
         m_host.clear();
@@ -110,6 +109,12 @@ public:
         m_fragment.clear();
         m_isValid = false;
         m_initialized = false;
+    }
+
+    void clearContents()
+    {
+        clearContentsKeepUri();
+        m_uri.clear();
     }
 
     String getHex(Char ch) const;
@@ -472,8 +477,7 @@ bool Uri::Private::parseURIReference()
     if (parseURI()) {
         return true;
     }
-    m_parserPos = 0;
-    m_parserAux.clear();
+    clearContentsKeepUri();
     return parseRelativeRef();
 }
 
@@ -592,7 +596,7 @@ void Uri::Private::parsePort()
         curr = m_uri[m_parserPos];
         currValue = curr.value();
     }
-    m_port = m_parserAux.empty() ? -1 : atoi(m_parserAux.data());
+    m_port = m_parserAux.empty() ? -1 : m_parserAux.toInt();
 }
 
 bool Uri::Private::parsePctEncoded()
@@ -642,24 +646,28 @@ bool Uri::Private::parseIPLiteral()
 
 bool Uri::Private::parseIPv4Address()
 {
+    m_parserAux.clear();
     if (!parseDecOctet()) {
         return false;
     }
     if (!expectChar('.')) {
         return false;
     }
+    m_parserAux += '.';
     if (!parseDecOctet()) {
         return false;
     }
     if (!expectChar('.')) {
         return false;
     }
+    m_parserAux += '.';
     if (!parseDecOctet()) {
         return false;
     }
     if (!expectChar('.')) {
         return false;
     }
+    m_parserAux += '.';
     if (!parseDecOctet()) {
         return false;
     }
@@ -1038,8 +1046,28 @@ bool Uri::Private::parseLs32()
 
 bool Uri::Private::parseDecOctet()
 {
-    // TODO
-    return false;
+    String decOctet;
+    for (size_t i = 0; i < 3; ++i) {
+        const Char currChar = m_uri[m_parserPos];
+        const iuint32 currValue = currChar.value();
+        if (currValue && currValue < 128 && is_digit[currValue]) {
+            decOctet += currChar;
+            ++m_parserPos;
+        } else {
+            break;
+        }
+    }
+    if (decOctet.empty()) {
+        return false;
+    } else {
+        const size_t retValue = decOctet.toInt();
+        if (retValue < 256) {
+            m_parserAux += decOctet;
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 bool Uri::Private::parsePathNoScheme()
@@ -1180,6 +1208,9 @@ void Uri::Private::initializeContents()
 {
     m_initialized = true;
     m_isValid = parseURIReference() && m_parserPos == m_uri.size();
+    if (!m_isValid) {
+        clearContentsKeepUri();
+    }
 }
 
 Uri::Uri()
@@ -1328,7 +1359,7 @@ Uri &Uri::dirUp()
     if (!d->m_initialized) {
         d->initializeContents();
     }
-    if (d == Private::m_privateEmpty || d->m_path.empty() || d->m_path == Char('/')) {
+    if (d == Private::m_privateEmpty || d->m_path.empty()) {
         return *this;
     }
     d->copyAndDetach(this);

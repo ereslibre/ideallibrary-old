@@ -60,7 +60,7 @@ def configure(conf):
     conf.check_tool('compiler_cxx')
     if conf.env['COMPILER_CXX'] == []:
         conf.fatal('A C++ compiler is needed. Please, install it and try again')
-    conf.env['CXXFLAGS_CONFTESTS'] = ['-std=c++0x'];
+    conf.env['CXXFLAGS_CONFTESTS'] += ['-std=c++0x'];
     conf.check(fragment = checkCompilerFeatures,
                msg = 'Checking whether ' + conf.env['COMPILER_CXX'] + ' supports C++0x',
                uselib = 'CONFTESTS',
@@ -90,7 +90,7 @@ def configure(conf):
         conf.env['CXXFLAGS'] += ['-O2', '-w']
     else:
         Utils.pprint('BLUE', '*** Going to compile in DEBUG mode (default)')
-        Utils.pprint('BLUE', '*** To compile in RELEASE mode call "./waf configure --release [more-options]"')
+        Utils.pprint('BLUE', '*** To compile in RELEASE mode run "./waf configure --release [more-options]"')
         conf.env['CXXFLAGS'] += ['-O', '-g', '-Wall', '-Werror']
     conf.write_config_header('src/ideal_conf.h')
 
