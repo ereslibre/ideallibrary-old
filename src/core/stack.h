@@ -173,6 +173,7 @@ template <typename T>
 void Stack<T>::clear()
 {
     delete[] d->m_stack;
+    d->m_stack = 0;
     d->m_top = 0;
     d->m_capacity = 0;
 }
