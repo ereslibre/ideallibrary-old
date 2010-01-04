@@ -64,4 +64,3 @@ def build(bld):
     bld.install_files('${PREFIX}/lib/pkgconfig', 'idealcore.pc')
     bld.install_files('${PREFIX}/include/ideal/core', '*.h')
     bld.install_files('${PREFIX}/include/ideal/core/interfaces', 'interfaces/*.h')
-
