@@ -249,68 +249,6 @@ void UriTest::testDirUp()
     }
 }
 
-void UriTest::testContains()
-{
-    {
-        Uri uri("file:///home/foo/folder");
-        Uri uri2("file:///home/foo");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(!uri2.contains(uri));
-    }
-    {
-        Uri uri("file:///home/foo/");
-        Uri uri2("file:///home/foo");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(!uri2.contains(uri));
-    }
-    {
-        Uri uri("file:///home/foo/");
-        Uri uri2("file:///home/foo/");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(uri2.contains(uri));
-    }
-    {
-        Uri uri("file:///home/foo/");
-        Uri uri2("file:///home/foo/..");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(!uri2.contains(uri));
-    }
-    {
-        Uri uri("file:///home/foo/");
-        Uri uri2("file:///home/foo/../");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(!uri2.contains(uri));
-    }
-    {
-        Uri uri("file:///home/foo/");
-        Uri uri2("file:///home/foo/.");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(!uri2.contains(uri));
-        CPPUNIT_ASSERT_EQUAL(String("/home/foo"), uri2.path());
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/foo/"), uri2.uri());
-    }
-    {
-        Uri uri("file:///home/foo/");
-        Uri uri2("file:///home/foo/./");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(uri2.contains(uri));
-        CPPUNIT_ASSERT_EQUAL(String("/home/foo"), uri2.path());
-        CPPUNIT_ASSERT_EQUAL(String("file:///home/foo/"), uri2.uri());
-    }
-    {
-        Uri uri("file:///home/foo/imágenes/..");
-        Uri uri2("file:///home/foo");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(uri2.contains(uri));
-    }
-    {
-        Uri uri("file:///home/foo/imágenes", "..");
-        Uri uri2("file:///home/foo");
-        CPPUNIT_ASSERT(uri.contains(uri2));
-        CPPUNIT_ASSERT(uri2.contains(uri));
-    }
-}
-
 int main(int argc, char **argv)
 {
     Application app(argc, argv);

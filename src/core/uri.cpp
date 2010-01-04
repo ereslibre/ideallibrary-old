@@ -1421,17 +1421,6 @@ bool Uri::empty() const
     return d->m_uri.empty();
 }
 
-bool Uri::contains(const Uri &uri) const
-{
-    if (!d->m_initialized) {
-        d->initializeContents();
-    }
-    if (!uri.d->m_initialized) {
-        uri.d->initializeContents();
-    }
-    return d->m_path.find(uri.d->m_path) == 0;
-}
-
 Uri &Uri::dirUp()
 {
     if (!d->m_initialized) {

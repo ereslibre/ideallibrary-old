@@ -101,13 +101,6 @@ public:
     bool empty() const;
 
     /**
-      * @return Whether this URI contains @p uri in the sense of the path.
-      *
-      * @note "file:///home/user" contains "file:///home", but "text.txt" does not contain "xt"
-      */
-    bool contains(const Uri &uri) const;
-
-    /**
       * Goes up one directory if no filename specified, or clears filename otherwise. This object
       * is modified, and afterwards it is returned.
       *
