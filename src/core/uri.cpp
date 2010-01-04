@@ -195,59 +195,59 @@ Uri::Private *Uri::Private::empty()
     return m_privateEmpty;
 }
 
-static const bool is_alpha[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 48 - 63
-                                 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 80 - 95
-                                 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }; // 112 - 127
+static const bool isAlpha[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 48 - 63
+                                0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
+                                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 80 - 95
+                                0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
+                                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }; // 112 - 127
 
-static const bool is_digit[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+static const bool isDigit[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
+                                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80 - 95
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
+
+static const bool isGendelim[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                   0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, // 32 - 47
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, // 48 - 63
+                                   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, // 80 - 95
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
+
+static const bool isSubdelim[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                   0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, // 32 - 47
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, // 48 - 63
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80 - 95
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
+                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
+
+static const bool isHexdig[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
                                  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
+                                 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80 - 95
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
+                                 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
 
-static const bool is_gendelim[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, // 32 - 47
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, // 48 - 63
-                                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, // 80 - 95
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
-
-static const bool is_subdelim[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                    0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, // 32 - 47
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, // 48 - 63
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80 - 95
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
-
-static const bool is_hexdig[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32 - 47
-                                  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
-                                  0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64 - 79
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80 - 95
-                                  0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96 - 111
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 112 - 127
-
-static const bool is_unreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, // 32 - 47
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
-                                      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, // 80 - 95
-                                      0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
-                                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 }; // 112 - 127
+static const bool isUnreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, // 32 - 47
+                                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
+                                     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
+                                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, // 80 - 95
+                                     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
+                                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 }; // 112 - 127
 
 static const String currLevel('.');
 static const String parentLevel("..");
@@ -315,10 +315,10 @@ bool Uri::Private::parseScheme()
     m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     iuint32 currValue = curr.value();
-    if (!currValue || currValue > 127 || !is_alpha[currValue]) {
+    if (!currValue || currValue > 127 || !isAlpha[currValue]) {
         return false;
     }
-    while (currValue && currValue < 128 && (is_alpha[currValue] || is_digit[currValue] ||
+    while (currValue && currValue < 128 && (isAlpha[currValue] || isDigit[currValue] ||
                                             curr == '+' || curr == '-' || curr == '.')) {
         m_parserAux += curr;
         ++m_parserPos;
@@ -551,7 +551,7 @@ void Uri::Private::parseUserinfo()
         if (!currValue) {
             return;
         }
-        if (currValue < 128 && is_unreserved[currValue]) {
+        if (currValue < 128 && isUnreserved[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             continue;
@@ -561,7 +561,7 @@ void Uri::Private::parseUserinfo()
             continue;
         }
         m_parserPos = parserOldPos;
-        if (currValue < 128 && (is_subdelim[currValue] ||
+        if (currValue < 128 && (isSubdelim[currValue] ||
                                 curr == ':')) {
             m_parserAux += curr;
             ++m_parserPos;
@@ -594,7 +594,7 @@ void Uri::Private::parsePort()
     m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     iuint32 currValue = curr.value();
-    while (currValue && currValue < 128 && is_digit[currValue]) {
+    while (currValue && currValue < 128 && isDigit[currValue]) {
         m_parserAux += curr;
         m_parserPos++;
         curr = m_uri[m_parserPos];
@@ -608,14 +608,14 @@ bool Uri::Private::parsePctEncoded()
     if (expectChar('%')) {
         Char curr = m_uri[m_parserPos];
         size_t currValue = curr.value();
-        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+        if (!currValue || currValue > 127 || !isHexdig[currValue]) {
             return false;
         }
         m_parserAux += curr;
         ++m_parserPos;
         curr = m_uri[m_parserPos];
         currValue = curr.value();
-        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+        if (!currValue || currValue > 127 || !isHexdig[currValue]) {
             return false;
         }
         m_parserAux += curr;
@@ -626,8 +626,8 @@ bool Uri::Private::parsePctEncoded()
         if (curr.octetsRequired() > 1) {
             m_parserAux += curr;
             ++m_parserPos;
-        } else if (currValue && currValue < 128 && (!is_unreserved[currValue] && !is_gendelim[currValue] &&
-                                                    !is_subdelim[currValue] && curr != ':' && curr != '@')) {
+        } else if (currValue && currValue < 128 && (!isUnreserved[currValue] && !isGendelim[currValue] &&
+                                                    !isSubdelim[currValue] && curr != ':' && curr != '@')) {
             m_parserTrick = true;
             m_parserAux += getHex(curr);
             ++m_parserPos;
@@ -696,7 +696,7 @@ void Uri::Private::parseRegName()
     while (true) {
         const Char curr = m_uri[m_parserPos];
         const size_t currValue = curr.value();
-        if (currValue < 128 && is_unreserved[currValue]) {
+        if (currValue < 128 && isUnreserved[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             continue;
@@ -706,7 +706,7 @@ void Uri::Private::parseRegName()
             continue;
         }
         m_parserPos = parserOldPos;
-        if (currValue < 128 && is_subdelim[currValue]) {
+        if (currValue < 128 && isSubdelim[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             continue;
@@ -1003,7 +1003,7 @@ bool Uri::Private::parseIPvFuture()
     m_parserAux.clear();
     Char curr = m_uri[m_parserPos];
     size_t currValue = curr.value();
-    if (currValue > 127 || !is_hexdig[currValue]) {
+    if (currValue > 127 || !isHexdig[currValue]) {
         return false;
     }
     ++m_parserPos;
@@ -1012,11 +1012,11 @@ bool Uri::Private::parseIPvFuture()
     }
     curr = m_uri[m_parserPos];
     currValue = curr.value();
-    if (currValue < 128 && is_unreserved[currValue]) {
+    if (currValue < 128 && isUnreserved[currValue]) {
         ++m_parserPos;
         return true;
     }
-    if (currValue < 128 && is_subdelim[currValue]) {
+    if (currValue < 128 && isSubdelim[currValue]) {
         ++m_parserPos;
         return true;
     }
@@ -1032,7 +1032,7 @@ bool Uri::Private::parseH16()
     for (size_t i = 0; i < 4; ++i) {
         const Char curr = m_uri[m_parserPos];
         const size_t currValue = curr.value();
-        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+        if (!currValue || currValue > 127 || !isHexdig[currValue]) {
             return i;
         }
         m_parserAux += curr;
@@ -1066,7 +1066,7 @@ bool Uri::Private::parseDecOctet()
     for (size_t i = 0; i < 3; ++i) {
         const Char currChar = m_uri[m_parserPos];
         const iuint32 currValue = currChar.value();
-        if (currValue && currValue < 128 && is_digit[currValue]) {
+        if (currValue && currValue < 128 && isDigit[currValue]) {
             decOctet += currChar;
             ++m_parserPos;
         } else {
@@ -1129,7 +1129,7 @@ bool Uri::Private::parseSegmentNzNc()
     while (true) {
         const Char curr = m_uri[m_parserPos];
         const iuint32 currValue = curr.value();
-        if (currValue < 128 && is_unreserved[currValue]) {
+        if (currValue < 128 && isUnreserved[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             res = true;
@@ -1141,7 +1141,7 @@ bool Uri::Private::parseSegmentNzNc()
             continue;
         }
         m_parserPos = parserOldPos;
-        if (currValue < 128 && is_subdelim[currValue]) {
+        if (currValue < 128 && isSubdelim[currValue]) {
             m_parserAux += curr;
             ++m_parserPos;
             res = true;
@@ -1164,7 +1164,7 @@ bool Uri::Private::parsePchar()
     if (!currValue) {
         return false;
     }
-    if (currValue < 128 && is_unreserved[currValue]) {
+    if (currValue < 128 && isUnreserved[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
         return true;
@@ -1174,7 +1174,7 @@ bool Uri::Private::parsePchar()
         return true;
     }
     m_parserPos = parserOldPos;
-    if (currValue < 128 && is_subdelim[currValue]) {
+    if (currValue < 128 && isSubdelim[currValue]) {
         m_parserAux += curr;
         ++m_parserPos;
         return true;
@@ -1191,7 +1191,7 @@ bool Uri::Private::parseReserved()
 {
     const Char curr = m_uri[m_parserPos];
     const iuint32 currValue = curr.value();
-    if (currValue < 128 && (is_gendelim[currValue] || is_subdelim[currValue])) {
+    if (currValue < 128 && (isGendelim[currValue] || isSubdelim[currValue])) {
         m_parserAux += curr;
         ++m_parserPos;
         return true;
