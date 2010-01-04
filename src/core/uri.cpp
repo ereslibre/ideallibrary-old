@@ -27,7 +27,8 @@ class Uri::Private
 {
 public:
     Private()
-        : m_parserPos(0)
+        : m_parserTrick(false)
+        , m_parserPos(0)
         , m_parserLevelUp(0)
         , m_port(-1)
         , m_isValid(false)
@@ -96,6 +97,7 @@ public:
 
     void clearContentsKeepUri()
     {
+        m_parserTrick = false;
         m_parserAux.clear();
         m_parserPos = 0;
         m_parserLevelUp = 0;
@@ -118,6 +120,7 @@ public:
     }
 
     String getHex(Char ch) const;
+    String undoHex(const String &uri) const;
     String encodeUri(const String &uri) const;
     String decodeUri(const String &uri) const;
 
@@ -159,6 +162,7 @@ public:
     bool parseSegmentNzNc();
     bool parsePchar();
     bool parseReserved();
+    bool          m_parserTrick;
     String        m_parserAux;
     size_t        m_parserPos;
     size_t        m_parserLevelUp;
@@ -601,24 +605,36 @@ void Uri::Private::parsePort()
 
 bool Uri::Private::parsePctEncoded()
 {
-    if (!expectChar('%')) {
-        return false;
+    if (expectChar('%')) {
+        Char curr = m_uri[m_parserPos];
+        size_t currValue = curr.value();
+        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+            return false;
+        }
+        m_parserAux += curr;
+        ++m_parserPos;
+        curr = m_uri[m_parserPos];
+        currValue = curr.value();
+        if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
+            return false;
+        }
+        m_parserAux += curr;
+        ++m_parserPos;
+    } else {
+        const Char curr = m_uri[m_parserPos];
+        const iuint32 currValue = curr.value();
+        if (curr.octetsRequired() > 1) {
+            m_parserAux += curr;
+            ++m_parserPos;
+        } else if (currValue && currValue < 128 && (!is_unreserved[currValue] && !is_gendelim[currValue] &&
+                                                    !is_subdelim[currValue] && curr != ':' && curr != '@')) {
+            m_parserTrick = true;
+            m_parserAux += getHex(curr);
+            ++m_parserPos;
+        } else {
+            return false;
+        }
     }
-    m_parserAux += '%';
-    Char curr = m_uri[m_parserPos];
-    size_t currValue = curr.value();
-    if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-        return false;
-    }
-    m_parserAux += curr;
-    ++m_parserPos;
-    curr = m_uri[m_parserPos];
-    currValue = curr.value();
-    if (!currValue || currValue > 127 || !is_hexdig[currValue]) {
-        return false;
-    }
-    m_parserAux += curr;
-    ++m_parserPos;
     return true;
 }
 
@@ -1204,12 +1220,74 @@ String Uri::Private::getHex(Char ch) const
     return res;
 }
 
+String Uri::Private::undoHex(const String &uri) const
+{
+    String res;
+    size_t i = 0;
+    while (i < uri.size()) {
+        const Char currChar = uri[i];
+        if (currChar == '%') {
+            Char newChar;
+            String byte1(uri[i + 1]);
+            byte1 += uri[i + 2];
+            const iuint32 byte1Val = strtoul(byte1.data(), 0, 16);
+            if (!(byte1Val & 0x80)) {
+                newChar.c = byte1Val;
+                i += 3;
+            } else if (!(byte1Val & 0x20)) {
+                String byte2(uri[i + 4]);
+                byte2 += uri[i + 5];
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                newChar.c |= (byte1Val << 8);
+                newChar.c |= byte2Val;
+                i += 6;
+            } else if (!(byte1Val & 0x10)) {
+                String byte2(uri[i + 4]);
+                byte2 += uri[i + 5];
+                String byte3(uri[i + 7]);
+                byte3 += uri[i + 8];
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
+                newChar.c |= (byte1Val << 16);
+                newChar.c |= (byte2Val << 8);
+                newChar.c |= byte3Val;
+                i += 9;
+            } else if (!(byte1Val & 0x8)) {
+                String byte2(uri[i + 4]);
+                byte2 += uri[i + 5];
+                String byte3(uri[i + 7]);
+                byte3 += uri[i + 8];
+                String byte4(uri[i + 10]);
+                byte4 += uri[i + 11];
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
+                const iuint32 byte4Val = strtoul(byte4.data(), 0, 16);
+                newChar.c |= (byte1Val << 24);
+                newChar.c |= (byte2Val << 16);
+                newChar.c |= (byte3Val << 8);
+                newChar.c |= byte4Val;
+                i += 12;
+            }
+            res += newChar;
+        } else {
+            res += currChar;
+            ++i;
+        }
+    }
+    return res;
+}
+
 void Uri::Private::initializeContents()
 {
     m_initialized = true;
     m_isValid = parseURIReference() && m_parserPos == m_uri.size();
     if (!m_isValid) {
         clearContentsKeepUri();
+    } else {
+        if (m_parserTrick) {
+            m_parserTrick = false;
+            m_path = undoHex(m_path);
+        }
     }
 }
 
