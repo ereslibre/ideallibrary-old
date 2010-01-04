@@ -142,41 +142,50 @@ void UriTest::testConstructor()
         Uri test("file:///home/user/./file.png");
         CPPUNIT_ASSERT(test.isValid());
         CPPUNIT_ASSERT_EQUAL(String("/home/user/file.png"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/user/file.png"), test.uri());
         CPPUNIT_ASSERT_EQUAL(String(), test.host());
     }
     {
         Uri test("file:///home/user/../file.png");
         CPPUNIT_ASSERT(test.isValid());
         CPPUNIT_ASSERT_EQUAL(String("/home/file.png"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home/file.png"), test.uri());
         CPPUNIT_ASSERT_EQUAL(String(), test.host());
     }
     {
         Uri test("file:///home/user/.././../file.png");
         CPPUNIT_ASSERT_EQUAL(String("/file.png"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///file.png"), test.uri());
     }
     {
         Uri test("file:///home/user/..");
         CPPUNIT_ASSERT_EQUAL(String("/home"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///home"), test.uri());
     }
     {
         Uri test("file:///home/user/../../");
         CPPUNIT_ASSERT_EQUAL(String("/"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///"), test.uri());
     }
     {
         Uri test("file:///home/user/.././././../");
         CPPUNIT_ASSERT_EQUAL(String("/"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///"), test.uri());
     }
     {
         Uri test("file:///home/user/../..");
         CPPUNIT_ASSERT_EQUAL(String("/"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///"), test.uri());
     }
     {
         Uri test("file:///home/user/../../../../.././../../../");
         CPPUNIT_ASSERT_EQUAL(String("/"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///"), test.uri());
     }
     {
         Uri test("file:///home/user/../../../../.././../../..");
         CPPUNIT_ASSERT_EQUAL(String("/"), test.path());
+        CPPUNIT_ASSERT_EQUAL(String("file:///"), test.uri());
     }
     {
         Uri test("file:///home/user/folder/");
