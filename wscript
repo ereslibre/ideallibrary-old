@@ -27,8 +27,7 @@ APPNAME    = 'ideallibrary'
 srcdir     = '.'
 blddir     = 'build'
 
-subdirs_d  = 'src/core src/gui src/modules src/tests'
-subdirs_r  = 'src/core src/gui src/modules'
+subdirs  = 'src/core src/gui src/modules'
 
 posixPlatforms = ['linux', 'darwin']
 
@@ -65,10 +64,7 @@ def configure(conf):
                msg = 'Checking whether ' + conf.env['COMPILER_CXX'] + ' supports C++0x',
                uselib = 'CONFTESTS',
                mandatory = 1)
-    if Options.options.release:
-        conf.sub_config(subdirs_r)
-    else:
-        conf.sub_config(subdirs_d)
+    conf.sub_config(subdirs)
     # set environment
     conf.env['RELEASE'] = Options.options.release
     conf.env['CXXFLAGS'] += ['-std=c++0x', '-fvisibility=hidden']
@@ -96,10 +92,7 @@ def configure(conf):
 
 def build(bld):
     bld.env['LIBVERSION'] = LIBVERSION
-    if bld.env['RELEASE']:
-        bld.add_subdirs(subdirs_r)
-    else:
-        bld.add_subdirs(subdirs_d)
+    bld.add_subdirs(subdirs)
     bld.install_files('${PREFIX}/include/ideal', 'src/ideal_conf.h')
     bld.install_files('${PREFIX}/include/ideal', 'src/ideal_export.h')
     bld.install_files('${PREFIX}/include/ideal', 'src/ideal_globals.h')
