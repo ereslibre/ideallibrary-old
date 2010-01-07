@@ -486,7 +486,7 @@ List<String> String::split(Char separator) const
             curr[pos] = '\0';
             res.push_back(String(curr));
             pos = 0;
-            bzero(curr, (d->m_rawLen + 1) * sizeof(ichar));
+            memset(curr, '\0', (d->m_rawLen + 1) * sizeof(ichar));
         } else if (currChar != separator) {
             union {
                 iuint32 value;
