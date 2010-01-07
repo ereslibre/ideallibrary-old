@@ -125,6 +125,7 @@ public:
     String decodeUri(const String &uri) const;
 
     void initializeContents();
+    void reconstructUri();
 
     static Private *empty();
 
@@ -1288,6 +1289,32 @@ void Uri::Private::initializeContents()
             m_parserTrick = false;
             m_path = undoHex(m_path);
         }
+        reconstructUri();
+    }
+}
+
+void Uri::Private::reconstructUri()
+{
+    m_uri.clear();
+    if (!m_scheme.empty()) {
+        m_uri += m_scheme;
+        m_uri += "://";
+    }
+    if (!m_userInfo.empty()) {
+        m_uri += m_userInfo;
+        m_uri += '@';
+    }
+    if (!m_host.empty()) {
+        m_uri += m_host;
+    }
+    if (!m_path.empty()) {
+        m_uri += m_path;
+    }
+    if (!m_query.empty()) {
+        m_uri += m_query;
+    }
+    if (!m_fragment.empty()) {
+        m_uri += m_fragment;
     }
 }
 
