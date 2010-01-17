@@ -59,14 +59,36 @@ public:
     Private();
     virtual ~Private();
 
+    Private *copy() const
+    {
+        Private *privateCopy = new Private;
+        privateCopy->m_stack = new T[m_capacity];
+        for (size_t i = 0; i < m_capacity; ++i) {
+            privateCopy->m_stack[i] = m_stack[i];
+        }
+        privateCopy->m_top = m_top;
+        privateCopy->m_capacity = m_capacity;
+        return privateCopy;
+    }
+
+    void copyAndDetach(Stack<T> *stack);
+    void newAndDetach(Stack<T> *stack);
     void ref();
     void deref();
+    void clearContents();
+
+    static Private *empty();
 
     T     *m_stack;
     size_t m_top;
     size_t m_capacity;
     size_t m_refs;
+
+    static Private *m_privateEmpty;
 };
+
+template <typename T>
+typename Stack<T>::Private *Stack<T>::Private::m_privateEmpty = 0;
 
 template <typename T>
 Stack<T>::Private::Private()
@@ -84,6 +106,30 @@ Stack<T>::Private::~Private()
 }
 
 template <typename T>
+void Stack<T>::Private::copyAndDetach(Stack<T> *stack)
+{
+    if (m_refs > 1) {
+        stack->d = copy();
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    }
+}
+
+template <typename T>
+void Stack<T>::Private::newAndDetach(Stack<T> *stack)
+{
+    if (m_refs > 1) {
+        stack->d = new Private;
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    } else {
+        clearContents();
+    }
+}
+
+template <typename T>
 void Stack<T>::Private::ref()
 {
     ++m_refs;
@@ -94,13 +140,36 @@ void Stack<T>::Private::deref()
 {
     --m_refs;
     if (!m_refs) {
+        if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        }
         delete this;
     }
 }
 
 template <typename T>
+void Stack<T>::Private::clearContents()
+{
+    delete[] m_stack;
+    m_stack = 0;
+    m_top = 0;
+    m_capacity = 0;
+}
+
+template <typename T>
+typename Stack<T>::Private *Stack<T>::Private::empty()
+{
+    if (!m_privateEmpty) {
+        m_privateEmpty = new Private;
+    } else {
+        m_privateEmpty->ref();
+    }
+    return m_privateEmpty;
+}
+
+template <typename T>
 Stack<T>::Stack()
-    : d(new Private)
+    : d(Private::empty())
 {
 }
 
@@ -120,6 +189,7 @@ Stack<T>::~Stack()
 template <typename T>
 void Stack<T>::push(const T &t)
 {
+    d->copyAndDetach(this);
     if (d->m_top == d->m_capacity) {
         if (!d->m_capacity) {
             d->m_capacity = 2;
@@ -142,6 +212,7 @@ void Stack<T>::push(const T &t)
 template <typename T>
 T Stack<T>::pop()
 {
+    d->copyAndDetach(this);
     if (d->m_top) {
         return d->m_stack[--d->m_top];
     }
@@ -172,10 +243,11 @@ bool Stack<T>::empty() const
 template <typename T>
 void Stack<T>::clear()
 {
-    delete[] d->m_stack;
-    d->m_stack = 0;
-    d->m_top = 0;
-    d->m_capacity = 0;
+    if (d == Private::m_privateEmpty) {
+        return;
+    }
+    d->deref();
+    d = Private::empty();
 }
 
 template <typename T>

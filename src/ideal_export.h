@@ -30,6 +30,7 @@
 
 #ifndef __GNUC__
 #define __attribute__(x)
+#define __builtin_expect((x), y) x
 #endif
 
 #define IDEAL_NO_EXPORT __attribute__ ((visibility("hidden")))
@@ -37,6 +38,8 @@
 #define IDEAL_EXPORT_DEPRECATED IDEAL_EXPORT __attribute__ ((deprecated))
 #define IDEAL_UNUSED(expr) do { (void)(expr); } while (0)
 #define IDEAL_POSSIBLY_UNUSED __attribute__ ((unused))
+#define IDEAL_LIKELY(x)   __builtin_expect((x), 1)
+#define IDEAL_UNLIKELY(x) __builtin_expect((x), 0)
 
 #ifndef MUTEX_H
 
