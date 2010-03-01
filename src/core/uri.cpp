@@ -1457,7 +1457,18 @@ Uri &Uri::dirUp()
         return *this;
     }
     d->copyAndDetach(this);
-    // TODO
+    const size_t pos = path().rfind('/');
+    if (pos != String::npos) {
+        if (pos == d->m_path.size() - 1) {
+            d->m_path = d->m_path.substr(0, path().rfind('/', 2) + 1);
+        } else {
+            d->m_path = d->m_path.substr(0, path().rfind('/') + 1);
+        }
+        if (d->m_path.empty()) {
+            d->m_path = '/';
+        }
+        d->reconstructUri();
+    }
     return *this;
 }
 
