@@ -121,8 +121,6 @@ public:
 
     String getHex(Char ch) const;
     String undoHex(const String &uri) const;
-    String encodeUri(const String &uri) const;
-    String decodeUri(const String &uri) const;
 
     void initializeContents();
     void reconstructUri();
