@@ -27,7 +27,6 @@
 
 #include "application_p.h"
 #include "widget_p.h"
-#include "matrix_p.h"
 
 namespace IdealGUI {
 
@@ -129,24 +128,14 @@ void Painter::setAntialias(Antialias antialias)
     cairo_set_antialias(D_I->m_cairo, cairoAntialias);
 }
 
-void Painter::saveState()
+void Painter::save()
 {
     cairo_save(D_I->m_cairo);
 }
 
-void Painter::restoreState()
+void Painter::restore()
 {
     cairo_restore(D_I->m_cairo);
-}
-
-void Painter::setPenColor(ireal red, ireal green, ireal blue, ireal alpha)
-{
-    cairo_set_source_rgba(D_I->m_cairo, red, green, blue, alpha);
-}
-
-void Painter::setLineWidth(ireal width)
-{
-    cairo_set_line_width(D_I->m_cairo, width);
 }
 
 void Painter::setFillRule(FillRule fillRule)
@@ -232,44 +221,6 @@ void Painter::scale(ireal sx, ireal sy)
 void Painter::rotate(ireal angle)
 {
     cairo_rotate(D_I->m_cairo, angle);
-}
-
-void Painter::transform(const Matrix &matrix)
-{
-    cairo_transform(D_I->m_cairo, &static_cast<Matrix::PrivateImpl*>(matrix.d)->m_matrix);
-}
-
-void Painter::setMatrix(const Matrix &matrix)
-{
-    cairo_set_matrix(D_I->m_cairo, &static_cast<Matrix::PrivateImpl*>(matrix.d)->m_matrix);
-}
-
-void Painter::drawPoint(const Point &point)
-{
-    drawRectangle(point, Size(2, 2));
-}
-
-void Painter::drawLine(const Point &point1, const Point &point2)
-{
-    cairo_move_to(D_I->m_cairo, point1.x(), point1.y());
-    cairo_line_to(D_I->m_cairo, point2.x(), point2.y());
-    cairo_stroke(D_I->m_cairo);
-}
-
-void Painter::drawRectangle(const Point &topLeft, const Size &size)
-{
-    cairo_rectangle(D_I->m_cairo, topLeft.x(), topLeft.y(), size.width(), size.height());
-    cairo_stroke(D_I->m_cairo);
-}
-
-void Painter::drawText(const Point &bottomLeft, const IdealCore::String &text)
-{
-    cairo_move_to(D_I->m_cairo, bottomLeft.x(), bottomLeft.y());
-    cairo_show_text(D_I->m_cairo, text.data());
-}
-
-void Painter::fillRectangle(const Point &topLeft, const Size &size)
-{
 }
 
 }

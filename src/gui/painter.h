@@ -23,7 +23,6 @@
 
 #include <ideal_export.h>
 #include <core/ideal_string.h>
-#include <gui/matrix.h>
 #include <gui/point.h>
 #include <gui/size.h>
 
@@ -59,8 +58,6 @@ public:
         SaturateOperator
     };
 
-    void setOperator(Operator op);
-
     enum Antialias {
         DefaultAntialias = 0,
         NoneAntialias,
@@ -68,20 +65,10 @@ public:
         SubpixelAntialias
     };
 
-    void setAntialias(Antialias antialias);
-
-    void saveState();
-    void restoreState();
-
-    void setPenColor(ireal red, ireal green, ireal blue, ireal alpha = 1.0);
-    void setLineWidth(ireal width);
-
     enum FillRule {
         WindingFillRule = 0,
         EvenOddFillRule
     };
-
-    void setFillRule(FillRule fillRule);
 
     enum LineCap {
         ButtLineCap = 0,
@@ -89,13 +76,19 @@ public:
         SquareLineCap
     };
 
-    void setLineCap(LineCap lineCap);
-
     enum LineJoin {
         MiterLineJoin = 0,
         RoundLineJoin,
         BevelLineJoin
     };
+
+    void save();
+
+    void restore();
+
+    void setFillRule(FillRule fillRule);
+
+    void setLineCap(LineCap lineCap);
 
     void setLineJoin(LineJoin lineJoin);
 
@@ -108,16 +101,6 @@ public:
     void scale(ireal sx, ireal sy);
 
     void rotate(ireal angle);
-
-    void transform(const Matrix &matrix);
-
-    void setMatrix(const Matrix &matrix);
-
-    void drawPoint(const Point &point);
-    void drawLine(const Point &point1, const Point &point2);
-    void drawRectangle(const Point &topLeft, const Size &size);
-    void drawText(const Point &bottomLeft, const IdealCore::String &text);
-    void fillRectangle(const Point &topLeft, const Size &size);
 
 private:
     class Private;
