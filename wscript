@@ -18,7 +18,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import UnitTest, Utils, Options
+import unittestw, Utils, Options
 
 LIBVERSION = '0.0.9'
 
@@ -49,6 +49,7 @@ def init():
 
 def set_options(opt):
     opt.tool_options('compiler_cxx')
+    opt.tool_options('unittest')
     opt.add_option('--release', action = 'store_true', default = False,
                    help = 'Do not build unit tests. Compile without debug information')
 
@@ -57,6 +58,7 @@ def configure(conf):
     # check for basics
     conf.find_program('pkg-config')
     conf.check_tool('compiler_cxx')
+    conf.check_tool('unittest')
     if conf.env['COMPILER_CXX'] == []:
         conf.fatal('A C++ compiler is needed. Please, install it and try again')
     conf.env['CXXFLAGS_CONFTESTS'] += ['-std=c++0x'];
@@ -98,7 +100,7 @@ def build(bld):
     bld.install_files('${PREFIX}/include/ideal', 'src/ideal_globals.h')
 
 def check(context):
-    ut = UnitTest.unit_test()
+    ut = unittestw.unit_test()
     ut.run()
     ut.print_results()
 
@@ -107,7 +109,7 @@ def shutdown():
         print ''
         Utils.pprint('BLUE', '*** Running unit tests')
         print ''
-        ut = UnitTest.unit_test()
+        ut = unittestw.unit_test()
         ut.run_if_waf_does = 'install'
         ut.run()
         ut.print_results()
