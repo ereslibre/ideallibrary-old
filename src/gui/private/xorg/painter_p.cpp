@@ -196,6 +196,24 @@ void Painter::setAntialias(Antialias antialias)
     cairo_set_antialias(D_I->m_cairo, cairoAntialias);
 }
 
+Painter::Antialias Painter::antialias() const
+{
+    switch (cairo_get_antialias(D_I->m_cairo)) {
+        case CAIRO_ANTIALIAS_DEFAULT:
+            return DefaultAntialias;
+        case CAIRO_ANTIALIAS_NONE:
+            return NoneAntialias;
+        case CAIRO_ANTIALIAS_GRAY:
+            return GrayAntialias;
+        case CAIRO_ANTIALIAS_SUBPIXEL:
+            return SubpixelAntialias;
+        default:
+            IDEAL_DEBUG_WARNING("unknown antialias parameter");
+            break;
+    }
+    return DefaultAntialias;
+}
+
 bool Painter::hasCurrentPoint() const
 {
     return cairo_has_current_point(D_I->m_cairo);
