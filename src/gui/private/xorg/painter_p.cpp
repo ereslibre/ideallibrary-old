@@ -50,6 +50,16 @@ Painter::PrivateImpl::~PrivateImpl()
     XFlush(m_dpy);
 }
 
+void Painter::save()
+{
+    cairo_save(D_I->m_cairo);
+}
+
+void Painter::restore()
+{
+    cairo_restore(D_I->m_cairo);
+}
+
 void Painter::setOperator(Operator op)
 {
     cairo_operator_t cairoOperator;
@@ -104,6 +114,64 @@ void Painter::setOperator(Operator op)
     cairo_set_operator(D_I->m_cairo, cairoOperator);
 }
 
+Painter::Operator Painter::getOperator() const
+{
+    switch (cairo_get_operator(D_I->m_cairo)) {
+        case CAIRO_OPERATOR_CLEAR:
+            return ClearOperator;
+        case CAIRO_OPERATOR_SOURCE:
+            return SourceOperator;
+        case CAIRO_OPERATOR_OVER:
+            return OverOperator;
+        case CAIRO_OPERATOR_IN:
+            return InOperator;
+        case CAIRO_OPERATOR_OUT:
+            return OutOperator;
+        case CAIRO_OPERATOR_ATOP:
+            return AtopOperator;
+        case CAIRO_OPERATOR_DEST:
+            return DestOperator;
+        case CAIRO_OPERATOR_DEST_OVER:
+            return DestOverOperator;
+        case CAIRO_OPERATOR_DEST_IN:
+            return DestInOperator;
+        case CAIRO_OPERATOR_DEST_OUT:
+            return DestOutOperator;
+        case CAIRO_OPERATOR_DEST_ATOP:
+            return DestAtopOperator;
+        case CAIRO_OPERATOR_XOR:
+            return XorOperator;
+        case CAIRO_OPERATOR_ADD:
+            return AddOperator;
+        case CAIRO_OPERATOR_SATURATE:
+            return SaturateOperator;
+        default:
+            IDEAL_DEBUG_WARNING("unknown painter operator");
+            break;
+    }
+    return OverOperator;
+}
+
+void Painter::setSourceRGB(ireal red, ireal green, ireal blue)
+{
+    cairo_set_source_rgb(D_I->m_cairo, red, green, blue);
+}
+
+void Painter::setSourceRGBA(ireal red, ireal green, ireal blue, ireal alpha)
+{
+    cairo_set_source_rgba(D_I->m_cairo, red, green, blue, alpha);
+}
+
+void Painter::setTolerance(ireal tolerance)
+{
+    cairo_set_tolerance(D_I->m_cairo, tolerance);
+}
+
+ireal Painter::tolerance() const
+{
+    return cairo_get_tolerance(D_I->m_cairo);
+}
+
 void Painter::setAntialias(Antialias antialias)
 {
     cairo_antialias_t cairoAntialias;
@@ -128,14 +196,14 @@ void Painter::setAntialias(Antialias antialias)
     cairo_set_antialias(D_I->m_cairo, cairoAntialias);
 }
 
-void Painter::save()
+bool Painter::hasCurrentPoint() const
 {
-    cairo_save(D_I->m_cairo);
+    return cairo_has_current_point(D_I->m_cairo);
 }
 
-void Painter::restore()
+void Painter::getCurrentPoint(ireal &x, ireal &y) const
 {
-    cairo_restore(D_I->m_cairo);
+    cairo_get_current_point(D_I->m_cairo, &x, &y);
 }
 
 void Painter::setFillRule(FillRule fillRule)
@@ -154,6 +222,16 @@ void Painter::setFillRule(FillRule fillRule)
             break;
     }
     cairo_set_fill_rule(D_I->m_cairo, cairoFillRule);
+}
+
+void Painter::setLineWidth(ireal width)
+{
+    cairo_set_line_width(D_I->m_cairo, width);
+}
+
+ireal Painter::lineWidth() const
+{
+    return cairo_get_line_width(D_I->m_cairo);
 }
 
 void Painter::setLineCap(LineCap lineCap)

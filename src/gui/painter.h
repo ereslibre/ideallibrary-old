@@ -83,24 +83,125 @@ public:
     };
 
     void save();
-
     void restore();
 
+    void setOperator(Operator op);
+    Operator getOperator() const;
+
+#if 0
+    // TODO: write Pattern class
+    void setSource(const Pattern &pattern);
+    const Pattern &source() const;
+#endif
+
+    void setSourceRGB(ireal red, ireal green, ireal blue);
+    void setSourceRGBA(ireal red, ireal green, ireal blue, ireal alpha);
+
+    void setTolerance(ireal tolerance);
+    ireal tolerance() const;
+
+    void setAntialias(Antialias antialias);
+    Antialias antialias() const;
+
+    bool hasCurrentPoint() const;
+    void getCurrentPoint(ireal &x, ireal &y) const;
+
     void setFillRule(FillRule fillRule);
+    FillRule fillRule() const;
+
+    void setLineWidth(ireal width);
+    ireal lineWidth() const;
 
     void setLineCap(LineCap lineCap);
+    LineCap lineCap() const;
 
     void setLineJoin(LineJoin lineJoin);
+    LineJoin lineJoin() const;
 
     void setDash(const ireal *dashes, iint32 numDashes, ireal offset);
+    iint32 dashCount() const;
+    void dash(ireal &dashes, ireal &offset);
 
     void setMiterLimit(ireal miterLimit);
+    ireal miterLimit() const;
 
     void translate(ireal tx, ireal ty);
 
     void scale(ireal sx, ireal sy);
 
     void rotate(ireal angle);
+
+    void showText(const IdealCore::String &text);
+
+#if 0
+    // TODO: write Matrix class
+    void transform(const Matrix &matrix);
+
+    void setMatrix(const Matrix &matrix);
+    void matrix(Matrix &matrix) const;
+
+    void identityMatrix();
+#endif
+
+    void newPath();
+
+    void moveTo(ireal x, ireal y);
+
+    void newSubPath();
+
+    void lineTo(ireal x, ireal y);
+
+    void curveTo(ireal x1, ireal y1, ireal x2, ireal y2, ireal x3, ireal y3);
+
+    void arc(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2);
+
+    void arcNegative(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2);
+
+    void relMoveTo(ireal dx, ireal dy);
+
+    void relLineTo(ireal dx, ireal dy);
+
+    void relCurveTo(ireal dx1, ireal dy1, ireal dx2, ireal dy2, ireal dx3, ireal dy3);
+
+    void rectangle(ireal x, ireal y, ireal width, ireal height);
+
+    void closePath();
+
+    void pathExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
+    void paint();
+
+    void paintWithAlpha(ireal alpha);
+
+#if 0
+    // TODO: write Pattern class
+    void mask(const Pattern &pattern);
+#endif
+
+    void stroke();
+
+    void strokePreserve();
+
+    void fill();
+
+    void fillPreserve();
+
+    void copyPage();
+
+    void showPage();
+
+    void strokeExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
+    void fillExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
+    void resetClip();
+
+    void clip();
+
+    void preseve();
+
+    void clipExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
 
 private:
     class Private;
