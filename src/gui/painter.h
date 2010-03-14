@@ -104,7 +104,7 @@ public:
     Antialias antialias() const;
 
     bool hasCurrentPoint() const;
-    void getCurrentPoint(ireal &x, ireal &y) const;
+    void currentPoint(ireal &x, ireal &y) const;
 
     void setFillRule(FillRule fillRule);
     FillRule fillRule() const;

@@ -219,7 +219,7 @@ bool Painter::hasCurrentPoint() const
     return cairo_has_current_point(D_I->m_cairo);
 }
 
-void Painter::getCurrentPoint(ireal &x, ireal &y) const
+void Painter::currentPoint(ireal &x, ireal &y) const
 {
     cairo_get_current_point(D_I->m_cairo, &x, &y);
 }
