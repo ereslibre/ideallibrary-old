@@ -152,6 +152,17 @@ Painter::Operator Painter::getOperator() const
     return OverOperator;
 }
 
+#if 0
+    // TODO: write Pattern class
+void Painter::setSource(const Pattern &pattern)
+{
+}
+
+const Pattern &Painter::source() const
+{
+}
+#endif
+
 void Painter::setSourceRGB(ireal red, ireal green, ireal blue)
 {
     cairo_set_source_rgb(D_I->m_cairo, red, green, blue);
@@ -242,6 +253,20 @@ void Painter::setFillRule(FillRule fillRule)
     cairo_set_fill_rule(D_I->m_cairo, cairoFillRule);
 }
 
+Painter::FillRule Painter::fillRule() const
+{
+    switch (cairo_get_fill_rule(D_I->m_cairo)) {
+        case CAIRO_FILL_RULE_WINDING:
+            return WindingFillRule;
+        case CAIRO_FILL_RULE_EVEN_ODD:
+            return EvenOddFillRule;
+        default:
+            IDEAL_DEBUG_WARNING("unknown fill rule parameter");
+            break;
+    }
+    return WindingFillRule;
+}
+
 void Painter::setLineWidth(ireal width)
 {
     cairo_set_line_width(D_I->m_cairo, width);
@@ -273,6 +298,22 @@ void Painter::setLineCap(LineCap lineCap)
     cairo_set_line_cap(D_I->m_cairo, cairoLineCap);
 }
 
+Painter::LineCap Painter::lineCap() const
+{
+    switch (cairo_get_line_cap(D_I->m_cairo)) {
+        case CAIRO_LINE_CAP_BUTT:
+            return ButtLineCap;
+        case CAIRO_LINE_CAP_ROUND:
+            return RoundLineCap;
+        case CAIRO_LINE_CAP_SQUARE:
+            return SquareLineCap;
+        default:
+            IDEAL_DEBUG_WARNING("unknown line cap parameter");
+            break;
+    }
+    return ButtLineCap;
+}
+
 void Painter::setLineJoin(LineJoin lineJoin)
 {
     cairo_line_join_t cairoLineJoin;
@@ -294,14 +335,45 @@ void Painter::setLineJoin(LineJoin lineJoin)
     cairo_set_line_join(D_I->m_cairo, cairoLineJoin);
 }
 
+Painter::LineJoin Painter::lineJoin() const
+{
+    switch (cairo_get_line_join(D_I->m_cairo)) {
+        case MiterLineJoin:
+            return MiterLineJoin;
+        case CAIRO_LINE_JOIN_ROUND:
+            return RoundLineJoin;
+        case CAIRO_LINE_JOIN_BEVEL:
+            return BevelLineJoin;
+        default:
+            IDEAL_DEBUG_WARNING("unknown line join parameter");
+            break;
+    }
+    return MiterLineJoin;
+}
+
 void Painter::setDash(const ireal *dashes, iint32 numDashes, ireal offset)
 {
     cairo_set_dash(D_I->m_cairo, dashes, numDashes, offset);
 }
 
+iint32 Painter::dashCount() const
+{
+    return cairo_get_dash_count(D_I->m_cairo);
+}
+
+void Painter::dash(ireal &dashes, ireal &offset)
+{
+    cairo_get_dash(D_I->m_cairo, &dashes, &offset);
+}
+
 void Painter::setMiterLimit(ireal miterLimit)
 {
     cairo_set_miter_limit(D_I->m_cairo, miterLimit);
+}
+
+ireal Painter::miterLimit() const
+{
+    return cairo_get_miter_limit(D_I->m_cairo);
 }
 
 void Painter::translate(ireal tx, ireal ty)
@@ -317,6 +389,172 @@ void Painter::scale(ireal sx, ireal sy)
 void Painter::rotate(ireal angle)
 {
     cairo_rotate(D_I->m_cairo, angle);
+}
+
+void Painter::showText(const IdealCore::String &text)
+{
+    cairo_show_text(D_I->m_cairo, text.data());
+}
+
+#if 0
+// TODO: write Matrix class
+void Painter::transform(const Matrix &matrix)
+{
+}
+
+void Painter::setMatrix(const Matrix &matrix)
+{
+}
+
+void Painter::matrix(Matrix &matrix) const
+{
+}
+
+void Painter::identityMatrix()
+{
+}
+#endif
+
+void Painter::newPath()
+{
+    cairo_new_path(D_I->m_cairo);
+}
+
+void Painter::moveTo(ireal x, ireal y)
+{
+    cairo_move_to(D_I->m_cairo, x, y);
+}
+
+void Painter::newSubPath()
+{
+    cairo_new_sub_path(D_I->m_cairo);
+}
+
+void Painter::lineTo(ireal x, ireal y)
+{
+    cairo_line_to(D_I->m_cairo, x, y);
+}
+
+void Painter::curveTo(ireal x1, ireal y1, ireal x2, ireal y2, ireal x3, ireal y3)
+{
+    cairo_curve_to(D_I->m_cairo, x1, y1, x2, y2, x3, y3);
+}
+
+void Painter::arc(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2)
+{
+    cairo_arc(D_I->m_cairo, xc, yc, radius, angle1, angle2);
+}
+
+void Painter::arcNegative(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2)
+{
+    cairo_arc_negative(D_I->m_cairo, xc, yc, radius, angle1, angle2);
+}
+
+void Painter::relMoveTo(ireal dx, ireal dy)
+{
+    cairo_rel_move_to(D_I->m_cairo, dx, dy);
+}
+
+void Painter::relLineTo(ireal dx, ireal dy)
+{
+    cairo_rel_line_to(D_I->m_cairo, dx, dy);
+}
+
+void Painter::relCurveTo(ireal dx1, ireal dy1, ireal dx2, ireal dy2, ireal dx3, ireal dy3)
+{
+    cairo_rel_curve_to(D_I->m_cairo, dx1, dy1, dx2, dy2, dx3, dy3);
+}
+
+void Painter::rectangle(ireal x, ireal y, ireal width, ireal height)
+{
+    cairo_rectangle(D_I->m_cairo, x, y, width, height);
+}
+
+void Painter::closePath()
+{
+    cairo_close_path(D_I->m_cairo);
+}
+
+void Painter::pathExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2)
+{
+    cairo_path_extents(D_I->m_cairo, &x1, &y1, &x2, &y2);
+}
+
+void Painter::paint()
+{
+    cairo_paint(D_I->m_cairo);
+}
+
+void Painter::paintWithAlpha(ireal alpha)
+{
+    cairo_paint_with_alpha(D_I->m_cairo, alpha);
+}
+
+#if 0
+// TODO: write Pattern class
+void Painter::mask(const Pattern &pattern)
+{
+}
+#endif
+
+void Painter::stroke()
+{
+    cairo_stroke(D_I->m_cairo);
+}
+
+void Painter::strokePreserve()
+{
+    cairo_stroke_preserve(D_I->m_cairo);
+}
+
+void Painter::fill()
+{
+    cairo_fill(D_I->m_cairo);
+}
+
+void Painter::fillPreserve()
+{
+    cairo_fill_preserve(D_I->m_cairo);
+}
+
+void Painter::copyPage()
+{
+    cairo_copy_page(D_I->m_cairo);
+}
+
+void Painter::showPage()
+{
+    cairo_show_page(D_I->m_cairo);
+}
+
+void Painter::strokeExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2)
+{
+    cairo_stroke_extents(D_I->m_cairo, &x1, &y1, &x2, &y2);
+}
+
+void Painter::fillExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2)
+{
+    cairo_fill_extents(D_I->m_cairo, &x1, &y1, &x2, &y2);
+}
+
+void Painter::resetClip()
+{
+    cairo_reset_clip(D_I->m_cairo);
+}
+
+void Painter::clip()
+{
+    cairo_clip(D_I->m_cairo);
+}
+
+void Painter::clipPreserve()
+{
+    cairo_clip_preserve(D_I->m_cairo);
+}
+
+void Painter::clipExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2)
+{
+    cairo_clip_extents(D_I->m_cairo, &x1, &y1, &x2, &y2);
 }
 
 }

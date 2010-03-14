@@ -198,7 +198,7 @@ public:
 
     void clip();
 
-    void preseve();
+    void clipPreserve();
 
     void clipExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
 
