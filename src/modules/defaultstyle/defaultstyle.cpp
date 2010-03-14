@@ -36,6 +36,7 @@ void DefaultStyle::drawWidget(Widget *widget) const
         p.setSourceRGB(1.0, 0, 0);
     }
     p.rectangle(1, 1, 99, 39);
+    p.stroke();
     if (dynamic_cast<PushButton*>(widget)) {
         const PushButton::StyleInfo *sInfo = static_cast<const PushButton::StyleInfo*>(widget->styleInfo());
         p.moveTo(10, 25);

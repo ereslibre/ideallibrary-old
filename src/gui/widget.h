@@ -71,6 +71,8 @@ public:
 
     virtual void drawWidget();
 
+    virtual void update(iint32 x = 0, iint32 y = 0, iint32 width = 0, iint32 height = 0);
+
     Widget *parentWidget() const;
 
     Application *GUIApplication() const;
