@@ -93,7 +93,8 @@ void Widget::update(iint32 x, iint32 y, iint32 width, iint32 height)
         event.height = height;
     }
     event.count = 0;
-    XSendEvent(a_d->m_dpy, D_I->m_window, True, NoEventMask, (XEvent*) &event);
+    XSendEvent(a_d->m_dpy, D_I->m_window, True, ExposureMask, (XEvent*) &event);
+    XFlush(a_d->m_dpy);
 }
 
 }
