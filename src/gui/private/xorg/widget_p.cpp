@@ -71,30 +71,4 @@ void Widget::hide()
 {
 }
 
-void Widget::update(iint32 x, iint32 y, iint32 width, iint32 height)
-{
-    IdealGUI::Application *app = static_cast<IdealGUI::Application*>(application());
-    IdealGUI::Application::PrivateImpl *a_d = static_cast<IdealGUI::Application::PrivateImpl*>(app->d);
-
-    XExposeEvent event;
-    event.type = Expose_;
-    event.display = a_d->m_dpy;
-    event.window = D_I->m_window;
-    event.x = 0;
-    event.y = 0;
-    if (!width) {
-        event.width = minimumSize().width();
-    } else {
-        event.width = width;
-    }
-    if (!height) {
-        event.height = minimumSize().height();
-    } else {
-        event.height = height;
-    }
-    event.count = 0;
-    XSendEvent(a_d->m_dpy, D_I->m_window, True, ExposureMask, (XEvent*) &event);
-    XFlush(a_d->m_dpy);
-}
-
 }
