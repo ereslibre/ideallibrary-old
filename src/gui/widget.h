@@ -76,6 +76,7 @@ public:
     Application *GUIApplication() const;
 
 protected:
+    virtual void initStyle();
     virtual bool event(IdealCore::Event *event);
 
 protected:

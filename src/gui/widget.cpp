@@ -37,10 +37,10 @@ Widget::Private::~Private()
 
 Widget::Widget(Object *parent)
     : Object(parent)
-    , m_styleInfo(0)
     , d(new PrivateImpl(this))
 {
     d->m_parentWidget = dynamic_cast<Widget*>(parent);
+    initStyle();
 }
 
 Widget::~Widget()
@@ -67,6 +67,11 @@ Widget *Widget::parentWidget() const
 Application *Widget::GUIApplication() const
 {
     return dynamic_cast<Application*>(application());
+}
+
+void Widget::initStyle()
+{
+    m_styleInfo = new StyleInfo;
 }
 
 bool Widget::event(IdealCore::Event *event)
