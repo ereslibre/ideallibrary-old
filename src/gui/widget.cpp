@@ -76,30 +76,26 @@ void Widget::initStyle()
 
 bool Widget::event(IdealCore::Event *event)
 {
-    bool drawPending = false;
+    bool drawPending = true;
     switch (event->type()) {
         case IdealCore::Event::MapNotify:
         case IdealCore::Event::Expose:
-            drawPending = true;
             break;
         case IdealCore::Event::EnterNotify:
             m_styleInfo->isHovered = true;
-            drawPending = true;
             break;
         case IdealCore::Event::LeaveNotify:
             m_styleInfo->isHovered = false;
             m_styleInfo->isPressed = false;
-            drawPending = true;
             break;
         case IdealCore::Event::ButtonPress:
             m_styleInfo->isPressed = true;
-            drawPending = true;
             break;
         case IdealCore::Event::ButtonRelease:
             m_styleInfo->isPressed = false;
-            drawPending = true;
             break;
         default:
+            drawPending = false;
             break;
     }
     if (drawPending) {
