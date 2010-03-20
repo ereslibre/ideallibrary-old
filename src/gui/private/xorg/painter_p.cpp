@@ -33,6 +33,7 @@ namespace IdealGUI {
 Painter::PrivateImpl::PrivateImpl(Widget *canvas)
     : Private(canvas)
 {
+    canvas->d->m_mutex.lock();
     IdealGUI::Application *app = static_cast<IdealGUI::Application*>(m_canvas->application());
     m_dpy = static_cast<IdealGUI::Application::PrivateImpl*>(app->d)->m_dpy;
     Widget::PrivateImpl *const w_d = static_cast<IdealGUI::Widget::PrivateImpl*>(canvas->d);
@@ -48,6 +49,7 @@ Painter::PrivateImpl::~PrivateImpl()
 {
     cairo_destroy(m_cairo);
     XFlush(m_dpy);
+    m_canvas->d->m_mutex.unlock();
 }
 
 void Painter::save()
