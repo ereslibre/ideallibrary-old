@@ -571,7 +571,7 @@ Locale Application::locale() const
 
 iint32 Application::exec()
 {
-    while (true) {
+    IDEAL_FOREVER {
         d->processEvents();
         d->processDelayedDeletions();
         d->checkFileWatches();
