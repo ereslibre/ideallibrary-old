@@ -18,7 +18,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import UnitTest, Utils, Options
+import unittestw, Utils, Options
 
 LIBVERSION = '0.0.9'
 
@@ -98,7 +98,7 @@ def build(bld):
     bld.install_files('${PREFIX}/include/ideal', 'src/ideal_globals.h')
 
 def check(context):
-    ut = UnitTest.unit_test()
+    ut = unittestw.unit_test()
     ut.run()
     ut.print_results()
 
@@ -107,7 +107,7 @@ def shutdown():
         print ''
         Utils.pprint('BLUE', '*** Running unit tests')
         print ''
-        ut = UnitTest.unit_test()
+        ut = unittestw.unit_test()
         ut.run_if_waf_does = 'install'
         ut.run()
         ut.print_results()
