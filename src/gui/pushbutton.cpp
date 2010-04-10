@@ -49,6 +49,7 @@ PushButton::PushButton(Object *parent)
     , IDEAL_SIGNAL_INIT(clicked)
     , d(new Private(this))
 {
+    m_styleInfo = new StyleInfo;
 }
 
 PushButton::~PushButton()
@@ -70,11 +71,6 @@ IdealCore::String PushButton::text() const
 void PushButton::setText(const IdealCore::String &text)
 {
     static_cast<StyleInfo*>(m_styleInfo)->text = text;
-}
-
-void PushButton::initStyle()
-{
-    m_styleInfo = new StyleInfo;
 }
 
 bool PushButton::event(IdealCore::Event *event)

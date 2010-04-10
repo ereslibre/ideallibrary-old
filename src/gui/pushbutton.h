@@ -47,7 +47,6 @@ public:
     void setText(const IdealCore::String &text);
 
 protected:
-    virtual void initStyle();
     virtual bool event(IdealCore::Event *event);
 
 public:
