@@ -21,6 +21,8 @@
 #ifndef WIDGET_P_H
 #define WIDGET_P_H
 
+#include <core/mutex.h>
+
 #include <gui/widget.h>
 
 namespace IdealGUI {
@@ -31,8 +33,9 @@ public:
     Private(Widget *q);
     virtual ~Private();
 
-    Widget    *m_parentWidget;
-    Widget    *q;
+    Widget          *m_parentWidget;
+    IdealCore::Mutex m_mutex;
+    Widget          *q;
 };
 
 }

@@ -23,7 +23,6 @@
 
 #include <ideal_export.h>
 #include <core/ideal_string.h>
-#include <gui/matrix.h>
 #include <gui/point.h>
 #include <gui/size.h>
 
@@ -59,8 +58,6 @@ public:
         SaturateOperator
     };
 
-    void setOperator(Operator op);
-
     enum Antialias {
         DefaultAntialias = 0,
         NoneAntialias,
@@ -68,20 +65,10 @@ public:
         SubpixelAntialias
     };
 
-    void setAntialias(Antialias antialias);
-
-    void saveState();
-    void restoreState();
-
-    void setPenColor(ireal red, ireal green, ireal blue, ireal alpha = 1.0);
-    void setLineWidth(ireal width);
-
     enum FillRule {
         WindingFillRule = 0,
         EvenOddFillRule
     };
-
-    void setFillRule(FillRule fillRule);
 
     enum LineCap {
         ButtLineCap = 0,
@@ -89,19 +76,54 @@ public:
         SquareLineCap
     };
 
-    void setLineCap(LineCap lineCap);
-
     enum LineJoin {
         MiterLineJoin = 0,
         RoundLineJoin,
         BevelLineJoin
     };
 
+    void save();
+    void restore();
+
+    void setOperator(Operator op);
+    Operator getOperator() const;
+
+#if 0
+    // TODO: write Pattern class
+    void setSource(const Pattern &pattern);
+    const Pattern &source() const;
+#endif
+
+    void setSourceRGB(ireal red, ireal green, ireal blue);
+    void setSourceRGBA(ireal red, ireal green, ireal blue, ireal alpha);
+
+    void setTolerance(ireal tolerance);
+    ireal tolerance() const;
+
+    void setAntialias(Antialias antialias);
+    Antialias antialias() const;
+
+    bool hasCurrentPoint() const;
+    void currentPoint(ireal &x, ireal &y) const;
+
+    void setFillRule(FillRule fillRule);
+    FillRule fillRule() const;
+
+    void setLineWidth(ireal width);
+    ireal lineWidth() const;
+
+    void setLineCap(LineCap lineCap);
+    LineCap lineCap() const;
+
     void setLineJoin(LineJoin lineJoin);
+    LineJoin lineJoin() const;
 
     void setDash(const ireal *dashes, iint32 numDashes, ireal offset);
+    iint32 dashCount() const;
+    void dash(ireal &dashes, ireal &offset);
 
     void setMiterLimit(ireal miterLimit);
+    ireal miterLimit() const;
 
     void translate(ireal tx, ireal ty);
 
@@ -109,15 +131,77 @@ public:
 
     void rotate(ireal angle);
 
+    void showText(const IdealCore::String &text);
+
+#if 0
+    // TODO: write Matrix class
     void transform(const Matrix &matrix);
 
     void setMatrix(const Matrix &matrix);
+    void matrix(Matrix &matrix) const;
 
-    void drawPoint(const Point &point);
-    void drawLine(const Point &point1, const Point &point2);
-    void drawRectangle(const Point &topLeft, const Size &size);
-    void drawText(const Point &bottomLeft, const IdealCore::String &text);
-    void fillRectangle(const Point &topLeft, const Size &size);
+    void identityMatrix();
+#endif
+
+    void newPath();
+
+    void moveTo(ireal x, ireal y);
+
+    void newSubPath();
+
+    void lineTo(ireal x, ireal y);
+
+    void curveTo(ireal x1, ireal y1, ireal x2, ireal y2, ireal x3, ireal y3);
+
+    void arc(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2);
+
+    void arcNegative(ireal xc, ireal yc, ireal radius, ireal angle1, ireal angle2);
+
+    void relMoveTo(ireal dx, ireal dy);
+
+    void relLineTo(ireal dx, ireal dy);
+
+    void relCurveTo(ireal dx1, ireal dy1, ireal dx2, ireal dy2, ireal dx3, ireal dy3);
+
+    void rectangle(ireal x, ireal y, ireal width, ireal height);
+
+    void closePath();
+
+    void pathExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
+    void paint();
+
+    void paintWithAlpha(ireal alpha);
+
+#if 0
+    // TODO: write Pattern class
+    void mask(const Pattern &pattern);
+#endif
+
+    void stroke();
+
+    void strokePreserve();
+
+    void fill();
+
+    void fillPreserve();
+
+    void copyPage();
+
+    void showPage();
+
+    void strokeExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
+    void fillExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
+    void resetClip();
+
+    void clip();
+
+    void clipPreserve();
+
+    void clipExtents(ireal &x1, ireal &y1, ireal &x2, ireal &y2);
+
 
 private:
     class Private;

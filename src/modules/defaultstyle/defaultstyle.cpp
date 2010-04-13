@@ -31,14 +31,16 @@ void DefaultStyle::drawWidget(Widget *widget) const
     const Widget::StyleInfo *sInfo = widget->styleInfo();
     Painter p(widget);
     if (sInfo->isPressed) {
-        p.setPenColor(0, 0, 1.0);
+        p.setSourceRGB(0, 0, 1.0);
     } else if (sInfo->isHovered) {
-        p.setPenColor(1.0, 0, 0);
+        p.setSourceRGB(1.0, 0, 0);
     }
-    p.drawRectangle(Point(1, 1), Size(99, 39));
+    p.rectangle(1, 1, 99, 39);
+    p.stroke();
     if (dynamic_cast<PushButton*>(widget)) {
         const PushButton::StyleInfo *sInfo = static_cast<const PushButton::StyleInfo*>(widget->styleInfo());
-        p.drawText(Point(10, 25), sInfo->text);
+        p.moveTo(10, 25);
+        p.showText(sInfo->text);
     }
 }
 

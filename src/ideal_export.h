@@ -77,4 +77,6 @@ static Mutex outputMutex;
 
 #define D_I static_cast<PrivateImpl*>(d)
 
+#define IDEAL_FOREVER for(;;)
+
 #endif //IDEAL_EXPORT_H
