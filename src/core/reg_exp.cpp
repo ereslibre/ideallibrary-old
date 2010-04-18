@@ -189,7 +189,7 @@ String RegExp::getCapture(size_t i) const
 
 RegExp &RegExp::operator=(const RegExp &regExp)
 {
-    if (this == &regExp || d == regExp.d) {
+    if (d == regExp.d) {
         return *this;
     }
     d->deref();
@@ -214,7 +214,7 @@ RegExp &RegExp::operator=(const String &regExp)
 
 bool RegExp::operator==(const RegExp &regExp) const
 {
-    if (this == &regExp || d == regExp.d) {
+    if (d == regExp.d) {
         return true;
     }
     return d->m_regExp == regExp.d->m_regExp;

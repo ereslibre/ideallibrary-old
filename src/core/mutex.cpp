@@ -65,7 +65,7 @@ Mutex::~Mutex()
 
 bool Mutex::operator==(const Mutex &mutex) const
 {
-    return (this == &mutex || d == mutex.d);
+    return (d == mutex.d);
 }
 
 bool Mutex::operator!=(const Mutex &mutex) const

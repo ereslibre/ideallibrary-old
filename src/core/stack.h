@@ -280,7 +280,7 @@ void Stack<T>::clear()
 template <typename T>
 Stack<T> &Stack<T>::operator=(const Stack<T> &stack)
 {
-    if (this == &stack || d == stack.d) {
+    if (d == stack.d) {
         return *this;
     }
     d->deref();

@@ -72,7 +72,7 @@ String Any::typeName() const
 template <>
 Any &Any::operator=(const Any &any)
 {
-    if (this == &any || m_s == any.m_s) {
+    if (m_s == any.m_s) {
         return *this;
     }
     if (m_s) {
@@ -87,7 +87,7 @@ Any &Any::operator=(const Any &any)
 
 Any &Any::operator=(const Any &any)
 {
-    if (this == &any || m_s == any.m_s) {
+    if (m_s == any.m_s) {
         return *this;
     }
     if (m_s) {
@@ -102,7 +102,7 @@ Any &Any::operator=(const Any &any)
 
 bool Any::operator==(const Any &any) const
 {
-    if (this == &any || m_s == any.m_s) {
+    if (m_s == any.m_s) {
         return true;
     }
     return m_s->equals(any);

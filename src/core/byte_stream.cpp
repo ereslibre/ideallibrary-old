@@ -178,7 +178,7 @@ ByteStream &ByteStream::operator=(const ichar *data)
 
 ByteStream &ByteStream::operator=(const ByteStream &byteStream)
 {
-    if (this == &byteStream || d == byteStream.d) {
+    if (d == byteStream.d) {
         return *this;
     }
     d->deref();

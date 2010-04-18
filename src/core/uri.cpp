@@ -1490,7 +1490,7 @@ Uri &Uri::dirUp()
 
 Uri &Uri::operator=(const Uri &uri)
 {
-    if (this == &uri || d == uri.d) {
+    if (d == uri.d) {
         return *this;
     }
     d->deref();
@@ -1525,7 +1525,7 @@ Uri &Uri::operator=(const ichar *uri)
 
 bool Uri::operator==(const Uri &uri) const
 {
-    if (this == &uri || d == uri.d) {
+    if (d == uri.d) {
         return true;
     }
     return d->m_uri == uri.d->m_uri;

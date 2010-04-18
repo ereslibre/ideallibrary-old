@@ -56,6 +56,15 @@ void VectorTest::append()
             CPPUNIT_ASSERT_EQUAL(i, v[i]);
         }
     }
+    // Check operator<<
+    {
+        Vector<size_t> v;
+        v << 1 << 2 << 3 << 4 << 5;
+        CPPUNIT_ASSERT_EQUAL((size_t) 5, v.size());
+        for (size_t i = 1; i <= 5; ++i) {
+            CPPUNIT_ASSERT_EQUAL(i, v[i - 1]);
+        }
+    }
 }
 
 void VectorTest::prepend()

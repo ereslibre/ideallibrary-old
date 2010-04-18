@@ -21,7 +21,7 @@
 #ifndef IDEAL_VECTOR_H
 #define IDEAL_VECTOR_H
 
-#include <ideal_globals.h>
+#include <ideal_export.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -57,6 +57,11 @@ public:
 
     T &operator[](size_t i);
     const T&operator[](size_t i) const;
+
+    Vector<T> &operator<<(const T &t);
+
+    bool operator==(const Vector<T> &vector) const;
+    bool operator!=(const Vector<T> &vector) const;
 
 private:
     class Private;
@@ -218,7 +223,7 @@ void Vector<T>::append(const T &t)
     } else if (d->m_size > (0.7 * d->m_containerSize)) {
         d->m_containerSize *= 2;
         d->m_vector = (T*) realloc(d->m_vector, d->m_containerSize * sizeof(T));
-        memset(&d->m_vector[d->m_size + 1], '\0', d->m_containerSize * sizeof(T) - (d->m_size + 1) * sizeof(T));
+        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(T));
     }
     d->m_vector[d->m_size] = t;
     ++d->m_size;
@@ -235,7 +240,7 @@ void Vector<T>::prepend(const T &t)
         d->m_containerSize *= 2;
         d->m_vector = (T*) realloc(d->m_vector, d->m_containerSize * sizeof(T));
         memmove(&d->m_vector[1], d->m_vector, d->m_size * sizeof(T));
-        memset(&d->m_vector[d->m_size + 1], '\0', d->m_containerSize * sizeof(T) - (d->m_size + 1) * sizeof(T));
+        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(T));
     } else {
         memmove(&d->m_vector[1], d->m_vector, d->m_size * sizeof(T));
     }
@@ -257,7 +262,7 @@ void Vector<T>::insertAt(const T &t, size_t i)
         d->m_containerSize *= 2;
         d->m_vector = (T*) realloc(d->m_vector, d->m_containerSize * sizeof(T));
         memmove(&d->m_vector[i + 1], &d->m_vector[i], (d->m_size - i) * sizeof(T));
-        memset(&d->m_vector[d->m_size + 1], '\0', d->m_containerSize * sizeof(T) - (d->m_size + 1) * sizeof(T));
+        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(T));
     } else {
         memmove(&d->m_vector[i + 1], &d->m_vector[i], (d->m_size - i) * sizeof(T));
     }
@@ -314,6 +319,7 @@ template <typename T>
 T &Vector<T>::operator[](size_t i)
 {
     if (i >= d->m_size) {
+        IDEAL_DEBUG_WARNING("index out of range");
         d->m_emptyRes = T();
         return d->m_emptyRes;
     }
@@ -325,10 +331,41 @@ template <typename T>
 const T&Vector<T>::operator[](size_t i) const
 {
     if (i >= d->m_size) {
+        IDEAL_DEBUG_WARNING("index out of range");
         d->m_emptyRes = T();
         return d->m_emptyRes;
     }
     return d->m_vector[i];
+}
+
+template <typename T>
+Vector<T> &Vector<T>::operator<<(const T &t)
+{
+    append(t);
+    return *this;
+}
+
+template <typename T>
+bool Vector<T>::operator==(const Vector<T> &vector) const
+{
+    if (d == vector.d) {
+        return true;
+    }
+    if (d->m_size != vector.d->m_size) {
+        return false;
+    }
+    for (size_t i = 0; i < d->m_size; ++i) {
+        if (!(d->m_vector[i] == vector.d->m_vector[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template <typename T>
+bool Vector<T>::operator!=(const Vector<T> &vector) const
+{
+    return !(*this == vector);
 }
 
 }

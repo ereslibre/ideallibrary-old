@@ -910,7 +910,7 @@ Char String::operator[](size_t pos) const
 
 String &String::operator=(const String &str)
 {
-    if (this == &str || d == str.d) {
+    if (d == str.d) {
         return *this;
     }
     d->deref();
@@ -1036,7 +1036,7 @@ String String::operator+(Char c) const
 
 bool String::operator==(const String &str) const
 {
-    if (this == &str || d == str.d) {
+    if (d == str.d) {
         return true;
     }
     return !strcoll(d->m_str, str.d->m_str);
@@ -1049,7 +1049,7 @@ bool String::operator!=(const String &str) const
 
 bool String::operator<(const String &str) const
 {
-    if (this == &str || d == str.d) {
+    if (d == str.d) {
         return false;
     }
     return strcoll(d->m_str, str.d->m_str) < 0;
