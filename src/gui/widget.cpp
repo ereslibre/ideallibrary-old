@@ -37,7 +37,7 @@ Widget::Private::~Private()
 
 Widget::Widget(Object *parent)
     : Object(parent)
-    , m_styleInfo(0)
+    , m_styleInfo(new StyleInfo)
     , d(new PrivateImpl(this))
 {
     d->m_parentWidget = dynamic_cast<Widget*>(parent);

@@ -49,6 +49,7 @@ PushButton::PushButton(Object *parent)
     , IDEAL_SIGNAL_INIT(clicked)
     , d(new Private(this))
 {
+    delete m_styleInfo;
     m_styleInfo = new StyleInfo;
 }
 
