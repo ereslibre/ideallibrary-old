@@ -28,211 +28,24 @@ namespace IdealCore {
 class String::Private
 {
 public:
-    Private()
-        : m_str(0)
-        , m_charMap(0)
-        , m_size(0)
-        , m_sizeCalculated(false)
-        , m_rawLen(0)
-        , m_rawLenCalculated(false)
-        , m_refs(1)
-    {
-    }
+    Private();
+    virtual ~Private();
 
-    virtual ~Private()
-    {
-        free(m_str);
-        free(m_charMap);
-    }
+    void init(const ichar *str);
+    Private *copy();
+    void copyAndDetach(String *str);
+    void newAndDetach(String *str);
+    void clearContents();
 
-    void init(const ichar *str)
-    {
-        m_rawLen = strlen(str);
-        m_rawLenCalculated = true;
-        m_str = (ichar*) calloc(m_rawLen + 1, sizeof(ichar));
-        memcpy(m_str, str, m_rawLen);
-        m_sizeCalculated = false;
-    }
+    void ref();
+    void deref();
 
-    Private *copy()
-    {
-        Private *privateCopy = new Private;
-        privateCopy->m_str = (ichar*) calloc(calculateRawLen() + 1, sizeof(ichar));
-        memcpy(privateCopy->m_str, m_str, m_rawLen);
-        privateCopy->m_charMap = (size_t*) malloc(calculateSize() * sizeof(size_t));
-        memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(size_t));
-        privateCopy->m_size = m_size;
-        privateCopy->m_sizeCalculated = m_sizeCalculated;
-        privateCopy->m_rawLen = m_rawLen;
-        privateCopy->m_rawLenCalculated = m_rawLenCalculated;
-        return privateCopy;
-    }
-
-    void clearContents()
-    {
-        free(m_str);
-        m_str = 0;
-        free(m_charMap);
-        m_charMap = 0;
-        m_size = 0;
-        m_sizeCalculated = false;
-        m_rawLen = 0;
-        m_rawLenCalculated = false;
-    }
-
-    void copyAndDetach(String *str)
-    {
-        if (m_refs > 1) {
-            str->d = copy();
-            deref();
-        } else if (this == m_privateEmpty) {
-            m_privateEmpty = 0;
-        }
-    }
-
-    void newAndDetach(String *str)
-    {
-        if (m_refs > 1) {
-            str->d = new Private;
-            deref();
-        } else if (this == m_privateEmpty) {
-            m_privateEmpty = 0;
-        } else {
-            clearContents();
-        }
-    }
-
-    size_t calculateSize()
-    {
-        if (m_sizeCalculated) {
-            return m_size;
-        }
-        m_sizeCalculated = true;
-        if (!m_str) {
-            m_size = 0;
-        }
-        free(m_charMap);
-        m_charMap = (size_t*) calloc(calculateRawLen(), sizeof(size_t));
-        size_t i = 0;
-        m_size = 0;
-        while (true) {
-            const ichar c = m_str[i];
-            if (c == '\0') {
-                break;
-            }
-            if (!(c & 0x80)) {
-                m_charMap[m_size] = i;
-                ++m_size;
-            } else if (!(c & 0x20)) {
-                m_charMap[m_size] = i;
-                ++i;
-                ++m_size;
-            } else if (!(c & 0x10)) {
-                m_charMap[m_size] = i;
-                i += 2;
-                ++m_size;
-            } else if (!(c & 0x8)) {
-                m_charMap[m_size] = i;
-                i += 3;
-                ++m_size;
-            }
-            ++i;
-        }
-        if (m_size < m_rawLen) {
-            m_charMap = (size_t*) realloc(m_charMap, m_size * sizeof(size_t));
-        }
-        return m_size;
-    }
-
-    size_t calculateRawLen()
-    {
-        if (m_rawLenCalculated) {
-            return m_rawLen;
-        }
-        m_rawLenCalculated = true;
-        if (m_str) {
-            m_rawLen = strlen(m_str);
-        } else {
-            m_rawLen = 0;
-        }
-        return m_rawLen;
-    }
-
-    void ref()
-    {
-        ++m_refs;
-    }
-
-    void deref()
-    {
-        --m_refs;
-        if (!m_refs) {
-            if (this == m_privateEmpty) {
-                m_privateEmpty = 0;
-            }
-            delete this;
-        }
-    }
-
-    Char getCharAt(size_t pos) const
-    {
-        Char res;
-        const size_t mappedPos = m_charMap[pos];
-        const ichar c = m_str[mappedPos];
-        iuint32 numberOfOctets;
-        if (!(c & 0x80)) {
-            numberOfOctets = 1;
-        } else if (!(c & 0x20)) {
-            numberOfOctets = 2;
-        } else if (!(c & 0x10)) {
-            numberOfOctets = 3;
-        } else {
-            numberOfOctets = 4;
-        }
-        for (iuint32 i = 0; i < numberOfOctets; ++i) {
-            res.c |= (m_str[mappedPos + i] & 0xff) << 8 * (numberOfOctets - i - 1);
-        }
-        return res;
-    }
-
-    void iint64toa(iint64 number, iuint32 base)
-    {
-        iuint64toa(number < 0 ? -number : number, base, number < 0);
-    }
-
-    void iuint64toa(iuint64 number, iuint32 base, bool negative = false)
-    {
-        ichar *const str = (ichar*) calloc(67, sizeof(ichar));
-        ichar *p = str + 65;
-        while (number) {
-            const iint32 n = number % base;
-            if (n < 10) {
-                *p = '0' + n;
-            } else {
-                *p = 'a' + (n - 10);
-            }
-            --p;
-            number /= base;
-        }
-        if (negative) {
-            *p = '-';
-        } else {
-            ++p;
-        }
-        init(p);
-        free(str);
-    }
-
-    void dtoa(double number, iuint8 format, iuint32 precision)
-    {
-        ichar *const str = (ichar*) calloc(10, sizeof(ichar));
-        sprintf(str, "%%.%dl%c", precision, format);
-        ichar *const res = (ichar*) calloc(65, sizeof(ichar));
-        sprintf(res, str, number);
-        init(res);
-        free(str);
-        free(res);
-    }
+    size_t calculateSize();
+    size_t calculateRawLen();
+    Char getCharAt(size_t pos) const;
+    void iint64toa(iint64 number, iuint32 base);
+    void iuint64toa(iuint64 number, iuint32 base, bool negative = false);
+    void dtoa(double number, iuint8 format, iuint32 precision);
 
     static Private *empty();
 
@@ -247,6 +60,214 @@ public:
     class PrivateEmpty;
     static Private *m_privateEmpty;
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+String::Private::Private()
+    : m_str(0)
+    , m_charMap(0)
+    , m_size(0)
+    , m_sizeCalculated(false)
+    , m_rawLen(0)
+    , m_rawLenCalculated(false)
+    , m_refs(1)
+{
+}
+
+String::Private::~Private()
+{
+    free(m_str);
+    free(m_charMap);
+}
+
+void String::Private::init(const ichar *str)
+{
+    m_rawLen = strlen(str);
+    m_rawLenCalculated = true;
+    m_str = (ichar*) calloc(m_rawLen + 1, sizeof(ichar));
+    memcpy(m_str, str, m_rawLen);
+    m_sizeCalculated = false;
+}
+
+String::Private *String::Private::copy()
+{
+    Private *privateCopy = new Private;
+    privateCopy->m_str = (ichar*) calloc(calculateRawLen() + 1, sizeof(ichar));
+    memcpy(privateCopy->m_str, m_str, m_rawLen);
+    privateCopy->m_charMap = (size_t*) malloc(calculateSize() * sizeof(size_t));
+    memcpy(privateCopy->m_charMap, m_charMap, m_size * sizeof(size_t));
+    privateCopy->m_size = m_size;
+    privateCopy->m_sizeCalculated = m_sizeCalculated;
+    privateCopy->m_rawLen = m_rawLen;
+    privateCopy->m_rawLenCalculated = m_rawLenCalculated;
+    return privateCopy;
+}
+
+void String::Private::copyAndDetach(String *str)
+{
+    if (m_refs > 1) {
+        str->d = copy();
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    }
+}
+
+void String::Private::newAndDetach(String *str)
+{
+    if (m_refs > 1) {
+        str->d = new Private;
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    } else {
+        clearContents();
+    }
+}
+
+void String::Private::clearContents()
+{
+    free(m_str);
+    m_str = 0;
+    free(m_charMap);
+    m_charMap = 0;
+    m_size = 0;
+    m_sizeCalculated = false;
+    m_rawLen = 0;
+    m_rawLenCalculated = false;
+}
+
+void String::Private::ref()
+{
+    ++m_refs;
+}
+
+void String::Private::deref()
+{
+    --m_refs;
+    if (!m_refs) {
+        if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        }
+        delete this;
+    }
+}
+
+size_t String::Private::calculateSize()
+{
+    if (m_sizeCalculated) {
+        return m_size;
+    }
+    m_sizeCalculated = true;
+    if (!m_str) {
+        m_size = 0;
+    }
+    free(m_charMap);
+    m_charMap = (size_t*) calloc(calculateRawLen(), sizeof(size_t));
+    size_t i = 0;
+    m_size = 0;
+    while (true) {
+        const ichar c = m_str[i];
+        if (c == '\0') {
+            break;
+        }
+        if (!(c & 0x80)) {
+            m_charMap[m_size] = i;
+            ++m_size;
+        } else if (!(c & 0x20)) {
+            m_charMap[m_size] = i;
+            ++i;
+            ++m_size;
+        } else if (!(c & 0x10)) {
+            m_charMap[m_size] = i;
+            i += 2;
+            ++m_size;
+        } else if (!(c & 0x8)) {
+            m_charMap[m_size] = i;
+            i += 3;
+            ++m_size;
+        }
+        ++i;
+    }
+    if (m_size < m_rawLen) {
+        m_charMap = (size_t*) realloc(m_charMap, m_size * sizeof(size_t));
+    }
+    return m_size;
+}
+
+size_t String::Private::calculateRawLen()
+{
+    if (m_rawLenCalculated) {
+        return m_rawLen;
+    }
+    m_rawLenCalculated = true;
+    if (m_str) {
+        m_rawLen = strlen(m_str);
+    } else {
+        m_rawLen = 0;
+    }
+    return m_rawLen;
+}
+
+Char String::Private::getCharAt(size_t pos) const
+{
+    Char res;
+    const size_t mappedPos = m_charMap[pos];
+    const ichar c = m_str[mappedPos];
+    iuint32 numberOfOctets;
+    if (!(c & 0x80)) {
+        numberOfOctets = 1;
+    } else if (!(c & 0x20)) {
+        numberOfOctets = 2;
+    } else if (!(c & 0x10)) {
+        numberOfOctets = 3;
+    } else {
+        numberOfOctets = 4;
+    }
+    for (iuint32 i = 0; i < numberOfOctets; ++i) {
+        res.c |= (m_str[mappedPos + i] & 0xff) << 8 * (numberOfOctets - i - 1);
+    }
+    return res;
+}
+
+void String::Private::iint64toa(iint64 number, iuint32 base)
+{
+    iuint64toa(number < 0 ? -number : number, base, number < 0);
+}
+
+void String::Private::iuint64toa(iuint64 number, iuint32 base, bool negative)
+{
+    ichar *const str = (ichar*) calloc(67, sizeof(ichar));
+    ichar *p = str + 65;
+    while (number) {
+        const iint32 n = number % base;
+        if (n < 10) {
+            *p = '0' + n;
+        } else {
+            *p = 'a' + (n - 10);
+        }
+        --p;
+        number /= base;
+    }
+    if (negative) {
+        *p = '-';
+    } else {
+        ++p;
+    }
+    init(p);
+    free(str);
+}
+
+void String::Private::dtoa(double number, iuint8 format, iuint32 precision)
+{
+    ichar *const str = (ichar*) calloc(10, sizeof(ichar));
+    sprintf(str, "%%.%dl%c", precision, format);
+    ichar *const res = (ichar*) calloc(65, sizeof(ichar));
+    sprintf(res, str, number);
+    init(res);
+    free(str);
+    free(res);
+}
 
 String::Private *String::Private::m_privateEmpty = 0;
 
@@ -277,6 +298,8 @@ String::Private *String::Private::empty()
     }
     return m_privateEmpty;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 String::String()
     : d(Private::empty())
@@ -1048,6 +1071,8 @@ bool String::operator>=(const String &str) const
 }
 
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::ostream &operator<<(std::ostream &stream, const IdealCore::String &str)
 {

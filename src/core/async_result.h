@@ -100,6 +100,8 @@ private:
     bool   m_resultReceived;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template <typename... Values>
 void AsyncResult::set(const Values&... values)
 {

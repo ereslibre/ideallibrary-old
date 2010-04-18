@@ -37,8 +37,9 @@ public:
     virtual ~Stack();
 
     void push(const T &t);
-    T pop();
-    T peek() const;
+    const T &pop();
+    T &peek();
+    const T &peek() const;
 
     size_t size() const;
     bool empty() const;
@@ -52,6 +53,8 @@ private:
     Private *d;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template <typename T>
 class Stack<T>::Private
 {
@@ -59,23 +62,13 @@ public:
     Private();
     virtual ~Private();
 
-    Private *copy() const
-    {
-        Private *privateCopy = new Private;
-        privateCopy->m_stack = new T[m_capacity];
-        for (size_t i = 0; i < m_capacity; ++i) {
-            privateCopy->m_stack[i] = m_stack[i];
-        }
-        privateCopy->m_top = m_top;
-        privateCopy->m_capacity = m_capacity;
-        return privateCopy;
-    }
-
+    Private *copy() const;
     void copyAndDetach(Stack<T> *stack);
     void newAndDetach(Stack<T> *stack);
+    void clearContents();
+
     void ref();
     void deref();
-    void clearContents();
 
     static Private *empty();
 
@@ -85,10 +78,16 @@ public:
     size_t m_refs;
 
     static Private *m_privateEmpty;
+    static T        m_emptyRes;
 };
 
 template <typename T>
 typename Stack<T>::Private *Stack<T>::Private::m_privateEmpty = 0;
+
+template <typename T>
+T Stack<T>::Private::m_emptyRes = T();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 Stack<T>::Private::Private()
@@ -103,6 +102,19 @@ template <typename T>
 Stack<T>::Private::~Private()
 {
     delete[] m_stack;
+}
+
+template <typename T>
+typename Stack<T>::Private *Stack<T>::Private::copy() const
+{
+    Private *privateCopy = new Private;
+    privateCopy->m_stack = new T[m_capacity];
+    for (size_t i = 0; i < m_capacity; ++i) {
+        privateCopy->m_stack[i] = m_stack[i];
+    }
+    privateCopy->m_top = m_top;
+    privateCopy->m_capacity = m_capacity;
+    return privateCopy;
 }
 
 template <typename T>
@@ -130,6 +142,15 @@ void Stack<T>::Private::newAndDetach(Stack<T> *stack)
 }
 
 template <typename T>
+void Stack<T>::Private::clearContents()
+{
+    delete[] m_stack;
+    m_stack = 0;
+    m_top = 0;
+    m_capacity = 0;
+}
+
+template <typename T>
 void Stack<T>::Private::ref()
 {
     ++m_refs;
@@ -148,15 +169,6 @@ void Stack<T>::Private::deref()
 }
 
 template <typename T>
-void Stack<T>::Private::clearContents()
-{
-    delete[] m_stack;
-    m_stack = 0;
-    m_top = 0;
-    m_capacity = 0;
-}
-
-template <typename T>
 typename Stack<T>::Private *Stack<T>::Private::empty()
 {
     if (!m_privateEmpty) {
@@ -166,6 +178,8 @@ typename Stack<T>::Private *Stack<T>::Private::empty()
     }
     return m_privateEmpty;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 Stack<T>::Stack()
@@ -210,22 +224,35 @@ void Stack<T>::push(const T &t)
 }
 
 template <typename T>
-T Stack<T>::pop()
+const T &Stack<T>::pop()
 {
-    d->copyAndDetach(this);
     if (d->m_top) {
+        d->copyAndDetach(this);
         return d->m_stack[--d->m_top];
     }
-    return T();
+    d->m_emptyRes = T();
+    return d->m_emptyRes;
 }
 
 template <typename T>
-T Stack<T>::peek() const
+T &Stack<T>::peek()
+{
+    if (d->m_top) {
+        d->copyAndDetach(this);
+        return d->m_stack[d->m_top - 1];
+    }
+    d->m_emptyRes = T();
+    return d->m_emptyRes;
+}
+
+template <typename T>
+const T &Stack<T>::peek() const
 {
     if (d->m_top) {
         return d->m_stack[d->m_top - 1];
     }
-    return T();
+    d->m_emptyRes = T();
+    return d->m_emptyRes;
 }
 
 template <typename T>

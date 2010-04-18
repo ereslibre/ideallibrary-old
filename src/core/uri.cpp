@@ -26,106 +26,25 @@ namespace IdealCore {
 class Uri::Private
 {
 public:
-    Private()
-        : m_parserTrick(false)
-        , m_parserPos(0)
-        , m_parserLevelUp(0)
-        , m_port(-1)
-        , m_isValid(false)
-        , m_refs(1)
-        , m_initialized(false)
-    {
-    }
+    Private();
+    virtual ~Private();
 
-    virtual ~Private()
-    {
-    }
+    Private *copy() const;
+    void copyAndDetach(Uri *uri);
+    void newAndDetach(Uri *uri);
+    void clearContentsKeepUri();
+    void clearContents();
 
-    Private *copy() const
-    {
-        Private *privateCopy = new Private;
-        privateCopy->m_uri = m_uri;
-        privateCopy->m_scheme = m_scheme;
-        privateCopy->m_userInfo = m_userInfo;
-        privateCopy->m_host = m_host;
-        privateCopy->m_port = m_port;
-        privateCopy->m_path = m_path;
-        privateCopy->m_query = m_query;
-        privateCopy->m_fragment = m_fragment;
-        privateCopy->m_isValid = m_isValid;
-        privateCopy->m_initialized = m_initialized;
-        return privateCopy;
-    }
+    void ref();
+    void deref();
 
-    void copyAndDetach(Uri *uri)
-    {
-        if (m_refs > 1) {
-            uri->d = copy();
-            deref();
-        } else if (this == m_privateEmpty) {
-            m_privateEmpty = 0;
-        }
-    }
-
-    void newAndDetach(Uri *uri)
-    {
-        if (m_refs > 1) {
-            uri->d = new Private;
-            deref();
-        } else if (this == m_privateEmpty) {
-            m_privateEmpty = 0;
-        } else {
-            clearContents();
-        }
-    }
-
-    void ref()
-    {
-        ++m_refs;
-    }
-
-    void deref()
-    {
-        --m_refs;
-        if (!m_refs) {
-            if (this == m_privateEmpty) {
-                m_privateEmpty = 0;
-            }
-            delete this;
-        }
-    }
-
-    void clearContentsKeepUri()
-    {
-        m_parserTrick = false;
-        m_parserAux.clear();
-        m_parserPos = 0;
-        m_parserLevelUp = 0;
-        m_pathStack.clear();
-        m_scheme.clear();
-        m_userInfo.clear();
-        m_host.clear();
-        m_port = -1;
-        m_path.clear();
-        m_query.clear();
-        m_fragment.clear();
-        m_isValid = false;
-        m_initialized = false;
-    }
-
-    void clearContents()
-    {
-        clearContentsKeepUri();
-        m_uri.clear();
-    }
+    static Private *empty();
 
     String getHex(Char ch) const;
     String undoHex(const String &uri) const;
 
     void initializeContents();
     void reconstructUri();
-
-    static Private *empty();
 
     void constructPath();
     bool expectChar(Char c);
@@ -182,17 +101,10 @@ public:
     static Private *m_privateEmpty;
 };
 
-Uri::Private *Uri::Private::m_privateEmpty = 0;
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Uri::Private *Uri::Private::empty()
-{
-    if (!m_privateEmpty) {
-        m_privateEmpty = new Private;
-    } else {
-        m_privateEmpty->ref();
-    }
-    return m_privateEmpty;
-}
+static const ichar uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                                 'A', 'B', 'C', 'D', 'E', 'F' };
 
 static const bool isAlpha[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
@@ -250,6 +162,225 @@ static const bool isUnreserved[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 static const String currLevel('.');
 static const String parentLevel("..");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Uri::Private::Private()
+    : m_parserTrick(false)
+    , m_parserPos(0)
+    , m_parserLevelUp(0)
+    , m_port(-1)
+    , m_isValid(false)
+    , m_refs(1)
+    , m_initialized(false)
+{
+}
+
+Uri::Private::~Private()
+{
+}
+
+Uri::Private *Uri::Private::copy() const
+{
+    Private *privateCopy = new Private;
+    privateCopy->m_uri = m_uri;
+    privateCopy->m_scheme = m_scheme;
+    privateCopy->m_userInfo = m_userInfo;
+    privateCopy->m_host = m_host;
+    privateCopy->m_port = m_port;
+    privateCopy->m_path = m_path;
+    privateCopy->m_query = m_query;
+    privateCopy->m_fragment = m_fragment;
+    privateCopy->m_isValid = m_isValid;
+    privateCopy->m_initialized = m_initialized;
+    return privateCopy;
+}
+
+void Uri::Private::copyAndDetach(Uri *uri)
+{
+    if (m_refs > 1) {
+        uri->d = copy();
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    }
+}
+
+void Uri::Private::newAndDetach(Uri *uri)
+{
+    if (m_refs > 1) {
+        uri->d = new Private;
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    } else {
+        clearContents();
+    }
+}
+
+void Uri::Private::clearContentsKeepUri()
+{
+    m_parserTrick = false;
+    m_parserAux.clear();
+    m_parserPos = 0;
+    m_parserLevelUp = 0;
+    m_pathStack.clear();
+    m_scheme.clear();
+    m_userInfo.clear();
+    m_host.clear();
+    m_port = -1;
+    m_path.clear();
+    m_query.clear();
+    m_fragment.clear();
+    m_isValid = false;
+    m_initialized = false;
+}
+
+void Uri::Private::clearContents()
+{
+    clearContentsKeepUri();
+    m_uri.clear();
+}
+
+void Uri::Private::ref()
+{
+    ++m_refs;
+}
+
+void Uri::Private::deref()
+{
+    --m_refs;
+    if (!m_refs) {
+        if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        }
+        delete this;
+    }
+}
+
+Uri::Private *Uri::Private::empty()
+{
+    if (!m_privateEmpty) {
+        m_privateEmpty = new Private;
+    } else {
+        m_privateEmpty->ref();
+    }
+    return m_privateEmpty;
+}
+
+String Uri::Private::getHex(Char ch) const
+{
+    String res;
+    union {
+        iuint32 value;
+        ichar v[4];
+    } fragmentedValue;
+    fragmentedValue.value = ch.value();
+    const iint32 octetsRequired = ch.octetsRequired();
+    for (iint32 i = 0; i < octetsRequired; ++i) {
+        res += '%';
+        res += uri_hex[(fragmentedValue.v[octetsRequired - i - 1] >> 4) & 0xf];
+        res += uri_hex[fragmentedValue.v[octetsRequired - i - 1] & 0xf];
+    }
+    return res;
+}
+
+String Uri::Private::undoHex(const String &uri) const
+{
+    String res;
+    size_t i = 0;
+    while (i < uri.size()) {
+        const Char currChar = uri[i];
+        if (currChar == '%') {
+            Char newChar;
+            String byte1(uri[i + 1]);
+            byte1 += uri[i + 2];
+            const iuint32 byte1Val = strtoul(byte1.data(), 0, 16);
+            if (!(byte1Val & 0x80)) {
+                newChar.c = byte1Val;
+                i += 3;
+            } else if (!(byte1Val & 0x20)) {
+                String byte2(uri[i + 4]);
+                byte2 += uri[i + 5];
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                newChar.c |= (byte1Val << 8);
+                newChar.c |= byte2Val;
+                i += 6;
+            } else if (!(byte1Val & 0x10)) {
+                String byte2(uri[i + 4]);
+                byte2 += uri[i + 5];
+                String byte3(uri[i + 7]);
+                byte3 += uri[i + 8];
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
+                newChar.c |= (byte1Val << 16);
+                newChar.c |= (byte2Val << 8);
+                newChar.c |= byte3Val;
+                i += 9;
+            } else if (!(byte1Val & 0x8)) {
+                String byte2(uri[i + 4]);
+                byte2 += uri[i + 5];
+                String byte3(uri[i + 7]);
+                byte3 += uri[i + 8];
+                String byte4(uri[i + 10]);
+                byte4 += uri[i + 11];
+                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
+                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
+                const iuint32 byte4Val = strtoul(byte4.data(), 0, 16);
+                newChar.c |= (byte1Val << 24);
+                newChar.c |= (byte2Val << 16);
+                newChar.c |= (byte3Val << 8);
+                newChar.c |= byte4Val;
+                i += 12;
+            }
+            res += newChar;
+        } else {
+            res += currChar;
+            ++i;
+        }
+    }
+    return res;
+}
+
+void Uri::Private::initializeContents()
+{
+    m_initialized = true;
+    m_isValid = parseURIReference() && m_parserPos == m_uri.size();
+    if (!m_isValid) {
+        clearContentsKeepUri();
+    } else {
+        if (m_parserTrick) {
+            m_parserTrick = false;
+            m_path = undoHex(m_path);
+        }
+        reconstructUri();
+    }
+}
+
+void Uri::Private::reconstructUri()
+{
+    m_uri.clear();
+    if (!m_scheme.empty()) {
+        m_uri += m_scheme;
+        m_uri += "://";
+    }
+    if (!m_userInfo.empty()) {
+        m_uri += m_userInfo;
+        m_uri += '@';
+    }
+    if (!m_host.empty()) {
+        m_uri += m_host;
+    }
+    if (!m_path.empty()) {
+        m_uri += m_path;
+    }
+    if (!m_query.empty()) {
+        m_uri += m_query;
+    }
+    if (!m_fragment.empty()) {
+        m_uri += m_fragment;
+    }
+}
 
 void Uri::Private::constructPath()
 {
@@ -1199,122 +1330,9 @@ bool Uri::Private::parseReserved()
     return false;
 }
 
-static const ichar uri_hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                                 'A', 'B', 'C', 'D', 'E', 'F' };
+Uri::Private *Uri::Private::m_privateEmpty = 0;
 
-String Uri::Private::getHex(Char ch) const
-{
-    String res;
-    union {
-        iuint32 value;
-        ichar v[4];
-    } fragmentedValue;
-    fragmentedValue.value = ch.value();
-    const iint32 octetsRequired = ch.octetsRequired();
-    for (iint32 i = 0; i < octetsRequired; ++i) {
-        res += '%';
-        res += uri_hex[(fragmentedValue.v[octetsRequired - i - 1] >> 4) & 0xf];
-        res += uri_hex[fragmentedValue.v[octetsRequired - i - 1] & 0xf];
-    }
-    return res;
-}
-
-String Uri::Private::undoHex(const String &uri) const
-{
-    String res;
-    size_t i = 0;
-    while (i < uri.size()) {
-        const Char currChar = uri[i];
-        if (currChar == '%') {
-            Char newChar;
-            String byte1(uri[i + 1]);
-            byte1 += uri[i + 2];
-            const iuint32 byte1Val = strtoul(byte1.data(), 0, 16);
-            if (!(byte1Val & 0x80)) {
-                newChar.c = byte1Val;
-                i += 3;
-            } else if (!(byte1Val & 0x20)) {
-                String byte2(uri[i + 4]);
-                byte2 += uri[i + 5];
-                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
-                newChar.c |= (byte1Val << 8);
-                newChar.c |= byte2Val;
-                i += 6;
-            } else if (!(byte1Val & 0x10)) {
-                String byte2(uri[i + 4]);
-                byte2 += uri[i + 5];
-                String byte3(uri[i + 7]);
-                byte3 += uri[i + 8];
-                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
-                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
-                newChar.c |= (byte1Val << 16);
-                newChar.c |= (byte2Val << 8);
-                newChar.c |= byte3Val;
-                i += 9;
-            } else if (!(byte1Val & 0x8)) {
-                String byte2(uri[i + 4]);
-                byte2 += uri[i + 5];
-                String byte3(uri[i + 7]);
-                byte3 += uri[i + 8];
-                String byte4(uri[i + 10]);
-                byte4 += uri[i + 11];
-                const iuint32 byte2Val = strtoul(byte2.data(), 0, 16);
-                const iuint32 byte3Val = strtoul(byte3.data(), 0, 16);
-                const iuint32 byte4Val = strtoul(byte4.data(), 0, 16);
-                newChar.c |= (byte1Val << 24);
-                newChar.c |= (byte2Val << 16);
-                newChar.c |= (byte3Val << 8);
-                newChar.c |= byte4Val;
-                i += 12;
-            }
-            res += newChar;
-        } else {
-            res += currChar;
-            ++i;
-        }
-    }
-    return res;
-}
-
-void Uri::Private::initializeContents()
-{
-    m_initialized = true;
-    m_isValid = parseURIReference() && m_parserPos == m_uri.size();
-    if (!m_isValid) {
-        clearContentsKeepUri();
-    } else {
-        if (m_parserTrick) {
-            m_parserTrick = false;
-            m_path = undoHex(m_path);
-        }
-        reconstructUri();
-    }
-}
-
-void Uri::Private::reconstructUri()
-{
-    m_uri.clear();
-    if (!m_scheme.empty()) {
-        m_uri += m_scheme;
-        m_uri += "://";
-    }
-    if (!m_userInfo.empty()) {
-        m_uri += m_userInfo;
-        m_uri += '@';
-    }
-    if (!m_host.empty()) {
-        m_uri += m_host;
-    }
-    if (!m_path.empty()) {
-        m_uri += m_path;
-    }
-    if (!m_query.empty()) {
-        m_uri += m_query;
-    }
-    if (!m_fragment.empty()) {
-        m_uri += m_fragment;
-    }
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Uri::Uri()
     : d(Private::empty())
@@ -1519,6 +1537,8 @@ bool Uri::operator!=(const Uri &uri) const
 }
 
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::ostream &operator<<(std::ostream &stream, const IdealCore::Uri &uri)
 {

@@ -29,52 +29,14 @@ namespace IdealCore {
 class RegExp::Private
 {
 public:
-    Private()
-        : m_pcre(0)
-        , m_refs(1)
-    {
-    }
+    Private();
+    virtual ~Private();
 
-    ~Private()
-    {
-        pcre_free(m_pcre);
-    }
+    void newAndDetach(RegExp *regExp);
+    void clearContents();
 
-    void ref()
-    {
-        ++m_refs;
-    }
-
-    void deref()
-    {
-        --m_refs;
-        if (!m_refs) {
-            if (this == m_privateEmpty) {
-                m_privateEmpty = 0;
-            }
-            delete this;
-        }
-    }
-
-    void clearContents()
-    {
-        m_regExp = String();
-        pcre_free(m_pcre);
-        m_pcre = 0;
-        m_captures = std::vector<String>();
-    }
-
-    void newAndDetach(RegExp *regExp)
-    {
-        if (m_refs > 1) {
-            regExp->d = new Private;
-            deref();
-        } else if (this == m_privateEmpty) {
-            m_privateEmpty = 0;
-        } else {
-            clearContents();
-        }
-    }
+    void ref();
+    void deref();
 
     static Private *empty();
 
@@ -86,7 +48,54 @@ public:
     static Private *m_privateEmpty;
 };
 
-RegExp::Private *RegExp::Private::m_privateEmpty = 0;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+RegExp::Private::Private()
+    : m_pcre(0)
+    , m_refs(1)
+{
+}
+
+RegExp::Private::~Private()
+{
+    pcre_free(m_pcre);
+}
+
+void RegExp::Private::newAndDetach(RegExp *regExp)
+{
+    if (m_refs > 1) {
+        regExp->d = new Private;
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    } else {
+        clearContents();
+    }
+}
+
+void RegExp::Private::clearContents()
+{
+    m_regExp = String();
+    pcre_free(m_pcre);
+    m_pcre = 0;
+    m_captures = std::vector<String>();
+}
+
+void RegExp::Private::ref()
+{
+    ++m_refs;
+}
+
+void RegExp::Private::deref()
+{
+    --m_refs;
+    if (!m_refs) {
+        if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        }
+        delete this;
+    }
+}
 
 RegExp::Private *RegExp::Private::empty()
 {
@@ -97,6 +106,10 @@ RegExp::Private *RegExp::Private::empty()
     }
     return m_privateEmpty;
 }
+
+RegExp::Private *RegExp::Private::m_privateEmpty = 0;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RegExp::RegExp()
     : d(Private::empty())
@@ -213,6 +226,8 @@ bool RegExp::operator!=(const RegExp &regExp) const
 }
 
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::ostream &operator<<(std::ostream &stream, const IdealCore::RegExp &regExp)
 {

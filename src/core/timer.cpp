@@ -58,6 +58,8 @@ bool Timer::Private::listContains() const
     return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Timer::Timer(Object *parent)
     : Object(parent)
     , IDEAL_SIGNAL_INIT(timeout)

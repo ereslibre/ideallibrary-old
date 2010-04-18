@@ -45,6 +45,8 @@ void Mutex::Private::deref()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Mutex::Mutex(RecursionType recursionType)
     : d(new PrivateImpl(recursionType))
 {

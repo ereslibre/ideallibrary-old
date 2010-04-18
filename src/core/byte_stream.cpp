@@ -27,67 +27,18 @@ namespace IdealCore {
 class ByteStream::Private
 {
 public:
-    Private()
-        : m_data(0)
-        , m_size(0)
-        , m_refs(1)
-    {
-    }
+    Private();
+    virtual ~Private();
 
-    virtual ~Private()
-    {
-        free(m_data);
-    }
+    void newAndDetach(ByteStream *byteStream);
+    void clearContents();
 
-    void init(const ichar *data, size_t nbytes = 0)
-    {
-        if (data) {
-            if (nbytes) {
-                m_size = nbytes;
-            } else {
-                m_size = strlen(data);
-            }
-            m_data = (ichar*) calloc(m_size + 1, sizeof(ichar));
-            memcpy(m_data, data, m_size);
-        }
-    }
-
-    void clearContents()
-    {
-        free(m_data);
-        m_data = 0;
-        m_size = 0;
-    }
-
-    void newAndDetach(ByteStream *byteStream)
-    {
-        if (m_refs > 1) {
-            byteStream->d = new Private;
-            deref();
-        } else if (this == m_privateEmpty) {
-            m_privateEmpty = 0;
-        } else {
-            clearContents();
-        }
-    }
-
-    void ref()
-    {
-        ++m_refs;
-    }
-
-    void deref()
-    {
-        --m_refs;
-        if (!m_refs) {
-            if (this == m_privateEmpty) {
-                m_privateEmpty = 0;
-            }
-            delete this;
-        }
-    }
+    void ref();
+    void deref();
 
     static Private *empty();
+
+    void init(const ichar *data, size_t nbytes = 0);
 
     ichar  *m_data;
     size_t  m_size;
@@ -96,7 +47,54 @@ public:
     static Private *m_privateEmpty;
 };
 
-ByteStream::Private *ByteStream::Private::m_privateEmpty = 0;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ByteStream::Private::Private()
+    : m_data(0)
+    , m_size(0)
+    , m_refs(1)
+{
+}
+
+ByteStream::Private::~Private()
+{
+    free(m_data);
+}
+
+void ByteStream::Private::newAndDetach(ByteStream *byteStream)
+{
+    if (m_refs > 1) {
+        byteStream->d = new Private;
+        deref();
+    } else if (this == m_privateEmpty) {
+        m_privateEmpty = 0;
+    } else {
+        clearContents();
+    }
+}
+
+void ByteStream::Private::clearContents()
+{
+    free(m_data);
+    m_data = 0;
+    m_size = 0;
+}
+
+void ByteStream::Private::ref()
+{
+    ++m_refs;
+}
+
+void ByteStream::Private::deref()
+{
+    --m_refs;
+    if (!m_refs) {
+        if (this == m_privateEmpty) {
+            m_privateEmpty = 0;
+        }
+        delete this;
+    }
+}
 
 ByteStream::Private *ByteStream::Private::empty()
 {
@@ -107,6 +105,23 @@ ByteStream::Private *ByteStream::Private::empty()
     }
     return m_privateEmpty;
 }
+
+void ByteStream::Private::init(const ichar *data, size_t nbytes)
+{
+    if (data) {
+        if (nbytes) {
+            m_size = nbytes;
+        } else {
+            m_size = strlen(data);
+        }
+        m_data = (ichar*) calloc(m_size + 1, sizeof(ichar));
+        memcpy(m_data, data, m_size);
+    }
+}
+
+ByteStream::Private *ByteStream::Private::m_privateEmpty = 0;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ByteStream::ByteStream()
     : d(Private::empty())
@@ -173,6 +188,8 @@ ByteStream &ByteStream::operator=(const ByteStream &byteStream)
 }
 
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::ostream &operator<<(std::ostream &stream, const IdealCore::ByteStream &byteStream)
 {

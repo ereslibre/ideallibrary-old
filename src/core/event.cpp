@@ -37,6 +37,8 @@ public:
     Event::Type            m_type;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Event::Event(Object *object, Type type)
     : d(new Private(object, type))
 {

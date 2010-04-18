@@ -120,6 +120,8 @@ private:
     };
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template <typename T>
 List<T*> ExtensionLoader::findExtensions(ExtensionLoadDecider *extensionLoadDecider, Object *parent)
 {

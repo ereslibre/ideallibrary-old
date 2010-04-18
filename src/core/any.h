@@ -191,8 +191,12 @@ private:
     GenericStorage *m_s;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
   * @internal
+  *
+  * DO NOT SPLIT DECLARATION/DEFINITION
   */
 class Any::GenericStorage
 {
@@ -226,6 +230,8 @@ private:
     size_t m_refs;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
   * @internal
   */
@@ -234,27 +240,40 @@ class Any::Storage
     : public GenericStorage
 {
 public:
-    Storage(const T &t)
-        : m_t(t)
-    {
-    }
+    Storage(const T &t);
 
-    const std::type_info &type() const
-    {
-        return typeid(T);
-    }
+    const std::type_info &type() const;
 
-    bool equals(const Any &any) const
-    {
-        if (typeid(T) != any.m_s->type()) {
-            return false;
-        }
-        return m_t == static_cast<Storage<T>*>(any.m_s)->m_t;
-    }
+    bool equals(const Any &any) const;
 
 public:
     T m_t;
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+Any::Storage<T>::Storage(const T &t)
+    : m_t(t)
+{
+}
+
+template <typename T>
+const std::type_info &Any::Storage<T>::type() const
+{
+    return typeid(T);
+}
+
+template <typename T>
+bool Any::Storage<T>::equals(const Any &any) const
+{
+    if (typeid(T) != any.m_s->type()) {
+        return false;
+    }
+    return m_t == static_cast<Storage<T>*>(any.m_s)->m_t;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 Any::Any(const T &t)

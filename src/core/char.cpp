@@ -319,6 +319,8 @@ bool Char::operator!=(iuint32 c) const
 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 std::ostream &operator<<(std::ostream &stream, IdealCore::Char c)
 {
     stream << '\'';

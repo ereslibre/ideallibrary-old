@@ -91,6 +91,8 @@ void Object::Private::cleanConnections()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Object::Object(Object *parent)
     : d(new Private(this))
     , destroyed(Signal<>(this))

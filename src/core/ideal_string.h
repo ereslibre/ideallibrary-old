@@ -195,6 +195,8 @@ private:
 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 IDEAL_EXPORT std::ostream &operator<<(std::ostream &stream, const IdealCore::String &str);
 
 #endif //IDEAL_STRING_H

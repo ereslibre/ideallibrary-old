@@ -28,6 +28,8 @@ List<Module::ExtensionInfo> Module::Private::FakeModule::extensionInfoList()
     return List<ExtensionInfo>();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Module::Private::Private(Module *q)
     : m_unused(true)
     , m_refs(0)
@@ -58,6 +60,8 @@ void Module::Private::deref()
         m_application->d->m_markedForUnload.push_back(q);
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Module::Module()
     : d(new Private(this))

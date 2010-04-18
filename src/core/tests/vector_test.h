@@ -1,6 +1,6 @@
 /*
  * This file is part of the Ideal Library
- * Copyright (C) 2009 Rafael Fernández López <ereslibre@ereslibre.es>
+ * Copyright (C) 2010 Rafael Fernández López <ereslibre@ereslibre.es>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,39 +18,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "process.h"
-#include "private/process_p.h"
+#ifndef VECTOR_TEST_H
+#define VECTOR_TEST_H
 
-namespace IdealCore {
+#include <cppunit/extensions/HelperMacros.h>
 
-ProcessCommand::ProcessCommand(const String &command)
-    : Process()
-    , command(command)
+class VectorTest
+    : public CppUnit::TestFixture
 {
-}
+    CPPUNIT_TEST_SUITE(VectorTest);
+    CPPUNIT_TEST(constructor);
+    CPPUNIT_TEST(append);
+    CPPUNIT_TEST(prepend);
+    CPPUNIT_TEST(insertAt);
+    CPPUNIT_TEST(removeAt);
+    CPPUNIT_TEST(clear);
+    CPPUNIT_TEST(size);
+    CPPUNIT_TEST(operatorAt);
+    CPPUNIT_TEST_SUITE_END();
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+public:
+    void setUp();
+    void tearDown();
 
-Process::Private::~Private()
-{
-}
+    void constructor();
+    void append();
+    void prepend();
+    void insertAt();
+    void removeAt();
+    void clear();
+    void size();
+    void operatorAt();
+};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Process::Process()
-    : d(new PrivateImpl)
-{
-}
-
-Process::~Process()
-{
-    delete d;
-}
-
-void Process::execCommand(const String &command)
-{
-    ProcessCommand proc(command);
-    proc.exec();
-}
-
-}
+#endif //VECTOR_TEST_H

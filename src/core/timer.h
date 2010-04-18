@@ -114,6 +114,8 @@ private:
     Private *const d;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template <typename Receiver, typename Member>
 void Timer::callAfter(iint32 ms, Receiver *receiver, Member member)
 {
