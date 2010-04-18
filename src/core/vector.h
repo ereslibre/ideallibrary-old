@@ -191,21 +191,21 @@ public:
         void insertAfter(const T &t);
 
         /**
-         * Removes the element at the current iterator position.
-         */
+          * Removes the element at the current iterator position.
+          */
         void remove();
 
         /**
-         * Rewinds the iterator position to the initial position.
-         */
+          * Rewinds the iterator position to the initial position.
+          */
         void rewind();
 
         /**
-         * Rewinds the iterator position to @p i position.
-         *
-         * @note This also sets the initial position to @p i, so calling to rewind() later will
-         *       rewind the iterator to position @p i.
-         */
+          * Rewinds the iterator position to @p i position.
+          *
+          * @note This also sets the initial position to @p i, so calling to rewind() later will
+          *       rewind the iterator to position @p i.
+          */
         void rewind(size_t i);
 
     private:
@@ -259,16 +259,16 @@ public:
         const T &next();
 
         /**
-         * Rewinds the iterator position to the initial position.
-         */
+          * Rewinds the iterator position to the initial position.
+          */
         void rewind();
 
         /**
-         * Rewinds the iterator position to @p i position.
-         *
-         * @note This also sets the initial position to @p i, so calling to rewind() later will
-         *       rewind the iterator to position @p i.
-         */
+          * Rewinds the iterator position to @p i position.
+          *
+          * @note This also sets the initial position to @p i, so calling to rewind() later will
+          *       rewind the iterator to position @p i.
+          */
         void rewind(size_t i);
 
     private:
