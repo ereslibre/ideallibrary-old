@@ -245,6 +245,138 @@ void VectorTest::operatorAt()
     }
 }
 
+void VectorTest::iterators()
+{
+    {
+        Vector<size_t> v;
+
+        for (size_t i = 0; i <= 100; ++i) {
+            v.insertAt(i, v.size());
+        }
+
+        Vector<size_t> v2(v);
+
+        {
+            size_t i = 0;
+            Vector<size_t>::Iterator it(v);
+            while (it.hasNext()) {
+                size_t &j = it.next();
+                CPPUNIT_ASSERT_EQUAL(i, j);
+                j = 100;
+                ++i;
+            }
+            CPPUNIT_ASSERT_EQUAL((size_t) 101, i);
+        }
+
+        {
+            size_t i = 0;
+            Vector<size_t>::Iterator it(v2);
+            while (it.hasNext()) {
+                CPPUNIT_ASSERT_EQUAL(i, it.next());
+                ++i;
+            }
+            CPPUNIT_ASSERT_EQUAL((size_t) 101, i);
+        }
+    }
+    {
+        Vector<size_t> v;
+
+        for (size_t i = 0; i < 100; ++i) {
+            v.insertAt(i, v.size());
+        }
+
+        Vector<size_t>::Iterator it(v);
+        while (it.hasNext()) {
+            size_t &i = it.next();
+            if (i >= 50 && i < 70) {
+                it.remove();
+            }
+        }
+
+        it.rewind();
+
+        size_t i = 0;
+        while (it.hasNext()) {
+            size_t &j = it.next();
+            if (i == 50) {
+                i = 70;
+            }
+            CPPUNIT_ASSERT_EQUAL(i, j);
+            ++i;
+        }
+
+        CPPUNIT_ASSERT_EQUAL((size_t) 80, v.size());
+    }
+
+    {
+        Vector<size_t> v;
+
+        for (size_t i = 0; i < 100; ++i) {
+            v.insertAt(i, v.size());
+        }
+
+        Vector<size_t>::Iterator it(v);
+        while (it.hasNext()) {
+            if (it.next() % 2) {
+                it.remove();
+            }
+        }
+
+        it.rewind();
+
+        size_t i = 0;
+        while (it.hasNext()) {
+            size_t &j = it.next();
+            CPPUNIT_ASSERT_EQUAL(i, j);
+            i += 2;
+        }
+
+        CPPUNIT_ASSERT_EQUAL((size_t) 50, v.size());
+    }
+    {
+        Vector<size_t> v;
+
+        // Fill with 0, 1, 3, 4
+        for (size_t i = 0; i < 5; ++i) {
+            if (i != 2) {
+                v.insertAt(i, v.size());
+            }
+        }
+
+        Vector<size_t>::Iterator it(v, 1);
+        it.next();
+        it.insertAfter(2);
+
+        Vector<size_t>::Iterator it2(v);
+        size_t i = 0;
+        while (it2.hasNext()) {
+            CPPUNIT_ASSERT_EQUAL(i, it2.next());
+            ++i;
+        }
+    }
+    {
+        Vector<size_t> v;
+
+        // Fill with 0, 1, 3, 4
+        for (size_t i = 0; i < 5; ++i) {
+            if (i != 2) {
+                v.insertAt(i, v.size());
+            }
+        }
+
+        Vector<size_t>::Iterator it(v, 2);
+        it.next();
+        it.insertBefore(2);
+
+        Vector<size_t>::Iterator it2(v);
+        size_t i = 0;
+        while (it2.hasNext()) {
+            CPPUNIT_ASSERT_EQUAL(i, it2.next());
+            ++i;
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();

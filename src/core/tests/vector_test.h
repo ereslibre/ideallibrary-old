@@ -35,6 +35,7 @@ class VectorTest
     CPPUNIT_TEST(clear);
     CPPUNIT_TEST(size);
     CPPUNIT_TEST(operatorAt);
+    CPPUNIT_TEST(iterators);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,6 +50,7 @@ public:
     void clear();
     void size();
     void operatorAt();
+    void iterators();
 };
 
 #endif //VECTOR_TEST_H
