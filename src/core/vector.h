@@ -25,8 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INITIAL_CONTAINER_SIZE 5
-
 namespace IdealCore {
 
 /**
@@ -306,8 +304,9 @@ public:
     size_t m_containerSize;
     size_t m_refs;
 
-    static Private *m_privateEmpty;
-    static T        m_emptyRes;
+    static Private     *m_privateEmpty;
+    static T            m_emptyRes;
+    static const size_t m_initialContainerSize;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -406,6 +405,9 @@ typename Vector<T>::Private *Vector<T>::Private::m_privateEmpty = 0;
 template <typename T>
 T Vector<T>::Private::m_emptyRes = T();
 
+template <typename T>
+const size_t Vector<T>::Private::m_initialContainerSize = 5;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
@@ -432,8 +434,8 @@ void Vector<T>::append(const T &t)
 {
     d->copyAndDetach(this);
     if (!d->m_size) {
-        d->m_vector = (T*) calloc(INITIAL_CONTAINER_SIZE, sizeof(T));
-        d->m_containerSize = INITIAL_CONTAINER_SIZE;
+        d->m_vector = (T*) calloc(Private::m_initialContainerSize, sizeof(T));
+        d->m_containerSize = Private::m_initialContainerSize;
     } else if (d->m_size > (0.7 * d->m_containerSize)) {
         d->m_containerSize *= 2;
         d->m_vector = (T*) realloc(d->m_vector, d->m_containerSize * sizeof(T));
@@ -448,8 +450,8 @@ void Vector<T>::prepend(const T &t)
 {
     d->copyAndDetach(this);
     if (!d->m_size) {
-        d->m_vector = (T*) calloc(INITIAL_CONTAINER_SIZE, sizeof(T));
-        d->m_containerSize = INITIAL_CONTAINER_SIZE;
+        d->m_vector = (T*) calloc(Private::m_initialContainerSize, sizeof(T));
+        d->m_containerSize = Private::m_initialContainerSize;
     } else if (d->m_size > (0.7 * d->m_containerSize)) {
         d->m_containerSize *= 2;
         d->m_vector = (T*) realloc(d->m_vector, d->m_containerSize * sizeof(T));
@@ -470,8 +472,8 @@ void Vector<T>::insertAt(const T &t, size_t i)
     }
     d->copyAndDetach(this);
     if (!d->m_size) {
-        d->m_vector = (T*) calloc(INITIAL_CONTAINER_SIZE, sizeof(T));
-        d->m_containerSize = INITIAL_CONTAINER_SIZE;
+        d->m_vector = (T*) calloc(Private::m_initialContainerSize, sizeof(T));
+        d->m_containerSize = Private::m_initialContainerSize;
     } else if (d->m_size > (0.7 * d->m_containerSize)) {
         d->m_containerSize *= 2;
         d->m_vector = (T*) realloc(d->m_vector, d->m_containerSize * sizeof(T));
