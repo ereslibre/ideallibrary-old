@@ -77,8 +77,23 @@ public:
 
     /**
       * @return The number of elements this vector is currently holding.
+      *
+      * @note If you have a vector of 10 elements, and suddenly add an element at position 4000, the
+      *       size of this vector will have grown to 4001.
+      *
+      * @see count()
       */
     size_t size() const;
+
+    /**
+      * @return The number of elements this vector is currently holding.
+      *
+      * @note If you have a vector of 10 elements, and suddenly add an element at position 4000, this
+      *       method will return 11.
+      *
+      * @see size()
+      */
+    size_t count() const;
 
     /**
       * @return Whether this vector is empty or not.
@@ -346,6 +361,7 @@ public:
     Element *m_vector;
     size_t   m_size;
     size_t   m_containerSize;
+    size_t   m_count;
     size_t   m_refs;
 
     static Private     *m_privateEmpty;
@@ -360,6 +376,7 @@ Vector<T>::Private::Private()
     : m_vector(0)
     , m_size(0)
     , m_containerSize(0)
+    , m_count(0)
     , m_refs(1)
 {
 }
@@ -378,6 +395,7 @@ typename Vector<T>::Private *Vector<T>::Private::copy() const
     memcpy(privateCopy->m_vector, m_vector, m_containerSize * sizeof(Element));
     privateCopy->m_size = m_size;
     privateCopy->m_containerSize = m_containerSize;
+    privateCopy->m_count = m_count;
     return privateCopy;
 }
 
@@ -412,6 +430,7 @@ void Vector<T>::Private::clearContents()
     m_vector = 0;
     m_size = 0;
     m_containerSize = 0;
+    m_count = 0;
 }
 
 template <typename T>
@@ -490,6 +509,7 @@ void Vector<T>::append(const T &t)
     e.m_validData = true;
     d->m_vector[d->m_size] = e;
     ++d->m_size;
+    ++d->m_count;
 }
 
 template <typename T>
@@ -512,6 +532,7 @@ void Vector<T>::prepend(const T &t)
     e.m_validData = true;
     d->m_vector[0] = e;
     ++d->m_size;
+    ++d->m_count;
 }
 
 template <typename T>
@@ -546,6 +567,7 @@ void Vector<T>::insertAt(const T &t, size_t i)
     e.m_validData = true;
     d->m_vector[i] = e;
     ++d->m_size;
+    ++d->m_count;
 }
 
 template <typename T>
@@ -579,6 +601,7 @@ void Vector<T>::removeAt(size_t i)
         memset(&d->m_vector[d->m_size - 1], '\0', sizeof(typename Private::Element));
     }
     --d->m_size;
+    --d->m_count;
 }
 
 template <typename T>
@@ -595,6 +618,12 @@ template <typename T>
 size_t Vector<T>::size() const
 {
     return d->m_size;
+}
+
+template <typename T>
+size_t Vector<T>::count() const
+{
+    return d->m_count;
 }
 
 template <typename T>
