@@ -587,18 +587,14 @@ void Vector<T>::removeAt(size_t i)
         if (i != d->m_size - 1) {
             memmove(&d->m_vector[i], &d->m_vector[i + 1], (d->m_size - i - 1) * sizeof(typename Private::Element*));
         } else {
-            typename Private::Element *e = new typename Private::Element;
-            e->m_element = 0;
-            d->m_vector[i] = e;
+            d->m_vector[i] = 0;
         }
         memset(&d->m_vector[d->m_size - 1], '\0', sizeof(typename Private::Element*));
     } else {
         if (i != d->m_size - 1) {
             memmove(&d->m_vector[i], &d->m_vector[i + 1], (d->m_size - i - 1) * sizeof(typename Private::Element*));
         } else {
-            typename Private::Element *e = new typename Private::Element;
-            e->m_element = 0;
-            d->m_vector[i] = e;
+            d->m_vector[i] = 0;
         }
         memset(&d->m_vector[d->m_size - 1], '\0', sizeof(typename Private::Element*));
     }
