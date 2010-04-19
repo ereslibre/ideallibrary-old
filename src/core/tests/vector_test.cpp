@@ -147,6 +147,32 @@ void VectorTest::removeAt()
             }
         }
     }
+    // Add an element very far (even further than the container size)
+    {
+        Vector<size_t> v;
+
+        for (size_t i = 0; i <= 100; ++i) {
+            v.insertAt(i, v.size());
+        }
+
+        v.insertAt(50, 20001);
+
+        for (size_t i = 0; i <= 100; ++i) {
+            CPPUNIT_ASSERT_EQUAL(i, v[i]);
+        }
+
+        CPPUNIT_ASSERT_EQUAL((size_t) 20002, v.size());
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, v[10000]);
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, v[20000]);
+        CPPUNIT_ASSERT_EQUAL((size_t) 50, v[20001]);
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, v[20002]);
+
+        for (size_t i = 0; i <= 100; ++i) {
+            v.removeAt(0);
+        }
+
+        CPPUNIT_ASSERT_EQUAL((size_t) 19901, v.size());
+    }
 }
 
 void VectorTest::clear()
