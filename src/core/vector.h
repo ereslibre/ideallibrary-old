@@ -394,13 +394,13 @@ typename Vector<T>::Private *Vector<T>::Private::copy() const
     Private *privateCopy = new Private;
     privateCopy->m_vector = (Element**) calloc(m_containerSize, sizeof(Element*));
     for (size_t i = 0; i < m_containerSize; ++i) {
-        Element *e = new Element;
         if (m_vector[i]) {
+            Element *e = new Element;
             e->m_element = m_vector[i]->m_element;
+            privateCopy->m_vector[i] = e;
         } else {
-            e->m_element = 0;
+            privateCopy->m_vector[i] = 0;
         }
-        privateCopy->m_vector[i] = e;
     }
     privateCopy->m_size = m_size;
     privateCopy->m_containerSize = m_containerSize;
