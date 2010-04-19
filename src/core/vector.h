@@ -97,6 +97,8 @@ public:
 
     /**
       * @return Whether this vector is empty or not.
+      *
+      * @note This is the same as writing count() == 0.
       */
     bool isEmpty() const;
 
@@ -629,7 +631,7 @@ size_t Vector<T>::count() const
 template <typename T>
 bool Vector<T>::isEmpty() const
 {
-    return !d->m_size;
+    return !d->m_count;
 }
 
 template <typename T>
