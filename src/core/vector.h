@@ -185,7 +185,7 @@ public:
           *
           * @code
           * [ a b c x d e ... ]
-          *             ^ Next iterator position in case next() is feasible.
+          *             ^ Next iterator position in case next() if feasible.
           *           ^ Current iterator position.
           *         ^ New inserted element.
           * @endcode
@@ -212,7 +212,7 @@ public:
           *
           * @code
           * [ a b c d x e ... ]
-          *           ^ New inserted element. Next iterator position in case next() is feasible.
+          *           ^ New inserted element. Next iterator position.
           *         ^ Current iterator position.
           * @endcode
           *
