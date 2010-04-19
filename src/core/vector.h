@@ -398,8 +398,6 @@ typename Vector<T>::Private *Vector<T>::Private::copy() const
             Element *e = new Element;
             e->m_element = m_vector[i]->m_element;
             privateCopy->m_vector[i] = e;
-        } else {
-            privateCopy->m_vector[i] = 0;
         }
     }
     privateCopy->m_size = m_size;
