@@ -356,15 +356,14 @@ public:
     static Private *empty();
 
     struct Element {
-        T    m_element;
-        bool m_validData;
+        T m_element;
     };
 
-    Element *m_vector;
-    size_t   m_size;
-    size_t   m_containerSize;
-    size_t   m_count;
-    size_t   m_refs;
+    Element **m_vector;
+    size_t    m_size;
+    size_t    m_containerSize;
+    size_t    m_count;
+    size_t    m_refs;
 
     static Private     *m_privateEmpty;
     static T            m_emptyRes;
@@ -393,8 +392,16 @@ template <typename T>
 typename Vector<T>::Private *Vector<T>::Private::copy() const
 {
     Private *privateCopy = new Private;
-    privateCopy->m_vector = (Element*) calloc(m_containerSize, sizeof(Element));
-    memcpy(privateCopy->m_vector, m_vector, m_containerSize * sizeof(Element));
+    privateCopy->m_vector = (Element**) calloc(m_containerSize, sizeof(Element*));
+    for (size_t i = 0; i < m_containerSize; ++i) {
+        Element *e = new Element;
+        if (m_vector[i]) {
+            e->m_element = m_vector[i]->m_element;
+        } else {
+            e->m_element = 0;
+        }
+        privateCopy->m_vector[i] = e;
+    }
     privateCopy->m_size = m_size;
     privateCopy->m_containerSize = m_containerSize;
     privateCopy->m_count = m_count;
@@ -499,16 +506,15 @@ void Vector<T>::append(const T &t)
 {
     d->copyAndDetach(this);
     if (!d->m_size) {
-        d->m_vector = (typename Private::Element*) calloc(Private::m_initialContainerSize, sizeof(typename Private::Element));
+        d->m_vector = (typename Private::Element**) calloc(Private::m_initialContainerSize, sizeof(typename Private::Element*));
         d->m_containerSize = Private::m_initialContainerSize;
     } else if (d->m_size > (0.7 * d->m_containerSize)) {
         d->m_containerSize *= 2;
-        d->m_vector = (typename Private::Element*) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element));
-        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(typename Private::Element));
+        d->m_vector = (typename Private::Element**) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element*));
+        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(typename Private::Element*));
     }
-    typename Private::Element e;
-    e.m_element = t;
-    e.m_validData = true;
+    typename Private::Element *e = new typename Private::Element;
+    e->m_element = t;
     d->m_vector[d->m_size] = e;
     ++d->m_size;
     ++d->m_count;
@@ -519,19 +525,18 @@ void Vector<T>::prepend(const T &t)
 {
     d->copyAndDetach(this);
     if (!d->m_size) {
-        d->m_vector = (typename Private::Element*) calloc(Private::m_initialContainerSize, sizeof(typename Private::Element));
+        d->m_vector = (typename Private::Element**) calloc(Private::m_initialContainerSize, sizeof(typename Private::Element*));
         d->m_containerSize = Private::m_initialContainerSize;
     } else if (d->m_size > (0.7 * d->m_containerSize)) {
         d->m_containerSize *= 2;
-        d->m_vector = (typename Private::Element*) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element));
-        memmove(&d->m_vector[1], d->m_vector, d->m_size * sizeof(typename Private::Element));
-        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(typename Private::Element));
+        d->m_vector = (typename Private::Element**) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element*));
+        memmove(&d->m_vector[1], d->m_vector, d->m_size * sizeof(typename Private::Element*));
+        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(typename Private::Element*));
     } else {
-        memmove(&d->m_vector[1], d->m_vector, d->m_size * sizeof(typename Private::Element));
+        memmove(&d->m_vector[1], d->m_vector, d->m_size * sizeof(typename Private::Element*));
     }
-    typename Private::Element e;
-    e.m_element = t;
-    e.m_validData = true;
+    typename Private::Element *e = new typename Private::Element;
+    e->m_element = t;
     d->m_vector[0] = e;
     ++d->m_size;
     ++d->m_count;
@@ -551,22 +556,21 @@ void Vector<T>::insertAt(const T &t, size_t i)
             d->m_containerSize *= 2;
         }
         if (d->m_vector) {
-            d->m_vector = (typename Private::Element*) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element));
-            memset(&d->m_vector[oldSize], '\0', (d->m_containerSize - (oldSize + 1)) * sizeof(typename Private::Element));
+            d->m_vector = (typename Private::Element**) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element*));
+            memset(&d->m_vector[oldSize], '\0', (d->m_containerSize - (oldSize + 1)) * sizeof(typename Private::Element*));
         } else {
-            d->m_vector = (typename Private::Element*) calloc(d->m_containerSize, sizeof(typename Private::Element));
+            d->m_vector = (typename Private::Element**) calloc(d->m_containerSize, sizeof(typename Private::Element*));
         }
     } else if (d->m_size > (0.7 * d->m_containerSize)) {
         d->m_containerSize *= 2;
-        d->m_vector = (typename Private::Element*) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element));
-        memmove(&d->m_vector[i + 1], &d->m_vector[i], (d->m_size - i) * sizeof(typename Private::Element));
-        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(typename Private::Element));
+        d->m_vector = (typename Private::Element**) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element*));
+        memmove(&d->m_vector[i + 1], &d->m_vector[i], (d->m_size - i) * sizeof(typename Private::Element*));
+        memset(&d->m_vector[d->m_size + 1], '\0', (d->m_containerSize - (d->m_size + 1)) * sizeof(typename Private::Element*));
     } else {
-        memmove(&d->m_vector[i + 1], &d->m_vector[i], (d->m_size - i) * sizeof(typename Private::Element));
+        memmove(&d->m_vector[i + 1], &d->m_vector[i], (d->m_size - i) * sizeof(typename Private::Element*));
     }
-    typename Private::Element e;
-    e.m_element = t;
-    e.m_validData = true;
+    typename Private::Element *e = new typename Private::Element;
+    e->m_element = t;
     d->m_vector[i] = e;
     ++d->m_size;
     ++d->m_count;
@@ -581,26 +585,24 @@ void Vector<T>::removeAt(size_t i)
     d->copyAndDetach(this);
     if (d->m_containerSize > 5 && d->m_size < (0.3 * d->m_containerSize)) {
         d->m_containerSize /= 2;
-        d->m_vector = (typename Private::Element*) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element));
+        d->m_vector = (typename Private::Element**) realloc(d->m_vector, d->m_containerSize * sizeof(typename Private::Element*));
         if (i != d->m_size - 1) {
-            memmove(&d->m_vector[i], &d->m_vector[i + 1], (d->m_size - i - 1) * sizeof(typename Private::Element));
+            memmove(&d->m_vector[i], &d->m_vector[i + 1], (d->m_size - i - 1) * sizeof(typename Private::Element*));
         } else {
-            typename Private::Element e;
-            e.m_element = T();
-            e.m_validData = false;
+            typename Private::Element *e = new typename Private::Element;
+            e->m_element = 0;
             d->m_vector[i] = e;
         }
-        memset(&d->m_vector[d->m_size - 1], '\0', sizeof(typename Private::Element));
+        memset(&d->m_vector[d->m_size - 1], '\0', sizeof(typename Private::Element*));
     } else {
         if (i != d->m_size - 1) {
-            memmove(&d->m_vector[i], &d->m_vector[i + 1], (d->m_size - i - 1) * sizeof(typename Private::Element));
+            memmove(&d->m_vector[i], &d->m_vector[i + 1], (d->m_size - i - 1) * sizeof(typename Private::Element*));
         } else {
-            typename Private::Element e;
-            e.m_element = T();
-            e.m_validData = false;
+            typename Private::Element *e = new typename Private::Element;
+            e->m_element = 0;
             d->m_vector[i] = e;
         }
-        memset(&d->m_vector[d->m_size - 1], '\0', sizeof(typename Private::Element));
+        memset(&d->m_vector[d->m_size - 1], '\0', sizeof(typename Private::Element*));
     }
     --d->m_size;
     --d->m_count;
@@ -641,12 +643,12 @@ T &Vector<T>::operator[](size_t i)
         IDEAL_DEBUG_WARNING("index out of range");
         d->m_emptyRes = T();
         return d->m_emptyRes;
-    } else if (!d->m_vector[i].m_validData) {
+    } else if (!d->m_vector[i]) {
         d->m_emptyRes = T();
         return d->m_emptyRes;
     }
     d->copyAndDetach(this);
-    return d->m_vector[i].m_element;
+    return d->m_vector[i]->m_element;
 }
 
 template <typename T>
@@ -656,11 +658,11 @@ const T&Vector<T>::operator[](size_t i) const
         IDEAL_DEBUG_WARNING("index out of range");
         d->m_emptyRes = T();
         return d->m_emptyRes;
-    } else if (!d->m_vector[i].m_validData) {
+    } else if (!d->m_vector[i]) {
         d->m_emptyRes = T();
         return d->m_emptyRes;
     }
-    return d->m_vector[i].m_element;
+    return d->m_vector[i]->m_element;
 }
 
 template <typename T>
