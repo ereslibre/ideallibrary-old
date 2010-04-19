@@ -151,6 +151,9 @@ void VectorTest::removeAt()
     {
         Vector<size_t> v;
 
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, v.size());
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, v.count());
+
         for (size_t i = 0; i <= 100; ++i) {
             v.insertAt(i, v.size());
         }
