@@ -154,12 +154,12 @@ public:
         virtual ~Iterator();
 
         /**
-          * @return Whether we can call to @p next for continuing data fetching.
+          * @return Whether we can call to next() for continuing data fetching.
           */
         bool hasNext() const;
 
         /**
-          * @return The element at the current iterator position.
+          * @return The element at the current iterator position. The current position is advanced.
           */
         T &next();
 
@@ -174,6 +174,19 @@ public:
           * @endcode
           *
           * This meaning that the iterator will not iterate over the new inserted element.
+          *
+          * This method operates on the element that corresponds to the one having being retrieved
+          * by the next() method, as an example:
+          *
+          * @code
+          * IdealCore::Vector<MyClass>::Iterator it(myVector);
+          * while (it.hasNext()) {
+          *     MyClass &c = it.next();
+          *     if (c.foo()) {
+          *         it.insertBefore(MyClass("Whatever"));
+          *     }
+          * }
+          * @endcode
           */
         void insertBefore(const T &t);
 
@@ -185,11 +198,37 @@ public:
           *           ^ New inserted element. Next iterator position in case next() is feasible.
           *         ^ Current iterator position.
           * @endcode
+          *
+          * This method operates on the element that corresponds to the one having being retrieved
+          * by the next() method, as an example:
+          *
+          * @code
+          * IdealCore::Vector<MyClass>::Iterator it(myVector);
+          * while (it.hasNext()) {
+          *     MyClass &c = it.next();
+          *     if (c.foo()) {
+          *         it.insertAfter(MyClass("Whatever"));
+          *     }
+          * }
+          * @endcode
           */
         void insertAfter(const T &t);
 
         /**
           * Removes the element at the current iterator position.
+          *
+          * This method operates on the element that corresponds to the one having being retrieved
+          * by the next() method, as an example:
+          *
+          * @code
+          * IdealCore::Vector<MyClass>::Iterator it(myVector);
+          * while (it.hasNext()) {
+          *     MyClass &c = it.next();
+          *     if (c.foo()) {
+          *         it.remove();
+          *     }
+          * }
+          * @endcode
           */
         void remove();
 
@@ -247,12 +286,12 @@ public:
         virtual ~ConstIterator();
 
         /**
-          * @return Whether we can call to @p next for continuing data fetching.
+          * @return Whether we can call to next() for continuing data fetching.
           */
         bool hasNext() const;
 
         /**
-          * @return The element at the current iterator position.
+          * @return The element at the current iterator position. The current position is advanced.
           */
         const T &next();
 
