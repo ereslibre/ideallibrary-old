@@ -375,6 +375,18 @@ void VectorTest::iterators()
             ++i;
         }
     }
+    {
+        Vector<size_t> v;
+        v.insertAt(5, 0);
+
+        Vector<size_t>::Iterator it(v);
+        it.next();
+        it.insertAfter(10);
+
+        CPPUNIT_ASSERT(it.hasNext());
+        CPPUNIT_ASSERT_EQUAL((size_t) 10, it.next());
+        CPPUNIT_ASSERT(!it.hasNext());
+    }
 }
 
 int main(int argc, char **argv)
