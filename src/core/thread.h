@@ -21,7 +21,7 @@
 #ifndef THREAD_H
 #define THREAD_H
 
-#include <ideal_export.h>
+#include <core/object.h>
 
 namespace IdealCore {
 
@@ -30,9 +30,25 @@ namespace IdealCore {
   *
   * Allows you to execute code in a different thread.
   *
+  * It is very encouraged not to inherit from this class and reimplement run() method, but despite
+  * connect to the signal started which is emitted from the new thread when it is started to the
+  * part of your code that will be executed in a new thread. Brief example:
+  *
+  * @code
+  * void myNewThreadFunction()
+  * {
+  *     // Code in new thread here
+  * }
+  *
+  * Thread *newThread = new Thread(Thread::NoJoinable, parent);
+  * connectStatic(newThread->started, myNewThreadFunction);
+  * newThread->exec();
+  * @endcode
+  *
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */
 class IDEAL_EXPORT Thread
+    : public Object
 {
 public:
     enum Type {
@@ -61,7 +77,7 @@ public:
                       /// @endcode
     };
 
-    Thread(Type type = Joinable);
+    Thread(Object *parent, Type type = Joinable);
     virtual ~Thread();
 
     /**
@@ -84,11 +100,21 @@ public:
       */
     Type type() const;
 
+    /**
+      * Emitted when the new thread has been created.
+      *
+      * @note This signal is emitted from the new thread.
+      */
+    IDEAL_SIGNAL(started);
+
 protected:
     /**
-     * When calling to exec() the code inside this method will be executed in a new thread.
-     */
-    virtual void run() = 0;
+      * When calling to exec() the code inside this method will be executed in a new thread.
+      *
+      * By default, this method emits started signal. So you can connect the signal started from
+      * this class to a function or method in your code, and it will be executed in a new thread.
+      */
+    virtual void run();
 
 private:
     class Private;

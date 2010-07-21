@@ -32,7 +32,7 @@ class IDEAL_EXPORT EventDispatcher
     : public Thread
 {
 public:
-    EventDispatcher();
+    EventDispatcher(Object *parent);
     virtual ~EventDispatcher();
 
     void postEvent(Event *event);

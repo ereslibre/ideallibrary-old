@@ -50,7 +50,7 @@ class Application::Private::GUIEventHandler
     : public IdealCore::Thread
 {
 public:
-    GUIEventHandler(Application::Private *priv);
+    GUIEventHandler(Object *parent, Application::Private *priv);
     virtual ~GUIEventHandler();
 
 protected:
@@ -63,6 +63,9 @@ public:
 class Application::Private::GUIEventDispatcher
     : public IdealCore::EventDispatcher
 {
+public:
+    GUIEventDispatcher(Object *parent);
+
 protected:
     virtual void run();
 };

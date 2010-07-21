@@ -39,8 +39,8 @@ Application::Private::~Private()
     delete m_guiEventHandler;
 }
 
-Application::Private::GUIEventHandler::GUIEventHandler(Application::Private *priv)
-    : Thread(NoJoinable)
+Application::Private::GUIEventHandler::GUIEventHandler(Object *parent, Application::Private *priv)
+    : Thread(parent, NoJoinable)
     , priv(priv)
 {
 }
@@ -54,6 +54,11 @@ void Application::Private::GUIEventHandler::run()
     while (true) {
         priv->processEvents();
     }
+}
+
+Application::Private::GUIEventDispatcher::GUIEventDispatcher(Object *parent)
+    : EventDispatcher(parent)
+{
 }
 
 void Application::Private::GUIEventDispatcher::run()
@@ -112,7 +117,7 @@ Application::~Application()
 iint32 Application::exec()
 {
     if (!d->m_guiEventHandler) {
-        d->m_guiEventHandler = new Private::GUIEventHandler(d);
+        d->m_guiEventHandler = new Private::GUIEventHandler(this, d);
     }
     d->m_guiEventHandler->exec();
     return IdealCore::Application::exec();
