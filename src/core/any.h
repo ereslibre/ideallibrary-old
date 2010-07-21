@@ -141,6 +141,13 @@ public:
     virtual ~Any();
 
     /**
+      * @return Whether this Any instance is currently empty or not. This is equivalent to asking if
+      *         this instance == Any().
+      */
+
+    bool isEmpty() const;
+
+    /**
       * @return The contents of this Any instance with the desired type T. It must match the
       *         type of the encapsulated instance.
       */

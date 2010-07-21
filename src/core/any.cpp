@@ -53,6 +53,11 @@ Any::~Any()
     }
 }
 
+bool Any::isEmpty() const
+{
+    return m_s == 0;
+}
+
 const std::type_info &Any::type() const
 {
     if (m_s) {
