@@ -22,6 +22,7 @@
 #define THREAD_H
 
 #include <ideal_export.h>
+#include <core/object.h>
 
 namespace IdealCore {
 
@@ -33,6 +34,7 @@ namespace IdealCore {
   * @author Rafael Fernández López <ereslibre@ereslibre.es>
   */
 class IDEAL_EXPORT Thread
+    : public Object
 {
 public:
     enum Type {
@@ -61,7 +63,7 @@ public:
                       /// @endcode
     };
 
-    Thread(Type type = Joinable);
+    Thread(Type type = Joinable, Object *parent = 0);
     virtual ~Thread();
 
     /**
@@ -84,11 +86,13 @@ public:
       */
     Type type() const;
 
+    IDEAL_SIGNAL(started);
+
 protected:
     /**
      * When calling to exec() the code inside this method will be executed in a new thread.
      */
-    virtual void run() = 0;
+    virtual void run();
 
 private:
     class Private;

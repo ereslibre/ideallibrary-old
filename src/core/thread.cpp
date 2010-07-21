@@ -34,8 +34,10 @@ Thread::Private::~Private()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Thread::Thread(Type type)
-    : d(new PrivateImpl(type))
+Thread::Thread(Type type, Object *parent)
+    : Object(parent)
+    , IDEAL_SIGNAL_INIT(started)
+    , d(new PrivateImpl(type))
 {
 }
 
@@ -53,6 +55,11 @@ void Thread::execAndJoin()
 Thread::Type Thread::type() const
 {
     return d->m_type;
+}
+
+void Thread::run()
+{
+    emit(started);
 }
 
 }
