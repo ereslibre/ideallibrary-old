@@ -536,7 +536,7 @@ void Application::Private::checkTimers()
     List<Timer*>::iterator it;
     for (it = expiredTimerList.begin(); it != expiredTimerList.end(); ++it) {
         Timer *const currTimer = *it;
-        EventDispatcher *eventDispatcher = new EventDispatcher(q);
+        EventDispatcher *eventDispatcher = new EventDispatcher;
         Event *event = new Event(currTimer, Event::Timeout);
         eventDispatcher->postEvent(event);
         eventDispatcher->exec();

@@ -94,7 +94,7 @@ void Application::Private::processEvents()
             IDEAL_DEBUG("unknown event received: " << xe.type);
             return;
     }
-    GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher(q);
+    GUIEventDispatcher *guiEventDispatcher = new GUIEventDispatcher;
     guiEventDispatcher->postEvent(event);
     guiEventDispatcher->exec();
 }

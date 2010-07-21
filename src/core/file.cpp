@@ -121,7 +121,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 File::Private::Job::Job(File *file, Type type)
-    : Thread(type, file)
+    : Thread(type)
     , m_file(file)
     , m_maxBytes(NoMaxBytes)
     , m_protocolHandler(0)

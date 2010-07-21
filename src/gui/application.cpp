@@ -56,11 +56,6 @@ void Application::Private::GUIEventHandler::run()
     }
 }
 
-Application::Private::GUIEventDispatcher::GUIEventDispatcher(Object *parent)
-    : EventDispatcher(parent)
-{
-}
-
 void Application::Private::GUIEventDispatcher::run()
 {
     if (!m_event || !m_event->object()) {
