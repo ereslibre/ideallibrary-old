@@ -27,8 +27,8 @@
 
 namespace IdealCore {
 
-EventDispatcher::EventDispatcher()
-    : Thread(NoJoinable)
+EventDispatcher::EventDispatcher(Object *parent)
+    : Thread(NoJoinable, parent)
     , m_event(0)
 {
 }

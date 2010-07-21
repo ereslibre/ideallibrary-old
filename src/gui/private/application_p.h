@@ -63,6 +63,9 @@ public:
 class Application::Private::GUIEventDispatcher
     : public IdealCore::EventDispatcher
 {
+public:
+    GUIEventDispatcher(Object *parent);
+
 protected:
     virtual void run();
 };
