@@ -40,7 +40,7 @@ namespace IdealCore {
   *     // Code in new thread here
   * }
   *
-  * Thread *newThread = new Thread(Thread::NoJoinable, parent);
+  * Thread *newThread = new Thread(parent, Thread::NoJoinable);
   * connectStatic(newThread->started, myNewThreadFunction);
   * newThread->exec();
   * @endcode
@@ -57,7 +57,7 @@ public:
                       ///< responsible of deleting this object. You can reuse this object if you wish.
                       ///< For example:
                       /// @code
-                      /// MyJoinableThread *myThread = new MyJoinableThread;
+                      /// MyJoinableThread *myThread = new MyJoinableThread(parent);
                       /// myThread->exec();
                       /// myThread->join();
                       /// myThread->exec();
@@ -71,7 +71,7 @@ public:
                       ///< obviously can emit signals. So, when using them, you have to think as a naturally
                       ///< asynchronous relationship. For example:
                       /// @code
-                      /// MyNoJoinableThread *myThread = new MyNoJoinableThread;
+                      /// MyNoJoinableThread *myThread = new MyNoJoinableThread(parent);
                       /// connect(myThread->resultOfHeavyMath, myResult, &MyResult::printResult);
                       /// myThread->exec();
                       /// @endcode
