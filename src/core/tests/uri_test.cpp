@@ -53,11 +53,14 @@ void UriTest::testConstructor()
         CPPUNIT_ASSERT_EQUAL(String("ftp.server.com"), test.host());
         CPPUNIT_ASSERT_EQUAL(String("/path/to/project/file.html"), test.path());
         CPPUNIT_ASSERT_EQUAL(String("username,project:password"), test.userInfo());
+        CPPUNIT_ASSERT_EQUAL(String("username,project"), test.username());
+        CPPUNIT_ASSERT_EQUAL(String("password"), test.password());
     }
     {
         Uri test("ftp://username@ftp.host.com");
         CPPUNIT_ASSERT_EQUAL(String("ftp"), test.scheme());
         CPPUNIT_ASSERT_EQUAL(String("username"), test.userInfo());
+        CPPUNIT_ASSERT_EQUAL(String("username"), test.username());
         CPPUNIT_ASSERT_EQUAL(String("ftp.host.com"), test.host());
     }
 

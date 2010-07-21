@@ -89,6 +89,8 @@ public:
     String  m_uri;
     String  m_scheme;
     String  m_userInfo;
+    String  m_username;
+    String  m_password;
     String  m_host;
     iint32  m_port;
     String  m_path;
@@ -186,6 +188,8 @@ Uri::Private *Uri::Private::copy() const
     privateCopy->m_uri = m_uri;
     privateCopy->m_scheme = m_scheme;
     privateCopy->m_userInfo = m_userInfo;
+    privateCopy->m_username = m_username;
+    privateCopy->m_password = m_password;
     privateCopy->m_host = m_host;
     privateCopy->m_port = m_port;
     privateCopy->m_path = m_path;
@@ -227,6 +231,8 @@ void Uri::Private::clearContentsKeepUri()
     m_pathStack.clear();
     m_scheme.clear();
     m_userInfo.clear();
+    m_username.clear();
+    m_password.clear();
     m_host.clear();
     m_port = -1;
     m_path.clear();
@@ -675,6 +681,7 @@ bool Uri::Private::parseRelativeRef()
 void Uri::Private::parseUserinfo()
 {
     m_parserAux.clear();
+    bool usernameFound = false;
     while (true) {
         const Char curr = m_uri[m_parserPos];
         const iuint32 currValue = curr.value();
@@ -682,6 +689,13 @@ void Uri::Private::parseUserinfo()
             return;
         }
         if (currValue < 128 && isUnreserved[currValue]) {
+            if (!usernameFound && curr == ':') {
+                usernameFound = true;
+            } else if (!usernameFound) {
+                m_username += curr;
+            } else {
+                m_password += curr;
+            }
             m_parserAux += curr;
             ++m_parserPos;
             continue;
@@ -693,6 +707,13 @@ void Uri::Private::parseUserinfo()
         m_parserPos = parserOldPos;
         if (currValue < 128 && (isSubdelim[currValue] ||
                                 curr == ':')) {
+            if (!usernameFound && curr == ':') {
+                usernameFound = true;
+            } else if (!usernameFound) {
+                m_username += curr;
+            } else {
+                m_password += curr;
+            }
             m_parserAux += curr;
             ++m_parserPos;
             continue;
@@ -1392,6 +1413,22 @@ String Uri::userInfo() const
         d->initializeContents();
     }
     return d->m_userInfo;
+}
+
+String Uri::username() const
+{
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
+    return d->m_username;
+}
+
+String Uri::password() const
+{
+    if (!d->m_initialized) {
+        d->initializeContents();
+    }
+    return d->m_password;
 }
 
 String Uri::host() const

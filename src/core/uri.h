@@ -56,6 +56,16 @@ public:
     String userInfo() const;
 
     /**
+      * @return The username specified on the URI. An empty string if no username specified.
+      */
+    String username() const;
+
+    /**
+      * @return The password specified on the URI. An empty string if no password specified.
+      */
+    String password() const;
+
+    /**
       * @return The host specified on the URI. An empty string if no host specified.
       */
     String host() const;
