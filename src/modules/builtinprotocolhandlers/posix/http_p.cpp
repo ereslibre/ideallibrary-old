@@ -56,9 +56,9 @@ public:
     BuiltinProtocolHandlersHttp *q;
 };
 
-const ichar  *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\n\r\n";
-const ichar  *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\n\r\n";
-const iint32 BuiltinProtocolHandlersHttp::Private::m_bufferSize   = 1024 * 32;
+const ichar *BuiltinProtocolHandlersHttp::Private::m_commandGet  = "GET  HTTP/1.1\r\nHost: \r\n\r\n";
+const ichar *BuiltinProtocolHandlersHttp::Private::m_commandHead = "HEAD  HTTP/1.1\r\nHost: \r\n\r\n";
+const iint32 BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
 
 bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const Uri &uri)
 {
@@ -71,7 +71,7 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             commandSize = strlen(m_commandHead);
             break;
     }
-    commandSize += uri.host().size() + uri.path().size();
+    commandSize += uri.host().size() + uri.path().size() + 1;
     ichar *command = (ichar*) calloc(commandSize, sizeof(ichar));
     switch (commandType) {
         case Get:
@@ -150,11 +150,11 @@ ByteStream BuiltinProtocolHandlersHttp::read(size_t nbytes)
     if (d->m_sockfd == -1) {
         return ByteStream();
     }
-    ichar *buf = (ichar*) calloc(d->m_bufferSize, sizeof(ichar));
+    ichar *buf = (ichar*) calloc(d->m_bufferSize + 1, sizeof(ichar));
     const ssize_t bytesRead = recv(d->m_sockfd, buf, d->m_bufferSize, 0);
     if (bytesRead > 0) {
         ByteStream res(buf, bytesRead);
-        delete buf;
+        free(buf);
         return res;
     }
     free(buf);
