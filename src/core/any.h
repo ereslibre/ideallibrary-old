@@ -286,6 +286,7 @@ T Any::get() const
 {
     if (!m_s) {
         IDEAL_DEBUG_WARNING("get() on an empty Any class");
+        return T();
     }
     if (m_s->type() != typeid(T)) {
         T t;
