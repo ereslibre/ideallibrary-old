@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef REMOTE_H
-#define REMOTE_H
+#ifndef HTTP_H
+#define HTTP_H
 
 #include <core/interfaces/protocol_handler.h>
 
@@ -54,4 +54,4 @@ private:
 
 }
 
-#endif //REMOTE_H
+#endif //HTTP_H
