@@ -93,6 +93,17 @@ void RegExpTest::getCapture()
         CPPUNIT_ASSERT(r.match("€€€"));
         CPPUNIT_ASSERT_EQUAL(String("€€€"), r.getCapture(0));
     }
+    {
+        RegExp r("^(\\w+)(:(\\w+)){0,1}$");
+        CPPUNIT_ASSERT(r.match("username"));
+        CPPUNIT_ASSERT_EQUAL(String("username"), r.getCapture(0));
+        CPPUNIT_ASSERT(r.match("username:password"));
+        CPPUNIT_ASSERT_EQUAL(String("username"), r.getCapture(0));
+        CPPUNIT_ASSERT_EQUAL(String("password"), r.getCapture(2));
+        CPPUNIT_ASSERT(!r.match("username:"));
+        CPPUNIT_ASSERT(!r.match(":password"));
+        CPPUNIT_ASSERT(!r.match(":"));
+    }
 }
 
 void RegExpTest::operatorEquals()
