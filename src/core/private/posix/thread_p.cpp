@@ -18,8 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <pthread.h>
-
 #include <core/thread.h>
 #include "thread_p.h"
 
