@@ -71,14 +71,17 @@ bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, 
             commandSize = strlen(m_commandHead);
             break;
     }
-    commandSize += uri.host().size() + uri.path().size() + 1;
-    ichar *command = (ichar*) calloc(commandSize, sizeof(ichar));
+    commandSize += uri.host().size() + uri.path().size();
+    ichar *command = (ichar*) calloc(commandSize + 1, sizeof(ichar));
     switch (commandType) {
         case Get:
             sprintf(command, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", uri.path().data(), uri.host().data());
             break;
         case Head:
             sprintf(command, "HEAD %s HTTP/1.1\r\nHost: %s\r\n\r\n", uri.path().data(), uri.host().data());
+            break;
+        default:
+            IDEAL_DEBUG_WARNING("unknown command type");
             break;
     }
     const iint32 bytesSent = send(m_sockfd, command, commandSize, 0);
