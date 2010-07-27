@@ -7,5 +7,4 @@ Name: idealgui
 Description: The idealgui library
 Version: @VERSION@
 Libs: -L${libdir} @LIBS@
-Cflags: -I${includedir}
-
+Cflags: -I${includedir} -std=c++0x
