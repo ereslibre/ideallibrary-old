@@ -159,7 +159,7 @@ ProtocolHandler::StatResult File::Private::Job::statPrivate()
 
 void File::Private::Job::stat()
 {
-    emit(m_file->statResult, statPrivate());
+    m_file->statResult.emit(statPrivate());
     cacheOrDiscard(m_protocolHandler);
 }
 
@@ -167,7 +167,7 @@ void File::Private::Job::get()
 {
     const ProtocolHandler::StatResult statResult = statPrivate();
     if (statResult.errorCode != ProtocolHandler::NoError) {
-        emit(m_file->error, statResult.errorCode);
+        m_file->error.emit(statResult.errorCode);
         return;
     }
     if (statResult.type == ProtocolHandler::Directory) {
@@ -189,7 +189,7 @@ void File::Private::Job::mkdir()
 
 void File::Private::Job::readDir()
 {
-    emit(m_file->dirRead, m_protocolHandler->listDir(m_file->d->m_uri));
+    m_file->dirRead.emit(m_protocolHandler->listDir(m_file->d->m_uri));
 }
 
 void File::Private::Job::readFile()
@@ -202,7 +202,7 @@ void File::Private::Job::readFile()
             break;
         }
         bytesRead += byteStream.size();
-        emit(m_file->dataRead, byteStream);
+        m_file->dataRead.emit(byteStream);
     }
     m_protocolHandler->close();
 }

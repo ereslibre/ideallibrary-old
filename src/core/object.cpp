@@ -111,7 +111,7 @@ Object::~Object()
 {
     m_mutex.tryLock();
     m_mutex.unlock();
-    emit(destroyed);
+    destroyed.emit();
     d->cleanConnections();
     {
         ContextMutexLocker cml(d->m_parentMutex);

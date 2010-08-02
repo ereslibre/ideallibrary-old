@@ -73,7 +73,7 @@ public:
 
     void emitSignal()
     {
-        emit(signal);
+        signal.emit();
     }
 
     IDEAL_SIGNAL(signal);
@@ -135,7 +135,7 @@ void ConnectionTest::connectTest()
         signalSpy->reset();
         emitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
         emitter->setEmitBlocked(true);
-        Object::emit(emitter->signal);
+        emitter->signal.emit();
         emitter->setEmitBlocked(false);
         emitter->signal.disconnect(signalSpy, &SignalSpy::receiveSignal);
         CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());

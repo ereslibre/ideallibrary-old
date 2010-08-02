@@ -140,17 +140,6 @@ public:
     static void fullyDisconnect(Object *object);
 
     /**
-      * Emits @p signal with parameters @p param.
-      *
-      * See @ref workingWithSignals
-      */
-    template <typename... Param>
-    static void inline emit(const Signal<Param...> &signal, const Param&... param)
-    {
-        signal.emit(param...);
-    }
-
-    /**
       * Deletes this object right now.
       */
     void deleteNow();

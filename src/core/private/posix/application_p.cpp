@@ -210,9 +210,9 @@ List<ichar*> Application::parseOptions(ParsingStrictness parsingStrictness, Fail
     if (parsingStrictness == Flexible) {
         while ((opt = getopt_long_only(d->m_argc, d->m_argv, shortopts.data(), longopts, NULL)) != -1) {
             if (opt == '?') {
-                emit(invalidOption);
+                invalidOption.emit();
             } else if (opt == ':') {
-                emit(missingParameter);
+                missingParameter.emit();
             } else if (optionMap.count(opt)) {
                 PrivateImpl::OptionItem item = optionMap[opt];
                 item.option->d->m_isOptSet = true;
@@ -222,9 +222,9 @@ List<ichar*> Application::parseOptions(ParsingStrictness parsingStrictness, Fail
     } else {
         while ((opt = getopt_long(d->m_argc, d->m_argv, shortopts.data(), longopts, NULL)) != -1) {
             if (opt == '?') {
-                emit(invalidOption);
+                invalidOption.emit();
             } else if (opt == ':') {
-                emit(missingParameter);
+                missingParameter.emit();
             } else if (optionMap.count(opt)) {
                 PrivateImpl::OptionItem item = optionMap[opt];
                 item.option->d->m_isOptSet = true;
@@ -334,7 +334,7 @@ void Application::Private::checkFileWatches()
             List<PrivateImpl::InotifyEvent>::const_iterator it;
             for (it = inotifyEventList.begin(); it != inotifyEventList.end(); ++it) {
                 PrivateImpl::InotifyEvent inotifyEvent = *it;
-                emit(inotifyEvent.file->event, inotifyEvent.eventNotify);
+                inotifyEvent.file->event.emit(inotifyEvent.eventNotify);
             }
         }
     }

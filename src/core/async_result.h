@@ -117,7 +117,7 @@ void AsyncResult::set(const Values&... values)
         m_values = 0;
     }
     m_resultReceived = true;
-    emit(resultSet);
+    resultSet.emit();
 }
 
 template <typename T>

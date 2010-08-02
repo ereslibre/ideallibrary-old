@@ -772,12 +772,6 @@ public:
         IDEAL_SDEBUG("no static multi synchronized slot disconnected. No previous connection found.");
     }
 
-private:
-    Signal(SignalResource *parent)
-        : SignalBase(parent)
-    {
-    }
-
     void emit(const Param&... param) const
     {
         if (m_parent->isEmitBlocked() && !m_isDestroyedSignal) {
@@ -809,6 +803,12 @@ private:
             ContextMutexLocker cml(m_beingEmittedMutex);
             m_beingEmitted = false;
         }
+    }
+
+private:
+    Signal(SignalResource *parent)
+        : SignalBase(parent)
+    {
     }
 };
 

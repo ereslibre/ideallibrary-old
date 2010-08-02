@@ -51,7 +51,7 @@ void EventDispatcher::run()
     switch (m_event->type()) {
         case Event::Timeout: {
             Timer *const timer = static_cast<Timer*>(m_event->object());
-            timer->emit(timer->timeout);
+            timer->timeout.emit();
         }
             break;
         default:

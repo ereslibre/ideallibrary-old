@@ -80,7 +80,7 @@ bool PushButton::event(IdealCore::Event *event)
     switch (event->type()) {
         case IdealCore::Event::ButtonRelease:
             if (sInfo->isPressed) {
-                emit(clicked);
+                clicked.emit();
             }
             break;
         default:

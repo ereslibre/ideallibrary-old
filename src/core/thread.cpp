@@ -59,7 +59,7 @@ Thread::Type Thread::type() const
 
 void Thread::run()
 {
-    emit(started);
+    started.emit();
 }
 
 }
