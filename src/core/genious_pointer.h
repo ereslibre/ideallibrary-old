@@ -106,7 +106,7 @@ GeniousPointer<T>::GeniousPointer(T *content)
     : m_t(content)
 {
     if (m_t) {
-        Object::connect(m_t->destroyed, this, &GeniousPointer<T>::contentDestroyed);
+        m_t->destroyed.connect(this, &GeniousPointer<T>::contentDestroyed);
     }
 }
 
@@ -115,7 +115,7 @@ GeniousPointer<T>::GeniousPointer(const GeniousPointer &ptr)
     : m_t(ptr.m_t)
 {
     if (m_t) {
-        Object::connect(m_t->destroyed, this, &GeniousPointer<T>::contentDestroyed);
+        m_t->destroyed(this, &GeniousPointer<T>::contentDestroyed);
     }
 }
 
@@ -124,7 +124,7 @@ template <typename T>
 GeniousPointer<T>::~GeniousPointer()
 {
     if (m_t) {
-        Object::disconnect(m_t->destroyed, this);
+        m_t->destroyed.disconnect(this);
     }
  }
 
@@ -150,11 +150,11 @@ template <typename T>
 GeniousPointer<T> &GeniousPointer<T>::operator=(const GeniousPointer &ptr)
 {
     if (m_t) {
-        Object::disconnect(m_t->destroyed, this);
+        m_t->destroyed.disconnect(this);
     }
     m_t = ptr.m_t;
     if (m_t) {
-        Object::connect(m_t->destroyed, this, &GeniousPointer<T>::contentDestroyed);
+        m_t->destroyed.connect(this, &GeniousPointer<T>::contentDestroyed);
     }
     return *this;
 }

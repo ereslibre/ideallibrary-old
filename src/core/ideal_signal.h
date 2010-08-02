@@ -446,7 +446,6 @@ public:
         return m_parent;
     }
 
-protected:
     virtual void disconnect(SignalResource *receiver) const = 0;
 
     void disconnect() const
@@ -459,6 +458,7 @@ protected:
         m_connections.clear();
     }
 
+protected:
     static void notifyReceiverConnection(SignalResource *receiver, const SignalBase *signalBase)
     {
         if (!signalBase->m_isDestroyedSignal) {
@@ -514,7 +514,6 @@ public:
         m_connections.clear();
     }
 
-protected:
     virtual void disconnect(SignalResource *receiver) const
     {
         List<CallbackDummy*>::iterator it;
@@ -529,12 +528,6 @@ protected:
             }
             ++it;
         }
-    }
-
-private:
-    Signal(SignalResource *parent)
-        : SignalBase(parent)
-    {
     }
 
     template <typename Receiver, typename Member>
@@ -777,6 +770,12 @@ private:
             }
         }
         IDEAL_SDEBUG("no static multi synchronized slot disconnected. No previous connection found.");
+    }
+
+private:
+    Signal(SignalResource *parent)
+        : SignalBase(parent)
+    {
     }
 
     void emit(const Param&... param) const

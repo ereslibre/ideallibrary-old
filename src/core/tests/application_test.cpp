@@ -93,7 +93,7 @@ void ApplicationTest::testInvalidLongOption()
     receivedUnknownOption = false;
     const ichar *argv[] = {"app", "-non-existant", "foo.txt"};
     Application *instance = new Application(3, (ichar**) argv);
-    Object::connectStatic(instance->invalidOption, receiveInvalidness);
+    instance->invalidOption.connectStatic(receiveInvalidness);
     List<ichar*> res = instance->parseOptions();
     CPPUNIT_ASSERT(receivedUnknownOption);
     CPPUNIT_ASSERT_EQUAL((size_t) 1, res.size());
@@ -110,7 +110,7 @@ void ApplicationTest::testInvalidShortOption()
     instance->addOptionWithoutArg(recursiveOption, 'r', "recursive");
     Option forceOption;
     instance->addOptionWithoutArg(forceOption, 'f', "force");
-    Object::connectStatic(instance->invalidOption, receiveInvalidness);
+    instance->invalidOption.connectStatic(receiveInvalidness);
     List<ichar*> res = instance->parseOptions(Application::Strict);
     CPPUNIT_ASSERT(receivedUnknownOption);
     CPPUNIT_ASSERT(recursiveOption.isOptSet());

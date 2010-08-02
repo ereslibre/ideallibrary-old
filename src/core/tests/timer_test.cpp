@@ -57,8 +57,8 @@ void TimerTest::nullInterval()
     if (!pid) {
         Application app(s_argc, s_argv);
         Timer timer(&app);
-        Object::connectStatic(timer.timeout, timerTimeout);
-        Object::connect(timer.timeout, &app, &Application::quit);
+        timer.timeout.connectStatic(timerTimeout);
+        timer.timeout.connect(&app, &Application::quit);
         timer.setInterval(0);
         timer.start();
         app.exec();
@@ -74,8 +74,8 @@ void TimerTest::secondInterval()
     if (!pid) {
         Application app(s_argc, s_argv);
         Timer timer(&app);
-        Object::connectStatic(timer.timeout, timerTimeout);
-        Object::connect(timer.timeout, &app, &Application::quit);
+        timer.timeout.connectStatic(timerTimeout);
+        timer.timeout.connect(&app, &Application::quit);
         timer.setInterval(1000);
         timer.start();
         CPPUNIT_ASSERT(!didTimeout);
@@ -107,15 +107,15 @@ void TimerTest::testLoops()
     if (!pid) {
         Application app(s_argc, s_argv);
         Timer timer1(&app);
-        Object::connectStatic(timer1.timeout, timeout1);
+        timer1.timeout.connectStatic(timeout1);
         timer1.setInterval(1000);
         timer1.start(Timer::NoSingleShot);
         Timer timer2(&app);
-        Object::connectStatic(timer2.timeout, timeout2);
+        timer2.timeout.connectStatic(timeout2);
         timer2.setInterval(2000);
         timer2.start(Timer::NoSingleShot);
         Timer timer3(&app);
-        Object::connect(timer3.timeout, &app, &Application::quit);
+        timer3.timeout.connect(&app, &Application::quit);
         timer3.setInterval(10000);
         timer3.start();
         app.exec();
@@ -150,15 +150,15 @@ void TimerTest::testStop()
     if (!pid) {
         Application app(s_argc, s_argv);
         staticTimer = new Timer(&app);
-        Object::connectStatic(staticTimer->timeout, unreachable);
+        staticTimer->timeout.connectStatic(unreachable);
         staticTimer->setInterval(600);
         staticTimer->start();
         Timer timer1(&app);
-        Object::connectStatic(timer1.timeout, timeout3);
+        timer1.timeout.connectStatic(timeout3);
         timer1.setInterval(500);
         timer1.start(Timer::NoSingleShot);
         Timer timer2(&app);
-        Object::connect(timer2.timeout, &app, &Application::quit);
+        timer2.timeout.connect(&app, &Application::quit);
         timer2.setInterval(10000);
         timer2.start();
         app.exec();

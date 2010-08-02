@@ -137,108 +137,108 @@ void FileTest::tearDown()
 void FileTest::testConstructor()
 {
     File nonExistantFile("/non/existant/path/nor/file.txt", s_application);
-    Object::connectStatic(nonExistantFile.statResult, assertFileDoesNotExist);
+    nonExistantFile.statResult.connectStatic(assertFileDoesNotExist);
     runSync(nonExistantFile.stat(Thread::Joinable));
 
     File nonExistantFileWithScheme("file:///non/existant/path/nor/file.txt", s_application);
-    Object::connectStatic(nonExistantFileWithScheme.statResult, assertFileDoesNotExist);
+    nonExistantFileWithScheme.statResult.connectStatic(assertFileDoesNotExist);
     runSync(nonExistantFileWithScheme.stat(Thread::Joinable));
 
     File existingRoot("/", s_application);
-    Object::connectStatic(existingRoot.statResult, assertExists);
-    Object::connectStatic(existingRoot.statResult, assertIsDirectory);
-    Object::connectStatic(existingRoot.statResult, assertIsRoot);
-    Object::connectStatic(existingRoot.statResult, assertIsRoot);
+    existingRoot.statResult.connectStatic(assertExists);
+    existingRoot.statResult.connectStatic(assertIsDirectory);
+    existingRoot.statResult.connectStatic(assertIsRoot);
+    existingRoot.statResult.connectStatic(assertIsRoot);
     runSync(existingRoot.stat(Thread::Joinable));
 
     File existingRootWithScheme("file:///", s_application);
-    Object::connectStatic(existingRootWithScheme.statResult, assertExists);
-    Object::connectStatic(existingRootWithScheme.statResult, assertIsDirectory);
-    Object::connectStatic(existingRootWithScheme.statResult, assertIsRoot);
-    Object::connectStatic(existingRootWithScheme.statResult, assertIsRoot);
+    existingRootWithScheme.statResult.connectStatic(assertExists);
+    existingRootWithScheme.statResult.connectStatic(assertIsDirectory);
+    existingRootWithScheme.statResult.connectStatic(assertIsRoot);
+    existingRootWithScheme.statResult.connectStatic(assertIsRoot);
     runSync(existingRootWithScheme.stat(Thread::Joinable));
 
     File existingDir("/home/", s_application);
-    Object::connectStatic(existingDir.statResult, assertExists);
-    Object::connectStatic(existingDir.statResult, assertIsDirectory);
-    Object::connectStatic(existingDir.statResult, assertIsRoot);
-    Object::connectStatic(existingDir.statResult, assertIsRoot);
+    existingDir.statResult.connectStatic(assertExists);
+    existingDir.statResult.connectStatic(assertIsDirectory);
+    existingDir.statResult.connectStatic(assertIsRoot);
+    existingDir.statResult.connectStatic(assertIsRoot);
     runSync(existingDir.stat(Thread::Joinable));
 
     File existingDirWithScheme("file:///home/", s_application);
-    Object::connectStatic(existingDirWithScheme.statResult, assertExists);
-    Object::connectStatic(existingDirWithScheme.statResult, assertIsDirectory);
-    Object::connectStatic(existingDirWithScheme.statResult, assertIsRoot);
-    Object::connectStatic(existingDirWithScheme.statResult, assertIsRoot);
+    existingDirWithScheme.statResult.connectStatic(assertExists);
+    existingDirWithScheme.statResult.connectStatic(assertIsDirectory);
+    existingDirWithScheme.statResult.connectStatic(assertIsRoot);
+    existingDirWithScheme.statResult.connectStatic(assertIsRoot);
     runSync(existingDirWithScheme.stat(Thread::Joinable));
 
     File nullDevice("/dev/null", s_application);
-    Object::connectStatic(nullDevice.statResult, assertExists);
-    Object::connectStatic(nullDevice.statResult, assertIsCharacterDevice);
-    Object::connectStatic(nullDevice.statResult, assertIsNotBlockDevice);
-    Object::connectStatic(nullDevice.statResult, assertOthersCanWrite);
-    Object::connectStatic(nullDevice.statResult, assertIsRoot);
-    Object::connectStatic(nullDevice.statResult, assertIsRoot);
+    nullDevice.statResult.connectStatic(assertExists);
+    nullDevice.statResult.connectStatic(assertIsCharacterDevice);
+    nullDevice.statResult.connectStatic(assertIsNotBlockDevice);
+    nullDevice.statResult.connectStatic(assertOthersCanWrite);
+    nullDevice.statResult.connectStatic(assertIsRoot);
+    nullDevice.statResult.connectStatic(assertIsRoot);
     runSync(nullDevice.stat(Thread::Joinable));
 
     File nullDeviceWithScheme("file:///dev/null", s_application);
-    Object::connectStatic(nullDeviceWithScheme.statResult, assertExists);
-    Object::connectStatic(nullDeviceWithScheme.statResult, assertIsCharacterDevice);
-    Object::connectStatic(nullDeviceWithScheme.statResult, assertIsNotBlockDevice);
-    Object::connectStatic(nullDeviceWithScheme.statResult, assertOthersCanWrite);
-    Object::connectStatic(nullDeviceWithScheme.statResult, assertIsRoot);
-    Object::connectStatic(nullDeviceWithScheme.statResult, assertIsRoot);
+    nullDeviceWithScheme.statResult.connectStatic(assertExists);
+    nullDeviceWithScheme.statResult.connectStatic(assertIsCharacterDevice);
+    nullDeviceWithScheme.statResult.connectStatic(assertIsNotBlockDevice);
+    nullDeviceWithScheme.statResult.connectStatic(assertOthersCanWrite);
+    nullDeviceWithScheme.statResult.connectStatic(assertIsRoot);
+    nullDeviceWithScheme.statResult.connectStatic(assertIsRoot);
     runSync(nullDeviceWithScheme.stat(Thread::Joinable));
 
     File remotePlace("http://www.nic.com", s_application);
-    Object::connectStatic(remotePlace.statResult, assertExists);
-    Object::connectStatic(remotePlace.error, disconnectedFromInternet);
+    remotePlace.statResult.connectStatic(assertExists);
+    remotePlace.error.connectStatic(disconnectedFromInternet);
     runSync(remotePlace.stat(Thread::Joinable));
 
     File nonExistantRemotePlace("http://www.nic.com/nonexistantpage", s_application);
-    Object::connectStatic(nonExistantRemotePlace.statResult, assertFileDoesNotExist);
-    Object::connectStatic(nonExistantRemotePlace.error, disconnectedFromInternet);
+    nonExistantRemotePlace.statResult.connectStatic(assertFileDoesNotExist);
+    nonExistantRemotePlace.error.connectStatic(disconnectedFromInternet);
     runSync(nonExistantRemotePlace.stat(Thread::Joinable));
 
     File oldKernel("http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", s_application);
-    Object::connectStatic(oldKernel.statResult, assertExists);
-    Object::connectStatic(oldKernel.statResult, assertKernel22Size);
-    Object::connectStatic(oldKernel.error, disconnectedFromInternet);
+    oldKernel.statResult.connectStatic(assertExists);
+    oldKernel.statResult.connectStatic(assertKernel22Size);
+    oldKernel.error.connectStatic(disconnectedFromInternet);
     runSync(oldKernel.stat(Thread::Joinable));
 
     File oldKernelFtp("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gz", s_application);
-    Object::connectStatic(oldKernelFtp.statResult, assertExists);
-    Object::connectStatic(oldKernelFtp.statResult, assertKernel22Size);
-    Object::connectStatic(oldKernelFtp.error, disconnectedFromInternet);
+    oldKernelFtp.statResult.connectStatic(assertExists);
+    oldKernelFtp.statResult.connectStatic(assertKernel22Size);
+    oldKernelFtp.error.connectStatic(disconnectedFromInternet);
     runSync(oldKernelFtp.stat(Thread::Joinable));
 
     File checkError("/root/.nonexistantfile", s_application);
-    Object::connectStatic(checkError.statResult, assertFileDoesNotExist); // should never be called
-    Object::connectStatic(checkError.error, failWithInsufficientPermissions);
+    checkError.statResult.connectStatic(assertFileDoesNotExist); // should never be called
+    checkError.error.connectStatic(failWithInsufficientPermissions);
     runSync(checkError.stat(Thread::Joinable));
 
     File checkErrorWithScheme("file:///root/.nonexistantfile", s_application);
-    Object::connectStatic(checkErrorWithScheme.statResult, assertFileDoesNotExist); // should never be called
-    Object::connectStatic(checkErrorWithScheme.error, failWithInsufficientPermissions);
+    checkErrorWithScheme.statResult.connectStatic(assertFileDoesNotExist); // should never be called
+    checkErrorWithScheme.error.connectStatic(failWithInsufficientPermissions);
     runSync(checkErrorWithScheme.stat(Thread::Joinable));
 
     File checkLocalFileNotFound(s_application->getPath(Application::Home) + "/.nonexistantfile", s_application);
-    Object::connectStatic(checkLocalFileNotFound.statResult, assertFileDoesNotExist);
-    Object::connectStatic(checkLocalFileNotFound.error, failWithFileNotFound); // should never be called
+    checkLocalFileNotFound.statResult.connectStatic(assertFileDoesNotExist);
+    checkLocalFileNotFound.error.connectStatic(failWithFileNotFound); // should never be called
     runSync(checkLocalFileNotFound.stat(Thread::Joinable));
 
     File checkLocalFileNotFoundError(s_application->getPath(Application::Home) + "/.nonexistantfile", s_application);
-    Object::connectStatic(checkLocalFileNotFoundError.statResult, assertKernel22Size); // should never be called
-    Object::connectStatic(checkLocalFileNotFoundError.error, failWithFileNotFound);
+    checkLocalFileNotFoundError.statResult.connectStatic(assertKernel22Size); // should never be called
+    checkLocalFileNotFoundError.error.connectStatic(failWithFileNotFound);
     runSync(checkLocalFileNotFoundError.stat(Thread::Joinable));
 
     File checkRemoteFileNotFound("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gzzzz", s_application);
-    Object::connectStatic(checkRemoteFileNotFound.statResult, assertFileDoesNotExist);
-    Object::connectStatic(checkRemoteFileNotFound.error, disconnectedFromInternet);
+    checkRemoteFileNotFound.statResult.connectStatic(assertFileDoesNotExist);
+    checkRemoteFileNotFound.error.connectStatic(disconnectedFromInternet);
     runSync(checkRemoteFileNotFound.stat(Thread::Joinable));
 
     File checkRemoteFileNotFoundError("ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.1.tar.gzzzz", s_application);
-    Object::connectStatic(checkRemoteFileNotFoundError.error, disconnectedFromInternetOrFileNotFound);
+    checkRemoteFileNotFoundError.error.connectStatic(disconnectedFromInternetOrFileNotFound);
     runSync(checkRemoteFileNotFoundError.stat(Thread::Joinable));
 
     CPPUNIT_ASSERT_EQUAL(35, numCalls);

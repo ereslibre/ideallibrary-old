@@ -120,8 +120,8 @@ template <typename Receiver, typename Member>
 void Timer::callAfter(iint32 ms, Receiver *receiver, Member member)
 {
     Timer *timer = new Timer(receiver);
-    connect(timer->timeout, receiver, member);
-    connect(timer->timeout, timer, &Object::deleteLater);
+    timer->timeout.connect(receiver, member);
+    timer->timeout.connect(timer, &Object::deleteLater);
     timer->setInterval(ms);
     timer->start();
 }
@@ -130,8 +130,8 @@ template <typename Member>
 void Timer::callStaticAfter(iint32 ms, Member member)
 {
     Timer *timer = new Timer;
-    connectStatic(timer->timeout, member);
-    connect(timer->timeout, timer, &Object::deleteLater);
+    timer->timeout.connectStatic(member);
+    timer->timeout.connect(timer, &Object::deleteLater);
     timer->setInterval(ms);
     timer->start();
 }

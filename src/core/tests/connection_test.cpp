@@ -94,20 +94,20 @@ void ConnectionTest::connectTest()
     Emitter *emitter = new Emitter(s_app);
     {
         signalSpy->reset();
-        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
         emitter->emitSignal();
         CPPUNIT_ASSERT_EQUAL(1, signalSpy->signalsReceived());
     }
     {
         signalSpy->reset();
-        Object::disconnect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.disconnect(signalSpy, &SignalSpy::receiveSignal);
         emitter->emitSignal();
         CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());
     }
     {
         signalSpy->reset();
-        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
-        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
         emitter->emitSignal();
         CPPUNIT_ASSERT_EQUAL(2, signalSpy->signalsReceived());
         signalSpy->reset();
@@ -117,34 +117,34 @@ void ConnectionTest::connectTest()
     }
     {
         signalSpy->reset();
-        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
         Object::disconnectReceiver(signalSpy);
         emitter->emitSignal();
         CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());
     }
     {
         signalSpy->reset();
-        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
         emitter->setEmitBlocked(true);
         emitter->emitSignal();
         emitter->setEmitBlocked(false);
-        Object::disconnect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.disconnect(signalSpy, &SignalSpy::receiveSignal);
         CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());
     }
     {
         signalSpy->reset();
-        Object::connect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
         emitter->setEmitBlocked(true);
         Object::emit(emitter->signal);
         emitter->setEmitBlocked(false);
-        Object::disconnect(emitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.disconnect(signalSpy, &SignalSpy::receiveSignal);
         CPPUNIT_ASSERT_EQUAL(0, signalSpy->signalsReceived());
     }
     Emitter *secondEmitter = new Emitter(s_app);
     {
         signalSpy->reset();
-        Object::connect(emitter->signal, secondEmitter->signal);
-        Object::connect(secondEmitter->signal, signalSpy, &SignalSpy::receiveSignal);
+        emitter->signal.connect(secondEmitter->signal);
+        secondEmitter->signal.connect(signalSpy, &SignalSpy::receiveSignal);
         emitter->emitSignal();
         CPPUNIT_ASSERT_EQUAL(1, signalSpy->signalsReceived());
     }
