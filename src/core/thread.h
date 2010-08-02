@@ -41,7 +41,7 @@ namespace IdealCore {
   * }
   *
   * Thread *newThread = new Thread(parent, Thread::NoJoinable);
-  * connectStatic(newThread->started, myNewThreadFunction);
+  * newThread->started.connectStatic(myNewThreadFunction);
   * newThread->exec();
   * @endcode
   *
@@ -72,7 +72,7 @@ public:
                       ///< asynchronous relationship. For example:
                       /// @code
                       /// MyNoJoinableThread *myThread = new MyNoJoinableThread(parent);
-                      /// connect(myThread->resultOfHeavyMath, myResult, &MyResult::printResult);
+                      /// myThread->resultOfHeavyMath.connect(myResult, &MyResult::printResult);
                       /// myThread->exec();
                       /// @endcode
     };

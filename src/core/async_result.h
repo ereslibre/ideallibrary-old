@@ -35,7 +35,7 @@ namespace IdealCore {
   * @code
   * File f("ftp://server/folder/folder/file", &app);
   * AsyncResult result(&app);
-  * connect(f.statResult, &result, &AsyncResult::set<ProtocolHandler::StatResult>);
+  * f.statResult.connect(&result, &AsyncResult::set<ProtocolHandler::StatResult>);
   * f.stat(Thread::Joinable)->execAndJoin();
   * if (result.resultReceived()) {
   *     ProtocolHandler::StatResult statResult = result.get<ProtocolHandler::StatResult>(0);
@@ -48,7 +48,7 @@ namespace IdealCore {
   * @code
   * File f("ftp://server/folder/folder/file", &app);
   * AsyncResult result(&app);
-  * connectMulti(f.statResult, &result, &AsyncResult::set<Object*, ProtocolHandler::StatResult>);
+  * f.statResult.connectMulti(&result, &AsyncResult::set<Object*, ProtocolHandler::StatResult>);
   * f.stat(Thread::Joinable)->execAndJoin();
   * if (result.resultReceived()) {
   *     Object *sender = result.get<Object*>(0);

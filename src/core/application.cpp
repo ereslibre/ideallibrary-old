@@ -197,9 +197,9 @@
  *     MyObject *myObject = new MyObject(&app);
  *     MyOtherObject *myOtherObject = new MyOtherObject(&app);
  *
- *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject, &MyOtherObject::doSomethingEasy);
- *     IdealCore::Object::connect(myObject->myComplexSignal, myOtherObject, &MyOtherObject::doSomethingComplex);
- *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject->myForwardedSignal);
+ *     myObject->myFirstSignal.connect(myOtherObject, &MyOtherObject::doSomethingEasy);
+ *     myObject->myComplexSignal.connect(myOtherObject, &MyOtherObject::doSomethingComplex);
+ *     myObject->myFirstSignal.connect(myOtherObject->myForwardedSignal);
  *
  *     return 0;
  * }
@@ -262,9 +262,9 @@
  *     MyObject *myObject = new MyObject(&app);
  *     MyOtherObject *myOtherObject = new MyOtherObject(&app);
  *
- *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject, &MyOtherObject::doSomethingEasy);
- *     IdealCore::Object::connect(myObject->myComplexSignal, myOtherObject, &MyOtherObject::doSomethingComplex);
- *     IdealCore::Object::connect(myObject->myFirstSignal, myOtherObject->myForwardedSignal);
+ *     myObject->myFirstSignal.connect(myOtherObject, &MyOtherObject::doSomethingEasy);
+ *     myObject->myComplexSignal.connect(myOtherObject, &MyOtherObject::doSomethingComplex);
+ *     myObject->myFirstSignal.connect(myOtherObject->myForwardedSignal);
  *
  *     myObject->modifyStateAndNotify();
  *
@@ -337,9 +337,9 @@
  *     , m_stop(new MediaButton(this))
  *     , m_quit(new MediaButton(this))
  * {
- *     connectMulti(m_playPause->clicked, this, &MediaPlayer::executeAction);
- *     connectMulti(m_stop->clicked, this, &MediaPlayer::executeAction);
- *     connectMulti(m_quit->clicked, this, &MediaPlayer::executeAction);
+ *     m_playPause->clicked.connectMulti(this, &MediaPlayer::executeAction);
+ *     m_stop->clicked.connectMulti(this, &MediaPlayer::executeAction);
+ *     m_quit->clicked.connectMulti(this, &MediaPlayer::executeAction);
  * }
  *
  * void MediaPlayer::simulatePlayPauseClick()
@@ -412,7 +412,7 @@
  * The connection would be exactly the same:
  *
  * @code
- * IdealCore::Object::connectMulti(object->myComplexSignal, whatever, &Whatever::aMultiSlotExample);
+ * object->myComplexSignal.connectMulti(whatever, &Whatever::aMultiSlotExample);
  * @endcode
  */
 
