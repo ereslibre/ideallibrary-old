@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # This file is part of the Ideal Library
-# Copyright (C) 2009 Rafael Fernández López <ereslibre@ereslibre.es>
+# Copyright (C) 2010 Rafael Fernández López <ereslibre@ereslibre.es>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
@@ -18,5 +18,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-./waf distclean &> /dev/null
+doxygen --version &> /dev/null
+
+if [ $? -ne 0 ]; then
+	echo "!!! Doxygen not installed. Please install it in order to generate documentation"
+	exit 1
+fi
+
+rm -rf doc &> /dev/null
 doxygen .doxygen-config &> /dev/null
+
+if [ $? -eq 0 ]; then
+	echo "*** Documentation has been correctly generated under 'doc' directory"
+	exit 0
+fi
+
+echo "!!! Documentation could not be generated due to an error"
+exit 2
