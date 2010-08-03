@@ -44,7 +44,6 @@ def configure(conf):
     conf.check_tool('compiler_cxx')
     conf.find_program('pkg-config')
     conf.check_cfg(package = 'idealcore', args = '--cflags --libs')
-    conf.env['CXXFLAGS'] += ['-std=c++0x']
 
 def build(bld):
     bld.new_task_gen(
