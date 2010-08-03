@@ -79,14 +79,14 @@ public:
     bool areSignalsBlocked() const;
 
     /**
-      * Sets whether emit() is blocked for this object.
+      * Sets whether emit() is blocked for all signals of this object.
       *
       * @note destroyed signal will always be emitted, even if emit() is blocked for this object.
       */
     void setEmitBlocked(bool emitBlocked);
 
     /**
-      * @return Whether emit() is blocked for this object.
+      * @return Whether emit() is blocked for all signals of this object.
       *
       * @note false by default.
       */

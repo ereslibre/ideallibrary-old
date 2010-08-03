@@ -248,7 +248,7 @@
  * void MyObject::modifyStateAndNotify()
  * {
  *     IDEAL_SDEBUG("We have modified an attribute and are going to emit myFirstSignal");
- *     emit(myFirstSignal);
+ *     myFirstSignal.emit();
  * }
  * @endcode
  *
@@ -285,7 +285,7 @@
  * void MyObject::modifyStateAndNotify()
  * {
  *     IDEAL_SDEBUG("We have modified an attribute and are going to emit myComplexSignal");
- *     emit(myComplexSignal, false, 6, parent(), List<Object*>());
+ *     myComplexSignal.emit(false, 6, parent(), List<Object*>());
  * }
  * @endcode
  *
@@ -344,17 +344,17 @@
  *
  * void MediaPlayer::simulatePlayPauseClick()
  * {
- *     emit(m_playPause->clicked);
+ *     m_playPause->clicked.emit();
  * }
  *
  * void MediaPlayer::simulateStopClick()
  * {
- *     emit(m_stop->clicked);
+ *     m_stop->clicked.emit();
  * }
  *
  * void MediaPlayer::simulateQuitClick()
  * {
- *     emit(m_quit->clicked);
+ *     m_quit->clicked.emit();
  * }
  *
  * void MediaPlayer::executeAction(Object *sender)
