@@ -1,10 +1,5 @@
-prefix=@PREFIX@
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include/ideal
-
 Name: idealgui
 Description: The idealgui library
 Version: @VERSION@
-Libs: -L${libdir} @LIBS@
-Cflags: -I${includedir} -std=c++0x
+Libs: @LIBS@
+Requires: idealcore
