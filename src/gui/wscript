@@ -38,7 +38,7 @@ def build(bld):
     bld.new_task_gen('subst',
                      source = 'idealgui.pc.in',
                      target = 'idealgui.pc',
-                     dict   = {'PREFIX' : bld.env['PREFIX'], 'LIBS' : '-lidealgui', 'VERSION' : bld.env['LIBVERSION']}
+                     dict   = {'LIBS' : '-lidealgui', 'VERSION' : bld.env['LIBVERSION']}
                      )
     bld.install_files('${PREFIX}/lib/pkgconfig', 'idealgui.pc')
     bld.install_files('${PREFIX}/include/ideal/gui', '*.h')
