@@ -62,7 +62,7 @@ const iint32 BuiltinProtocolHandlersHttp::Private::m_bufferSize  = 1024 * 32;
 
 bool BuiltinProtocolHandlersHttp::Private::sendCommand(CommandType commandType, const Uri &uri)
 {
-    iint32 commandSize;
+    iint32 commandSize = 0;
     switch (commandType) {
         case Get:
             commandSize = strlen(m_commandGet);
