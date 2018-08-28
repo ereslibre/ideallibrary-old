@@ -175,7 +175,7 @@ public:
       *         compared.
       */
     template <typename T>
-    static std::type_info &type(const T&t);
+    static const std::type_info &type(const T&t);
 
     /**
       * Makes this Any instance to morph to type T and encapsulate the @p t instance of type T.
@@ -313,7 +313,7 @@ String Any::typeName(const T &t)
 }
 
 template <typename T>
-std::type_info &Any::type(const T &t)
+const std::type_info &Any::type(const T &t)
 {
     return typeid(T);
 }

@@ -43,7 +43,7 @@ static void assertExists(const ProtocolHandler::StatResult &statResult)
 
 static void assertFileDoesNotExist(const ProtocolHandler::StatResult &statResult)
 {
-    CPPUNIT_ASSERT(!statResult.errorCode != ProtocolHandler::FileNotFound);
+    CPPUNIT_ASSERT(statResult.errorCode == ProtocolHandler::FileNotFound);
     ++numCalls;
 }
 

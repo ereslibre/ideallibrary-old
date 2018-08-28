@@ -21,9 +21,11 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <dlfcn.h>
+#include <unistd.h>
 #include <map>
 
 #include <core/file.h>

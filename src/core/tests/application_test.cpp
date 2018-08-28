@@ -25,6 +25,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include <core/application.h>
 
+#include <unistd.h>
 #include <stdlib.h>
 
 using namespace IdealCore;

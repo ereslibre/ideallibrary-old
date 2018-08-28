@@ -22,6 +22,7 @@
 #include "file_p.h"
 #include <core/application.h>
 #include "application_p.h"
+#include <unistd.h>
 
 #ifdef HAVE_INOTIFY
 #include <sys/inotify.h>
